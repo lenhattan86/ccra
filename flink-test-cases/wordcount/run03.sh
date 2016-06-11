@@ -1,8 +1,8 @@
 # Start timming
 #flink="../../build-target"
-flink="../../flink-1.0.3"
+flink="$HOME/flink-1.0.3"
 #rm -rf app03.csv
-for i in `seq 1 30`;
+for i in `seq 1 2`;
 do
 	date --rfc-3339=seconds >> app03.csv
 	# run the Flink app

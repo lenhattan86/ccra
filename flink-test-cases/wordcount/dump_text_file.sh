@@ -1,6 +1,6 @@
 sudo rm -rf /dev/app01.txt /dev/app02.txt /dev/app03.txt
 # download a text of a book
-#wget -O book01.t http://www.gutenberg.org/files/52185/52185-0.txt
+wget -O book01.t http://www.gutenberg.org/files/52185/52185-0.txt
 #wget -O book01.t http://www.textfiles.com/etext/NONFICTION/bacon-essays-92.txt
 sudo cp book01.t /dev/app01.txt
 # 14 -> 5.1GB = fileszie * (2^14)
@@ -11,7 +11,7 @@ sudo cp book01.t /dev/app01.txt
 for i in {1..11}; do sudo cat /dev/app01.txt /dev/app01.txt > temp1.txt && sudo mv temp1.txt /dev/app01.txt; done
 
 # download a text of a book
-#wget -O book02.t http://www.gutenberg.org/files/52184/52184-0.txt
+wget -O book02.t http://www.gutenberg.org/files/52184/52184-0.txt
 #wget -O book02.t http://www.textfiles.com/etext/NONFICTION/common_sense
 sudo cp book02.t /dev/app02.txt
 # 16 -> 6.1GB

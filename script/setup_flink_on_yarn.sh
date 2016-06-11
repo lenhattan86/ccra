@@ -3,9 +3,9 @@
 ## NOTES
 # 1. We have to install Ganglia web server manually
 
+isCloudLab=true
+isAmazonEC=false
 
-
-cloudLabPubKey="/home/tanle/Dropbox/Papers/System/Flink/cloudlab/cloudlab.pem"
 java_home='/usr/lib/jvm/java-8-openjdk-amd64'
 
 hadoopVer="hadoop-2.7.0"
@@ -17,16 +17,17 @@ flinkVer="flink-1.0.3"
 flinkTgz="flink-1.0.3-bin-hadoop27-scala_2.10.tgz"
 flinkDownloadLink="http://apache.mesi.com.ar/flink/flink-1.0.3/flink-1.0.3-bin-hadoop27-scala_2.10.tgz"
 flinkSrc="/home/tanle/projects/Flink"
-testCase="/home/tanle/projects/Flink/test/wordcount"
+testCase="../flink-test-cases"
 
 ###########
 vmemRatio=4
 yarnNodeMem=65536 # 32768
 yarnMaxMem=32768
-#scheduler="org.apache.hadoop.yarn.server.resourcemanager.scheduler.fair.FairScheduler"
-scheduler="org.apache.hadoop.yarn.server.resourcemanager.scheduler.capacity.CapacityScheduler"
+scheduler="org.apache.hadoop.yarn.server.resourcemanager.scheduler.fair.FairScheduler"
+#scheduler="org.apache.hadoop.yarn.server.resourcemanager.scheduler.capacity.CapacityScheduler"
 #schedulerFile="/users/tanle/$hadoopVer/etc/hadoop/fair-scheduler.xml"
-schedulerFile="/users/tanle/fair-scheduler.xml"
+#schedulerFile="/users/tanle/fair-scheduler.xml"
+schedulerFile="/users/tanle/hadoop-2.7.0/share/hadoop/tools/sls/sample-conf/fair-scheduler.xml"
 yarnVcores=32
 hdfsDir="/dev/hdfs"
 yarnAppLogs="/dev/yarn-logs"
@@ -34,7 +35,7 @@ yarnAppLogs="/dev/yarn-logs"
 #hdfsDir="/proj/yarnrm-PG0/hdfs"
 numOfReplication=3
 numNetworkBuffers=4096 # default 2048
-########
+##########
 
 #log-dirs are bad: /users/tanle/hadoop-2.7.0/logs/userlogs
 
@@ -46,7 +47,6 @@ isSingleNodeCluster=false;
 isUploadTestCase=false
 
 
-
 isDownload=false
 isExtract=true
 
@@ -54,7 +54,7 @@ isUploadKey=false
 isGenerateKey=false
 isPasswordlessSSH=false
 
-isInstallJava=false
+isInstallBasePackages=false
 
 isInstallGanglia=false
 startGanglia=false
@@ -63,7 +63,7 @@ then
 	startGanglia=true
 fi
 
-isInstallHadoop=false
+isInstallHadoop=true
 isInitPath=false
 isModifyHadoop=false
 isShutDownHadoop=false
@@ -77,32 +77,38 @@ then
 	isFormatHDFS=true
 fi
 
-isInstallFlink=true
+isInstallFlink=false
 isModifyFlink=false
 startFlinkYarn=true
 shudownFlink=false
 
 startFlinkStandalone=false # not necessary
 
-
-
 isRun=false
 
 
-masterNode="nm"
-clientNode="ctl"
-
-if $isOfficial
+if $isCloudLab
 then
-	numOfworkers=14
-	serverList="nm cp-1 cp-2 cp-3 cp-4 cp-5 cp-6 cp-7 cp-8 cp-9 cp-10 cp-11 cp-12 cp-13 cp-14"
-	slaveNodes="cp-1 cp-2 cp-3 cp-4 cp-5 cp-6 cp-7 cp-8 cp-9 cp-10 cp-11 cp-12 cp-13 cp-14"
-	numOfReplication=3
+	masterNode="nm"
+	clientNode="ctl"
+
+	privateKey="/home/tanle/Dropbox/Papers/System/Flink/cloudlab/cloudlab.pem"
+	if $isOfficial
+	then
+		numOfworkers=14
+		serverList="nm cp-1 cp-2 cp-3 cp-4 cp-5 cp-6 cp-7 cp-8 cp-9 cp-10 cp-11 cp-12 cp-13 cp-14"
+		slaveNodes="cp-1 cp-2 cp-3 cp-4 cp-5 cp-6 cp-7 cp-8 cp-9 cp-10 cp-11 cp-12 cp-13 cp-14"
+		numOfReplication=3
+	else
+		numOfworkers=1
+		serverList="nm cp-1"
+		slaveNodes="cp-1"
+		numOfReplication=1		
+	fi
+elif $isAmazonEC
+then
+	echo "Amazon EC"
 else
-	numOfworkers=1
-	serverList="nm cp-1"
-	slaveNodes="cp-1"
-	numOfReplication=1
 	if $isSingleNodeCluster
 	then
 		masterNode="localhost"
@@ -146,7 +152,7 @@ echo ################################# passwordless SSH ########################
 		yes Y | ssh-keygen -t dsa -P '' -f ~/.ssh/id_dsa 		
 		sudo chmod 600 $HOME/.ssh/id_dsa*
 		echo 'StrictHostKeyChecking no' >> ~/.ssh/config
-#		ssh-add $cloudLabPubKey
+#		ssh-add $privateKey
 	fi
 	rm -rf ~/.ssh/known_hosts
 	for server in $serverList; do
@@ -175,17 +181,19 @@ then
 	wait
 fi
 
-if $isInstallJava
+if $isInstallBasePackages
 then
 	echo ################################# install JAVA ######################################
 	installJava () {
-		ssh tanle@$1 'yes Y | sudo apt-get install openjdk-8-jdk';
+		ssh tanle@$1 'yes Y | sudo apt-get install openjdk-8-jdk'
 	}
 	echo "TODO: install JAVA"
 	for server in $serverList; do
 		installJava $server &
 	done
 	wait
+	echo ################################ install screen #####################################
+	ssh tanle@$masterNode "sudo apt-get -u install screen"
 fi
 
 
@@ -362,12 +370,12 @@ echo "#################################### install Hadoop Yarn #################
     <name>yarn.resourcemanager.scheduler.class</name>
     <value>$scheduler</value>
   </property>
-<!--
+
   <property>
     <name>yarn.scheduler.fair.allocation.file</name>
     <value>$schedulerFile</value>
   </property> 
--->
+
 
   <property>
     <name>yarn.resourcemanager.address</name>
@@ -417,39 +425,37 @@ echo "#################################### install Hadoop Yarn #################
 </configuration>' > $hadoopVer/etc/hadoop/yarn-site.xml"
 
 # setup scheduler https://hadoop.apache.org/docs/r2.7.1/hadoop-yarn/hadoop-yarn-site/FairScheduler.html
+if false
+then
 
 			ssh tanle@$1 "echo '<?xml version="1.0"?>
 <allocations>
-  <user name=\"jenkins\">
-    <!-- Limit on running jobs for the user across all pools. If more
-      jobs than this are submitted, only the first <maxRunningJobs> will
-      be scheduled at any given time. Defaults to infinity or the
-      userMaxJobsDefault value set below. -->
-    <maxRunningJobs>1000</maxRunningJobs>
+  <queue name=\"sample_queue\">
+    <minResources>10000 mb,0vcores</minResources>
+    <maxResources>90000 mb,0vcores</maxResources>
+    <maxRunningApps>50</maxRunningApps>
+    <weight>2.0</weight>
+    <schedulingPolicy>fair</schedulingPolicy>
+    <queue name=\"sample_sub_queue\">
+      <aclSubmitApps>charlie</aclSubmitApps>
+      <minResources>5000 mb,0vcores</minResources>
+    </queue>
+  </queue>
+  
+  <user name=\"sample_user\">
+    <maxRunningApps>30</maxRunningApps>
   </user>
-  <userMaxAppsDefault>1000</userMaxAppsDefault>
-  <queue name=\"sls_queue_1\">
-    <minResources>1024 mb, 1 vcores</minResources>
-    <schedulingMode>fair</schedulingMode>
-    <weight>0.25</weight>
-    <minSharePreemptionTimeout>2</minSharePreemptionTimeout>
-  </queue>
-  <queue name=\"sls_queue_2\">
-    <minResources>1024 mb, 1 vcores</minResources>
-    <schedulingMode>fair</schedulingMode>
-    <weight>0.25</weight>
-    <minSharePreemptionTimeout>2</minSharePreemptionTimeout>
-  </queue>
-  <queue name=\"sls_queue_3\">
-    <minResources>1024 mb, 1 vcores</minResources>
-    <weight>0.5</weight>
-    <schedulingMode>fair</schedulingMode>
-    <minSharePreemptionTimeout>2</minSharePreemptionTimeout>
-  </queue>
+  <userMaxAppsDefault>5</userMaxAppsDefault>
+  
+  <queuePlacementPolicy>
+    <rule name=\"specified\" />
+    <rule name=\"primaryGroup\" create="false" />
+    <rule name=\"default\" />
+  </queuePlacementPolicy>
 </allocations>
 ' > $schedulerFile"
 
-
+fi
 			
 			# etc/hadoop/mapred-site.xml
 			ssh tanle@$1 "echo '<?xml version=\"1.0\"?>
@@ -587,9 +593,9 @@ if $startFlinkYarn
 then
 	echo ############################ start Yars session for Flink#########################
 #	ssh $masterNode "$flinkVer/bin/yarn-session.sh -n $numOfworkers -d -jm 1024 -tm $yarnMaxMem -s $yarnVcores"
-	echo "~/$flinkVer/bin/yarn-session.sh -n $numOfworkers -d -jm 1024 -tm $yarnMaxMem -s $yarnVcores"
+	echo "~/$flinkVer/bin/yarn-session.sh -n $numOfworkers -d -st -jm 1024 -tm $yarnMaxMem -s $yarnVcores"
+	echo "~/$flinkVer/bin/yarn-session.sh -n $numOfworkers -d -st"
 fi
-
 
 ############################################### TEST CASES ###########################################
 # upload test cases
@@ -597,7 +603,7 @@ if $isUploadTestCase
 then 
 	cd $flinkSrc	
 	rm -rf test/wordcount/*.txt test/wordcount/*.out test/wordcount/*.log
-	tar zcvf test.tar test
+	tar zcvf test.tar $testCase
 	ssh tanle@$masterNode 'rm -rf test*'
 	scp test.tar tanle@$masterNode:~/ 
 	ssh tanle@$masterNode 'tar -xvzf test.tar'

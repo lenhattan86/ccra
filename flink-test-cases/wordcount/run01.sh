@@ -1,6 +1,6 @@
 # Start timming
 #flink="../../build-target"
-flink="../../flink-1.0.3"
+flink="$HOME/flink-1.0.3"
 #rm -rf app01.csv
 sleep 120
 for i in `seq 1 3`;	
