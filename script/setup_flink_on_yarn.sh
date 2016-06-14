@@ -1,7 +1,10 @@
 #!/bin/bash
 
+## author: Tan N. Le ~ CS department Stony Brook University
+
 ## NOTES
 # 1. We have to install Ganglia web server manually
+#ssh tanle@$masterNode 'sudo apt-get install -y rrdtool  ganglia-webfrontend'
 
 isCloudLab=true
 isAmazonEC=false
@@ -23,11 +26,18 @@ testCase="../flink-test-cases"
 vmemRatio=4
 yarnNodeMem=65536 # 32768
 yarnMaxMem=32768
-scheduler="org.apache.hadoop.yarn.server.resourcemanager.scheduler.fair.FairScheduler"
-#scheduler="org.apache.hadoop.yarn.server.resourcemanager.scheduler.capacity.CapacityScheduler"
-#schedulerFile="/users/tanle/$hadoopVer/etc/hadoop/fair-scheduler.xml"
-#schedulerFile="/users/tanle/fair-scheduler.xml"
-schedulerFile="/users/tanle/hadoop-2.7.0/share/hadoop/tools/sls/sample-conf/fair-scheduler.xml"
+fairSchedulerFile="/users/tanle/$hadoopVer/etc/fair-scheduler.xml"
+capacitySchedulerFile="/users/tanle/$hadoopVer/etc/capacity-scheduler.xml"
+isCapacityScheduler=true
+if $isCapacityScheduler
+then
+	schedulerFile=$capacitySchedulerFile
+	scheduler="org.apache.hadoop.yarn.server.resourcemanager.scheduler.capacity.CapacityScheduler"
+else
+	schedulerFile=$fairSchedulerFile
+	scheduler="org.apache.hadoop.yarn.server.resourcemanager.scheduler.fair.FairScheduler" 
+fi
+
 yarnVcores=32
 hdfsDir="/dev/hdfs"
 yarnAppLogs="/dev/yarn-logs"
@@ -65,10 +75,14 @@ fi
 
 isInstallHadoop=true
 isInitPath=false
+if $isDownload
+then
+	isInitPath=true
+fi
 isModifyHadoop=false
 isShutDownHadoop=false
 restartHadoop=false
-isFormatHDFS=false
+isFormatHDFS=true
 
 if $isInstallHadoop
 then
@@ -95,9 +109,9 @@ then
 	privateKey="/home/tanle/Dropbox/Papers/System/Flink/cloudlab/cloudlab.pem"
 	if $isOfficial
 	then
-		numOfworkers=14
-		serverList="nm cp-1 cp-2 cp-3 cp-4 cp-5 cp-6 cp-7 cp-8 cp-9 cp-10 cp-11 cp-12 cp-13 cp-14"
-		slaveNodes="cp-1 cp-2 cp-3 cp-4 cp-5 cp-6 cp-7 cp-8 cp-9 cp-10 cp-11 cp-12 cp-13 cp-14"
+		numOfworkers=8
+		serverList="nm cp-1 cp-2 cp-3 cp-4 cp-5 cp-6 cp-7 cp-8"
+		slaveNodes="cp-1 cp-2 cp-3 cp-4 cp-5 cp-6 cp-7 cp-8"
 		numOfReplication=3
 	else
 		numOfworkers=1
@@ -193,7 +207,7 @@ then
 	done
 	wait
 	echo ################################ install screen #####################################
-	ssh tanle@$masterNode "sudo apt-get -u install screen"
+	ssh tanle@$masterNode "sudo apt-get install -y screen"
 fi
 
 
@@ -216,7 +230,8 @@ echo ################################# install Ganglia #########################
 	sudo sed -i -e 's/udp_send_channel {/udp_send_channel { host=nm/g' /etc/ganglia/gmond.conf"
 	
 	installGangliaFunc(){
-		ssh tanle@$1 "sudo apt-get install -y ganglia-monitor;
+		ssh tanle@$1 "yes Y | sudo apt-get purge ganglia-monitor;
+		sudo apt-get install -y ganglia-monitor;
 		sudo sed -i -e 's/name = \"unspecified\"/name = \"sbu flink\"/g' /etc/ganglia/gmond.conf;
 		sudo sed -i -e 's/mcast_join = 239.2.11.71/#mcast_join = 239.2.11.71/g' /etc/ganglia/gmond.conf;
 		sudo sed -i -e 's/udp_send_channel {/udp_send_channel { host=nm/g' /etc/ganglia/gmond.conf"
@@ -357,7 +372,7 @@ echo "#################################### install Hadoop Yarn #################
 			# etc/hadoop/yarn-site.xml
 			## Configurations for ResourceManager and NodeManager:
 
-			ssh tanle@$1 "sudo rm -rf $yarnAppLogs; sudo mkdir $yarnAppLogs; sudo chmod 777 $yarnAppLogs" 
+			ssh tanle@$1 "sudo rm -rf $yarnAppLogs; sudo mkdir $yarnAppLogs; sudo chmod 777 $yarnAppLogs"			
 
 			ssh tanle@$1 "echo '<?xml version=\"1.0\"?>
 <configuration>
@@ -375,7 +390,6 @@ echo "#################################### install Hadoop Yarn #################
     <name>yarn.scheduler.fair.allocation.file</name>
     <value>$schedulerFile</value>
   </property> 
-
 
   <property>
     <name>yarn.resourcemanager.address</name>
@@ -402,10 +416,12 @@ echo "#################################### install Hadoop Yarn #################
     <value>$yarnVcores</value>
   </property>
 
+<!--
   <property>
     <name>yarn.scheduler.maximum-allocation-vcores</name>
     <value>32</value>
-  </property>
+  </property> 
+-->
 
   <property>
     <name>yarn.nodemanager.resource.memory-mb</name>
@@ -417,46 +433,122 @@ echo "#################################### install Hadoop Yarn #################
     <value>$vmemRatio</value>
   </property>
 
-<property>
+  <property>
     <name>yarn.nodemanager.log-dirs</name>
     <value>$yarnAppLogs</value>
   </property>
 
+<!-- CGroups -->
+<!--
+	<property>
+		 <name>yarn.nodemanager.container-executor.class</name>
+		 <value>org.apache.hadoop.yarn.server.nodemanager.LinuxContainerExecutor</value>
+	</property>
+	<property>
+		<name>yarn.nodemanager.linux-container-executor.resources-handler.class</name>
+		<value>org.apache.hadoop.yarn.server.nodemanager.util.CgroupsLCEResourcesHandler</value>
+	</property>
+	<property>
+		<name>yarn.nodemanager.linux-container-executor.cgroups.mount</name>
+		<value>true</value>
+	</property>
+	<property>
+		<name>yarn.nodemanager.linux-container-executor.cgroups.mount-path</name>
+		<value>/sys/fs/cgroup</value>
+	</property>
+	<property>
+		<name>yarn.nodemanager.linux-container-executor.cgroups.hierarchy</name>
+		<value>/yarn</value> 		
+	</property>
+	<property>
+		<name>yarn.nodemanager.linux-container-executor.group</name>
+		<value>tanle</value>
+	</property> 
+-->
+	<property>
+		<name>yarn.nodemanager.linux-container-executor.nonsecure-mode.limit-users</name>
+		<value>true</value>
+	</property> 	
+	<property>
+		<name>yarn.nodemanager.linux-container-executor.nonsecure-mode.local-user</name>
+		<value>tanle</value>
+	</property> 
+
 </configuration>' > $hadoopVer/etc/hadoop/yarn-site.xml"
+#yarn.nodemanager.linux-container-executor.group=#configured value of yarn.nodemanager.linux-container-executor.group
+#allowed.system.users=##comma separated list of system users who CAN run applications
+			ssh tanle@$1 "sudo sed -i -e 's/yarn.nodemanager.linux-container-executor.group=#/yarn.nodemanager.linux-container-executor.group=tanle#/g' $hadoopVer/etc/hadoop/container-executor.cfg"
+
+			ssh tanle@$1 "sudo chmod -R 777 /sys/fs/cgroup; sudo mkdir /sys/fs/cgroup/cpu/yarn; sudo chmod -R 777 /sys/fs/cgroup/cpu/yarn"	
 
 # setup scheduler https://hadoop.apache.org/docs/r2.7.1/hadoop-yarn/hadoop-yarn-site/FairScheduler.html
-if false
-then
-
-			ssh tanle@$1 "echo '<?xml version="1.0"?>
+			ssh tanle@$1 "echo '<?xml version=\"1.0\"?>
 <allocations>
-  <queue name=\"sample_queue\">
-    <minResources>10000 mb,0vcores</minResources>
-    <maxResources>90000 mb,0vcores</maxResources>
-    <maxRunningApps>50</maxRunningApps>
-    <weight>2.0</weight>
+  <queue name=\"sls_queue_1\">
+    <minResources>1024 mb, 1 vcores</minResources>
     <schedulingPolicy>fair</schedulingPolicy>
-    <queue name=\"sample_sub_queue\">
-      <aclSubmitApps>charlie</aclSubmitApps>
-      <minResources>5000 mb,0vcores</minResources>
-    </queue>
+    <weight>0.5</weight>
   </queue>
-  
-  <user name=\"sample_user\">
-    <maxRunningApps>30</maxRunningApps>
-  </user>
-  <userMaxAppsDefault>5</userMaxAppsDefault>
-  
-  <queuePlacementPolicy>
-    <rule name=\"specified\" />
-    <rule name=\"primaryGroup\" create="false" />
-    <rule name=\"default\" />
-  </queuePlacementPolicy>
-</allocations>
-' > $schedulerFile"
+  <queue name=\"sls_queue_2\">
+    <minResources>1024 mb, 1 vcores</minResources>
+    <schedulingPolicy>fair</schedulingPolicy>
+    <weight>0.5</weight>
+  </queue>
+</allocations>' > $fairSchedulerFile"
 
-fi
-			
+			ssh tanle@$1 "echo '<?xml version=\"1.0\"?>
+<configuration>
+<!--
+  <property>
+    <name>yarn.scheduler.capacity.resource-calculator</name>
+    <value>org.apache.hadoop.yarn.util.resource.DefaultResourceCalculator</value>
+    <description>Default allocator</description>
+  </property>
+ -->
+  <property>
+    <name>yarn.scheduler.capacity.resource-calculator</name>
+    <value>org.apache.hadoop.yarn.util.resource.DominantResourceCalculator</value>
+    <description>DRF resource allocator</description>
+  </property>
+
+  <property>
+    <name>yarn.scheduler.capacity.root.queues</name>
+    <value>sls_queue_1,sls_queue_2,sls_queue_3</value>
+    <description>The queues at the this level (root is the root queue).
+    </description>
+  </property>
+  
+  <property>
+    <name>yarn.scheduler.capacity.root.sls_queue_1.capacity</name>
+    <value>25</value>
+  </property>
+
+  <property>
+    <name>yarn.scheduler.capacity.root.sls_queue_1.maximum-capacity</name>
+    <value>100</value>
+  </property>
+  
+  <property>
+    <name>yarn.scheduler.capacity.root.sls_queue_2.capacity</name>
+    <value>25</value>
+  </property>
+
+  <property>
+    <name>yarn.scheduler.capacity.root.sls_queue_2.maximum-capacity</name>
+    <value>100</value>
+  </property>
+  
+  <property>
+    <name>yarn.scheduler.capacity.root.sls_queue_3.capacity</name>
+    <value>50</value>
+  </property>
+
+  <property>
+    <name>yarn.scheduler.capacity.root.sls_queue_3.maximum-capacity</name>
+    <value>100</value>
+  </property>
+</configuration>' > $capacitySchedulerFile"
+		
 			# etc/hadoop/mapred-site.xml
 			ssh tanle@$1 "echo '<?xml version=\"1.0\"?>
 <?xml-stylesheet type=\"text/xsl\" href=\"configuration.xsl\"?>
@@ -503,6 +595,9 @@ fi
   </property>
 
 </configuration>' > $hadoopVer/etc/hadoop/mapred-site.xml"
+
+
+			
 			
 			# monitoring script in etc/hadoop/yarn-site.xml
 
@@ -567,9 +662,9 @@ then
 		#Replace localhost with resourcemanager in conf/flink-conf.yaml (jobmanager.rpc.address)
 		ssh $1 "sed -i -e 's/jobmanager.rpc.address: localhost/jobmanager.rpc.address: nm/g' $flinkVer/conf/flink-conf.yaml;
 		sed -i -e 's/jobmanager.heap.mb: 256/taskmanager.heap.mb: 1024/g' $flinkVer/conf/flink-conf.yaml;		
-		sed -i -e 's/taskmanager.heap.mb: 512/taskmanager.heap.mb: $yarnMaxMem/g' $flinkVer/conf/flink-conf.yaml;	
-		sed -i -e 's/taskmanager.numberOfTaskSlots: 1/taskmanager.numberOfTaskSlots: $yarnVcores/g' $flinkVer/conf/flink-conf.yaml;
+		sed -i -e 's/taskmanager.heap.mb: 512/taskmanager.heap.mb: $yarnMaxMem/g' $flinkVer/conf/flink-conf.yaml;
 		sed -i -e 's/# taskmanager.network.numberOfBuffers: 2048/taskmanager.network.numberOfBuffers: $numNetworkBuffers/g' $flinkVer/conf/flink-conf.yaml"
+		#sed -i -e 's/taskmanager.numberOfTaskSlots: 1/taskmanager.numberOfTaskSlots: $yarnVcores/g' $flinkVer/conf/flink-conf.yaml;
 
 		#Add hostnames of all worker nodes to the slaves file flinkVer/conf/slaves"
 		ssh $1 "rm -rf $flinkVer/conf/slaves"
@@ -594,7 +689,8 @@ then
 	echo ############################ start Yars session for Flink#########################
 #	ssh $masterNode "$flinkVer/bin/yarn-session.sh -n $numOfworkers -d -jm 1024 -tm $yarnMaxMem -s $yarnVcores"
 	echo "~/$flinkVer/bin/yarn-session.sh -n $numOfworkers -d -st -jm 1024 -tm $yarnMaxMem -s $yarnVcores"
-	echo "~/$flinkVer/bin/yarn-session.sh -n $numOfworkers -d -st"
+#	~/flink-1.0.3/bin/yarn-session.sh -n 14 -d -st -jm 1024 -qu root.sls_queue_1 -tm 32768
+	echo "~/$flinkVer/bin/yarn-session.sh -n $numOfworkers -d -st -qu sls_queue_2"
 fi
 
 ############################################### TEST CASES ###########################################
