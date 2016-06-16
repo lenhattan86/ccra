@@ -28,7 +28,7 @@ yarnNodeMem=65536 # 32768
 yarnMaxMem=32768
 fairSchedulerFile="/users/tanle/$hadoopVer/etc/fair-scheduler.xml"
 capacitySchedulerFile="/users/tanle/$hadoopVer/etc/capacity-scheduler.xml"
-isCapacityScheduler=true
+isCapacityScheduler=false
 if $isCapacityScheduler
 then
 	schedulerFile=$capacitySchedulerFile
@@ -40,7 +40,8 @@ fi
 
 yarnVcores=32
 hdfsDir="/dev/hdfs"
-yarnAppLogs="/dev/yarn-logs"
+#yarnAppLogs="/dev/yarn-logs"
+yarnAppLogs="/dev/shm/yarn-logs"
 #hdfsDir="/users/tanle/hdfs"
 #hdfsDir="/proj/yarnrm-PG0/hdfs"
 numOfReplication=3
@@ -82,7 +83,7 @@ fi
 isModifyHadoop=false
 isShutDownHadoop=false
 restartHadoop=false
-isFormatHDFS=true
+isFormatHDFS=false
 
 if $isInstallHadoop
 then
@@ -314,7 +315,6 @@ echo "#################################### install Hadoop Yarn #################
 			
 				# configure HADOOP_PREFIX 
 				ssh tanle@$1 "echo export HADOOP_PREFIX=~/$hadoopVer >> .bashrc;
-				echo export HADOOP_CONF_DIR=~/$hadoopVer/etc/hadoop >> .bashrc;
 				echo export HADOOP_YARN_HOME=~/$hadoopVer >> .bashrc;
 				echo export HADOOP_HOME=~/$hadoopVer >> .bashrc;				
 				echo export HADOOP_CONF_DIR=~/$hadoopVer/etc/hadoop >> .bashrc;
@@ -437,8 +437,9 @@ echo "#################################### install Hadoop Yarn #################
     <name>yarn.nodemanager.log-dirs</name>
     <value>$yarnAppLogs</value>
   </property>
-
+	
 <!-- CGroups -->
+	
 <!--
 	<property>
 		 <name>yarn.nodemanager.container-executor.class</name>
@@ -458,13 +459,13 @@ echo "#################################### install Hadoop Yarn #################
 	</property>
 	<property>
 		<name>yarn.nodemanager.linux-container-executor.cgroups.hierarchy</name>
-		<value>/yarn</value> 		
+		<value>/hadoop-yarn</value> 		
 	</property>
 	<property>
 		<name>yarn.nodemanager.linux-container-executor.group</name>
-		<value>tanle</value>
+		<value>root</value>
 	</property> 
--->
+	
 	<property>
 		<name>yarn.nodemanager.linux-container-executor.nonsecure-mode.limit-users</name>
 		<value>true</value>
@@ -473,13 +474,15 @@ echo "#################################### install Hadoop Yarn #################
 		<name>yarn.nodemanager.linux-container-executor.nonsecure-mode.local-user</name>
 		<value>tanle</value>
 	</property> 
+-->
 
 </configuration>' > $hadoopVer/etc/hadoop/yarn-site.xml"
+
 #yarn.nodemanager.linux-container-executor.group=#configured value of yarn.nodemanager.linux-container-executor.group
 #allowed.system.users=##comma separated list of system users who CAN run applications
 			ssh tanle@$1 "sudo sed -i -e 's/yarn.nodemanager.linux-container-executor.group=#/yarn.nodemanager.linux-container-executor.group=tanle#/g' $hadoopVer/etc/hadoop/container-executor.cfg"
 
-			ssh tanle@$1 "sudo chmod -R 777 /sys/fs/cgroup; sudo mkdir /sys/fs/cgroup/cpu/yarn; sudo chmod -R 777 /sys/fs/cgroup/cpu/yarn"	
+#			ssh tanle@$1 "sudo chmod -R 777 /sys/fs/cgroup; sudo mkdir /sys/fs/cgroup/cpu/yarn; sudo chmod -R 777 /sys/fs/cgroup/cpu/yarn"	
 
 # setup scheduler https://hadoop.apache.org/docs/r2.7.1/hadoop-yarn/hadoop-yarn-site/FairScheduler.html
 			ssh tanle@$1 "echo '<?xml version=\"1.0\"?>
@@ -487,40 +490,59 @@ echo "#################################### install Hadoop Yarn #################
   <queue name=\"sls_queue_1\">
     <minResources>1024 mb, 1 vcores</minResources>
     <schedulingPolicy>fair</schedulingPolicy>
-    <weight>0.5</weight>
+    <weight>1</weight>
   </queue>
   <queue name=\"sls_queue_2\">
     <minResources>1024 mb, 1 vcores</minResources>
     <schedulingPolicy>fair</schedulingPolicy>
-    <weight>0.5</weight>
+    <weight>1</weight>
   </queue>
+  <queue name=\"sls_queue_3\">
+    <minResources>1024 mb, 1 vcores</minResources>
+    <schedulingPolicy>fair</schedulingPolicy>
+    <weight>1</weight>
+  </queue>
+  <queue name=\"sls_queue_4\">
+    <minResources>1024 mb, 1 vcores</minResources>
+    <schedulingPolicy>fair</schedulingPolicy>
+    <weight>1</weight>
+  </queue>	
+  <queue name=\"sls_queue_5\">
+    <minResources>1024 mb, 1 vcores</minResources>
+    <schedulingPolicy>fair</schedulingPolicy>
+    <weight>1</weight>
+  </queue>	
+  <queue name=\"sls_queue_6\">
+    <minResources>1024 mb, 1 vcores</minResources>
+    <schedulingPolicy>fair</schedulingPolicy>
+    <weight>1</weight>
+  </queue>	
 </allocations>' > $fairSchedulerFile"
 
 			ssh tanle@$1 "echo '<?xml version=\"1.0\"?>
 <configuration>
-<!--
   <property>
     <name>yarn.scheduler.capacity.resource-calculator</name>
     <value>org.apache.hadoop.yarn.util.resource.DefaultResourceCalculator</value>
     <description>Default allocator</description>
   </property>
- -->
+<!--
   <property>
     <name>yarn.scheduler.capacity.resource-calculator</name>
     <value>org.apache.hadoop.yarn.util.resource.DominantResourceCalculator</value>
     <description>DRF resource allocator</description>
   </property>
-
+-->
   <property>
     <name>yarn.scheduler.capacity.root.queues</name>
-    <value>sls_queue_1,sls_queue_2,sls_queue_3</value>
+    <value>sls_queue_1,sls_queue_2</value>
     <description>The queues at the this level (root is the root queue).
     </description>
   </property>
   
   <property>
     <name>yarn.scheduler.capacity.root.sls_queue_1.capacity</name>
-    <value>25</value>
+    <value>50</value>
   </property>
 
   <property>
@@ -530,23 +552,14 @@ echo "#################################### install Hadoop Yarn #################
   
   <property>
     <name>yarn.scheduler.capacity.root.sls_queue_2.capacity</name>
-    <value>25</value>
+    <value>50</value>
   </property>
 
   <property>
     <name>yarn.scheduler.capacity.root.sls_queue_2.maximum-capacity</name>
     <value>100</value>
   </property>
-  
-  <property>
-    <name>yarn.scheduler.capacity.root.sls_queue_3.capacity</name>
-    <value>50</value>
-  </property>
 
-  <property>
-    <name>yarn.scheduler.capacity.root.sls_queue_3.maximum-capacity</name>
-    <value>100</value>
-  </property>
 </configuration>' > $capacitySchedulerFile"
 		
 			# etc/hadoop/mapred-site.xml
@@ -606,7 +619,7 @@ echo "#################################### install Hadoop Yarn #################
 			for svr in $slaveNodes; do
 				ssh tanle@$1 "echo $svr >> $hadoopVer/etc/hadoop/slaves"
 			done	
-
+			
 }
 		for server in $serverList; do
 			installHadoopFunc $server &
@@ -615,6 +628,7 @@ echo "#################################### install Hadoop Yarn #################
 		wait				
 	fi
 fi
+
 
 
 if $restartHadoop
