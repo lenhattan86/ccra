@@ -9,6 +9,7 @@
 isCloudLab=true
 isAmazonEC=false
 username="tanle"
+groupname="yarnrm-PG0"
 
 java_home='/usr/lib/jvm/java-8-openjdk-amd64'
 
@@ -54,7 +55,7 @@ numNetworkBuffers=4096 # default 2048
 
 
 REBOOT=false
-isOfficial=false
+isOfficial=true
 isSingleNodeCluster=false;
 
 isUploadTestCase=false
@@ -283,12 +284,12 @@ echo "#################################### install Hadoop Yarn #################
 			if $isDownload
 			then		
 				echo downloading $hadoopVer		
-				ssh $username@$1 "rm -rf $hadoopTgz; wget $hadoopLink"
+				ssh $username@$1 "sudo rm -rf $hadoopTgz; wget $hadoopLink"
 			fi
 			if $isExtract
 			then 
 				echo extract $hadoopTgz
-				ssh $username@$1 "rm -rf $hadoopVer; tar -xvzf $hadoopTgz >> log.txt"	
+				ssh $username@$1 "sudo rm -rf $hadoopVer; tar -xvzf $hadoopTgz >> log.txt"	
 			fi
 			# add JAVA_HOME
 			echo Configure Hadoop at $1
@@ -444,8 +445,6 @@ echo "#################################### install Hadoop Yarn #################
 	
 <!-- CGroups -->
 
-
-<!--
 	<property>
 		 <name>yarn.nodemanager.container-executor.class</name>
 		 <value>org.apache.hadoop.yarn.server.nodemanager.LinuxContainerExecutor</value>
@@ -457,12 +456,12 @@ echo "#################################### install Hadoop Yarn #################
 
 	<property>
 		<name>yarn.nodemanager.linux-container-executor.group</name>
-		<value>root</value>
+		<value>$groupname</value>
 	</property> 
 
 	<property>
 		<name>yarn.nodemanager.linux-container-executor.cgroups.mount</name>
-		<value>false</value>
+		<value>true</value>
 	</property>
 	<property>
 		<name>yarn.nodemanager.linux-container-executor.cgroups.mount-path</name>
@@ -472,7 +471,8 @@ echo "#################################### install Hadoop Yarn #################
 		<name>yarn.nodemanager.linux-container-executor.cgroups.hierarchy</name>
 		<value>/hadoop-yarn</value> 		
 	</property>
-	
+
+<!--	
 	
 	<property>
 		<name>yarn.nodemanager.linux-container-executor.nonsecure-mode.limit-users</name>
@@ -480,7 +480,7 @@ echo "#################################### install Hadoop Yarn #################
 	</property> 	
 	<property>
 		<name>yarn.nodemanager.linux-container-executor.nonsecure-mode.local-user</name>
-		<value>$username</value>
+		<value>$groupname</value>
 	</property> 
 -->
 
@@ -488,9 +488,9 @@ echo "#################################### install Hadoop Yarn #################
 
 #yarn.nodemanager.linux-container-executor.group=#configured value of yarn.nodemanager.linux-container-executor.group
 #allowed.system.users=##comma separated list of system users who CAN run applications
-			ssh $username@$1 "sudo sed -i -e 's/yarn.nodemanager.linux-container-executor.group=#/yarn.nodemanager.linux-container-executor.group=root#/g' $hadoopVer/etc/hadoop/container-executor.cfg"
-
-			ssh $username@$1 "sudo mkdir $cgroupYarn"
+			ssh $username@$1 "sudo sed -i -e 's/yarn.nodemanager.linux-container-executor.group=#/yarn.nodemanager.linux-container-executor.group=$groupname#/g' $hadoopVer/etc/hadoop/container-executor.cfg"
+			ssh $username@$1 "sudo chown root:root $hadoopVer/bin/container-executor; sudo chmod 6050 $hadoopVer/bin/container-executor"
+#			ssh $username@$1 "sudo mkdir $cgroupYarn"
 #			ssh $username@$1 "sudo chmod -R 777 $cgroupYarn"			
 #			ssh $username@$1 "cgdelete cpu:yarn"
 
@@ -615,7 +615,7 @@ echo "#################################### install Hadoop Yarn #################
 			# monitoring script in etc/hadoop/yarn-site.xml
 
 			# slaves etc/hadoop/slaves
-			ssh $username@$1 "rm -rf $hadoopVer/etc/hadoop/slaves"
+			ssh $username@$1 "sudo rm -rf $hadoopVer/etc/hadoop/slaves"
 			for svr in $slaveNodes; do
 				ssh $username@$1 "echo $svr >> $hadoopVer/etc/hadoop/slaves"
 			done	
@@ -666,11 +666,11 @@ then
 	installFlinkFunc () {
 		if $isDownload
 		then
-		ssh $1 "rm -rf $flinkTgz; wget $flinkDownloadLink"
+		ssh $1 "sudo rm -rf $flinkTgz; wget $flinkDownloadLink"
 		fi
 		if $isExtract
 		then
-			ssh $1 "rm -rf $flinkVer; tar -xvzf $flinkTgz"
+			ssh $1 "sudo rm -rf $flinkVer; tar -xvzf $flinkTgz"
 		fi
 		
 		#Replace localhost with resourcemanager in conf/flink-conf.yaml (jobmanager.rpc.address)
@@ -681,7 +681,7 @@ then
 		#sed -i -e 's/taskmanager.numberOfTaskSlots: 1/taskmanager.numberOfTaskSlots: $yarnVcores/g' $flinkVer/conf/flink-conf.yaml;
 
 		#Add hostnames of all worker nodes to the slaves file flinkVer/conf/slaves"
-		ssh $1 "rm -rf $flinkVer/conf/slaves"
+		ssh $1 "sudo rm -rf $flinkVer/conf/slaves"
 		for slave in $slaveNodes; do
 			ssh $1 "echo $slave >> $flinkVer/conf/slaves"
 		done	
