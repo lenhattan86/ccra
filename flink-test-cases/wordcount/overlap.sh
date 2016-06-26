@@ -1,8 +1,8 @@
 # Start timming
 #flink="../../build-target"
 flink="$HOME/flink-1.0.3"
-rm -rf overlap*.csv
-numOfOverlaps=4
+rm -rf *.csv
+numOfOverlaps=8
 isCopy=false
 
 yarnAppLogs="/dev/shm/yarn-logs"
@@ -34,12 +34,18 @@ runApp () {
 	#$flink/bin/flink run -p 28 $flink/examples/streaming/WordCount.jar --input hdfs:///wordcount/overlap$i.txt
 	#$HOME/flink-1.0.3/bin/flink run -m yarn-cluster -yn 63 -yq -yst $HOME/flink-1.0.3/examples/streaming/WordCount.jar --input hdfs:///wordcount/overlap$1.txt
 	#$HOME/flink-1.0.3/bin/flink run -m yarn-cluster -yn 127 -yq -yst -yjm 1024 -ytm 1024 $HOME/flink-1.0.3/examples/streaming/WordCount.jar --input hdfs:///wordcount/app02.txt
-	$HOME/flink-1.0.3/bin/flink run -m yarn-cluster -yn 63 -yq -yst -yjm 1024 -ytm 1024 -yqu root.sls_queue_$1 $HOME/flink-1.0.3/examples/streaming/WordCount.jar --input hdfs:///wordcount/app02.txt
+	if [ `expr $1 % 2` -eq 0 ]
+	then
+	    queueName="root.sls_queue_4"
+	else
+	    queueName="root.sls_queue_3"	 	
+	fi
+	$HOME/flink-1.0.3/bin/flink run -m yarn-cluster -yn 63 -yq -yst -yjm 1024 -ytm 1024 -yqu $queueName $HOME/flink-1.0.3/examples/streaming/WordCount.jar --input hdfs:///wordcount/app02.txt
 	# Stop timming
 	date --rfc-3339=seconds >> overlap$2.csv
 }
 
-for numLaps in `seq 1 $numOfOverlaps`;
+for numLaps in `seq 2 2 $numOfOverlaps`;
 do
 	for count in `seq 1 5`;
 	do
@@ -50,7 +56,7 @@ do
 			runApp 	$i $numLaps &
 		done	
 		wait
-		sleep 30		
+		#sleep 30		
 	done
 	for server in $serverList; do		
 		ssh tanle@$server "sudo rm -rf $yarnAppLogs/*" &
