@@ -10,6 +10,8 @@ isCloudLab=true
 isAmazonEC=false
 username="tanle"
 groupname="yarnrm-PG0"
+#groupname="root"
+#groupname="yarn"
 
 java_home='/usr/lib/jvm/java-8-openjdk-amd64'
 
@@ -67,6 +69,7 @@ isExtract=true
 isUploadKey=false
 isGenerateKey=false
 isPasswordlessSSH=false
+isAddToGroup=false
 
 isInstallBasePackages=false
 
@@ -188,6 +191,19 @@ echo ################################# passwordless SSH ########################
 #		ssh $username@$server "echo password less from localhost to $server"
 	done	
 fi
+
+if $isAddToGroup
+then
+	for server in $serverList; do
+		ssh $username@$server "sudo addgroup $groupname;sudo adduser $username $groupname;	sudo adduser root $groupname" &
+		#ssh $username@$server "sudo adduser root $groupname" &
+		
+		#ssh $username@$server "sudo adduser $username sudo"
+		#sudo adduser --ingroup $groupname $username;
+	done
+	wait
+fi
+
 if $isPasswordlessSSH
 then
 	passwordlessSSH () { echo $1 to $2;	ssh $username@$1 "ssh $2 'echo test passwordless SSH'" ;}
@@ -442,42 +458,54 @@ echo "#################################### install Hadoop Yarn #################
     <name>yarn.nodemanager.log-dirs</name>
     <value>$yarnAppLogs</value>
   </property>
+
+	<property>
+		 <name>yarn.nodemanager.resource.percentage-physical-cpu-limit</name>
+		 <value>100</value>
+	</property>
+
+	<property>
+		 <name>yarn.nodemanager.linux-container-executor.cgroups.strict-resource-usage</name>
+		 <value>true</value>
+		<description>default is false that does not allows to use more than CPU</description>
+	</property>
 	
 <!-- CGroups -->
 
 	<property>
-		 <name>yarn.nodemanager.container-executor.class</name>
-		 <value>org.apache.hadoop.yarn.server.nodemanager.LinuxContainerExecutor</value>
+	    <name>yarn.nodemanager.container-executor.class</name>
+	    <value>org.apache.hadoop.yarn.server.nodemanager.LinuxContainerExecutor</value>
 	</property>
 	<property>
-		<name>yarn.nodemanager.linux-container-executor.resources-handler.class</name>
-		<value>org.apache.hadoop.yarn.server.nodemanager.util.CgroupsLCEResourcesHandler</value>
+	    <name>yarn.nodemanager.linux-container-executor.resources-handler.class</name>
+	    <value>org.apache.hadoop.yarn.server.nodemanager.util.CgroupsLCEResourcesHandler</value>
 	</property>
 
 	<property>
-		<name>yarn.nodemanager.linux-container-executor.group</name>
-		<value>$groupname</value>
+	    <name>yarn.nodemanager.linux-container-executor.group</name>
+	    <value>$groupname</value>
 	</property> 
 
 	<property>
-		<name>yarn.nodemanager.linux-container-executor.cgroups.mount</name>
-		<value>true</value>
+	    <name>yarn.nodemanager.linux-container-executor.cgroups.mount</name>
+	    <value>true</value>
 	</property>
 	<property>
-		<name>yarn.nodemanager.linux-container-executor.cgroups.mount-path</name>
-		<value>/sys/fs/cgroup</value>
+	    <name>yarn.nodemanager.linux-container-executor.cgroups.mount-path</name>
+	    <value>/sys/fs/cgroup</value>
 	</property>
 	<property>
-		<name>yarn.nodemanager.linux-container-executor.cgroups.hierarchy</name>
-		<value>/hadoop-yarn</value> 		
+	    <name>yarn.nodemanager.linux-container-executor.cgroups.hierarchy</name>
+	    <value>/hadoop-yarn</value> 		
 	</property>
 
-<!--	
+<!--		
 	
 	<property>
 		<name>yarn.nodemanager.linux-container-executor.nonsecure-mode.limit-users</name>
-		<value>true</value>
+		<value>false</value>
 	</property> 	
+
 	<property>
 		<name>yarn.nodemanager.linux-container-executor.nonsecure-mode.local-user</name>
 		<value>$groupname</value>
@@ -489,7 +517,9 @@ echo "#################################### install Hadoop Yarn #################
 #yarn.nodemanager.linux-container-executor.group=#configured value of yarn.nodemanager.linux-container-executor.group
 #allowed.system.users=##comma separated list of system users who CAN run applications
 			ssh $username@$1 "sudo sed -i -e 's/yarn.nodemanager.linux-container-executor.group=#/yarn.nodemanager.linux-container-executor.group=$groupname#/g' $hadoopVer/etc/hadoop/container-executor.cfg"
-			ssh $username@$1 "sudo chown root:root $hadoopVer/bin/container-executor; sudo chmod 6050 $hadoopVer/bin/container-executor"
+			ssh $username@$1 "sudo chown root:$groupname $hadoopVer/etc/hadoop/container-executor.cfg"
+			ssh $username@$1 "sudo chown root:$groupname $hadoopVer/bin/container-executor"
+			ssh $username@$1 "sudo chmod 6050 $hadoopVer/bin/container-executor"
 #			ssh $username@$1 "sudo mkdir $cgroupYarn"
 #			ssh $username@$1 "sudo chmod -R 777 $cgroupYarn"			
 #			ssh $username@$1 "cgdelete cpu:yarn"
@@ -619,6 +649,7 @@ echo "#################################### install Hadoop Yarn #################
 			for svr in $slaveNodes; do
 				ssh $username@$1 "echo $svr >> $hadoopVer/etc/hadoop/slaves"
 			done	
+			#ssh $username@$1 "sudo chown -R $username:$groupname $hadoopVer"
 			
 }
 		for server in $serverList; do
