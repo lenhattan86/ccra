@@ -42,7 +42,7 @@ else
 	scheduler="org.apache.hadoop.yarn.server.resourcemanager.scheduler.fair.FairScheduler" 
 fi
 
-yarnVcores=32
+yarnVcores=40
 hdfsDir="/dev/hdfs"
 #yarnAppLogs="/dev/yarn-logs"
 yarnAppLogs="/dev/shm/yarn-logs"
@@ -98,7 +98,7 @@ then
 	isFormatHDFS=true
 fi
 
-isInstallFlink=false
+isInstallFlink=true
 isModifyFlink=false
 startFlinkYarn=true
 shudownFlink=false
@@ -276,6 +276,52 @@ then
 	done
 	wait	
 fi
+
+
+#################################### Apache Flink ################################
+if $shudownFlink
+then
+	ssh $masterNode "$flinkVer/bin/stop-cluster.sh"
+	#ssh $masterNode "$hadoopVer/bin/yarn application -kill appplication_id"
+fi
+
+if $isInstallFlink 
+then 	
+	installFlinkFunc () {
+		if $isDownload
+		then
+		ssh $1 "sudo rm -rf $flinkTgz; wget $flinkDownloadLink"
+		fi
+		if $isExtract
+		then
+			ssh $1 "sudo rm -rf $flinkVer; tar -xvzf $flinkTgz"
+		fi
+		
+		#Replace localhost with resourcemanager in conf/flink-conf.yaml (jobmanager.rpc.address)
+		ssh $1 "sed -i -e 's/jobmanager.rpc.address: localhost/jobmanager.rpc.address: nm/g' $flinkVer/conf/flink-conf.yaml;
+		sed -i -e 's/jobmanager.heap.mb: 256/taskmanager.heap.mb: 1024/g' $flinkVer/conf/flink-conf.yaml;		
+		sed -i -e 's/taskmanager.heap.mb: 512/taskmanager.heap.mb: $yarnMaxMem/g' $flinkVer/conf/flink-conf.yaml;
+		sed -i -e 's/# taskmanager.network.numberOfBuffers: 2048/taskmanager.network.numberOfBuffers: $numNetworkBuffers/g' $flinkVer/conf/flink-conf.yaml"
+		#sed -i -e 's/taskmanager.numberOfTaskSlots: 1/taskmanager.numberOfTaskSlots: $yarnVcores/g' $flinkVer/conf/flink-conf.yaml;
+
+		#Add hostnames of all worker nodes to the slaves file flinkVer/conf/slaves"
+		ssh $1 "sudo rm -rf $flinkVer/conf/slaves"
+		for slave in $slaveNodes; do
+			ssh $1 "echo $slave >> $flinkVer/conf/slaves"
+		done	
+	}
+	for server in $serverList; do
+		installFlinkFunc $server &
+	done
+	wait
+fi
+
+
+if $startFlinkStandalone	
+then
+	ssh $masterNode "$flinkVer/bin/stop-cluster.sh"
+	ssh $masterNode "$flinkVer/bin/start-cluster.sh"
+fi	
 
 
 if $isShutDownHadoop
@@ -472,6 +518,10 @@ echo "#################################### install Hadoop Yarn #################
 	
 <!-- CGroups -->
 
+
+
+<!--	
+
 	<property>
 	    <name>yarn.nodemanager.container-executor.class</name>
 	    <value>org.apache.hadoop.yarn.server.nodemanager.LinuxContainerExecutor</value>
@@ -497,9 +547,7 @@ echo "#################################### install Hadoop Yarn #################
 	<property>
 	    <name>yarn.nodemanager.linux-container-executor.cgroups.hierarchy</name>
 	    <value>/hadoop-yarn</value> 		
-	</property>
-
-<!--		
+	</property>	
 	
 	<property>
 		<name>yarn.nodemanager.linux-container-executor.nonsecure-mode.limit-users</name>
@@ -685,50 +733,7 @@ then
 fi
 
 
-#################################### Apache Flink ################################
-if $shudownFlink
-then
-	ssh $masterNode "$flinkVer/bin/stop-cluster.sh"
-	#ssh $masterNode "$hadoopVer/bin/yarn application -kill appplication_id"
-fi
 
-if $isInstallFlink 
-then 	
-	installFlinkFunc () {
-		if $isDownload
-		then
-		ssh $1 "sudo rm -rf $flinkTgz; wget $flinkDownloadLink"
-		fi
-		if $isExtract
-		then
-			ssh $1 "sudo rm -rf $flinkVer; tar -xvzf $flinkTgz"
-		fi
-		
-		#Replace localhost with resourcemanager in conf/flink-conf.yaml (jobmanager.rpc.address)
-		ssh $1 "sed -i -e 's/jobmanager.rpc.address: localhost/jobmanager.rpc.address: nm/g' $flinkVer/conf/flink-conf.yaml;
-		sed -i -e 's/jobmanager.heap.mb: 256/taskmanager.heap.mb: 1024/g' $flinkVer/conf/flink-conf.yaml;		
-		sed -i -e 's/taskmanager.heap.mb: 512/taskmanager.heap.mb: $yarnMaxMem/g' $flinkVer/conf/flink-conf.yaml;
-		sed -i -e 's/# taskmanager.network.numberOfBuffers: 2048/taskmanager.network.numberOfBuffers: $numNetworkBuffers/g' $flinkVer/conf/flink-conf.yaml"
-		#sed -i -e 's/taskmanager.numberOfTaskSlots: 1/taskmanager.numberOfTaskSlots: $yarnVcores/g' $flinkVer/conf/flink-conf.yaml;
-
-		#Add hostnames of all worker nodes to the slaves file flinkVer/conf/slaves"
-		ssh $1 "sudo rm -rf $flinkVer/conf/slaves"
-		for slave in $slaveNodes; do
-			ssh $1 "echo $slave >> $flinkVer/conf/slaves"
-		done	
-	}
-	for server in $serverList; do
-		installFlinkFunc $server &
-	done
-	wait
-fi
-
-
-if $startFlinkStandalone	
-then
-	ssh $masterNode "$flinkVer/bin/stop-cluster.sh"
-	ssh $masterNode "$flinkVer/bin/start-cluster.sh"
-fi	
 if $startFlinkYarn
 then
 	echo ############################ start Yars session for Flink#########################
