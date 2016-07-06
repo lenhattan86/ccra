@@ -59,9 +59,9 @@ public class IterateExample {
 
 	private static final int BOUND = 1000;
 	private static final boolean isDumpCompuation = true;
-	private static final double counterBound = 30000; // 10000-> 2 mins,
-//	private static final double counterBound = 3000; // 10000-> 2 mins,
-	private static final double nLoop = 2*Math.pow(10, 6); // (10, 7) ~ 100% cpu
+	private static final double counterBound = 30000; // 10000 (w. 79 cores)-> 2 mins, 
+//	private static final double nLoop = 2*Math.pow(10, 6); // (10, 7) ~ 100% cpu
+	private static final double nLoop = 2*Math.pow(10, 7); // (10, 7) ~ 100% cpu
 	private static final String timeStampFile = "cpubound.csv";	
 
 	// *************************************************************************
@@ -73,18 +73,18 @@ public class IterateExample {
 
 		// Checking input parameters
 		final ParameterTool params = ParameterTool.fromArgs(args);
-		System.out.println("Usage: IterateExample --log <path>");
 		if (params.has("log"))
 			logFile = params.get("log");
 		else {
 			System.out.println("Usage: IterateExample --log <path>");
+			System.out.println(Utils.currentTimestamp());
 			return;
 		}
 		
 		try (FileWriter fw = new FileWriter(logFile, true);
 			    BufferedWriter bw = new BufferedWriter(fw);
 			    PrintWriter out = new PrintWriter(bw)) {
-			out.println(currentTimestamp());
+			out.println(Utils.currentTimestamp());
 			out.close();
 		}
 
@@ -133,8 +133,6 @@ public class IterateExample {
 
 		// execute the program
 		env.execute("Streaming Iteration Example");
-
-		System.out.print(currentTimestamp());
 	}
 
 	// *************************************************************************
@@ -225,7 +223,7 @@ public class IterateExample {
 				throws Exception {
 			// We can add some DUMP computation to increase the CPU usage
 			if (isDumpCompuation) {
-				runDumpCompuation();
+				Utils.runDumpCompuation(nLoop);
 			}
 			return new Tuple5<>(value.f0, value.f1, value.f3, value.f2
 					+ value.f3, ++value.f4);
@@ -265,21 +263,6 @@ public class IterateExample {
 				Tuple5<Integer, Integer, Integer, Integer, Integer> value)
 				throws Exception {
 			return new Tuple2<>(new Tuple2<>(value.f0, value.f1), value.f4);
-		}
-	}
-
-	public static String currentTimestamp() {
-		Calendar c = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
-		// DateFormat f = DateFormat.getDateTimeInstance(DateFormat.MEDIUM,
-		// DateFormat.MEDIUM);
-		SimpleDateFormat f = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-		return f.format(c.getTime());
-	}
-	
-	public static void runDumpCompuation() {
-		double sum = 0;
-		for (double i = 0; i < nLoop; i++) {
-			sum = sum + Math.pow(i, 10);
 		}
 	}
 }

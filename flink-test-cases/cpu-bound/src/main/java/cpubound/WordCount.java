@@ -19,6 +19,7 @@ package cpubound;
 
 import java.io.PrintWriter;
 import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.TimeZone;
 
@@ -48,8 +49,10 @@ import org.apache.flink.util.Collector;
  * <li>use tuple data types,
  * <li>write and use user-defined functions.
  * </ul>
- * 
+ *  
  */
+
+// CPU bound + Disk IO bound
 public class WordCount {
 	private static final int BOUND = 1000;
 	private static final boolean isDumpCompuation = true;
@@ -64,7 +67,7 @@ public class WordCount {
 
 	public static void main(String[] args) throws Exception {
 		try (PrintWriter out = new PrintWriter("filename.txt")) {
-			out.println(currentTimestamp());
+			out.println(Utils.currentTimestamp());
 		}
 
 		// Checking input parameters
@@ -136,25 +139,11 @@ public class WordCount {
 			for (String token : tokens) {
 				if (token.length() > 0) {
 					if (isDumpCompuation) 
-						runDumpCompuation();
+						Utils.runDumpCompuation(nLoop);
 					// Add dump computation
 					out.collect(new Tuple2<String, Integer>(token, 1));
 				}
 			}
-		}
-	}
-
-	public static String currentTimestamp() {
-		Calendar c = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
-		DateFormat f = DateFormat.getDateTimeInstance(DateFormat.MEDIUM,
-				DateFormat.MEDIUM);
-		return f.format(c.getTime());
-	}
-	
-	public static void runDumpCompuation() {
-		double sum = 0;
-		for (double i = 0; i < nLoop; i++) {
-			sum = sum + Math.pow(i, 10);
 		}
 	}
 

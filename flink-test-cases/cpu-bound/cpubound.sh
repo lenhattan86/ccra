@@ -3,16 +3,18 @@ yarnAppLogs="/dev/shm/yarn-logs"
 serverList="nm cp-1 cp-2 cp-3 cp-4 cp-5 cp-6 cp-7 cp-8"
 flink="$HOME/flink-1.0.3"
 
-numberOfTasks=79
-className="cpubound.IterateExample"
-folder="cpubound-log"
-timestampFile="$folder/cpubound"
 
+className="cpubound.IterateExample"
+
+numberOfTasks=79
+numOfOverlaps=4
+numOfExp=10
+folder="cpubound-log-79"
+timestampFile="$folder/cpubound"
 rm -rf $folder
 mkdir $folder
 
-numOfOverlaps=4
-numOfExp=5
+
 isCopy=false
 
 for server in $serverList; do		
@@ -63,3 +65,30 @@ do
 	wait
 done
 
+numberOfTasks=39
+numOfOverlaps=7
+numOfExp=10
+folder="cpubound-log-39"
+timestampFile="$folder/cpubound"
+rm -rf $folder
+mkdir $folder
+
+for numLaps in `seq 1 3 $numOfOverlaps`;
+do
+	for count in `seq 1 $numOfExp`;
+	do
+		
+		for i in `seq 1 $numLaps`;
+		do		
+			# run the Flink app
+			runAppOnTheSameQueue	$i $numLaps &
+			#runAppOnDifferentQueues	$i $numLaps &
+		done	
+		wait
+		sleep 15		
+	done
+	for server in $serverList; do		
+		ssh tanle@$server "sudo rm -rf $yarnAppLogs/*" &
+	done
+	wait
+done
