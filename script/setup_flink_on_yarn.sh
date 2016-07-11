@@ -80,14 +80,14 @@ then
 	startGanglia=true
 fi
 
-isInstallHadoop=true
+isInstallHadoop=false
 isInitPath=false
 if $isDownload
 then
 	isInitPath=true
 fi
 isModifyHadoop=false
-isShutDownHadoop=false
+isShutDownHadoop=true
 restartHadoop=false
 isFormatHDFS=false
 
@@ -98,12 +98,17 @@ then
 	isFormatHDFS=true
 fi
 
-isInstallFlink=true
+isInstallFlink=false
 isModifyFlink=false
 startFlinkYarn=true
 shudownFlink=false
-
 startFlinkStandalone=false # not necessary
+
+isInstallSpark=false
+isModifySpark=false
+startSparkYarn=false
+shudownSpark=false
+startSparkStandalone=false # not necessary
 
 isRun=false
 
@@ -248,8 +253,8 @@ echo ################################# install Ganglia #########################
 	sudo sed -i -e 's/data_source \"my cluster\" localhost/data_source \"sbu flink\" 1 localhost/g' /etc/ganglia/gmetad.conf;
 	sudo sed -i -e 's/name = \"unspecified\"/name = \"sbu flink\"/g' /etc/ganglia/gmond.conf ;
 	sudo sed -i -e 's/mcast_join = 239.2.11.71/#mcast_join = 239.2.11.71/g' /etc/ganglia/gmond.conf;
-	sudo sed -i -e 's/bind = 239.2.11.71/#bind = 239.2.11.71/g' /etc/ganglia/gmond.conf;
-	sudo sed -i -e 's/udp_send_channel {/udp_send_channel { host=nm/g' /etc/ganglia/gmond.conf"
+	sudo sed -i -e 's/bind = 239.2.11.71/#bind = 239.2.11.71/g' /etc/ganglia/gmond.conf"
+	ssh $username@$masterNode "sudo sed -i -e 's/udp_send_channel {/udp_send_channel { host=nm/g' /etc/ganglia/gmond.conf"
 	
 	installGangliaFunc(){
 		ssh $username@$1 "yes Y | sudo apt-get purge ganglia-monitor;
@@ -322,6 +327,61 @@ then
 	ssh $masterNode "$flinkVer/bin/stop-cluster.sh"
 	ssh $masterNode "$flinkVer/bin/start-cluster.sh"
 fi	
+
+#################################### Spark ################################
+if $shudownSpark
+then
+	ssh $masterNode "$flinkVer/bin/stop-cluster.sh"
+	#ssh $masterNode "$hadoopVer/bin/yarn application -kill appplication_id"
+fi
+
+sparkTgz="spark-1.6.2-bin-without-hadoop.tgz"
+sparkTgzFolder="spark-1.6.2-bin-without-hadoop"
+sparkDownloadLink="http://mirror.metrocast.net/apache/spark/spark-1.6.2/spark-1.6.2-bin-without-hadoop.tgz"
+sparkVer="spark-1.6.2"
+
+if $isInstallSpark 
+then 	
+	installSparkFunc () {
+		if $isDownload
+		then
+			ssh $1 "sudo rm -rf $sparkTgz; wget $sparkDownloadLink"
+		fi
+		if $isExtract
+		then
+			ssh $1 "sudo rm -rf $sparkVer; tar -xvzf $sparkTgz; mv $sparkTgzFolder $sparkVer"
+			ssh $1 "echo 'export SPARK_DIST_CLASSPATH=~/$hadoopVer/bin/hadoop
+SPARK_JAVA_OPTS=-Dspark.driver.port=53411
+HADOOP_CONF_DIR=$hadoopVer/conf
+SPARK_MASTER_IP=nm' > $sparkVer/conf/spark-env.sh"
+			ssh $1 "sudo chmod 755 $sparkVer/conf/spark-env.sh"
+
+			ssh $1 "echo 'spark.master            spark://nm:7077
+spark.serializer        org.apache.spark.serializer.KryoSerializer' > $sparkVer/conf/spark-defaults.conf"
+
+			#Create /opt/spark-ver/conf/slaves add all the hostnames of spark slave nodes to it.
+			ssh $1 "sudo rm -rf $sparkVer/conf/slaves"
+			for slave in $slaveNodes; do
+				ssh $1 "echo $slave >> $sparkVer/conf/slaves"
+			done
+		fi
+	}
+	for server in $serverList; do
+		installSparkFunc $server &
+	done
+	wait
+fi
+
+
+if $startFlinkStandalone	
+then
+	ssh $masterNode "$flinkVer/bin/stop-cluster.sh"
+	ssh $masterNode "$flinkVer/bin/start-cluster.sh"
+fi	
+
+
+
+##################### Hadoop############################
 
 
 if $isShutDownHadoop
@@ -575,6 +635,7 @@ echo "#################################### install Hadoop Yarn #################
 # setup scheduler https://hadoop.apache.org/docs/r2.7.1/hadoop-yarn/hadoop-yarn-site/FairScheduler.html
 			ssh $username@$1 "echo '<?xml version=\"1.0\"?>
 <allocations>
+
   <queue name=\"sls_queue_1\">
     <minResources>1024 mb, 1 vcores</minResources>
     <schedulingPolicy>drf</schedulingPolicy>
@@ -585,16 +646,27 @@ echo "#################################### install Hadoop Yarn #################
     <schedulingPolicy>drf</schedulingPolicy>
     <weight>1</weight>
   </queue>
-  <queue name=\"sls_queue_3\">
-    <minResources>1024 mb, 1 vcores</minResources>
-    <schedulingPolicy>fair</schedulingPolicy>
-    <weight>1</weight>
-  </queue>
-  <queue name=\"sls_queue_4\">
-    <minResources>1024 mb, 1 vcores</minResources>
-    <schedulingPolicy>fair</schedulingPolicy>
-    <weight>1</weight>
-  </queue>	
+<!--
+
+<queue name=\"sls_queue_3\">
+<minResources>1024 mb, 1 vcores</minResources>
+<schedulingPolicy>fair</schedulingPolicy>
+<weight>1</weight>
+</queue>
+
+<queue name=\"sls_queue_4\">
+<minResources>1024 mb, 1 vcores</minResources>
+<schedulingPolicy>fair</schedulingPolicy>
+<weight>1</weight>
+</queue>
+	
+-->
+
+<defaultQueueSchedulingPolicy>drf</defaultQueueSchedulingPolicy>
+<defaultMinSharePreemptionTimeout>10</defaultMinSharePreemptionTimeout>
+<defaultFairSharePreemptionTimeout>10</defaultFairSharePreemptionTimeout>
+<defaultFairSharePreemptionThreshold>1.0</defaultFairSharePreemptionThreshold>
+
 </allocations>' > $fairSchedulerFile"
 
 			ssh $username@$1 "echo '<?xml version=\"1.0\"?>
