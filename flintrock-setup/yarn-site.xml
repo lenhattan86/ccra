@@ -1,0 +1,93 @@
+<?xml version="1.0"?>
+<!--
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License. See accompanying LICENSE file.
+-->
+<configuration>
+
+<!-- Site specific YARN configuration properties -->
+
+  <property>
+    <name>yarn.resourcemanager.hostname</name>
+    <value>ec2-52-37-224-110.us-west-2.compute.amazonaws.com</value>
+  </property>
+
+  <!-- TODO: Should we use multiple local-dirs -->
+  <property>
+    <name>yarn.nodemanager.local-dirs</name>
+    <value>/media/ephemeral0/yarn-local</value>
+  </property>
+
+  <property>
+    <name>yarn.nodemanager.resource.cpu-vcores</name>
+    <value>1</value>
+  </property>
+
+  <property>
+    <name>yarn.nodemanager.log-dirs</name>
+    <value>/media/ephemeral0/yarn-logs</value>
+  </property>
+
+  <property>
+    <name>yarn.log-aggregation-enable</name>
+    <value>true</value>
+  </property>
+
+ <property>
+     <name>yarn.nodemanager.disk-health-checker.min-healthy-disks</name>
+     <value>0.0</value>
+  </property>
+  <property>
+     <name>yarn.nodemanager.disk-health-checker.max-disk-utilization-per-disk-percentage</name>
+     <value>100.0</value>
+  </property> 
+
+  <property>
+    <name>yarn.resourcemanager.scheduler.class</name>
+    <value>org.apache.hadoop.yarn.server.resourcemanager.scheduler.fair.FairScheduler</value>
+  </property>
+
+  <property>
+    <name>yarn.scheduler.fair.preemption</name>
+    <value>true</value>
+  </property>
+  
+  <property>
+    <name>yarn.scheduler.fair.preemption.cluster-utilization-threshold</name>
+    <value>0.2</value>
+  </property>
+  
+  <property>
+    <name>yarn.scheduler.maximum-allocation-mb</name>
+    <value>3770</value>
+  </property>
+
+  <property>
+    <name>yarn.nodemanager.resource.memory-mb</name>
+    <value>3770</value>
+  </property>
+
+  <property>
+    <name>yarn.nodemanager.aux-services</name>
+    <value>mapreduce_shuffle,spark_shuffle</value>
+  </property>
+
+  <property>
+    <name>yarn.nodemanager.aux-services.mapreduce.shuffle.class</name>
+    <value>org.apache.hadoop.mapred.ShuffleHandler</value>
+  </property>
+
+  <property>
+    <name>yarn.nodemanager.aux-services.spark_shuffle.class</name>
+    <value>org.apache.spark.network.yarn.YarnShuffleService</value>
+  </property>
+
+</configuration>

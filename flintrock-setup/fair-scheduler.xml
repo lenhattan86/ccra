@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<allocations>
+   <defaultQueueSchedulingPolicy>drf</defaultQueueSchedulingPolicy>
+   <defaultMinSharePreemptionTimeout>1</defaultMinSharePreemptionTimeout>
+   <defaultFairSharePreemptionTimeout>1</defaultFairSharePreemptionTimeout>
+   <defaultFairSharePreemptionThreshold>1.0</defaultFairSharePreemptionThreshold>
+</allocations>
