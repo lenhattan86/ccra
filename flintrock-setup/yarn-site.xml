@@ -17,7 +17,7 @@
 
   <property>
     <name>yarn.resourcemanager.hostname</name>
-    <value>ec2-52-37-224-110.us-west-2.compute.amazonaws.com</value>
+    <value>ec2-52-10-69-251.us-west-2.compute.amazonaws.com</value>
   </property>
 
   <!-- TODO: Should we use multiple local-dirs -->
@@ -38,7 +38,7 @@
 
   <property>
     <name>yarn.log-aggregation-enable</name>
-    <value>true</value>
+    <value>false</value>
   </property>
 
  <property>
@@ -62,7 +62,7 @@
   
   <property>
     <name>yarn.scheduler.fair.preemption.cluster-utilization-threshold</name>
-    <value>0.2</value>
+    <value>0.5</value>
   </property>
   
   <property>

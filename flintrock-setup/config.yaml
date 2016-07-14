@@ -10,8 +10,8 @@ provider: ec2
 
 providers:
   ec2:
-    key-name: ec2stonybrook
-    identity-file: /Users/pingu/.ec2/ec2stonybrook.pem
+    key-name: ccra
+    identity-file: /home/tan/Dropbox/Papers/System/spark/ec2/ccra.pem
     instance-type: m3.medium
     region: us-west-2
     # availability-zone: <name>
@@ -29,6 +29,6 @@ providers:
     instance-initiated-shutdown-behavior: stop  # terminate | stop
 
 launch:
-  num-slaves: 4
+  num-slaves: 1
   install-hdfs: True
   install-spark: True
