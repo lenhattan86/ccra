@@ -2,8 +2,8 @@
 
 Versions:
 
-   * Spark version: 1.6.1
-   * YARN version: 2.7.1
+   * Spark version: 2.0.0-preview
+   * YARN version: 2.7.2
 
 Notes:
 

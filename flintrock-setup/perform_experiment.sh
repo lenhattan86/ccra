@@ -2,7 +2,7 @@
 
 SPARK_COMMAND="./spark/bin/spark-submit --master yarn --class org.apache.spark.examples.SparkPi --deploy-mode cluster"
 SPARK_OPTS="--driver-memory 512M --executor-memory 512M"
-SPARK_JAR="./spark/lib/spark-examples-*.jar 1000"
+SPARK_JAR="./spark/examples/jars/spark-examples*.jar 1000"
 
 for i in `seq 1 $1`;
 do
@@ -21,5 +21,5 @@ do
   cat *.time > times$i.txt
   rm *.time
 
-  sleep 60
+  sleep 30
 done
