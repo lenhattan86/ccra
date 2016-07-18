@@ -2,7 +2,7 @@
 
 SPARK_COMMAND="./spark/bin/spark-submit --master yarn --class org.apache.spark.examples.SparkPi --deploy-mode cluster"
 SPARK_OPTS="--driver-memory 512M --executor-memory 512M"
-SPARK_JAR="./spark/lib/spark-examples-*.jar 100"
+SPARK_JAR="./spark/lib/spark-examples-*.jar 1000"
 
 for i in `seq 1 $1`;
 do
