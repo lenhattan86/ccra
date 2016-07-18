@@ -21,5 +21,6 @@ do
   cat *.time > times$i.txt
   rm *.time
 
+  >&2 echo "Sleeping for 30s..."
   sleep 30
 done
