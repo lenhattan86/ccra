@@ -2,11 +2,6 @@
 
 ## author: Tan N. Le ~ CS department Stony Brook University
 
-## NOTES
-# 1. We have to install Ganglia web server manually
-# ssh nm; sudo apt-get install -y rrdtool  ganglia-webfrontend
-# 2. Set up path/urf for hadoop, flink, spark, java, ...
-# 3. Change true/false to install necessary component.
 
 ######################### System Variables #####################
 
@@ -122,8 +117,8 @@ then
 fi
 isModifyHadoop=false
 isShutDownHadoop=false
-restartHadoop=false
-isFormatHDFS=false
+restartHadoop=true
+isFormatHDFS=true
 
 if $isInstallHadoop
 then
@@ -143,8 +138,6 @@ isModifySpark=false
 startSparkYarn=false
 shudownSpark=false
 startSparkStandalone=false # not necessary
-
-isRun=false
 
 if $IS_INIT
 then
@@ -175,8 +168,7 @@ if $isCloudLab
 then
 	masterNode="nm"
 	clientNode="ctl"
-
-	privateKey="/home/$username/Dropbox/Papers/System/Flink/cloudlab/cloudlab.pem"
+        hostname="nm.yarn-perf.yarnrm-pg0.wisc.cloudlab.us"
 	if $isOfficial
 	then
 		numOfworkers=8
@@ -516,7 +508,6 @@ echo "#################################### install Hadoop Yarn #################
 
 #			ssh $username@$1 "sudo rm -rf $yarnAppLogs; sudo mkdir $yarnAppLogs; sudo chmod 777 $yarnAppLogs"
 			
-hostname="nm.yarn-perf.yarnrm-pg0.wisc.cloudlab.us"
 			ssh $username@$1 "echo '<?xml version=\"1.0\"?>
 <configuration>
 
@@ -837,18 +828,21 @@ export HADOOP_CONF_DIR=$hadoopFolder/$configFolder
 export SPARK_MASTER_IP=$masterNode' > $sparkFolder/conf/spark-env.sh"
 
 		ssh $1 "echo '
+spark.executor.memory 768m
+
 spark.dynamicAllocation.enabled true
+spark.dynamicAllocation.executorIdleTimeout 5
+spark.dynamicAllocation.schedulerBacklogTimeout 5
+spark.dynamicAllocation.sustainedSchedulerBacklogTimeout 5
+spark.dynamicAllocation.cachedExecutorIdleTimeout 9000
+
 spark.shuffle.service.enabled true
-spark.executor.cores 1
-#spark.dynamicAllocation.executorIdleTimeout 1s
-#spark.dynamicAllocation.maxExecutors 9
-#spark.dynamicAllocation.minExecutors 0
-
-#spark.scheduler.maxRegisteredResourcesWaitingTime 30s #time for waiting for resouces
-#spark.speculation false #one or more tasks are running slowly in a stage, they will be re-launched
-
 spark.shuffle.service.port 7338
-spark.scheduler.mode FAIR ' > $sparkFolder/conf/spark-defaults.conf"
+
+spark.scheduler.mode FAIR
+
+spark.task.maxFailures 9999
+spark.yarn.max.executor.failures 9999' > $sparkFolder/conf/spark-defaults.conf"
 
 		#Create /opt/spark-ver/conf/slaves add all the hostnames of spark slave nodes to it.
 		ssh $1 "sudo rm -rf $sparkFolder/conf/slaves"
