@@ -18,18 +18,17 @@ java_home='/usr/lib/jvm/java-7-oracle'
 hadoopFolder="hadoop"
 configFolder="etc/hadoop"
 
-#hadoopVer="hadoop-2.7.0"
-#hadoopLink="http://download.nextag.com/apache/hadoop/common/hadoop-2.7.0/hadoop-2.7.0.tar.gz"
-#hadoopTgz="hadoop-2.7.0.tar.gz"
-
+hadoopVer="hadoop-2.7.2"
+hadoopLink="http://apache.claz.org/hadoop/common/hadoop-2.7.2/hadoop-2.7.2.tar.gz"
+hadoopTgz="hadoop-2.7.2.tar.gz"
 
 #hadoopVer="hadoop-2.6.4"
 #hadoopLink="http://apache.claz.org/hadoop/common/hadoop-2.6.4/hadoop-2.6.4.tar.gz"
 #hadoopTgz="hadoop-2.6.4.tar.gz"
 
-hadoopVer="hadoop-2.6.3"
-hadoopLink="http://apache.claz.org/hadoop/common/hadoop-2.6.3/hadoop-2.6.3.tar.gz"
-hadoopTgz="hadoop-2.6.3.tar.gz"
+#hadoopVer="hadoop-2.6.3"
+#hadoopLink="http://apache.claz.org/hadoop/common/hadoop-2.6.3/hadoop-2.6.3.tar.gz"
+#hadoopTgz="hadoop-2.6.3.tar.gz"
 
 vmemRatio=4
 #yarnNodeMem=131072 # 128 GB
@@ -51,11 +50,13 @@ fi
 
 yarnVcores=32
 hdfsDir="/dev/hdfs"
-#yarnAppLogs="/dev/yarn-logs"
-#yarnAppLogs="/dev/shm/yarn-logs" # only used in hadoop 2.7
-yarnAppLogs="/users/tanle/yarn-logs" # for hadoop 2.6
 #hdfsDir="/users/tanle/hdfs"
 #hdfsDir="/proj/yarnrm-PG0/hdfs"
+
+#yarnAppLogs="/dev/yarn-logs"
+yarnAppLogs="/dev/shm/yarn-logs" # only used in hadoop 2.7
+#yarnAppLogs="/users/$username/yarn-logs" # for hadoop 2.6
+
 cgroupYarn="~/$hadoopFolder/cgroup"
 numOfReplication=3
 
@@ -76,10 +77,16 @@ numNetworkBuffers=4096 # default 2048
 ######################### Spark  #####################
 
 sparkFolder="spark"
-sparkVer="spark-1.6.1"
-sparkTgz="spark-1.6.1-bin-hadoop2.6.tgz"
-sparkTgzFolder="spark-1.6.1-bin-hadoop2.6"
-sparkDownloadLink="http://apache.claz.org/spark/spark-1.6.1/spark-1.6.1-bin-hadoop2.6.tgz"
+
+#sparkVer="spark-1.6.1"
+#sparkTgz="spark-1.6.1-bin-hadoop2.6.tgz"
+#sparkTgzFolder="spark-1.6.1-bin-hadoop2.6"
+#sparkDownloadLink="http://apache.claz.org/spark/spark-1.6.1/spark-1.6.1-bin-hadoop2.6.tgz"
+
+sparkVer="spark-2.0.0-preview"
+sparkTgz="spark-2.0.0-preview-bin-hadoop2.7.tgz"
+sparkTgzFolder="spark-2.0.0-preview-bin-hadoop2.7"
+sparkDownloadLink="https://dist.apache.org/repos/dist/release/spark/spark-2.0.0-preview/spark-2.0.0-preview-bin-hadoop2.7.tgz"
 
 ##########
 
@@ -92,8 +99,8 @@ isSingleNodeCluster=false;
 isUploadTestCase=false
 
 
-isDownload=false
-isExtract=false
+isDownload=true
+isExtract=true
 
 isUploadKey=false
 isGenerateKey=false
@@ -145,7 +152,7 @@ then
 	isExtract=true
 
 	isUploadKey=true
-	isGenerateKey=true
+#	isGenerateKey=true
 	isPasswordlessSSH=true
 	isAddToGroup=true
 
@@ -168,7 +175,7 @@ if $isCloudLab
 then
 	masterNode="nm"
 	clientNode="ctl"
-        hostname="nm.yarn-perf.yarnrm-pg0.wisc.cloudlab.us"
+        hostname="nm.yarnalytics.yarnrm-pg0.wisc.cloudlab.us"
 	if $isOfficial
 	then
 		numOfworkers=8
@@ -272,7 +279,6 @@ if $isInstallBasePackages
 then
 	echo ################################# install JAVA ######################################
 	installPackages () {
-		#ssh $username@$1 'yes Y | sudo apt-get install openjdk-8-jdk'
 		ssh $username@$1 'sudo apt-get purge -y openjdk*
 			sudo apt-get purge -y oracle-java*
 			sudo apt-get install -y software-properties-common			
@@ -280,7 +286,7 @@ then
 			sudo apt-get update
 			sudo echo oracle-java7-installer shared/accepted-oracle-license-v1-1 select true | sudo /usr/bin/debconf-set-selections	
 			sudo apt-get install -y oracle-java7-installer'
-		ssh $username@$1 "sudo apt-get install -y cgroup-tools; sudo apt-get install -y scala;"	
+		ssh $username@$1 "sudo apt-get install -y cgroup-tools; sudo apt-get install -y scala; sudo apt-get install -y vim"	
 	}
 	echo "TODO: install JAVA"
 	for server in $serverList; do
@@ -506,7 +512,8 @@ echo "#################################### install Hadoop Yarn #################
 			# etc/hadoop/yarn-site.xml
 			## Configurations for ResourceManager and NodeManager:
 
-#			ssh $username@$1 "sudo rm -rf $yarnAppLogs; sudo mkdir $yarnAppLogs; sudo chmod 777 $yarnAppLogs"
+			ssh $username@$1 "sudo rm -rf $yarnAppLogs"
+			#ssh $username@$1 "sudo mkdir $yarnAppLogs; sudo chmod 777 $yarnAppLogs"
 			
 			ssh $username@$1 "echo '<?xml version=\"1.0\"?>
 <configuration>
@@ -515,9 +522,6 @@ echo "#################################### install Hadoop Yarn #################
     <name>yarn.resourcemanager.hostname</name>
     <value>$hostname</value>
   </property>
-
-
-
 
   <property>
     <name>yarn.resourcemanager.scheduler.class</name>
@@ -853,6 +857,7 @@ spark.yarn.max.executor.failures 9999' > $sparkFolder/conf/spark-defaults.conf"
 	for server in $serverList; do
 		installSparkFunc $server &
 		ssh $server "cp ~/spark/lib/$sparkVer-yarn-shuffle.jar ~/hadoop/share/hadoop/yarn/" &
+		ssh $server "cp ~/spark/yarn/$sparkVer-yarn-shuffle.jar ~/hadoop/share/hadoop/yarn/" &
 	done
 	wait
 		
