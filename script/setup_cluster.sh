@@ -90,7 +90,7 @@ sparkDownloadLink="https://dist.apache.org/repos/dist/release/spark/spark-2.0.0-
 
 ##########
 
-IS_INIT=false
+IS_INIT=true
 
 REBOOT=false
 isOfficial=true
@@ -99,8 +99,8 @@ isSingleNodeCluster=false;
 isUploadTestCase=false
 
 
-isDownload=true
-isExtract=true
+isDownload=false
+isExtract=false
 
 isUploadKey=false
 isGenerateKey=false
@@ -124,8 +124,8 @@ then
 fi
 isModifyHadoop=false
 isShutDownHadoop=false
-restartHadoop=true
-isFormatHDFS=true
+restartHadoop=false
+isFormatHDFS=false
 
 if $isInstallHadoop
 then
@@ -175,7 +175,8 @@ if $isCloudLab
 then
 	masterNode="nm"
 	clientNode="ctl"
-        hostname="nm.yarnalytics.yarnrm-pg0.wisc.cloudlab.us"
+        hostname="nm.yarn-perf.yarnrm-pg0.wisc.cloudlab.us" # for hadoop 2.6
+	#hostname=$masterNode
 	if $isOfficial
 	then
 		numOfworkers=8
@@ -227,13 +228,22 @@ if $isUploadKey
 then		
 echo ################################# passwordless SSH ####################################
 	if $isGenerateKey 
-	then 	
-		sudo rm -rf $HOME/.ssh/id_dsa*
-		sudo rm -rf $HOME/.ssh/authorized_keys*
-		yes Y | ssh-keygen -t dsa -P '' -f ~/.ssh/id_dsa 		
-		sudo chmod 600 $HOME/.ssh/id_dsa*
-		echo 'StrictHostKeyChecking no' >> ~/.ssh/config
-#		ssh-add $privateKey
+	then
+            while true; do
+            	read -p "Do you wish to generate new public keys ?" yn
+            case $yn in
+                [Yy]* ) 
+			sudo rm -rf $HOME/.ssh/id_dsa*
+			sudo rm -rf $HOME/.ssh/authorized_keys*
+			yes Y | ssh-keygen -t dsa -P '' -f ~/.ssh/id_dsa	
+			sudo chmod 600 $HOME/.ssh/id_dsa*
+			echo 'StrictHostKeyChecking no' >> ~/.ssh/config
+			break;;
+                [Nn]* ) exit;;
+                * ) echo "Please answer yes or no.";;
+            esac
+        done 	
+		
 	fi
 	rm -rf ~/.ssh/known_hosts
 	for server in $serverList; do
@@ -834,19 +844,26 @@ export SPARK_MASTER_IP=$masterNode' > $sparkFolder/conf/spark-env.sh"
 		ssh $1 "echo '
 spark.executor.memory 768m
 
-spark.dynamicAllocation.enabled true
+#spark.dynamicAllocation.enabled true
+spark.executor.instances 10000
 spark.dynamicAllocation.executorIdleTimeout 5
 spark.dynamicAllocation.schedulerBacklogTimeout 5
 spark.dynamicAllocation.sustainedSchedulerBacklogTimeout 5
-spark.dynamicAllocation.cachedExecutorIdleTimeout 9000
+spark.dynamicAllocation.cachedExecutorIdleTimeout 900
 
 spark.shuffle.service.enabled true
 spark.shuffle.service.port 7338
 
 spark.scheduler.mode FAIR
 
-spark.task.maxFailures 9999
-spark.yarn.max.executor.failures 9999' > $sparkFolder/conf/spark-defaults.conf"
+spark.task.maxFailures 999
+spark.yarn.max.executor.failures 999
+
+#spark.streaming.dynamicAllocation.enabled true
+spark.streaming.dynamicAllocation.scalingUpRatio 0.0005
+spark.streaming.dynamicAllocation.scalingDownRatio 0.0000001
+spark.streaming.dynamicAllocation.minExecutors 1
+spark.streaming.dynamicAllocation.maxExecutors 500' > $sparkFolder/conf/spark-defaults.conf"
 
 		#Create /opt/spark-ver/conf/slaves add all the hostnames of spark slave nodes to it.
 		ssh $1 "sudo rm -rf $sparkFolder/conf/slaves"
