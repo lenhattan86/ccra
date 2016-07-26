@@ -1,2 +1,4 @@
 results/
 *.swp
+.DS_Store
+*.pdf
