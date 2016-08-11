@@ -2,6 +2,9 @@
 
 ## author: Tan N. Le ~ CS department Stony Brook University
 
+### DO this command first at master node #####
+
+# $sudo apt-get install -y rrdtool  ganglia-webfrontend
 
 ######################### System Variables #####################
 
@@ -12,7 +15,7 @@ groupname="yarnrm-PG0"
 
 java_home='/usr/lib/jvm/java-7-oracle'
 
-
+echo "=====set up $hostname====="
 
 ######################### Hadoop  #####################
 hadoopFolder="hadoop"
@@ -30,9 +33,11 @@ hadoopTgz="hadoop-2.7.2.tar.gz"
 #hadoopLink="http://apache.claz.org/hadoop/common/hadoop-2.6.3/hadoop-2.6.3.tar.gz"
 #hadoopTgz="hadoop-2.6.3.tar.gz"
 
+yarnVcores=4
 vmemRatio=4
 #yarnNodeMem=131072 # 128 GB
-yarnNodeMem=65536 # 64 GB
+#yarnNodeMem=65536 # 64 GB
+yarnNodeMem=$((2*$yarnVcores*1024)) # 2 times of number of vcores
 #yarnNodeMem=32768 # 32 GB
 
 yarnMaxMem=32768 # for each container
@@ -48,7 +53,7 @@ else
 	scheduler="org.apache.hadoop.yarn.server.resourcemanager.scheduler.fair.FairScheduler" 
 fi
 
-yarnVcores=32
+
 hdfsDir="/dev/hdfs"
 #hdfsDir="/users/tanle/hdfs"
 #hdfsDir="/proj/yarnrm-PG0/hdfs"
@@ -91,19 +96,23 @@ sparkDownloadLink="https://dist.apache.org/repos/dist/release/spark/spark-2.0.0-
 ##########
 
 IS_INIT=true
+hostname="nm.yarn-perf.yarnrm-pg0.wisc.cloudlab.us"
+#hostname="nm.yarnalytics.yarnrm-pg0.wisc.cloudlab.us"
 
 REBOOT=false
 isOfficial=true
-isSingleNodeCluster=false;
-
+isSingleNodeCluster=false	
 isUploadTestCase=false
 
+isUploadYarn=false
+shedulingPolicy="drf"
+customizedHadoopPath="../hadoop/hadoop-dist/target/$hadoopTgz"
 
 isDownload=false
-isExtract=false
+isExtract=true
 
 isUploadKey=false
-isGenerateKey=false
+isGenerateKey=false	
 isPasswordlessSSH=false
 isAddToGroup=false
 
@@ -140,30 +149,35 @@ startFlinkYarn=false
 shudownFlink=false
 startFlinkStandalone=false # not necessary
 
-isInstallSpark=true
+isInstallSpark=false
+if $isInstallHadoop
+then
+	isInstallSpark=true
+fi
 isModifySpark=false
 startSparkYarn=false
 shudownSpark=false
-startSparkStandalone=false # not necessary
 
 if $IS_INIT
 then
 	isDownload=true
+	isUploadYarn=false
 	isExtract=true
 
 	isUploadKey=true
-#	isGenerateKey=true
+#	isGenerateKey=false
 	isPasswordlessSSH=true
 	isAddToGroup=true
 
 	isInstallBasePackages=true
 
-	isInstallGanglia=true
-	startGanglia=true
+	isInstallGanglia=false
+	startGanglia=false
 
 	isInstallHadoop=true
 	isInitPath=true
 	isFormatHDFS=true
+	isShutDownHadoop=true
 	restartHadoop=true
 
 	isInstallFlink=true
@@ -174,9 +188,7 @@ fi
 if $isCloudLab
 then
 	masterNode="nm"
-	clientNode="ctl"
-        hostname="nm.yarn-perf.yarnrm-pg0.wisc.cloudlab.us" # for hadoop 2.6
-	#hostname=$masterNode
+	clientNode="ctl"        
 	if $isOfficial
 	then
 		numOfworkers=8
@@ -222,6 +234,8 @@ echo ############### REBOOT all servers #############################
 		ssh $username@$server "ssh $server 'sudo reboot'" &
 	done
 	wait
+	echo "Waiting for 15 mins for the cluster to be ready."
+	sleep 900
 fi
 
 if $isUploadKey
@@ -276,7 +290,7 @@ fi
 
 if $isPasswordlessSSH
 then
-	passwordlessSSH () { echo $1 to $2;	ssh $username@$1 "ssh $2 'echo test passwordless SSH'" ;}
+	passwordlessSSH () { ssh $username@$1 "ssh $2 'echo test passwordless SSH: $1 to $2'" ;}
 	for server1 in $serverList; do
 		for server2 in $serverList; do
 			passwordlessSSH $server1 $server2 &
@@ -423,11 +437,16 @@ echo "#################################### install Hadoop Yarn #################
 
 		installHadoopFunc () {
 			echo Set up Hadoop at $1
-			if $isDownload
+			if $isUploadYarn 
+			then
+				ssh $username@$1 "sudo rm -rf $hadoopTgz"
+				scp $customizedHadoopPath $username@$1:~/ 
+			elif $isDownload
 			then		
 				echo downloading $hadoopVer		
 				ssh $username@$1 "sudo rm -rf $hadoopTgz; wget $hadoopLink >> log.txt"
 			fi
+
 			if $isExtract
 			then 
 				echo extract $hadoopTgz
@@ -523,7 +542,7 @@ echo "#################################### install Hadoop Yarn #################
 			## Configurations for ResourceManager and NodeManager:
 
 			ssh $username@$1 "sudo rm -rf $yarnAppLogs"
-			#ssh $username@$1 "sudo mkdir $yarnAppLogs; sudo chmod 777 $yarnAppLogs"
+			ssh $username@$1 "sudo mkdir $yarnAppLogs; sudo chmod 777 $yarnAppLogs"
 			
 			ssh $username@$1 "echo '<?xml version=\"1.0\"?>
 <configuration>
@@ -673,35 +692,20 @@ echo "#################################### install Hadoop Yarn #################
 			ssh $username@$1 "echo '<?xml version=\"1.0\"?>
 <allocations>
 
-<!--
-<queue name=\"sls_queue_1\">
-<minResources>1024 mb, 1 vcores</minResources>
-<schedulingPolicy>fair</schedulingPolicy>
-<weight>1</weight>
-</queue>
-<queue name=\"sls_queue_2\">
-<minResources>1024 mb, 1 vcores</minResources>
-<schedulingPolicy>drf</schedulingPolicy>
-<weight>1</weight>
-</queue>
-
-<queue name=\"sls_queue_3\">
-<minResources>1024 mb, 1 vcores</minResources>
-<schedulingPolicy>fair</schedulingPolicy>
-<weight>1</weight>
-</queue>
-
-<queue name=\"sls_queue_4\">
-<minResources>1024 mb, 1 vcores</minResources>
-<schedulingPolicy>fair</schedulingPolicy>
-<weight>1</weight>
-</queue>	
--->
-
-<defaultQueueSchedulingPolicy>drf</defaultQueueSchedulingPolicy>
+<defaultQueueSchedulingPolicy>$shedulingPolicy</defaultQueueSchedulingPolicy>
 <defaultMinSharePreemptionTimeout>10</defaultMinSharePreemptionTimeout>
 <defaultFairSharePreemptionTimeout>10</defaultFairSharePreemptionTimeout>
 <defaultFairSharePreemptionThreshold>1.0</defaultFairSharePreemptionThreshold>
+
+<!-- 
+<queue name=\"interactive\">
+	<weight>1</weight>
+	<fairPriority>3</fairPriority>
+</queue>
+<queue name=\"batch\">
+	<weight>1</weight>	
+</queue>
+ -->
 
 </allocations>' > $fairSchedulerFile"
 
@@ -802,7 +806,7 @@ echo "#################################### install Hadoop Yarn #################
 			ssh $username@$1 "sudo rm -rf $hadoopFolder/$configFolder/slaves"
 			for svr in $slaveNodes; do			
 				ssh $username@$1 "echo $svr >> $hadoopFolder/$configFolder/slaves"
-			done	
+			done
 			#ssh $username@$1 "sudo chown -R $username:$groupname $hadoopFolder"
 			
 }
@@ -844,8 +848,9 @@ export SPARK_MASTER_IP=$masterNode' > $sparkFolder/conf/spark-env.sh"
 		ssh $1 "echo '
 spark.executor.memory 768m
 
-#spark.dynamicAllocation.enabled true
-spark.executor.instances 10000
+spark.dynamicAllocation.enabled true
+#spark.executor.instances 10000
+
 spark.dynamicAllocation.executorIdleTimeout 5
 spark.dynamicAllocation.schedulerBacklogTimeout 5
 spark.dynamicAllocation.sustainedSchedulerBacklogTimeout 5
@@ -870,16 +875,16 @@ spark.streaming.dynamicAllocation.maxExecutors 500' > $sparkFolder/conf/spark-de
 		for slave in $slaveNodes; do
 			ssh $1 "echo $slave >> $sparkFolder/conf/slaves"
 		done
+
+		ssh $1 "cp ~/spark/lib/$sparkVer-yarn-shuffle.jar ~/hadoop/share/hadoop/yarn/"
+		ssh $1 "cp ~/spark/yarn/$sparkVer-yarn-shuffle.jar ~/hadoop/share/hadoop/yarn/"
 	}
 	for server in $serverList; do
 		installSparkFunc $server &
-		ssh $server "cp ~/spark/lib/$sparkVer-yarn-shuffle.jar ~/hadoop/share/hadoop/yarn/" &
-		ssh $server "cp ~/spark/yarn/$sparkVer-yarn-shuffle.jar ~/hadoop/share/hadoop/yarn/" &
 	done
 	wait
 		
 fi
-
 
 ########################## restart all #########################
 
@@ -923,3 +928,6 @@ then
 
 	rm -rf test.tar
 fi
+
+echo "=====done set up $hostname====="
+
