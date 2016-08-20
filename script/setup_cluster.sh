@@ -24,6 +24,7 @@ configFolder="etc/hadoop"
 hadoopVer="hadoop-2.7.2"
 hadoopLink="http://apache.claz.org/hadoop/common/hadoop-2.7.2/hadoop-2.7.2.tar.gz"
 hadoopTgz="hadoop-2.7.2.tar.gz"
+#hadoopTgz="hadoop-2.7.2-max.tar.gz"
 
 #hadoopVer="hadoop-2.6.4"
 #hadoopLink="http://apache.claz.org/hadoop/common/hadoop-2.6.4/hadoop-2.6.4.tar.gz"
@@ -95,18 +96,18 @@ sparkDownloadLink="https://dist.apache.org/repos/dist/release/spark/spark-2.0.0-
 
 ##########
 
-IS_INIT=true
-hostname="nm.yarn-perf.yarnrm-pg0.wisc.cloudlab.us"
-#hostname="nm.yarnalytics.yarnrm-pg0.wisc.cloudlab.us"
+IS_INIT=false
+hostname="nm.yarn-perf.yarnrm-pg0.wisc.cloudlab.us"; cp ~/.ssh/config.yarn-perf ~/.ssh/config; shedulingPolicy="iglf"; weight=1
+#hostname="nm.yarnalytics.yarnrm-pg0.wisc.cloudlab.us"; cp ~/.ssh/config.yarnalytics ~/.ssh/config; shedulingPolicy="drf"; weight=3
 
 REBOOT=false
-isOfficial=true
+isOfficial=false
 isSingleNodeCluster=false	
 isUploadTestCase=false
 
-isUploadYarn=false
-shedulingPolicy="drf"
-customizedHadoopPath="../hadoop/hadoop-dist/target/$hadoopTgz"
+isUploadYarn=true
+
+customizedHadoopPath="/home/tanle/projects/ccra/hadoop/hadoop-dist/target/$hadoopTgz"
 
 isDownload=false
 isExtract=true
@@ -183,6 +184,8 @@ then
 	isInstallFlink=true
 
 	isInstallSpark=true
+
+	shedulingPolicy="drf"; weight=3
 fi
 
 if $isCloudLab
@@ -196,9 +199,9 @@ then
 		slaveNodes="cp-1 cp-2 cp-3 cp-4 cp-5 cp-6 cp-7 cp-8"
 		numOfReplication=3
 	else
-		numOfworkers=1
-		serverList="nm cp-1"
-		slaveNodes="cp-1"
+		numOfworkers=2
+		serverList="nm ctl cp-1"
+		slaveNodes="ctl cp-1"
 		numOfReplication=1		
 	fi
 elif $isAmazonEC
@@ -513,7 +516,20 @@ echo "#################################### install Hadoop Yarn #################
   </property>
 
 </configuration>' > $hadoopFolder/etc/hadoop/core-site.xml"
-
+				# HADOOP_NODE_OPTS
+	 			# HADOOP_DATANODE_OPTS
+				# HADOOP_SECONDARYNAMENODE_OPTS	
+				# YARN_RESOURCEMANAGER_OPTS
+				# YARN_NODEMANAGER_OPTS
+				# YARN_PROXYSERVER_OPTS
+				# HADOOP_JOB_HISTORYSERVER_OPTS
+			
+				# Other useful configuration parameters for hadoop & yarn
+				# HADOOP_PID_DIR - The directory where the daemons’ process id files are stored.
+				# HADOOP_LOG_DIR - The directory where the daemons’ log files are stored. 
+				# HADOOP_HEAPSIZE
+				# ssh $username@$1 "sed -i -e 's/#export HADOOP_HEAPSIZE=/export HADOOP_HEAPSIZE=4096/g' $hadoopFolder/$configFolder/hadoop-env.sh"
+				# YARN_HEAPSIZE
 			# etc/hadoop/hdfs-site.xml
 			ssh $username@$1 "echo '<?xml version=\"1.0\" encoding=\"UTF-8\"?> 
 <?xml-stylesheet type=\"text/xsl\" href=\"configuration.xsl\"?>
@@ -562,6 +578,10 @@ echo "#################################### install Hadoop Yarn #################
     <value>$schedulerFile</value>
   </property>  
 
+
+<!-- preemption & spark -->
+
+
   <property>
     <name>yarn.scheduler.fair.preemption</name>
     <value>true</value>
@@ -569,10 +589,8 @@ echo "#################################### install Hadoop Yarn #################
   
   <property>
     <name>yarn.scheduler.fair.preemption.cluster-utilization-threshold</name>
-    <value>0.5</value>
+    <value>0.8</value>
   </property>
-
-<!-- preemption & spark -->
 
   <property>
     <name>yarn.nodemanager.aux-services</name>
@@ -697,15 +715,28 @@ echo "#################################### install Hadoop Yarn #################
 <defaultFairSharePreemptionTimeout>10</defaultFairSharePreemptionTimeout>
 <defaultFairSharePreemptionThreshold>1.0</defaultFairSharePreemptionThreshold>
 
-<!-- 
 <queue name=\"interactive\">
-	<weight>1</weight>
+	<minResources>8192 mb,4 vcores</minResources>
+	<weight>$weight</weight>
 	<fairPriority>3</fairPriority>
 </queue>
+
+<queue name=\"interactive1\">
+	<minResources>8192 mb,4 vcores</minResources>
+</queue>
+
+<queue name=\"interactive2\">
+	<minResources>8192 mb,4 vcores</minResources>
+</queue>
+
+<queue name=\"interactive3\">
+	<minResources>8192 mb,4 vcores</minResources>
+</queue>
+
 <queue name=\"batch\">
 	<weight>1</weight>	
 </queue>
- -->
+
 
 </allocations>' > $fairSchedulerFile"
 
