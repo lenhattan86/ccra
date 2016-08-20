@@ -26,7 +26,7 @@ cmdSpark="./spark/bin/spark-submit"
 className="org.apache.spark.examples.SparkPi"
 streamingClass="org.apache.spark.examples.streaming.HdfsWordCount"
 
-executorMem="1024M" # + 384
+executorMem="2048M" # + 384
 executorCore="1"
 
 mode="cluster"
@@ -47,7 +47,7 @@ fi
 
 if [ -z "$3" ]
 then
-	numOfIteration=100000  
+	numOfIteration=200000  
 else
 	numOfIteration=$3
 fi
@@ -81,7 +81,7 @@ python hdfs/hdfs_populator.py 1 60 & pidPuttingFile=$!
 date --rfc-3339=seconds >> streaming.csv
 $cmdSpark --master yarn --class $streamingClass --deploy-mode $mode --driver-memory $executorMem --executor-memory $executorMem --executor-cores 1 --queue streaming $jarFile /tmp/spark1 & pidStreamingJob=$!
 
-#sleep 60
+sleep 60
 
 runAppOnTheSameQueue () {	
 	date --rfc-3339=seconds >> $timestampFile$2_$1.csv
@@ -108,7 +108,7 @@ do
 		for i in `seq 1 $numLaps`;
 		do		
 			# run the Flink app
-			sleep 30
+			sleep 1
 			runAppOnMultiQueues $i $numLaps &
 			#runAppOnTheSameQueue	$i $numLaps &
 			pids="$pids $!"

@@ -16,7 +16,8 @@ cp-7
 cp-8"
 
 #jarFile="./spark/lib/spark-examples*.jar" 
-jarFile="./spark/examples/jars/spark-examples*.jar" # for spark 2.0
+#jarFile="./spark/examples/jars/spark-examples*.jar" # for spark 2.0
+jarFile="./spark-examples*.jar" # for customized jars
 
 
 cmdSpark="./spark/bin/spark-submit"
@@ -24,32 +25,26 @@ cmdSpark="./spark/bin/spark-submit"
 
 
 className="org.apache.spark.examples.SparkPi"
-streamingClass="org.apache.spark.examples.streaming.HdfsWordCount"
+#streamingClass="org.apache.spark.examples.streaming.HdfsWordCount"
+streamingClass="org.apache.spark.examples.streaming.CpuBound"
 
-executorMem="1024M" # + 384
+executorMem="1536M" # + 384
 executorCore="1"
 
 mode="cluster"
 
 if [ -z "$1" ]
 then
-	numOfOverlaps=2
+	numOfOverlaps=7
 else
 	numOfOverlaps=$1
 fi
 
 if [ -z "$2" ]
 then
-	numOfExp=1
+	numOfIteration=250000  
 else
-	numOfExp=$2
-fi
-
-if [ -z "$3" ]
-then
-	numOfIteration=100000  
-else
-	numOfIteration=$3
+	numOfIteration=$2
 fi
 
 
@@ -73,19 +68,24 @@ done
 echo "start overlap experiments"
 
 # create big text
-hdfs/dump_text_file.sh
+#hdfs/dump_text_file.sh
 # keep putting it to the hdfs
-python hdfs/hdfs_populator.py 1 60 & pidPuttingFile=$!
+#python hdfs/hdfs_populator.py 1 59 & pidPuttingFile=$!
 # Run a streaming app
 
-date --rfc-3339=seconds >> streaming.csv
-$cmdSpark --master yarn --class $streamingClass --deploy-mode $mode --driver-memory $executorMem --executor-memory $executorMem --executor-cores 1 --queue streaming $jarFile /tmp/spark1 & pidStreamingJob=$!
+#sleep 30
 
-#sleep 60
+#./spark/bin/spark-submit --master yarn --class org.apache.spark.examples.CpuBound --deploy-mode cluster --driver-memory 1024M --executor-memory 1024M --executor-cores 1 --queue streaming ./spark-examples*.jar 1000
+#./spark/bin/spark-shell --master yarn --driver-memory 1536M --executor-memory 1536M --executor-cores 1 --queue shell
+#date --rfc-3339=seconds >> streaming.csv
+#$cmdSpark --master yarn --class $streamingClass --deploy-mode $mode --driver-memory $executorMem --executor-memory $executorMem --executor-cores 1 --queue streaming $jarFile /tmp/spark1 & pidStreamingJob=$!
+
+#sleep 300
 
 runAppOnTheSameQueue () {	
 	date --rfc-3339=seconds >> $timestampFile$2_$1.csv
 	# run the spark app
+	#./spark/bin/spark-submit --master yarn --class org.apache.spark.examples.SparkPi --deploy-mode cluster --driver-memory 2048M --executor-memory 2048M --executor-cores 1 --queue q2 ./spark-examples*.jar 1000
 	$cmdSpark --master yarn --class $className --deploy-mode $mode --driver-memory $executorMem --executor-memory $executorMem --executor-cores $executorCore --queue batchjob $jarFile $numOfIteration $timestampFile$2_$1.csv
 	# Stop timming
 	date --rfc-3339=seconds >> $timestampFile$2_$1.csv
@@ -95,39 +95,19 @@ runAppOnMultiQueues () {
 	date --rfc-3339=seconds >> $timestampFile$2_$1.csv
 	# run the spark app
 	$cmdSpark --master yarn --class $className --deploy-mode $mode --driver-memory $executorMem --executor-memory $executorMem --executor-cores $executorCore --queue q$1 $jarFile $numOfIteration $timestampFile$2_$1.csv
+	#$cmdSpark --master yarn --class $streamingClass --deploy-mode $mode --driver-memory $executorMem --executor-memory $executorMem --executor-cores $executorCore --queue q$1 $jarFile $numOfIteration $timestampFile$2_$1.csv
 	# Stop timming
 	date --rfc-3339=seconds >> $timestampFile$2_$1.csv
 }
 
 # Run the batch jobs
+pids=""
 for numLaps in `seq 1 $numOfOverlaps`;
 do
-	for count in `seq 1 $numOfExp`;
-	do
-		pids=""
-		for i in `seq 1 $numLaps`;
-		do		
-			# run the Flink app
-			sleep 30
-			runAppOnMultiQueues $i $numLaps &
-			#runAppOnTheSameQueue	$i $numLaps &
-			pids="$pids $!"
-		done	
-		wait $pids
-		sleep 60		
-	done
-	pids=""
-	for server in $serverList; do	
-		echo 'delete yarn logs'	
-		ssh $server "sudo rm -rf $yarnAppLogs/*" &
-		pids="$pids $!"
-	done
-	wait $pids
-	~/hadoop/bin/hadoop fs -rm -r  hdfs:///tmp/logs/$username/logs/*
-	~/hadoop/bin/hadoop fs -rm -r  hdfs:///user/$username/.sparkStaging/*
-	sleep 120
+	runAppOnMultiQueues $i $numLaps &
+	#sleep 300		
 done
 
-kill $pidPuttingFile
-kill $pidStreamingJob
+#kill $pidPuttingFile
+#kill $pidStreamingJob
 date --rfc-3339=seconds >> streaming.csv

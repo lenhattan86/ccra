@@ -16,7 +16,8 @@ cp-7
 cp-8"
 
 #jarFile="./spark/lib/spark-examples*.jar" 
-jarFile="./spark/examples/jars/spark-examples*.jar" # for spark 2.0
+#jarFile="./spark/examples/jars/spark-examples*.jar" # for spark 2.0
+jarFile="./spark-examples*.jar" # for customized jars
 
 
 cmdSpark="./spark/bin/spark-submit"
@@ -24,30 +25,31 @@ cmdSpark="./spark/bin/spark-submit"
 
 
 className="org.apache.spark.examples.SparkPi"
-streamingClass="org.apache.spark.examples.streaming.HdfsWordCount"
+#streamingClass="org.apache.spark.examples.streaming.HdfsWordCount"
+streamingClass="org.apache.spark.examples.streaming.CpuBound"
 
-executorMem="1024M" # + 384
+executorMem="1536M" # + 384
 executorCore="1"
 
 mode="cluster"
 
 if [ -z "$1" ]
 then
-	numOfOverlaps=2
+	numOfOverlaps=7
 else
 	numOfOverlaps=$1
 fi
 
 if [ -z "$2" ]
 then
-	numOfExp=1
+	numOfExp=5
 else
 	numOfExp=$2
 fi
 
 if [ -z "$3" ]
 then
-	numOfIteration=100000  
+	numOfIteration=250000  
 else
 	numOfIteration=$3
 fi
@@ -78,10 +80,11 @@ hdfs/dump_text_file.sh
 python hdfs/hdfs_populator.py 1 60 & pidPuttingFile=$!
 # Run a streaming app
 
+#./spark/bin/spark-submit --master yarn --class org.apache.spark.examples.CpuBound --deploy-mode cluster --driver-memory 1024M --executor-memory 1024M --executor-cores 1 --queue streaming ./spark-examples*.jar 1000
 date --rfc-3339=seconds >> streaming.csv
 $cmdSpark --master yarn --class $streamingClass --deploy-mode $mode --driver-memory $executorMem --executor-memory $executorMem --executor-cores 1 --queue streaming $jarFile /tmp/spark1 & pidStreamingJob=$!
 
-#sleep 60
+sleep 60
 
 runAppOnTheSameQueue () {	
 	date --rfc-3339=seconds >> $timestampFile$2_$1.csv
@@ -108,13 +111,13 @@ do
 		for i in `seq 1 $numLaps`;
 		do		
 			# run the Flink app
-			sleep 30
+			#sleep 30
 			runAppOnMultiQueues $i $numLaps &
 			#runAppOnTheSameQueue	$i $numLaps &
 			pids="$pids $!"
 		done	
 		wait $pids
-		sleep 60		
+		#sleep 60		
 	done
 	pids=""
 	for server in $serverList; do	
@@ -125,7 +128,7 @@ do
 	wait $pids
 	~/hadoop/bin/hadoop fs -rm -r  hdfs:///tmp/logs/$username/logs/*
 	~/hadoop/bin/hadoop fs -rm -r  hdfs:///user/$username/.sparkStaging/*
-	sleep 120
+	#sleep 120
 done
 
 kill $pidPuttingFile
