@@ -28,6 +28,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.xml.bind.annotation.XmlTransient;
 
+import org.apache.hadoop.yarn.server.resourcemanager.resource.ResourceWeights;
 import org.apache.hadoop.yarn.server.resourcemanager.scheduler.fair.AllocationConfiguration;
 import org.apache.hadoop.yarn.server.resourcemanager.scheduler.fair.FSLeafQueue;
 import org.apache.hadoop.yarn.server.resourcemanager.scheduler.fair.FSQueue;
@@ -61,13 +62,20 @@ public class FairSchedulerQueueInfo {
   private String queueName;
   private String schedulingPolicy;
   
-  private Collection<FairSchedulerQueueInfo> childQueues;
+  private ResourceWeights weights; //iglf
+  private float fairPrioirity;
+  
+
+private Collection<FairSchedulerQueueInfo> childQueues;
   
   public FairSchedulerQueueInfo() {
   }
   
   public FairSchedulerQueueInfo(FSQueue queue, FairScheduler scheduler) {
     AllocationConfiguration allocConf = scheduler.getAllocationConfiguration();
+    
+    weights = queue.getWeights(); //iglf
+    fairPrioirity = queue.getFairPriority();
     
     queueName = queue.getName();
     schedulingPolicy = queue.getPolicy().getName();
@@ -192,5 +200,13 @@ public class FairSchedulerQueueInfo {
   
   public Collection<FairSchedulerQueueInfo> getChildQueues() {
     return childQueues;
+  }
+  
+  public ResourceWeights getWeights() {
+	return weights;
+  }
+  
+  public float getFairPriority(){
+	  return fairPrioirity;
   }
 }

@@ -134,4 +134,8 @@ public abstract class Resource implements Comparable<Resource> {
   public String toString() {
     return "<memory:" + getMemory() + ", vCores:" + getVirtualCores() + ">";
   }
+  
+  public boolean isEmpty(){ // iglf
+    return this.getMemory()<=0 && this.getVirtualCores()<=0;
+  }
 }

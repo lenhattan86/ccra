@@ -20,9 +20,12 @@ package org.apache.hadoop.yarn.server.resourcemanager.scheduler.fair.policies;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.hadoop.yarn.api.records.Resource;
 import org.apache.hadoop.yarn.server.resourcemanager.resource.ResourceType;
 import org.apache.hadoop.yarn.server.resourcemanager.scheduler.fair.FSQueue;
+import org.apache.hadoop.yarn.server.resourcemanager.scheduler.fair.FairScheduler;
 import org.apache.hadoop.yarn.server.resourcemanager.scheduler.fair.Schedulable;
 
 /**
@@ -35,6 +38,8 @@ import org.apache.hadoop.yarn.server.resourcemanager.scheduler.fair.Schedulable;
 public class ComputeFairShares {
   
   private static final int COMPUTE_FAIR_SHARES_ITERATIONS = 25;
+  
+  private static final Log LOG = LogFactory.getLog(ComputeFairShares.class);
 
   /**
    * Compute fair share of the given schedulables.Fair share is an allocation of
@@ -50,6 +55,12 @@ public class ComputeFairShares {
       ResourceType type) {
     computeSharesInternal(schedulables, totalResources, type, false);
   }
+  
+  public static void computeSharesIGLF(
+      Collection<? extends Schedulable> schedulables, Resource totalResources,
+      ResourceType type) {
+    computeSharesInternalIGLF(schedulables, totalResources, type, false);
+  }
 
   /**
    * Compute the steady fair share of the given queues. The steady fair
@@ -64,6 +75,12 @@ public class ComputeFairShares {
       Collection<? extends FSQueue> queues, Resource totalResources,
       ResourceType type) {
     computeSharesInternal(queues, totalResources, type, true);
+  }
+  
+  public static void computeSteadySharesIGLF(
+      Collection<? extends FSQueue> queues, Resource totalResources,
+      ResourceType type) {
+    computeSharesInternalIGLF(queues, totalResources, type, true);
   }
 
   /**
@@ -168,6 +185,67 @@ public class ComputeFairShares {
       }
     }
   }
+  
+  private static void computeSharesInternalIGLF(
+      Collection<? extends Schedulable> allSchedulables,
+      Resource totalResources, ResourceType type, boolean isSteadyShare) {
+
+    Collection<Schedulable> schedulables = new ArrayList<Schedulable>();
+    int takenResources = handleFixedFairShares(
+        allSchedulables, schedulables, isSteadyShare, type);
+
+    if (schedulables.isEmpty()) {
+      return;
+    }
+    // Find an upper bound on R that we can use in our binary search. We start
+    // at R = 1 and double it until we have either used all the resources or we
+    // have met all Schedulables' max shares.
+    int totalMaxShare = 0;
+    for (Schedulable sched : schedulables) {
+      int maxShare = getResourceValue(sched.getMaxShare(), type);
+      totalMaxShare = (int) Math.min((long)maxShare + (long)totalMaxShare,
+          Integer.MAX_VALUE);
+      if (totalMaxShare == Integer.MAX_VALUE) {
+        break;
+      }
+    }
+
+    int totalResource = Math.max((getResourceValue(totalResources, type) -
+        takenResources), 0);
+    totalResource = Math.min(totalMaxShare, totalResource);
+
+    double rMax = 1.0;
+    while (resourceUsedWithWeightToResourceRatioIGLF(rMax, schedulables, type)
+        < totalResource) {
+      rMax *= 2.0;
+    }
+    // Perform the binary search for up to COMPUTE_FAIR_SHARES_ITERATIONS steps
+    double left = 0;
+    double right = rMax;
+    for (int i = 0; i < COMPUTE_FAIR_SHARES_ITERATIONS; i++) {
+      double mid = (left + right) / 2.0;
+      int plannedResourceUsed = resourceUsedWithWeightToResourceRatioIGLF(
+          mid, schedulables, type);
+      if (plannedResourceUsed == totalResource) {
+        right = mid;
+        break;
+      } else if (plannedResourceUsed < totalResource) {
+        left = mid;
+      } else {
+        right = mid;
+      }
+    }
+    // Set the fair shares based on the value of R we've converged to
+    for (Schedulable sched : schedulables) {
+      if (isSteadyShare) {
+        setResourceValue(computeShareIGLF(sched, right, type),
+            ((FSQueue) sched).getSteadyFairShare(), type);
+      } else {
+        setResourceValue(
+            computeShareIGLF(sched, right, type), sched.getFairShare(), type);
+      }
+    }
+  }
 
   /**
    * Compute the resources that would be used given a weight-to-resource ratio
@@ -182,6 +260,17 @@ public class ComputeFairShares {
     }
     return resourcesTaken;
   }
+  
+  private static int resourceUsedWithWeightToResourceRatioIGLF(double w2rRatio,
+      Collection<? extends Schedulable> schedulables, ResourceType type) {
+    int resourcesTaken = 0;
+    for (Schedulable sched : schedulables) {
+      int share = computeShareIGLF(sched, w2rRatio, type);
+      resourcesTaken += share;
+    }
+    return resourcesTaken;
+  }
+
 
   /**
    * Compute the resources assigned to a Schedulable given a particular
@@ -193,6 +282,50 @@ public class ComputeFairShares {
     share = Math.max(share, getResourceValue(sched.getMinShare(), type));
     share = Math.min(share, getResourceValue(sched.getMaxShare(), type));
     return (int) share;
+  }
+  
+  private static int computeShareIGLF(Schedulable sched, double w2rRatio, // to compute the total steady share & Instantaneous  share for each schedulable (as in the UI)
+      ResourceType type) {
+    
+    ComputeFairShares.setPriorityOverTime(sched);
+    
+    float fairPriority=sched.getFairPriority(); 
+    
+    double share = sched.getWeights().getWeight(type) * w2rRatio * fairPriority;
+    share = Math.max(share, getResourceValue(sched.getMinShare(), type));
+    share = Math.min(share, getResourceValue(sched.getMaxShare(), type));
+    return (int) share;
+  }
+  
+  private static void setPriorityOverTime(Schedulable sched){
+    float iglfPriority = Schedulable.DEFAULT_FAIR_PRIORITY;
+    long startTime = sched.getStartTime();
+    
+    if (sched.getName().equals("root.interactive") && startTime > 0){
+      ArrayList<Long> durations = new ArrayList<>();
+      ArrayList<Float> priorities = new ArrayList<Float>();
+      
+      durations.add(new Long((long)(Schedulable.HIGH_PRIORITY_DURATION)));
+      priorities.add(new Float(5));
+      
+      durations.add(new Long((long)(Schedulable.HIGH_PRIORITY_DURATION)));
+      priorities.add(new Float(0.5));
+      
+      long lasted = (System.currentTimeMillis()-startTime);
+      long timeInterval = 0;
+      
+      for (int i=0; i< durations.size(); i++){
+        if (lasted >= timeInterval){
+          iglfPriority = priorities.get(i);
+        }
+        timeInterval += durations.get(i);
+      }    
+      if (lasted >= timeInterval){ // no guarantee, return back to normal
+        iglfPriority = Schedulable.DEFAULT_FAIR_PRIORITY;
+      }
+    }
+    
+    sched.setFairPriority(iglfPriority);
   }
 
   /**
@@ -224,7 +357,7 @@ public class ComputeFairShares {
   }
 
   /**
-   * Get the fairshare for the {@link Schedulable} if it is fixed, -1 otherwise.
+   * Get the fairshare for the {@link SgetResourceValuechedulable} if it is fixed, -1 otherwise.
    *
    * The fairshare is fixed if either the maxShare is 0, weight is 0,
    * or the Schedulable is not active for instantaneous fairshare.

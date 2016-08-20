@@ -429,6 +429,12 @@ public class ApplicationCLI extends YarnCLI {
    */
   private void killApplication(String applicationId) throws YarnException,
       IOException {
+    
+    if (applicationId.equalsIgnoreCase("all") || applicationId.equalsIgnoreCase("*")) { //iglf: kill all apps with "*"
+      this.killAllApplications();
+      return;
+    }
+    
     ApplicationId appId = ConverterUtils.toApplicationId(applicationId);
     ApplicationReport  appReport = null;
     try {
@@ -446,6 +452,20 @@ public class ApplicationCLI extends YarnCLI {
     } else {
       sysout.println("Killing application " + applicationId);
       client.killApplication(appId);
+    }
+  }
+  
+  private void killAllApplications() throws YarnException, IOException { //iglf: kill all apps
+    List<ApplicationReport> applicationReports = client.getApplications();
+    sysout.println("Killing all applications");
+    for (ApplicationReport appReport:applicationReports){      
+      if (appReport.getYarnApplicationState() != YarnApplicationState.FINISHED
+          && appReport.getYarnApplicationState() != YarnApplicationState.KILLED
+          && appReport.getYarnApplicationState() != YarnApplicationState.FAILED) {
+        ApplicationId applicationId = appReport.getApplicationId();
+        sysout.println("Killing application " + applicationId);
+        client.killApplication(applicationId);
+      }
     }
   }
 

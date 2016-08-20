@@ -23,6 +23,7 @@ import static org.apache.hadoop.yarn.util.StringHelper.join;
 import java.util.Collection;
 
 import org.apache.hadoop.yarn.server.resourcemanager.ResourceManager;
+import org.apache.hadoop.yarn.server.resourcemanager.resource.ResourceType;
 import org.apache.hadoop.yarn.server.resourcemanager.scheduler.fair.FairScheduler;
 import org.apache.hadoop.yarn.server.resourcemanager.webapp.dao.FairSchedulerInfo;
 import org.apache.hadoop.yarn.server.resourcemanager.webapp.dao.FairSchedulerLeafQueueInfo;
@@ -67,6 +68,8 @@ public class FairSchedulerPage extends RmView {
     @Override
     protected void render(Block html) {
       ResponseInfo ri = info("\'" + qinfo.getQueueName() + "\' Queue Status").
+          _("Weights:", qinfo.getWeights().toString()).	 
+          _("Priority:", qinfo.getFairPriority()).
           _("Used Resources:", qinfo.getUsedResources().toString()).
           _("Num Active Applications:", qinfo.getNumActiveApplications()).
           _("Num Pending Applications:", qinfo.getNumPendingApplications()).
@@ -177,6 +180,8 @@ public class FairSchedulerPage extends RmView {
               _("Used (over fair share)")._().
             span().$class("qlegend ui-corner-all ui-state-default").
               _("Max Capacity")._().
+            span().$class("qlegend ui-corner-all ui-state-default"). //iglf
+              _("Policy: "+sinfo.getRootQueueInfo().getSchedulingPolicy())._().  
         _().
           li().
             a(_Q).$style(width(Q_MAX_WIDTH)).

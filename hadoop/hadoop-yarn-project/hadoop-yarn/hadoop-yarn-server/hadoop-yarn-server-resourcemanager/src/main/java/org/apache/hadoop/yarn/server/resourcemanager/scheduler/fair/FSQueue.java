@@ -56,14 +56,26 @@ public abstract class FSQueue implements Queue, Schedulable {
   private long fairSharePreemptionTimeout = Long.MAX_VALUE;
   private long minSharePreemptionTimeout = Long.MAX_VALUE;
   private float fairSharePreemptionThreshold = 0.5f;
+  
+  private float fairPriority = Schedulable.DEFAULT_FAIR_PRIORITY; //iglf  
+  private boolean isRunning = false; //iglf 
 
-  public FSQueue(String name, FairScheduler scheduler, FSParentQueue parent) {
+  public float getFairPriority() {
+		return fairPriority;
+  }
+
+  public void setFairPriority(float fairPriority) {
+		this.fairPriority = fairPriority;
+  }
+
+public FSQueue(String name, FairScheduler scheduler, FSParentQueue parent) {
     this.name = name;
     this.scheduler = scheduler;
     this.metrics = FSQueueMetrics.forQueue(getName(), parent, true, scheduler.getConf());
     metrics.setMinShare(getMinShare());
     metrics.setMaxShare(getMaxShare());
     this.parent = parent;
+		this.fairPriority = scheduler.getAllocationConfiguration().getQueueFairPriority(name); //iglf
   }
   
   public String getName() {
@@ -109,7 +121,8 @@ public abstract class FSQueue implements Queue, Schedulable {
 
   @Override
   public long getStartTime() {
-    return 0;
+//    return 0;
+    return this.getAppStartTime();
   }
 
   @Override
@@ -272,6 +285,16 @@ public abstract class FSQueue implements Queue, Schedulable {
   public boolean isActive() {
     return getNumRunnableApps() > 0;
   }
+  
+  public boolean isRunning() { //iglf:
+    //TODO: find another condition to indicate there is ready app in the queue
+//    return getResourceUsage().getMemory()>0 || getResourceUsage().getVirtualCores()>0; // to slow
+    return isRunning;
+  }
+  
+  public void setIsRunning(boolean isRunning){
+    this.isRunning = isRunning;
+  }
 
   /** Convenient toString implementation for debugging. */
   @Override
@@ -291,4 +314,7 @@ public abstract class FSQueue implements Queue, Schedulable {
     // TODO, add implementation for FS
     return null;
   }
+  
+  public abstract long getAppStartTime();
+  
 }

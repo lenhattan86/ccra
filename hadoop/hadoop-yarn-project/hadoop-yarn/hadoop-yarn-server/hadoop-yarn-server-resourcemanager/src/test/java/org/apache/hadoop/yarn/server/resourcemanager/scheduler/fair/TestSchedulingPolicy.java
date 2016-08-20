@@ -24,6 +24,7 @@ import static org.junit.Assert.assertTrue;
 import org.apache.hadoop.yarn.server.resourcemanager.scheduler.fair.policies.DominantResourceFairnessPolicy;
 import org.apache.hadoop.yarn.server.resourcemanager.scheduler.fair.policies.FairSharePolicy;
 import org.apache.hadoop.yarn.server.resourcemanager.scheduler.fair.policies.FifoPolicy;
+import org.apache.hadoop.yarn.server.resourcemanager.scheduler.fair.policies.InstantaneousGuaranteePolicy;
 import org.junit.Test;
 import org.mockito.Mockito;
 
@@ -54,6 +55,11 @@ public class TestSchedulingPolicy {
     sm = SchedulingPolicy.parse("drf");
     assertTrue("Invalid scheduler name",
         sm.getName().equals(DominantResourceFairnessPolicy.NAME));
+    
+    // Shortname - drf
+    sm = SchedulingPolicy.parse("iglf");
+    assertTrue("Invalid scheduler name",
+        sm.getName().equals(InstantaneousGuaranteePolicy.NAME));
     
     // Shortname - fair
     sm = SchedulingPolicy.parse("fair");

@@ -23,6 +23,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -52,6 +53,7 @@ import org.apache.hadoop.yarn.server.resourcemanager.scheduler.ActiveUsersManage
 import org.apache.hadoop.yarn.server.resourcemanager.scheduler.NodeType;
 import org.apache.hadoop.yarn.server.resourcemanager.scheduler.QueueMetrics;
 import org.apache.hadoop.yarn.server.resourcemanager.scheduler.SchedulerApplicationAttempt;
+import org.apache.hadoop.yarn.server.resourcemanager.scheduler.fair.policies.InstantaneousGuaranteePolicy;
 import org.apache.hadoop.yarn.server.utils.BuilderUtils;
 import org.apache.hadoop.yarn.util.resource.DefaultResourceCalculator;
 import org.apache.hadoop.yarn.util.resource.Resources;
@@ -77,6 +79,8 @@ public class FSAppAttempt extends SchedulerApplicationAttempt
   private Resource preemptedResources = Resources.createResource(0);
   private RMContainerComparator comparator = new RMContainerComparator();
   private final Map<RMContainer, Long> preemptionMap = new HashMap<RMContainer, Long>();
+  
+  private float fairPriroity; //TODO: this fairPriority is used in Apps which implement Schedulable interface
 
   /**
    * Delay scheduling: We often want to prioritize scheduling of node-local
@@ -100,6 +104,7 @@ public class FSAppAttempt extends SchedulerApplicationAttempt
     this.startTime = scheduler.getClock().getTime();
     this.priority = Priority.newInstance(1);
     this.resourceWeights = new ResourceWeights();
+    this.fairPriroity = queue.getFairPriority(); // iglf pass the fairPriority from queue to app
   }
 
   public ResourceWeights getResourceWeights() {
@@ -179,19 +184,19 @@ public class FSAppAttempt extends SchedulerApplicationAttempt
   public Resource getHeadroom() {
     final FSQueue queue = (FSQueue) this.queue;
     SchedulingPolicy policy = queue.getPolicy();
-
+    
     Resource queueFairShare = queue.getFairShare();
     Resource queueUsage = queue.getResourceUsage();
     Resource clusterResource = this.scheduler.getClusterResource();
     Resource clusterUsage = this.scheduler.getRootQueueMetrics()
         .getAllocatedResources();
-
+    
     Resource clusterAvailableResources =
         Resources.subtract(clusterResource, clusterUsage);
     Resource queueMaxAvailableResources =
         Resources.subtract(queue.getMaxShare(), queueUsage);
     Resource maxAvailableResource = Resources.componentwiseMin(
-        clusterAvailableResources, queueMaxAvailableResources);
+        clusterAvailableResources, queueMaxAvailableResources);    
 
     Resource headroom = policy.getHeadroom(queueFairShare,
         queueUsage, maxAvailableResource);
@@ -204,6 +209,28 @@ public class FSAppAttempt extends SchedulerApplicationAttempt
           "Headroom=" + headroom);
     }
     return headroom;
+  }
+  
+  public Resource getFlexibleResource(){ //iglf:
+    
+    Resource clusterResource = this.scheduler.getClusterResource();
+    Resource minReqResource = BuilderUtils.newResource(0, 0);
+    
+    Iterator<FSQueue>  queues = this.scheduler.getQueueManager().getQueues().iterator();
+    while (queues.hasNext()){ // TODO: it should work on the complicated tree (more than 2 layers) 
+      FSQueue fsQueue = queues.next();
+      if (fsQueue.isRunning() && !fsQueue.getQueueName().equals("root")){
+        minReqResource.setMemory(minReqResource.getMemory() + fsQueue.getMinShare().getMemory());
+        minReqResource.setVirtualCores(minReqResource.getVirtualCores()+ fsQueue.getMinShare().getVirtualCores());
+        LOG.info(fsQueue.getQueueName()+": "+fsQueue.getResourceUsage());
+      }
+    }      
+    
+    Resource flexibleResource =
+        Resources.subtract(clusterResource, minReqResource);
+
+    LOG.info(this.getApplicationAttemptId()+" minReqResource: "+minReqResource+" flexibleResource: "+flexibleResource);
+    return flexibleResource;
   }
 
   public synchronized float getLocalityWaitFactor(
@@ -316,6 +343,7 @@ public class FSAppAttempt extends SchedulerApplicationAttempt
       Priority priority, ResourceRequest request,
       Container container) {
     // Update allowed locality level
+    LOG.info("allocate container: " +container.getId() + " priority " + priority);
     NodeType allowed = allowedLocalityLevel.get(priority);
     if (allowed != null) {
       if (allowed.equals(NodeType.OFF_SWITCH) &&
@@ -495,7 +523,11 @@ public class FSAppAttempt extends SchedulerApplicationAttempt
   private Resource assignContainer(
       FSSchedulerNode node, ResourceRequest request, NodeType type,
       boolean reserved) {
-
+    // iglf - START
+		LOG.info("assignContainer(FSSchedulerNode:"+node.getNodeName()+", ResourceRequest request, NodeType type, boolean reserved="+reserved); 
+		this.getQueue().setIsRunning(true); 
+	  // iglf - END
+		
     // How much does this request need?
     Resource capability = request.getCapability();
 
@@ -554,6 +586,7 @@ public class FSAppAttempt extends SchedulerApplicationAttempt
   }
 
   private Resource assignContainer(FSSchedulerNode node, boolean reserved) {
+		LOG.info("assignContainer(FSSchedulerNode node:"+node.getNodeName()+", boolean reserved="+reserved + ") for "+ this.getApplicationAttemptId());
     if (LOG.isDebugEnabled()) {
       LOG.debug("Node offered to app: " + getName() + " reserved: " + reserved);
     }
@@ -749,6 +782,12 @@ public class FSAppAttempt extends SchedulerApplicationAttempt
     return scheduler.getAppWeight(this);
   }
 
+	
+  @Override
+  public float getFairPriority() {//iglf
+    return fairPriroity;
+  }
+
   @Override
   public Priority getPriority() {
     // Right now per-app priorities are not passed to scheduler,
@@ -808,4 +847,10 @@ public class FSAppAttempt extends SchedulerApplicationAttempt
     }
     return toBePreempted;
   }
+
+  @Override
+  public void setFairPriority(float fairPriroity) {
+    this.fairPriroity = fairPriroity;
+  }
+  
 }

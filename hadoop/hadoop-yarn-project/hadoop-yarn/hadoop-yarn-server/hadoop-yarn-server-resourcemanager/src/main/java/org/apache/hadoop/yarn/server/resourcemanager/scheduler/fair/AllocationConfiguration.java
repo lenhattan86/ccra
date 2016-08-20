@@ -76,6 +76,12 @@ public class AllocationConfiguration extends ReservationSchedulerConfiguration {
   // fairshare * fairSharePreemptionThreshold resources, it is allowed to
   // preempt other queues' tasks.
   private final Map<String, Float> fairSharePreemptionThresholds;
+  
+  private final Map<String, Float> queueFairPriorities; //iglf  
+  public float getQueueFairPriority(String queue) {
+    Float fairPriority = queueFairPriorities.get(queue);
+    return (fairPriority == null) ? Schedulable.DEFAULT_FAIR_PRIORITY : fairPriority;
+  }
 
   private final Set<String> reservableQueues;
 
@@ -105,6 +111,7 @@ public class AllocationConfiguration extends ReservationSchedulerConfiguration {
       Map<String, Long> minSharePreemptionTimeouts,
       Map<String, Long> fairSharePreemptionTimeouts,
       Map<String, Float> fairSharePreemptionThresholds,
+      Map<String, Float> queueFairPriorities, //iglf
       Map<String, Map<QueueACL, AccessControlList>> queueAcls,
       QueuePlacementPolicy placementPolicy,
       Map<FSQueueType, Set<String>> configuredQueues,
@@ -124,6 +131,7 @@ public class AllocationConfiguration extends ReservationSchedulerConfiguration {
     this.minSharePreemptionTimeouts = minSharePreemptionTimeouts;
     this.fairSharePreemptionTimeouts = fairSharePreemptionTimeouts;
     this.fairSharePreemptionThresholds = fairSharePreemptionThresholds;
+    this.queueFairPriorities = queueFairPriorities; //iglf
     this.queueAcls = queueAcls;
     this.reservableQueues = reservableQueues;
     this.globalReservationQueueConfig = globalReservationQueueConfig;
@@ -145,6 +153,7 @@ public class AllocationConfiguration extends ReservationSchedulerConfiguration {
     minSharePreemptionTimeouts = new HashMap<String, Long>();
     fairSharePreemptionTimeouts = new HashMap<String, Long>();
     fairSharePreemptionThresholds = new HashMap<String, Float>();
+    queueFairPriorities = new HashMap<String, Float>(); //iglf
     schedulingPolicies = new HashMap<String, SchedulingPolicy>();
     defaultSchedulingPolicy = SchedulingPolicy.DEFAULT_POLICY;
     reservableQueues = new HashSet<>();

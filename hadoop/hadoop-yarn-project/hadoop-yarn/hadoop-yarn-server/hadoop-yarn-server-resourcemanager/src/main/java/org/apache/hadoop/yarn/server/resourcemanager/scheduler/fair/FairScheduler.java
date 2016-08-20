@@ -885,12 +885,18 @@ public class FairScheduler extends
   public Allocation allocate(ApplicationAttemptId appAttemptId,
       List<ResourceRequest> ask, List<ContainerId> release,
       List<String> blacklistAdditions, List<String> blacklistRemovals) {
-
+		LOG.info("allocate("+appAttemptId + " " + ask + " " + release + " " + blacklistAdditions + " " + blacklistRemovals);
     // Make sure this application exists
     FSAppAttempt application = getSchedulerApp(appAttemptId);
     if (application == null) {
       LOG.info("Calling allocate on removed " +
           "or non existant application " + appAttemptId);
+      return EMPTY_ALLOCATION;
+    }
+    
+    // if the remaining flexible is less than the demand
+    if (application.getFlexibleResource().isEmpty()) {
+      LOG.info("Cannot allocate resource to " + appAttemptId + " because there is NO flexible resource left");
       return EMPTY_ALLOCATION;
     }
 
@@ -942,6 +948,7 @@ public class FairScheduler extends
       ContainersAndNMTokensAllocation allocation =
           application.pullNewlyAllocatedContainersAndNMTokens();
       Resource headroom = application.getHeadroom();
+      LOG.info("iglf: "+application.getApplicationId().getId()+".getHeadroom()="+application.getHeadroom());
       application.setApplicationHeadroomForMetrics(headroom);
       return new Allocation(allocation.getContainerList(), headroom,
           preemptionContainerIds, null, null, allocation.getNMTokenList());

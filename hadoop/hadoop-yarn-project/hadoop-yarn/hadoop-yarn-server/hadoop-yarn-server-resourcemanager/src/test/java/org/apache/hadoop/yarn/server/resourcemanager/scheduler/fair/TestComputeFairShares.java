@@ -163,6 +163,24 @@ public class TestComputeFairShares {
   }
   
   /**
+   * Test that shares are computed accurately even when the number of slots is
+   * very large.
+   */
+  
+  @Test
+  public void testFixedPriority2() {
+    int million = 1000 * 1000;
+    long now =  System.currentTimeMillis();
+    scheds.add(new FakeSchedulable(now - (Schedulable.HIGH_PRIORITY_DURATION+1)*1000 , 3.0f));
+    scheds.add(new FakeSchedulable(now, 1.0f));
+    ComputeFairShares.computeSharesIGLF(scheds,
+        Resources.createResource(40 * million), ResourceType.MEMORY);
+    System.out.println(scheds.get(0).getFairShare().getMemory() + " " + scheds.get(1).getFairShare().getMemory());
+    System.out.println();
+    verifyMemoryShares(20 * million, 20 * million);
+  }
+  
+  /**
    * Test that being called on an empty list doesn't confuse the algorithm.
    */
   @Test

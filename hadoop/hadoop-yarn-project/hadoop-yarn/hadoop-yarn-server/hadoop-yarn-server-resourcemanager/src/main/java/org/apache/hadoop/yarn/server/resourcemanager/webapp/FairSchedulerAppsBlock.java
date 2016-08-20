@@ -92,6 +92,7 @@ public class FairSchedulerAppsBlock extends HtmlBlock {
             th(".state", "State").
             th(".finalstatus", "FinalStatus").
             th(".progress", "Progress").
+            th(".progress", "Progress").
             th(".ui", "Tracking UI")._()._().
         tbody();
     Collection<YarnApplicationState> reqAppStates = null;
@@ -132,6 +133,7 @@ public class FairSchedulerAppsBlock extends HtmlBlock {
       .append(appInfo.getFinishTime()).append("\",\"")
       .append(appInfo.getState()).append("\",\"")
       .append(appInfo.getFinalStatus()).append("\",\"")
+      .append(appInfo.getProgress()).append("\",\"")
       // Progress bar
       .append("<br title='").append(percent)
       .append("'> <div class='").append(C_PROGRESSBAR).append("' title='")

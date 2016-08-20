@@ -18,6 +18,8 @@
 
 package org.apache.hadoop.yarn.server.resourcemanager.scheduler.fair;
 
+import java.util.ArrayList;
+
 import org.apache.hadoop.yarn.api.records.Priority;
 import org.apache.hadoop.yarn.api.records.Resource;
 import org.apache.hadoop.yarn.server.resourcemanager.resource.ResourceWeights;
@@ -36,9 +38,14 @@ public class FakeSchedulable implements Schedulable {
   private ResourceWeights weights;
   private Priority priority;
   private long startTime;
+  private float fairPriority;
   
   public FakeSchedulable() {
     this(0, Integer.MAX_VALUE, 1, 0, 0, 0);
+  }
+  
+  public FakeSchedulable(long startTime, float fairPriority) {
+    this(0, Integer.MAX_VALUE, 1, 0, 0, startTime, fairPriority);
   }
   
   public FakeSchedulable(int minShare) {
@@ -64,6 +71,13 @@ public class FakeSchedulable implements Schedulable {
         Resources.createResource(usage, 0), startTime);
   }
   
+  public FakeSchedulable(int minShare, int maxShare, double weight, int fairShare, int usage,
+      long startTime, float fairPrirotity) {
+    this(Resources.createResource(minShare, 0), Resources.createResource(maxShare, 0),
+        new ResourceWeights((float)weight), Resources.createResource(fairShare, 0),
+        Resources.createResource(usage, 0), startTime, fairPrirotity);
+  }
+  
   public FakeSchedulable(Resource minShare, ResourceWeights weights) {
     this(minShare, Resources.createResource(Integer.MAX_VALUE, Integer.MAX_VALUE),
         weights, Resources.createResource(0, 0), Resources.createResource(0, 0), 0);
@@ -78,6 +92,18 @@ public class FakeSchedulable implements Schedulable {
     this.usage = usage;
     this.priority = Records.newRecord(Priority.class);
     this.startTime = startTime;
+  }
+  
+  public FakeSchedulable(Resource minShare, Resource maxShare,
+      ResourceWeights weight, Resource fairShare, Resource usage, long startTime, float fairPriority) {
+    this.minShare = minShare;
+    this.maxShare = maxShare;
+    this.weights = weight;
+    setFairShare(fairShare);
+    this.usage = usage;
+    this.priority = Records.newRecord(Priority.class);
+    this.startTime = startTime;
+    this.fairPriority = fairPriority;
   }
   
   @Override
@@ -142,4 +168,13 @@ public class FakeSchedulable implements Schedulable {
 
   @Override
   public void updateDemand() {}
+  
+  @Override
+  public float getFairPriority() {//iglf
+    return fairPriority;
+  }
+  
+  public void setFairPriority(float fairPriority) {
+    this.fairPriority = fairPriority;
+  }
 }

@@ -31,6 +31,7 @@ import org.apache.hadoop.yarn.server.resourcemanager.scheduler.QueueMetrics;
 import org.apache.hadoop.yarn.server.resourcemanager.scheduler.fair.policies.DominantResourceFairnessPolicy;
 import org.apache.hadoop.yarn.server.resourcemanager.scheduler.fair.policies.FairSharePolicy;
 import org.apache.hadoop.yarn.server.resourcemanager.scheduler.fair.policies.FifoPolicy;
+import org.apache.hadoop.yarn.server.resourcemanager.scheduler.fair.policies.InstantaneousGuaranteePolicy;
 import org.apache.hadoop.yarn.util.Clock;
 import org.apache.hadoop.yarn.util.resource.Resources;
 import org.junit.Before;
@@ -198,6 +199,83 @@ public class TestFSAppAttempt extends FairSchedulerTestBase {
     Mockito.when(mockScheduler.getClock()).thenReturn(scheduler.getClock());
 
     final FSLeafQueue mockQueue = Mockito.mock(FSLeafQueue.class);
+
+    final Resource queueMaxResources = Resource.newInstance(5 * 1024, 3);
+    final Resource queueFairShare = Resources.createResource(4096, 2);
+    final Resource queueUsage = Resource.newInstance(2048, 2);
+
+    final Resource queueStarvation =
+        Resources.subtract(queueFairShare, queueUsage);
+    final Resource queueMaxResourcesAvailable =
+        Resources.subtract(queueMaxResources, queueUsage);
+
+    final Resource clusterResource = Resources.createResource(8192, 8);
+    final Resource clusterUsage = Resources.createResource(2048, 2);
+    final Resource clusterAvailable =
+        Resources.subtract(clusterResource, clusterUsage);
+
+    final QueueMetrics fakeRootQueueMetrics = Mockito.mock(QueueMetrics.class);
+
+    Mockito.when(mockQueue.getMaxShare()).thenReturn(queueMaxResources);
+    Mockito.when(mockQueue.getFairShare()).thenReturn(queueFairShare);
+    Mockito.when(mockQueue.getResourceUsage()).thenReturn(queueUsage);
+    Mockito.when(mockScheduler.getClusterResource()).thenReturn
+        (clusterResource);
+    Mockito.when(fakeRootQueueMetrics.getAllocatedResources()).thenReturn
+        (clusterUsage);
+    Mockito.when(mockScheduler.getRootQueueMetrics()).thenReturn
+        (fakeRootQueueMetrics);
+
+    ApplicationAttemptId applicationAttemptId = createAppAttemptId(1, 1);
+    RMContext rmContext = resourceManager.getRMContext();
+    FSAppAttempt schedulerApp =
+        new FSAppAttempt(mockScheduler, applicationAttemptId, "user1", mockQueue ,
+            null, rmContext);
+
+    // Min of Memory and CPU across cluster and queue is used in
+    // DominantResourceFairnessPolicy
+    Mockito.when(mockQueue.getPolicy()).thenReturn(SchedulingPolicy
+        .getInstance(DominantResourceFairnessPolicy.class));
+    verifyHeadroom(schedulerApp,
+        min(queueStarvation.getMemory(),
+            clusterAvailable.getMemory(),
+            queueMaxResourcesAvailable.getMemory()),
+        min(queueStarvation.getVirtualCores(),
+            clusterAvailable.getVirtualCores(),
+            queueMaxResourcesAvailable.getVirtualCores())
+    );
+
+    // Fair and Fifo ignore CPU of queue, so use cluster available CPU
+    Mockito.when(mockQueue.getPolicy()).thenReturn(SchedulingPolicy
+        .getInstance(FairSharePolicy.class));
+    verifyHeadroom(schedulerApp,
+        min(queueStarvation.getMemory(),
+            clusterAvailable.getMemory(),
+            queueMaxResourcesAvailable.getMemory()),
+        Math.min(
+            clusterAvailable.getVirtualCores(),
+            queueMaxResourcesAvailable.getVirtualCores())
+    );
+
+    Mockito.when(mockQueue.getPolicy()).thenReturn(SchedulingPolicy
+        .getInstance(FifoPolicy.class));
+    verifyHeadroom(schedulerApp,
+        min(queueStarvation.getMemory(),
+            clusterAvailable.getMemory(),
+            queueMaxResourcesAvailable.getMemory()),
+        Math.min(
+            clusterAvailable.getVirtualCores(),
+            queueMaxResourcesAvailable.getVirtualCores())
+    );
+  }
+  
+  @Test
+  public void testHeadroomIGLF() throws AllocationConfigurationException {
+    final FairScheduler mockScheduler = Mockito.mock(FairScheduler.class);
+    Mockito.when(mockScheduler.getClock()).thenReturn(scheduler.getClock());
+
+    final FSLeafQueue mockQueue = Mockito.mock(FSLeafQueue.class);
+    mockQueue.setPolicy(SchedulingPolicy.parse(InstantaneousGuaranteePolicy.NAME));
 
     final Resource queueMaxResources = Resource.newInstance(5 * 1024, 3);
     final Resource queueFairShare = Resources.createResource(4096, 2);

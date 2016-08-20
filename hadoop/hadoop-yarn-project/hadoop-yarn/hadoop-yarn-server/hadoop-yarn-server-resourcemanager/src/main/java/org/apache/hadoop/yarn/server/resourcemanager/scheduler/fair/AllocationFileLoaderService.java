@@ -220,6 +220,7 @@ public class AllocationFileLoaderService extends AbstractService {
     Map<String, Long> fairSharePreemptionTimeouts = new HashMap<String, Long>();
     Map<String, Float> fairSharePreemptionThresholds =
         new HashMap<String, Float>();
+    Map<String, Float> queueFairPriorities = new HashMap<String, Float>(); //iglf
     Map<String, Map<QueueACL, AccessControlList>> queueAcls =
         new HashMap<String, Map<QueueACL, AccessControlList>>();
     Set<String> reservableQueues = new HashSet<String>();
@@ -352,7 +353,9 @@ public class AllocationFileLoaderService extends AbstractService {
       loadQueue(parent, element, minQueueResources, maxQueueResources,
           queueMaxApps, userMaxApps, queueMaxAMShares, queueWeights,
           queuePolicies, minSharePreemptionTimeouts, fairSharePreemptionTimeouts,
-          fairSharePreemptionThresholds, queueAcls, configuredQueues,
+          fairSharePreemptionThresholds, 
+          queueFairPriorities, //iglf
+          queueAcls, configuredQueues,
           reservableQueues);
     }
 
@@ -400,7 +403,9 @@ public class AllocationFileLoaderService extends AbstractService {
         queueMaxAMShares, userMaxAppsDefault, queueMaxAppsDefault,
         queueMaxAMShareDefault, queuePolicies, defaultSchedPolicy,
         minSharePreemptionTimeouts, fairSharePreemptionTimeouts,
-        fairSharePreemptionThresholds, queueAcls,
+        fairSharePreemptionThresholds,
+        queueFairPriorities, //iglf
+        queueAcls,
         newPlacementPolicy, configuredQueues, globalReservationQueueConfig,
         reservableQueues);
     
@@ -422,6 +427,7 @@ public class AllocationFileLoaderService extends AbstractService {
       Map<String, Long> minSharePreemptionTimeouts,
       Map<String, Long> fairSharePreemptionTimeouts,
       Map<String, Float> fairSharePreemptionThresholds,
+      Map<String, Float> queueFairPriorities, //iglf
       Map<String, Map<QueueACL, AccessControlList>> queueAcls,
       Map<FSQueueType, Set<String>> configuredQueues,
       Set<String> reservableQueues)
@@ -495,12 +501,17 @@ public class AllocationFileLoaderService extends AbstractService {
         isLeaf = false;
         reservableQueues.add(queueName);
         configuredQueues.get(FSQueueType.PARENT).add(queueName);
-      } else if ("queue".endsWith(field.getTagName()) || 
+      } else if ("fairPriority".equals(field.getTagName())) { //iglf
+        String text = ((Text)field.getFirstChild()).getData().trim();
+        float val = Float.parseFloat(text);
+        queueFairPriorities.put(queueName, val);
+      }else if ("queue".endsWith(field.getTagName()) || 
           "pool".equals(field.getTagName())) {
         loadQueue(queueName, field, minQueueResources, maxQueueResources,
             queueMaxApps, userMaxApps, queueMaxAMShares, queueWeights,
             queuePolicies, minSharePreemptionTimeouts,
             fairSharePreemptionTimeouts, fairSharePreemptionThresholds,
+            queueFairPriorities, //iglf
             queueAcls, configuredQueues, reservableQueues);
         isLeaf = false;
       }

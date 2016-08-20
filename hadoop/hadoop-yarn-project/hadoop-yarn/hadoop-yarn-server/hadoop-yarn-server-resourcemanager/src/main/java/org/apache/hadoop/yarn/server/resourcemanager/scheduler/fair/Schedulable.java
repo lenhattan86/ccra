@@ -18,6 +18,8 @@
 
 package org.apache.hadoop.yarn.server.resourcemanager.scheduler.fair;
 
+import java.util.ArrayList;
+
 import org.apache.hadoop.classification.InterfaceAudience.Private;
 import org.apache.hadoop.classification.InterfaceStability.Unstable;
 import org.apache.hadoop.yarn.api.records.Priority;
@@ -101,4 +103,20 @@ public interface Schedulable {
 
   /** Assign a fair share to this Schedulable. */
   public void setFairShare(Resource fairShare);
+  
+  public float getFairPriority(); //iglf
+  
+  public void setFairPriority(float fairPriority); //iglf
+  
+  public static final long HIGH_PRIORITY_DURATION = 120 * 1000; // mili seconds
+  
+  public static final float DEFAULT_FAIR_PRIORITY = 1.0f;
+  
+//  public void setIglfPriorityDurations(ArrayList<Long> iglfDurations);
+//  
+//  public void getIglfPriorityDurations();
+//  
+//  public void setIglfPriorities(ArrayList<Double> iglfPriorities);
+//  
+//  public void getIglfPriorities();  
 }

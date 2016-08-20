@@ -559,4 +559,13 @@ public class FSLeafQueue extends FSQueue {
     return Resources.lessThan(scheduler.getResourceCalculator(),
         scheduler.getClusterResource(), getResourceUsage(), desiredShare);
   }
+  
+  @Override
+  public long getAppStartTime(){ //iglf
+    long startTime = 0;
+    if (runnableApps.size()>0)
+      startTime = this.runnableApps.get(0).getStartTime();
+      
+    return startTime;
+  }
 }

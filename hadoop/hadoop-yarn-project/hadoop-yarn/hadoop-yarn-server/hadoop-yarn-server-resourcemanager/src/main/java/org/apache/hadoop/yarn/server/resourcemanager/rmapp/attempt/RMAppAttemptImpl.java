@@ -928,6 +928,7 @@ public class RMAppAttemptImpl implements RMAppAttempt, Recoverable {
     @Override
     public RMAppAttemptState transition(RMAppAttemptImpl appAttempt,
         RMAppAttemptEvent event) {
+      LOG.info("ScheduleTransition.transition("+appAttempt.getAppAttemptId()+","+event+")");
       ApplicationSubmissionContext subCtx = appAttempt.submissionContext;
       if (!subCtx.getUnmanagedAM()) {
         // Need reset #containers before create new attempt, because this request
@@ -968,6 +969,7 @@ public class RMAppAttemptImpl implements RMAppAttempt, Recoverable {
     public RMAppAttemptState transition(RMAppAttemptImpl appAttempt,
         RMAppAttemptEvent event) {
       // Acquire the AM container from the scheduler.
+      LOG.info("AMContainerAllocatedTransition.transition("+appAttempt.getAppAttemptId()+","+event+")");
       Allocation amContainerAllocation =
           appAttempt.scheduler.allocate(appAttempt.applicationAttemptId,
             EMPTY_CONTAINER_REQUEST_LIST, EMPTY_CONTAINER_RELEASE_LIST, null,
