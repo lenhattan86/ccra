@@ -38,7 +38,7 @@ public class FakeSchedulable implements Schedulable {
   private ResourceWeights weights;
   private Priority priority;
   private long startTime;
-  private float fairPriority;
+  private float fairPriority = 1.0f;
   
   public FakeSchedulable() {
     this(0, Integer.MAX_VALUE, 1, 0, 0, 0);

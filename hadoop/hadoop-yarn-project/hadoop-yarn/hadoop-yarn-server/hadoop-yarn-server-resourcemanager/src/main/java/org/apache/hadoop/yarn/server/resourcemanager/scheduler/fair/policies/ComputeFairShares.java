@@ -209,9 +209,11 @@ public class ComputeFairShares {
         break;
       }
     }
+    
+    int minReqReq = resourceUsedByMinShare(schedulables,type);
 
     int totalResource = Math.max((getResourceValue(totalResources, type) -
-        takenResources), 0);
+        takenResources - minReqReq), 0);
     totalResource = Math.min(totalMaxShare, totalResource);
 
     double rMax = 1.0;
@@ -239,11 +241,11 @@ public class ComputeFairShares {
     for (Schedulable sched : schedulables) {
       if (isSteadyShare) {
         setResourceValue(computeShareIGLF(sched, right, type),
-            ((FSQueue) sched).getSteadyFairShare(), type);
+            ((FSQueue) sched).getSteadyFairShare(), sched.getMinShare(), type);
       } else {
         setResourceValue(
-            computeShareIGLF(sched, right, type), sched.getFairShare(), type);
-//        LOG.info("Resource Allocated: "+sched.getName()+" = "+sched.getFairShare());
+            computeShareIGLF(sched, right, type), sched.getFairShare(), sched.getMinShare(), type);
+        LOG.info("Resource Allocated: "+sched.getName()+" = "+sched.getFairShare()+ " right="+right + " rMax="+rMax);
       }
     }
   }
@@ -271,6 +273,14 @@ public class ComputeFairShares {
     }
     return resourcesTaken;
   }
+  
+  private static int resourceUsedByMinShare(Collection<? extends Schedulable> schedulables, ResourceType type) {
+    int resourcesTaken = 0;
+    for (Schedulable sched : schedulables) {
+      resourcesTaken += getResourceValue(sched.getMinShare(), type);
+    }
+    return resourcesTaken;
+  }
 
 
   /**
@@ -285,10 +295,10 @@ public class ComputeFairShares {
     return (int) share;
   }
   
-  private static int computeShareIGLF(Schedulable sched, double w2rRatio, // to compute the total steady share & Instantaneous  share for each schedulable (as in the UI)
+  private static int computeShareIGLF(Schedulable sched, double w2rRatio, 
       ResourceType type) {
     
-    ComputeFairShares.setPriorityOverTime(sched);
+//    ComputeFairShares.setPriorityOverTime(sched);
     
     float fairPriority=sched.getFairPriority(); 
     
@@ -404,6 +414,19 @@ public class ComputeFairShares {
       break;
     case CPU:
       resource.setVirtualCores(val);
+      break;
+    default:
+      throw new IllegalArgumentException("Invalid resource");
+    }
+  }
+  
+  private static void setResourceValue(int val, Resource resource, Resource minShare, ResourceType type) {
+    switch (type) {
+    case MEMORY:
+      resource.setMemory(val+minShare.getMemory());
+      break;
+    case CPU:
+      resource.setVirtualCores(val+minShare.getVirtualCores());
       break;
     default:
       throw new IllegalArgumentException("Invalid resource");

@@ -229,9 +229,18 @@ public class TestComputeFairShares {
   }
   
   /*
-   * Equally share the remaining resource to the schedulables.
+   * Equally share the remaining (excess) resource to the schedulables.
    */
-  
+  @Test
+  public void testEqualExcessShare() {
+    scheds.add(new FakeSchedulable(8));
+    scheds.add(new FakeSchedulable(8));
+    scheds.add(new FakeSchedulable(8));
+    scheds.add(new FakeSchedulable(0));
+    ComputeFairShares.computeSharesIGLF(scheds,
+        Resources.createResource(64), ResourceType.MEMORY);
+    verifyMemoryShares(8+10, 8+10, 8+10, 10);
+  }
   /*
    * Fair share among the running schedulables. (same resource for the same prioirty)
    */
