@@ -113,6 +113,14 @@ public class FSLeafQueue extends FSQueue {
     writeLock.lock();
     try {
       runnable = runnableApps.remove(app);
+      
+      // iglf: START
+  		LOG.info("queue: "+ this.getQueueName() + " include "+this.getNumActiveApps() +" active apps: " + this.runnableApps);
+      if (getNumActiveApps()==0){ // TODO need to consider the case of the apps running not being active
+        setIsRunning(false);
+      }
+      // iglf: END
+      
       if (!runnable) {
         // removeNonRunnableApp acquires the write lock again, which is fine
         if (!removeNonRunnableApp(app)) {

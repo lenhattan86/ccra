@@ -243,6 +243,7 @@ public class ComputeFairShares {
       } else {
         setResourceValue(
             computeShareIGLF(sched, right, type), sched.getFairShare(), type);
+//        LOG.info("Resource Allocated: "+sched.getName()+" = "+sched.getFairShare());
       }
     }
   }

@@ -5,7 +5,7 @@ do
 	echo "==========================================="
 	date --rfc-3339=seconds
 	echo "Compiling...."
-	mvn package -Pdist -DskipTests -Dtar > compile.log
+	mvn package -Pdist -DskipTests -Dtar
 	echo "Done at"
 	date --rfc-3339=seconds
 	echo "You can deploy now ..."

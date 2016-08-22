@@ -711,10 +711,6 @@ public class RMAppImpl implements RMApp, Recoverable {
         /* TODO fail the application on the failed transition */
       }
 
-      if (oldState != getState()) {
-        LOG.info(appID + " State change from " + oldState + " to "
-            + getState());
-      }
     } finally {
       this.writeLock.unlock();
     }

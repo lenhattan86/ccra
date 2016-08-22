@@ -227,4 +227,12 @@ public class TestComputeFairShares {
       Assert.assertEquals(shares[i], scheds.get(i).getFairShare().getVirtualCores());
     }
   }
+  
+  /*
+   * Equally share the remaining resource to the schedulables.
+   */
+  
+  /*
+   * Fair share among the running schedulables. (same resource for the same prioirty)
+   */
 }

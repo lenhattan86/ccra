@@ -91,7 +91,7 @@ public class FairSchedulerAppsBlock extends HtmlBlock {
             th(".finishtime", "FinishTime").
             th(".state", "State").
             th(".finalstatus", "FinalStatus").
-            th(".progress", "Progress").
+            th(".userResource", "UsedResource").
             th(".progress", "Progress").
             th(".ui", "Tracking UI")._()._().
         tbody();
@@ -135,7 +135,7 @@ public class FairSchedulerAppsBlock extends HtmlBlock {
       .append(appInfo.getFinalStatus()).append("\",\"")
       .append(appInfo.getProgress()).append("\",\"")
       // Progress bar
-      .append("<br title='").append(percent)
+      .append("<br title='").append(appInfo.getAllocatedMB()+"MB,"+appInfo.getAllocatedVCores()+"vcores")
       .append("'> <div class='").append(C_PROGRESSBAR).append("' title='")
       .append(join(percent, '%')).append("'> ").append("<div class='")
       .append(C_PROGRESSBAR_VALUE).append("' style='")

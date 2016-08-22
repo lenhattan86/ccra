@@ -523,11 +523,7 @@ public class FSAppAttempt extends SchedulerApplicationAttempt
   private Resource assignContainer(
       FSSchedulerNode node, ResourceRequest request, NodeType type,
       boolean reserved) {
-    // iglf - START
-		LOG.info("assignContainer(FSSchedulerNode:"+node.getNodeName()+", ResourceRequest request, NodeType type, boolean reserved="+reserved); 
-		this.getQueue().setIsRunning(true); 
-	  // iglf - END
-		
+	
     // How much does this request need?
     Resource capability = request.getCapability();
 

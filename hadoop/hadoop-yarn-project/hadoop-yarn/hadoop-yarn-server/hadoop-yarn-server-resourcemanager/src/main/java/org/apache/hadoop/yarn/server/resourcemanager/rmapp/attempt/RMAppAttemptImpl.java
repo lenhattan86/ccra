@@ -208,7 +208,8 @@ public class RMAppAttemptImpl implements RMAppAttempt, Recoverable {
       // Transitions from SUBMITTED state
       .addTransition(RMAppAttemptState.SUBMITTED, 
           EnumSet.of(RMAppAttemptState.LAUNCHED_UNMANAGED_SAVING,
-                     RMAppAttemptState.SCHEDULED),
+                     RMAppAttemptState.SCHEDULED,
+                     RMAppAttemptState.SUBMITTED), //iglf added one more state for admission control
           RMAppAttemptEventType.ATTEMPT_ADDED,
           new ScheduleTransition())
       .addTransition(RMAppAttemptState.SUBMITTED, RMAppAttemptState.FINAL_SAVING,
@@ -949,10 +950,19 @@ public class RMAppAttemptImpl implements RMAppAttempt, Recoverable {
             appAttempt.scheduler.allocate(appAttempt.applicationAttemptId,
                 Collections.singletonList(appAttempt.amReq),
                 EMPTY_CONTAINER_RELEASE_LIST, null, null);
+        
+        // iglf: START
+        if (amContainerAllocation==null) {
+	        appAttempt.retryScheduleAppAttemp(appAttempt);
+	        return RMAppAttemptState.SUBMITTED;
+	      }
+        // iglf: END
+        
         if (amContainerAllocation != null
             && amContainerAllocation.getContainers() != null) {
           assert (amContainerAllocation.getContainers().size() == 0);
         }
+        
         return RMAppAttemptState.SCHEDULED;
       } else {
         // save state and then go to LAUNCHED state
@@ -960,6 +970,24 @@ public class RMAppAttemptImpl implements RMAppAttempt, Recoverable {
         return RMAppAttemptState.LAUNCHED_UNMANAGED_SAVING;
       }
     }
+  }
+  
+  private void retryScheduleAppAttemp(final RMAppAttemptImpl appAttempt) {
+    // start a new thread so that we are not blocking main dispatcher thread.
+    new Thread() {
+      @Override
+      public void run() {
+        try {
+          Thread.sleep(1000);
+        } catch (InterruptedException e) {
+          LOG.warn("Interrupted while waiting to resend the"
+              + " AppAttempt Event.");
+        }
+        appAttempt.eventHandler.handle(
+            new RMAppAttemptEvent(appAttempt.applicationAttemptId,
+                RMAppAttemptEventType.ATTEMPT_ADDED));
+      }
+    }.start();
   }
 
   private static final class AMContainerAllocatedTransition
