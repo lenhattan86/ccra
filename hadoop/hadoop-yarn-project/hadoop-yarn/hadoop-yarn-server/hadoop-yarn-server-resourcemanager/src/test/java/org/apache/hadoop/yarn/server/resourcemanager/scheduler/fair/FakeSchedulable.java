@@ -39,6 +39,7 @@ public class FakeSchedulable implements Schedulable {
   private Priority priority;
   private long startTime;
   private float fairPriority = 1.0f;
+  private Resource minReq;
   
   public FakeSchedulable() {
     this(0, Integer.MAX_VALUE, 1, 0, 0, 0);
@@ -50,6 +51,7 @@ public class FakeSchedulable implements Schedulable {
   
   public FakeSchedulable(int minShare) {
     this(minShare, Integer.MAX_VALUE, 1, 0, 0, 0);
+    minReq = this.getMinShare();
   }
   
   public FakeSchedulable(int minShare, int maxShare) {
@@ -176,5 +178,10 @@ public class FakeSchedulable implements Schedulable {
   
   public void setFairPriority(float fairPriority) {
     this.fairPriority = fairPriority;
+  }
+
+  @Override
+  public Resource getMinReq() {
+    return this.minReq;
   }
 }

@@ -39,6 +39,7 @@ public class AllocationConfiguration extends ReservationSchedulerConfiguration {
   
   // Minimum resource allocation for each queue
   private final Map<String, Resource> minQueueResources;
+
   // Maximum amount of resources per queue
   @VisibleForTesting
   final Map<String, Resource> maxQueueResources;
@@ -77,12 +78,6 @@ public class AllocationConfiguration extends ReservationSchedulerConfiguration {
   // preempt other queues' tasks.
   private final Map<String, Float> fairSharePreemptionThresholds;
   
-  private final Map<String, Float> queueFairPriorities; //iglf  
-  public float getQueueFairPriority(String queue) {
-    Float fairPriority = queueFairPriorities.get(queue);
-    return (fairPriority == null) ? Schedulable.DEFAULT_FAIR_PRIORITY : fairPriority;
-  }
-
   private final Set<String> reservableQueues;
 
   private final Map<String, SchedulingPolicy> schedulingPolicies;
@@ -99,6 +94,11 @@ public class AllocationConfiguration extends ReservationSchedulerConfiguration {
 
   // Reservation system configuration
   private ReservationQueueConfiguration globalReservationQueueConfig;
+  
+  private final Map<String, Float> queueFairPriorities; //iglf 
+  //Minimum resource required for each queue
+  private final Map<String, Resource> minQueueReqs; // iglf
+
 
   public AllocationConfiguration(Map<String, Resource> minQueueResources,
       Map<String, Resource> maxQueueResources,
@@ -116,7 +116,7 @@ public class AllocationConfiguration extends ReservationSchedulerConfiguration {
       QueuePlacementPolicy placementPolicy,
       Map<FSQueueType, Set<String>> configuredQueues,
       ReservationQueueConfiguration globalReservationQueueConfig,
-      Set<String> reservableQueues) {
+      Set<String> reservableQueues, Map<String, Resource> minQueueReqs) {
     this.minQueueResources = minQueueResources;
     this.maxQueueResources = maxQueueResources;
     this.queueMaxApps = queueMaxApps;
@@ -137,6 +137,7 @@ public class AllocationConfiguration extends ReservationSchedulerConfiguration {
     this.globalReservationQueueConfig = globalReservationQueueConfig;
     this.placementPolicy = placementPolicy;
     this.configuredQueues = configuredQueues;
+    this.minQueueReqs = minQueueReqs;
   }
   
   public AllocationConfiguration(Configuration conf) {
@@ -163,6 +164,7 @@ public class AllocationConfiguration extends ReservationSchedulerConfiguration {
     }
     placementPolicy = QueuePlacementPolicy.fromConfiguration(conf,
         configuredQueues);
+    this.minQueueReqs = new HashMap<String, Resource>();
   }
   
   /**
@@ -346,4 +348,16 @@ public class AllocationConfiguration extends ReservationSchedulerConfiguration {
   public void setAverageCapacity(int avgCapacity) {
     globalReservationQueueConfig.setAverageCapacity(avgCapacity);
   }
+  
+//iglf: START
+  public float getQueueFairPriority(String queue) {
+    Float fairPriority = queueFairPriorities.get(queue);
+    return (fairPriority == null) ? Schedulable.DEFAULT_FAIR_PRIORITY : fairPriority;
+  }  
+  
+  public Resource getMinReqs(String queue) { 
+    Resource minReq = minQueueReqs.get(queue);
+    return (minReq == null) ? Resources.none() : minReq;
+  }
+  // iglf: END
 }

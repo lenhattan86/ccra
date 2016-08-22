@@ -317,4 +317,9 @@ public FSQueue(String name, FairScheduler scheduler, FSParentQueue parent) {
   
   public abstract long getAppStartTime();
   
+  @Override
+  public Resource getMinReq() {
+    return scheduler.getAllocationConfiguration().getMinReqs(getName());
+  }
+  
 }

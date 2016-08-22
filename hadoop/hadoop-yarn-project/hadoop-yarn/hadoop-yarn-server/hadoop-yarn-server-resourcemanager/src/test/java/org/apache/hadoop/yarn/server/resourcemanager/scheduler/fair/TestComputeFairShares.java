@@ -163,24 +163,6 @@ public class TestComputeFairShares {
   }
   
   /**
-   * Test that shares are computed accurately even when the number of slots is
-   * very large.
-   */
-  
-  @Test
-  public void testFixedPriority2() {
-    int million = 1000 * 1000;
-    long now =  System.currentTimeMillis();
-    scheds.add(new FakeSchedulable(now - (Schedulable.HIGH_PRIORITY_DURATION+1)*1000 , 3.0f));
-    scheds.add(new FakeSchedulable(now, 1.0f));
-    ComputeFairShares.computeSharesIGLF(scheds,
-        Resources.createResource(40 * million), ResourceType.MEMORY);
-    System.out.println(scheds.get(0).getFairShare().getMemory() + " " + scheds.get(1).getFairShare().getMemory());
-    System.out.println();
-    verifyMemoryShares(20 * million, 20 * million);
-  }
-  
-  /**
    * Test that being called on an empty list doesn't confuse the algorithm.
    */
   @Test
@@ -232,7 +214,7 @@ public class TestComputeFairShares {
    * Equally share the remaining (excess) resource to the schedulables.
    */
   @Test
-  public void testEqualExcessShare() {
+  public void testEqualExcessShare1() {
     scheds.add(new FakeSchedulable(8));
     scheds.add(new FakeSchedulable(8));
     scheds.add(new FakeSchedulable(8));
@@ -244,4 +226,21 @@ public class TestComputeFairShares {
   /*
    * Fair share among the running schedulables. (same resource for the same prioirty)
    */
+  
+  /*
+   * Equally share the remaining (excess) resource to the schedulables.
+   */
+  @Test
+  public void testEqualExcessShare2() {
+    scheds.add(new FakeSchedulable(8));
+    scheds.add(new FakeSchedulable(8));
+    scheds.add(new FakeSchedulable(0));
+    scheds.add(new FakeSchedulable(0));
+    ComputeFairShares.computeSharesIGLF(scheds,
+        Resources.createResource(16), ResourceType.MEMORY);
+    for (int i = 0; i < scheds.size(); i++) {
+      System.out.print(scheds.get(i).getFairShare().getMemory()+", ");
+    }
+    verifyMemoryShares(8, 8, 0, 0);
+  }
 }

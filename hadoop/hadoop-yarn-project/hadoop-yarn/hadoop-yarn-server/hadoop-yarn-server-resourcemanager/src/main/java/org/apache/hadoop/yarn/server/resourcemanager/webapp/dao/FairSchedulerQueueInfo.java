@@ -65,6 +65,8 @@ public class FairSchedulerQueueInfo {
   private ResourceWeights weights; //iglf
   private float fairPrioirity;
   private boolean isRunning;
+  private ResourceInfo minReq;
+  
   
 
 private Collection<FairSchedulerQueueInfo> childQueues;
@@ -78,6 +80,7 @@ private Collection<FairSchedulerQueueInfo> childQueues;
     weights = queue.getWeights(); //iglf
     fairPrioirity = queue.getFairPriority();
     isRunning = queue.isRunning();
+    minReq = new ResourceInfo(queue.getMinReq());
     
     queueName = queue.getName();
     schedulingPolicy = queue.getPolicy().getName();
@@ -214,5 +217,9 @@ private Collection<FairSchedulerQueueInfo> childQueues;
   
   public boolean isRunning(){
   	return isRunning;
+  }
+  
+  public ResourceInfo getMinReq() {
+    return minReq;
   }
 }

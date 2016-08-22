@@ -112,6 +112,9 @@ public interface Schedulable {
   
   public static final float DEFAULT_FAIR_PRIORITY = 1.0f;
   
+  /** Minimum Resource share required for the schedulable. */
+  public Resource getMinReq();
+  
 //  public void setIglfPriorityDurations(ArrayList<Long> iglfDurations);
 //  
 //  public void getIglfPriorityDurations();

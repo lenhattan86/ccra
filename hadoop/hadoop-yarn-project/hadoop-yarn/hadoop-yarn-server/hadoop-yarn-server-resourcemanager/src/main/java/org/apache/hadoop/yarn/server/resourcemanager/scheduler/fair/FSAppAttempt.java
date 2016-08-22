@@ -849,4 +849,9 @@ public class FSAppAttempt extends SchedulerApplicationAttempt
     this.fairPriroity = fairPriroity;
   }
   
+  @Override
+  public Resource getMinReq() {
+    return Resources.none();
+  }
+  
 }
