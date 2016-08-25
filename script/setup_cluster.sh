@@ -34,7 +34,7 @@ hadoopTgz="hadoop-2.7.2.tar.gz"
 #hadoopLink="http://apache.claz.org/hadoop/common/hadoop-2.6.3/hadoop-2.6.3.tar.gz"
 #hadoopTgz="hadoop-2.6.3.tar.gz"
 
-yarnVcores=4
+yarnVcores=8
 vmemRatio=4
 #yarnNodeMem=131072 # 128 GB
 #yarnNodeMem=65536 # 64 GB
@@ -96,7 +96,7 @@ sparkDownloadLink="https://dist.apache.org/repos/dist/release/spark/spark-2.0.0-
 
 ##########
 
-IS_INIT=false
+IS_INIT=true
 hostname="nm.yarn-perf.yarnrm-pg0.wisc.cloudlab.us"; cp ~/.ssh/config.yarn-perf ~/.ssh/config; shedulingPolicy="iglf"; weight=1
 #hostname="nm.yarnalytics.yarnrm-pg0.wisc.cloudlab.us"; cp ~/.ssh/config.yarnalytics ~/.ssh/config; shedulingPolicy="drf"; weight=3
 
@@ -162,7 +162,7 @@ shudownSpark=false
 if $IS_INIT
 then
 	isDownload=true
-	isUploadYarn=false
+	isUploadYarn=true
 	isExtract=true
 
 	isUploadKey=true
@@ -185,7 +185,7 @@ then
 
 	isInstallSpark=true
 
-	shedulingPolicy="drf"; weight=3
+#	shedulingPolicy="drf"; weight=3
 fi
 
 if $isCloudLab
@@ -716,21 +716,20 @@ echo "#################################### install Hadoop Yarn #################
 <defaultFairSharePreemptionThreshold>1.0</defaultFairSharePreemptionThreshold>
 
 <queue name=\"interactive\">
-	<minResources>8192 mb,4 vcores</minResources>
 	<weight>$weight</weight>
 	<fairPriority>3</fairPriority>
 </queue>
 
 <queue name=\"interactive1\">
-	<minResources>8192 mb,4 vcores</minResources>
+	<minReq>8192 mb,4 vcores</minReq>
 </queue>
 
 <queue name=\"interactive2\">
-	<minResources>8192 mb,4 vcores</minResources>
+	<minReq>8192 mb,4 vcores</minReq>
 </queue>
 
 <queue name=\"interactive3\">
-	<minResources>8192 mb,4 vcores</minResources>
+	<minReq>8192 mb,4 vcores</minReq>
 </queue>
 
 <queue name=\"batch\">
