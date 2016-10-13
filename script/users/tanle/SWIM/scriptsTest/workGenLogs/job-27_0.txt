@@ -1,0 +1,17 @@
+16/09/15 06:28:41 INFO client.RMProxy: Connecting to ResourceManager at nm.yarn-drf.yarnrm-pg0.wisc.cloudlab.us/128.104.222.86:8032
+Max number of map tasks 40
+Max number of red tasks 8
+shuffleInputRatio  = 8.695455E-4
+outputShuffleRatio = 0.107630245
+Running on 4 nodes with 36 maps and 1 reduces.
+0.2972763585969356
+0.27133182301206915
+Job started: Thu Sep 15 06:28:42 MDT 2016
+16/09/15 06:28:42 INFO client.RMProxy: Connecting to ResourceManager at nm.yarn-drf.yarnrm-pg0.wisc.cloudlab.us/128.104.222.86:8032
+16/09/15 06:28:42 INFO client.RMProxy: Connecting to ResourceManager at nm.yarn-drf.yarnrm-pg0.wisc.cloudlab.us/128.104.222.86:8032
+16/09/15 06:28:42 INFO mapred.FileInputFormat: Total input paths to process : 1
+16/09/15 06:28:42 INFO mapreduce.JobSubmitter: number of splits:36
+16/09/15 06:28:43 INFO mapreduce.JobSubmitter: Submitting tokens for job: job_1473913203669_0558
+16/09/15 06:28:43 INFO impl.YarnClientImpl: Submitted application application_1473913203669_0558
+16/09/15 06:28:43 INFO mapreduce.Job: The url to track the job: http://nm.yarn-drf.yarnrm-pg0.wisc.cloudlab.us:8088/proxy/application_1473913203669_0558/
+16/09/15 06:28:43 INFO mapreduce.Job: Running job: job_1473913203669_0558

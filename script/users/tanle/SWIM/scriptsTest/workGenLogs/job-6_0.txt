@@ -1,0 +1,91 @@
+16/09/15 06:10:20 INFO client.RMProxy: Connecting to ResourceManager at nm.yarn-drf.yarnrm-pg0.wisc.cloudlab.us/128.104.222.86:8032
+Max number of map tasks 40
+Max number of red tasks 8
+shuffleInputRatio  = 1.7869763E-5
+outputShuffleRatio = 3.5888672
+Running on 4 nodes with 36 maps and 1 reduces.
+0.15856653339543103
+0.6800662292219654
+Job started: Thu Sep 15 06:10:20 MDT 2016
+16/09/15 06:10:20 INFO client.RMProxy: Connecting to ResourceManager at nm.yarn-drf.yarnrm-pg0.wisc.cloudlab.us/128.104.222.86:8032
+16/09/15 06:10:21 INFO client.RMProxy: Connecting to ResourceManager at nm.yarn-drf.yarnrm-pg0.wisc.cloudlab.us/128.104.222.86:8032
+16/09/15 06:10:21 INFO mapred.FileInputFormat: Total input paths to process : 1
+16/09/15 06:10:21 INFO mapreduce.JobSubmitter: number of splits:36
+16/09/15 06:10:21 INFO mapreduce.JobSubmitter: Submitting tokens for job: job_1473913203669_0511
+16/09/15 06:10:22 INFO impl.YarnClientImpl: Submitted application application_1473913203669_0511
+16/09/15 06:10:22 INFO mapreduce.Job: The url to track the job: http://nm.yarn-drf.yarnrm-pg0.wisc.cloudlab.us:8088/proxy/application_1473913203669_0511/
+16/09/15 06:10:22 INFO mapreduce.Job: Running job: job_1473913203669_0511
+16/09/15 06:10:28 INFO mapreduce.Job: Job job_1473913203669_0511 running in uber mode : false
+16/09/15 06:10:28 INFO mapreduce.Job:  map 0% reduce 0%
+16/09/15 06:10:34 INFO mapreduce.Job:  map 11% reduce 0%
+16/09/15 06:10:35 INFO mapreduce.Job:  map 22% reduce 0%
+16/09/15 06:10:36 INFO mapreduce.Job:  map 33% reduce 0%
+16/09/15 06:10:37 INFO mapreduce.Job:  map 44% reduce 0%
+16/09/15 06:10:38 INFO mapreduce.Job:  map 56% reduce 0%
+16/09/15 06:10:41 INFO mapreduce.Job:  map 58% reduce 0%
+16/09/15 06:10:42 INFO mapreduce.Job:  map 69% reduce 0%
+16/09/15 06:10:43 INFO mapreduce.Job:  map 81% reduce 0%
+16/09/15 06:10:44 INFO mapreduce.Job:  map 94% reduce 0%
+16/09/15 06:10:45 INFO mapreduce.Job:  map 100% reduce 0%
+16/09/15 06:10:46 INFO mapreduce.Job:  map 100% reduce 100%
+16/09/15 06:10:47 INFO mapreduce.Job: Job job_1473913203669_0511 completed successfully
+16/09/15 06:10:47 INFO mapreduce.Job: Counters: 51
+	File System Counters
+		FILE: Number of bytes read=6
+		FILE: Number of bytes written=4412587
+		FILE: Number of read operations=0
+		FILE: Number of large read operations=0
+		FILE: Number of write operations=0
+		HDFS: Number of bytes read=135329499
+		HDFS: Number of bytes written=96
+		HDFS: Number of read operations=147
+		HDFS: Number of large read operations=0
+		HDFS: Number of write operations=2
+	Job Counters 
+		Killed map tasks=1
+		Launched map tasks=36
+		Launched reduce tasks=1
+		Data-local map tasks=9
+		Rack-local map tasks=27
+		Total time spent by all maps in occupied slots (ms)=298644
+		Total time spent by all reduces in occupied slots (ms)=27858
+		Total time spent by all map tasks (ms)=149322
+		Total time spent by all reduce tasks (ms)=9286
+		Total vcore-milliseconds taken by all map tasks=149322
+		Total vcore-milliseconds taken by all reduce tasks=9286
+		Total megabyte-milliseconds taken by all map tasks=229358592
+		Total megabyte-milliseconds taken by all reduce tasks=28526592
+	Map-Reduce Framework
+		Map input records=12853
+		Map output records=0
+		Map output bytes=0
+		Map output materialized bytes=216
+		Input split bytes=3636
+		Combine input records=0
+		Combine output records=0
+		Reduce input groups=0
+		Reduce shuffle bytes=216
+		Reduce input records=0
+		Reduce output records=0
+		Spilled Records=0
+		Shuffled Maps =36
+		Failed Shuffles=0
+		Merged Map outputs=36
+		GC time elapsed (ms)=317
+		CPU time spent (ms)=47070
+		Physical memory (bytes) snapshot=32259354624
+		Virtual memory (bytes) snapshot=63892905984
+		Total committed heap usage (bytes)=39068893184
+	Shuffle Errors
+		BAD_ID=0
+		CONNECTION=0
+		IO_ERROR=0
+		WRONG_LENGTH=0
+		WRONG_MAP=0
+		WRONG_REDUCE=0
+	File Input Format Counters 
+		Bytes Read=135325863
+	File Output Format Counters 
+		Bytes Written=96
+Job ended: Thu Sep 15 06:10:47 MDT 2016
+The job took 26 seconds.

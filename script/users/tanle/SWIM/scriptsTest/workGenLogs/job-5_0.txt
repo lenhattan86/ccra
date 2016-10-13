@@ -1,0 +1,92 @@
+16/09/15 06:07:56 INFO client.RMProxy: Connecting to ResourceManager at nm.yarn-drf.yarnrm-pg0.wisc.cloudlab.us/128.104.222.86:8032
+Max number of map tasks 40
+Max number of red tasks 8
+shuffleInputRatio  = 3.7798738E-5
+outputShuffleRatio = 0.47276086
+Running on 4 nodes with 36 maps and 1 reduces.
+0.01813999363031471
+0.29797677925235144
+Job started: Thu Sep 15 06:07:57 MDT 2016
+16/09/15 06:07:57 INFO client.RMProxy: Connecting to ResourceManager at nm.yarn-drf.yarnrm-pg0.wisc.cloudlab.us/128.104.222.86:8032
+16/09/15 06:07:57 INFO client.RMProxy: Connecting to ResourceManager at nm.yarn-drf.yarnrm-pg0.wisc.cloudlab.us/128.104.222.86:8032
+16/09/15 06:07:57 INFO mapred.FileInputFormat: Total input paths to process : 1
+16/09/15 06:07:57 INFO mapreduce.JobSubmitter: number of splits:36
+16/09/15 06:07:57 INFO mapreduce.JobSubmitter: Submitting tokens for job: job_1473913203669_0508
+16/09/15 06:07:58 INFO impl.YarnClientImpl: Submitted application application_1473913203669_0508
+16/09/15 06:07:58 INFO mapreduce.Job: The url to track the job: http://nm.yarn-drf.yarnrm-pg0.wisc.cloudlab.us:8088/proxy/application_1473913203669_0508/
+16/09/15 06:07:58 INFO mapreduce.Job: Running job: job_1473913203669_0508
+16/09/15 06:08:05 INFO mapreduce.Job: Job job_1473913203669_0508 running in uber mode : false
+16/09/15 06:08:05 INFO mapreduce.Job:  map 0% reduce 0%
+16/09/15 06:08:12 INFO mapreduce.Job:  map 3% reduce 0%
+16/09/15 06:08:13 INFO mapreduce.Job:  map 11% reduce 0%
+16/09/15 06:08:14 INFO mapreduce.Job:  map 28% reduce 0%
+16/09/15 06:08:15 INFO mapreduce.Job:  map 31% reduce 0%
+16/09/15 06:08:16 INFO mapreduce.Job:  map 50% reduce 0%
+16/09/15 06:08:17 INFO mapreduce.Job:  map 58% reduce 0%
+16/09/15 06:08:18 INFO mapreduce.Job:  map 64% reduce 0%
+16/09/15 06:08:20 INFO mapreduce.Job:  map 81% reduce 0%
+16/09/15 06:08:21 INFO mapreduce.Job:  map 83% reduce 0%
+16/09/15 06:08:22 INFO mapreduce.Job:  map 94% reduce 0%
+16/09/15 06:08:23 INFO mapreduce.Job:  map 100% reduce 0%
+16/09/15 06:08:24 INFO mapreduce.Job:  map 100% reduce 100%
+16/09/15 06:08:25 INFO mapreduce.Job: Job job_1473913203669_0508 completed successfully
+16/09/15 06:08:25 INFO mapreduce.Job: Counters: 51
+	File System Counters
+		FILE: Number of bytes read=6
+		FILE: Number of bytes written=4412624
+		FILE: Number of read operations=0
+		FILE: Number of large read operations=0
+		FILE: Number of write operations=0
+		HDFS: Number of bytes read=135283970
+		HDFS: Number of bytes written=96
+		HDFS: Number of read operations=147
+		HDFS: Number of large read operations=0
+		HDFS: Number of write operations=2
+	Job Counters 
+		Killed map tasks=1
+		Launched map tasks=36
+		Launched reduce tasks=1
+		Data-local map tasks=8
+		Rack-local map tasks=28
+		Total time spent by all maps in occupied slots (ms)=365580
+		Total time spent by all reduces in occupied slots (ms)=25719
+		Total time spent by all map tasks (ms)=182790
+		Total time spent by all reduce tasks (ms)=8573
+		Total vcore-milliseconds taken by all map tasks=182790
+		Total vcore-milliseconds taken by all reduce tasks=8573
+		Total megabyte-milliseconds taken by all map tasks=280765440
+		Total megabyte-milliseconds taken by all reduce tasks=26336256
+	Map-Reduce Framework
+		Map input records=12806
+		Map output records=0
+		Map output bytes=0
+		Map output materialized bytes=216
+		Input split bytes=3636
+		Combine input records=0
+		Combine output records=0
+		Reduce input groups=0
+		Reduce shuffle bytes=216
+		Reduce input records=0
+		Reduce output records=0
+		Spilled Records=0
+		Shuffled Maps =36
+		Failed Shuffles=0
+		Merged Map outputs=36
+		GC time elapsed (ms)=360
+		CPU time spent (ms)=51120
+		Physical memory (bytes) snapshot=32306388992
+		Virtual memory (bytes) snapshot=63808274432
+		Total committed heap usage (bytes)=39068893184
+	Shuffle Errors
+		BAD_ID=0
+		CONNECTION=0
+		IO_ERROR=0
+		WRONG_LENGTH=0
+		WRONG_MAP=0
+		WRONG_REDUCE=0
+	File Input Format Counters 
+		Bytes Read=135280334
+	File Output Format Counters 
+		Bytes Written=96
+Job ended: Thu Sep 15 06:08:25 MDT 2016
+The job took 28 seconds.

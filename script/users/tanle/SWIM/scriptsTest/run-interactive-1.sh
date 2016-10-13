@@ -1,0 +1,3 @@
+  echo "- run Interactive job 1 " 
+FULL_COMMAND="/users/tanle/spark/bin/spark-submit  --master yarn --class org.apache.spark.examples.SparkPi --deploy-mode cluster --driver-memory 1664M --executor-memory 1664M --executor-cores 1 --queue interactive /users/tanle/spark/examples/jars/spark-examples*.jar  100000"
+(TIMEFORMAT='%R'; time $FULL_COMMAND 2>workGenLogs/interactive-1.log) 2> workGenLogs/interactive-1.time

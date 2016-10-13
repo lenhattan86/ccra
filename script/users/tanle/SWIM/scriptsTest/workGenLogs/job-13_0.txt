@@ -1,0 +1,94 @@
+16/09/15 06:15:37 INFO client.RMProxy: Connecting to ResourceManager at nm.yarn-drf.yarnrm-pg0.wisc.cloudlab.us/128.104.222.86:8032
+Max number of map tasks 40
+Max number of red tasks 8
+shuffleInputRatio  = 1.7869763E-5
+outputShuffleRatio = 1.0
+Running on 4 nodes with 36 maps and 1 reduces.
+0.5148015681686688
+0.9869931648149581
+Job started: Thu Sep 15 06:15:38 MDT 2016
+16/09/15 06:15:38 INFO client.RMProxy: Connecting to ResourceManager at nm.yarn-drf.yarnrm-pg0.wisc.cloudlab.us/128.104.222.86:8032
+16/09/15 06:15:38 INFO client.RMProxy: Connecting to ResourceManager at nm.yarn-drf.yarnrm-pg0.wisc.cloudlab.us/128.104.222.86:8032
+16/09/15 06:15:38 INFO mapred.FileInputFormat: Total input paths to process : 1
+16/09/15 06:15:38 INFO mapreduce.JobSubmitter: number of splits:36
+16/09/15 06:15:39 INFO mapreduce.JobSubmitter: Submitting tokens for job: job_1473913203669_0526
+16/09/15 06:15:39 INFO impl.YarnClientImpl: Submitted application application_1473913203669_0526
+16/09/15 06:15:39 INFO mapreduce.Job: The url to track the job: http://nm.yarn-drf.yarnrm-pg0.wisc.cloudlab.us:8088/proxy/application_1473913203669_0526/
+16/09/15 06:15:39 INFO mapreduce.Job: Running job: job_1473913203669_0526
+16/09/15 06:15:45 INFO mapreduce.Job: Job job_1473913203669_0526 running in uber mode : false
+16/09/15 06:15:45 INFO mapreduce.Job:  map 0% reduce 0%
+16/09/15 06:15:51 INFO mapreduce.Job:  map 11% reduce 0%
+16/09/15 06:15:52 INFO mapreduce.Job:  map 19% reduce 0%
+16/09/15 06:15:53 INFO mapreduce.Job:  map 33% reduce 0%
+16/09/15 06:15:54 INFO mapreduce.Job:  map 47% reduce 0%
+16/09/15 06:15:55 INFO mapreduce.Job:  map 58% reduce 0%
+16/09/15 06:15:56 INFO mapreduce.Job:  map 67% reduce 0%
+16/09/15 06:15:57 INFO mapreduce.Job:  map 89% reduce 0%
+16/09/15 06:15:58 INFO mapreduce.Job:  map 100% reduce 0%
+16/09/15 06:15:59 INFO mapreduce.Job:  map 100% reduce 100%
+16/09/15 06:16:03 INFO mapreduce.Job: Job job_1473913203669_0526 completed successfully
+16/09/15 06:16:03 INFO mapreduce.Job: Counters: 55
+	File System Counters
+		FILE: Number of bytes read=3774
+		FILE: Number of bytes written=4419938
+		FILE: Number of read operations=0
+		FILE: Number of large read operations=0
+		FILE: Number of write operations=0
+		HDFS: Number of bytes read=135286158
+		HDFS: Number of bytes written=212
+		HDFS: Number of read operations=147
+		HDFS: Number of large read operations=0
+		HDFS: Number of write operations=2
+	Job Counters 
+		Killed map tasks=1
+		Launched map tasks=36
+		Launched reduce tasks=1
+		Data-local map tasks=9
+		Rack-local map tasks=27
+		Total time spent by all maps in occupied slots (ms)=288376
+		Total time spent by all reduces in occupied slots (ms)=15462
+		Total time spent by all map tasks (ms)=144188
+		Total time spent by all reduce tasks (ms)=5154
+		Total vcore-milliseconds taken by all map tasks=144188
+		Total vcore-milliseconds taken by all reduce tasks=5154
+		Total megabyte-milliseconds taken by all map tasks=221472768
+		Total megabyte-milliseconds taken by all reduce tasks=15833088
+	Map-Reduce Framework
+		Map input records=12809
+		Map output records=1
+		Map output bytes=3763
+		Map output materialized bytes=3984
+		Input split bytes=3636
+		Combine input records=0
+		Combine output records=0
+		Reduce input groups=1
+		Reduce shuffle bytes=3984
+		Reduce input records=1
+		Reduce output records=1
+		Spilled Records=2
+		Shuffled Maps =36
+		Failed Shuffles=0
+		Merged Map outputs=36
+		GC time elapsed (ms)=291
+		CPU time spent (ms)=47560
+		Physical memory (bytes) snapshot=32211701760
+		Virtual memory (bytes) snapshot=63726739456
+		Total committed heap usage (bytes)=39068893184
+	Shuffle Errors
+		BAD_ID=0
+		CONNECTION=0
+		IO_ERROR=0
+		WRONG_LENGTH=0
+		WRONG_MAP=0
+		WRONG_REDUCE=0
+	org.apache.hadoop.examples.WorkGen$Counters
+		MAP_BYTES_WRITTEN=3755
+		MAP_RECORDS_WRITTEN=1
+		RED_BYTES_WRITTEN=100
+		RED_RECORDS_WRITTEN=1
+	File Input Format Counters 
+		Bytes Read=135282522
+	File Output Format Counters 
+		Bytes Written=212
+Job ended: Thu Sep 15 06:16:03 MDT 2016
+The job took 25 seconds.

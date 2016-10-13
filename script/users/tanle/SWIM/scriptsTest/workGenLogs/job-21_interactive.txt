@@ -1,0 +1,10 @@
+Max number of map tasks 40
+Max number of red tasks 8
+shuffleInputRatio  = 1.7869763E-5
+outputShuffleRatio = 1.0
+Running on 4 nodes with 36 maps and 1 reduces.
+0.9062156750541684
+0.7962207852603118
+Job started: Thu Sep 15 06:24:36 MDT 2016
+Job ended: Thu Sep 15 06:25:11 MDT 2016
+The job took 35 seconds.

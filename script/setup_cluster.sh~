@@ -97,7 +97,16 @@ sparkDownloadLink="https://dist.apache.org/repos/dist/release/spark/spark-2.0.0-
 
 ##########
 
+
 IS_INIT=false
+hostname="nm.yarn-perf.yarnrm-pg0.wisc.cloudlab.us"; shedulingPolicy="iglf"; 
+cp ~/.ssh/config.yarn-perf ~/.ssh/config; 
+#hostname="nm.yarnalytics.yarnrm-pg0.wisc.cloudlab.us"; 
+#cp ~/.ssh/config.yarnalytics ~/.ssh/config;
+#hostname="nm.yarn-drf.yarnrm-pg0.wisc.cloudlab.us"; shedulingPolicy="drf"; 
+#cp ~/.ssh/config.yarn-drf ~/.ssh/config;
+#hostname="nm.yarn-drf.yarnrm-pg0.wisc.cloudlab.us"; shedulingPolicy="fifo"; 
+#cp ~/.ssh/config.yarn-drf ~/.ssh/config;  
 
 echo "setup $hostname"
 
@@ -107,15 +116,11 @@ isSingleNodeCluster=false
 isUploadTestCase=false
 
 isUploadYarn=true
-isDownload=false
-isExtract=true
-
-hostname="nm.yarn-perf.yarnrm-pg0.wisc.cloudlab.us"; shedulingPolicy="iglf"; cp ~/.ssh/config.yarn-perf ~/.ssh/config; 
-#hostname="nm.yarn-drf.yarnrm-pg0.wisc.cloudlab.us"; shedulingPolicy="drf"; cp ~/.ssh/config.yarn-drf ~/.ssh/config; isUploadYarn=false ; 
 
 customizedHadoopPath="/home/tanle/projects/ccra/hadoop/hadoop-dist/target/$hadoopTgz"
 
-
+isDownload=false
+isExtract=true
 
 isUploadKey=false
 isGenerateKey=false	
@@ -156,6 +161,10 @@ shudownFlink=false
 startFlinkStandalone=false # not necessary
 
 isInstallSpark=false
+if $isInstallHadoop
+then
+	isInstallSpark=true
+fi
 isModifySpark=false
 startSparkYarn=false
 shudownSpark=false
@@ -182,7 +191,7 @@ then
 	isShutDownHadoop=true
 	restartHadoop=true
 
-	isInstallFlink=false
+	isInstallFlink=true
 
 	isInstallSpark=true
 
@@ -196,9 +205,9 @@ then
 	if $isOfficial
 	then
 		numOfworkers=8
-		serverList="nm ctl cp-1 cp-2 cp-3 cp-4 cp-5 cp-6 cp-7"
-		slaveNodes="ctl cp-1 cp-2 cp-3 cp-4 cp-5 cp-6 cp-7"
-		numOfReplication=1
+		serverList="nm cp-1 cp-2 cp-3 cp-4 cp-5 cp-6 cp-7 cp-8"
+		slaveNodes="cp-1 cp-2 cp-3 cp-4 cp-5 cp-6 cp-7 cp-8"
+		numOfReplication=3
 	else
 		numOfworkers=4
 		serverList="nm ctl cp-1 cp-2 cp-3"
@@ -441,12 +450,11 @@ echo "#################################### install Hadoop Yarn #################
 
 		installHadoopFunc () {
 			echo Set up Hadoop at $1
-			#if $isUploadYarn 
-			#then
-			#	ssh $username@$1 "sudo rm -rf $hadoopTgz"
-			#	scp $customizedHadoopPath $username@$1:~/ 
-			#fi
-			if $isDownload
+			if $isUploadYarn 
+			then
+				ssh $username@$1 "sudo rm -rf $hadoopTgz"
+				scp $customizedHadoopPath $username@$1:~/ 
+			elif $isDownload
 			then		
 				echo downloading $hadoopVer		
 				ssh $username@$1 "sudo rm -rf $hadoopTgz; wget $hadoopLink >> log.txt"
@@ -459,11 +467,6 @@ echo "#################################### install Hadoop Yarn #################
  				ssh $username@$1 "mkdir $hadoopFolder/conf"
 			fi
 			# add JAVA_HOME
-			
-			echo "copy SWIM config files for Facebook-trace simulation"
-			scp ../SWIM/randomwriter_conf.xsl $1:~/hadoop/config
-			scp ../SWIM/workGenKeyValue_conf.xsl $1:~/hadoop/config
-			
 			echo Configure Hadoop at $1
 			ssh $username@$1 "echo export JAVA_HOME=$java_home > temp.txt"			
 			ssh $username@$1 "cat temp.txt ~/$hadoopFolder/$configFolder/hadoop-env.sh > temp2.txt ; mv temp2.txt ~/$hadoopFolder/$configFolder/hadoop-env.sh"
@@ -596,7 +599,7 @@ echo "#################################### install Hadoop Yarn #################
   
   <property>
     <name>yarn.scheduler.fair.preemption.cluster-utilization-threshold</name>
-    <value>0.0</value>
+    <value>0.8</value>
   </property>
 
   <property>
@@ -718,29 +721,15 @@ echo "#################################### install Hadoop Yarn #################
 <allocations>
 
 <defaultQueueSchedulingPolicy>$shedulingPolicy</defaultQueueSchedulingPolicy>
-<defaultMinSharePreemptionTimeout>1</defaultMinSharePreemptionTimeout>
-<defaultFairSharePreemptionTimeout>1</defaultFairSharePreemptionTimeout>
+<defaultMinSharePreemptionTimeout>10</defaultMinSharePreemptionTimeout>
+<defaultFairSharePreemptionTimeout>10</defaultFairSharePreemptionTimeout>
 <defaultFairSharePreemptionThreshold>1.0</defaultFairSharePreemptionThreshold>
 
-<queue name=\"interactive\">	
-	<minReq>262144 mb, 128 vcores</minReq>
+<queue name=\"interactive\">
 	<weight>$weight</weight>
-	<schedulingPolicy>fifo</schedulingPolicy>
-</queue>
-<queue name=\"batch0\">
-	<weight>1</weight>	
-	<schedulingPolicy>fifo</schedulingPolicy>
-</queue>
-<queue name=\"batch1\">
-	<weight>1</weight>	
-	<schedulingPolicy>fifo</schedulingPolicy>
-</queue>
-<queue name=\"batch1\">
-	<weight>1</weight>	
-	<schedulingPolicy>fifo</schedulingPolicy>
+	<fairPriority>5</fairPriority>
 </queue>
 
-<!--
 <queue name=\"interactive1\">
 	<minReq>8192 mb,4 vcores</minReq>
 </queue>
@@ -756,12 +745,7 @@ echo "#################################### install Hadoop Yarn #################
 <queue name=\"batch\">
 	<weight>1</weight>	
 </queue>
--->
 
-<queue name=\"tanle\">
-	<weight>1</weight>
-	<schedulingPolicy>fifo</schedulingPolicy>	
-</queue>
 
 </allocations>' > $fairSchedulerFile"
 
@@ -852,26 +836,6 @@ echo "#################################### install Hadoop Yarn #################
     <name>mapreduce.reduce.shuffle.parallelcopies</name>
     <value>50</value>
   </property>
-  <!-- increase max map tasks -->
-  <property>
-    <name>mapreduce.tasktracker.map.tasks.maximum</name>
-    <value>15</value>
-  </property>
-
-  <property>
-    <name>mapreduce.jobtracker.taskscheduler.maxrunningtasks.perjob</name>
-    <value>14</value>
-  </property>
-
-  <property>
-    <name>mapreduce.jobtracker.maxtasks.perjob</name>
-    <value>13</value>
-  </property>
-
-  <property>
-    <name>mapreduce.job.maps</name>
-    <value>12</value>
-  </property>
 
 </configuration>' > $hadoopFolder/$configFolder/mapred-site.xml"
 			
@@ -886,19 +850,6 @@ echo "#################################### install Hadoop Yarn #################
 			#ssh $username@$1 "sudo chown -R $username:$groupname $hadoopFolder"
 			
 }
-		
-		if $isUploadYarn 
-		then
-			# upload to the nm
-			ssh $username@$masterNode "sudo rm -rf $hadoopTgz"
-			scp $customizedHadoopPath $username@$masterNode:~/ 
-			# share upload file among the workers.
-			for slave in $slaveNodes; do
-				ssh $username@$slave "sudo rm -rf $hadoopTgz"
-				ssh $username@$masterNode "scp $hadoopTgz $username@$slave:~/" &
-			done
-			wait			
-		fi
 		for server in $serverList; do
 			installHadoopFunc $server &
 		done
@@ -965,18 +916,14 @@ spark.streaming.dynamicAllocation.maxExecutors 500' > $sparkFolder/conf/spark-de
 			ssh $1 "echo $slave >> $sparkFolder/conf/slaves"
 		done
 
-		ssh $1 "cp ~/spark/lib/$sparkVer-yarn-shuffle.jar ~/hadoop/share/hadoop/yarn/ > .null.txt" 
-		ssh $1 "cp ~/spark/yarn/$sparkVer-yarn-shuffle.jar ~/hadoop/share/hadoop/yarn/" # for 2.0.0 version
+		ssh $1 "cp ~/spark/lib/$sparkVer-yarn-shuffle.jar ~/hadoop/share/hadoop/yarn/"
+		ssh $1 "cp ~/spark/yarn/$sparkVer-yarn-shuffle.jar ~/hadoop/share/hadoop/yarn/"
 	}
 	for server in $serverList; do
 		installSparkFunc $server &
 	done
 	wait
-else
-	for server in $serverList; do
-		ssh $server "cp ~/spark/lib/$sparkVer-yarn-shuffle.jar ~/hadoop/share/hadoop/yarn/ > .null.txt" 
-		ssh $server "cp ~/spark/yarn/$sparkVer-yarn-shuffle.jar ~/hadoop/share/hadoop/yarn/" # for 2.0.0 version
-	done	
+		
 fi
 
 ########################## restart all #########################
@@ -1010,7 +957,17 @@ fi
 
 ############################################### TEST CASES ###########################################
 # upload test cases
+if $isUploadTestCase 
+then 
+	cd $flinkSrc	
+	rm -rf test/wordcount/*.txt test/wordcount/*.out test/wordcount/*.log
+	tar zcvf test.tar $testCase
+	ssh $username@$masterNode 'rm -rf test*'
+	scp test.tar $username@$masterNode:~/ 
+	ssh $username@$masterNode 'tar -xvzf test.tar'
 
+	rm -rf test.tar
+fi
 
 echo "=====done set up $hostname====="
 
