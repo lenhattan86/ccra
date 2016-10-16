@@ -9,6 +9,7 @@ uploadTestCases () {
 	tar zcvf $1.tar $2
 	ssh tanle@$hostname "rm -rf $1.tar; rm -rf $1;"
 	scp $1.tar $hostname:~/ 
+	sleep 2
 	ssh tanle@$hostname "tar -xvzf $1.tar"
 	rm -rf $1.tar
 	ssh tanle@$hostname "rm -rf $1.tar;"

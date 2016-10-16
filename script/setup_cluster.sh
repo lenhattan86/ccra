@@ -54,7 +54,7 @@ else
 	scheduler="org.apache.hadoop.yarn.server.resourcemanager.scheduler.fair.FairScheduler" 
 fi
 
-shedulingPolicy="iglf"; weight=1
+shedulingPolicy="SpeedFair"; weight=1
 
 hdfsDir="/dev/hdfs"
 #hdfsDir="/users/tanle/hdfs"
@@ -106,16 +106,14 @@ isOfficial=false
 isSingleNodeCluster=false	
 isUploadTestCase=false
 
-isUploadYarn=true
+isUploadYarn=false
 isDownload=false
 isExtract=true
 
-hostname="nm.yarn-perf.yarnrm-pg0.wisc.cloudlab.us"; shedulingPolicy="iglf"; cp ~/.ssh/config.yarn-perf ~/.ssh/config; 
+hostname="nm.yarn-perf.yarnrm-pg0.wisc.cloudlab.us"; shedulingPolicy="SpeedFair"; cp ~/.ssh/config.yarn-perf ~/.ssh/config; 
 #hostname="nm.yarn-drf.yarnrm-pg0.wisc.cloudlab.us"; shedulingPolicy="drf"; cp ~/.ssh/config.yarn-drf ~/.ssh/config; isUploadYarn=false ; 
 
 customizedHadoopPath="/home/tanle/projects/ccra/hadoop/hadoop-dist/target/$hadoopTgz"
-
-
 
 isUploadKey=false
 isGenerateKey=false	
@@ -455,8 +453,7 @@ echo "#################################### install Hadoop Yarn #################
 			if $isExtract
 			then 
 				echo extract $hadoopTgz
-				ssh $username@$1 "rm -rf $hadoopVer; rm -rf $hadoopFolder; tar -xvzf $hadoopTgz >> log.txt; mv $hadoopVer $hadoopFolder"	
- 				ssh $username@$1 "mkdir $hadoopFolder/conf"
+				ssh $username@$1 "rm -rf $hadoopVer; rm -rf $hadoopFolder; tar -xvzf $hadoopTgz >> log.txt; mv $hadoopVer $hadoopFolder; mkdir $hadoopFolder/conf"
 			fi
 			# add JAVA_HOME
 			
@@ -465,8 +462,7 @@ echo "#################################### install Hadoop Yarn #################
 			scp ../SWIM/workGenKeyValue_conf.xsl $1:~/hadoop/config
 			
 			echo Configure Hadoop at $1
-			ssh $username@$1 "echo export JAVA_HOME=$java_home > temp.txt"			
-			ssh $username@$1 "cat temp.txt ~/$hadoopFolder/$configFolder/hadoop-env.sh > temp2.txt ; mv temp2.txt ~/$hadoopFolder/$configFolder/hadoop-env.sh"
+			ssh $username@$1 "echo export JAVA_HOME=$java_home > temp.txt; cat temp.txt ~/$hadoopFolder/$configFolder/hadoop-env.sh > temp2.txt ; mv temp2.txt ~/$hadoopFolder/$configFolder/hadoop-env.sh"
 
 			if $isInitPath
 			then	
@@ -564,8 +560,7 @@ echo "#################################### install Hadoop Yarn #################
 			# etc/hadoop/yarn-site.xml
 			## Configurations for ResourceManager and NodeManager:
 
-			ssh $username@$1 "sudo rm -rf $yarnAppLogs"
-			ssh $username@$1 "sudo mkdir $yarnAppLogs; sudo chmod 777 $yarnAppLogs"
+			ssh $username@$1 "sudo rm -rf $yarnAppLogs; sudo mkdir $yarnAppLogs; sudo chmod 777 $yarnAppLogs"
 			
 			ssh $username@$1 "echo '<?xml version=\"1.0\"?>
 <configuration>
@@ -591,7 +586,8 @@ echo "#################################### install Hadoop Yarn #################
 
   <property>
     <name>yarn.scheduler.fair.preemption</name>
-    <value>true</value>
+    <!--<value>true</value>-->
+    <value>false</value>
   </property>
   
   <property>
@@ -722,16 +718,27 @@ echo "#################################### install Hadoop Yarn #################
 <defaultFairSharePreemptionTimeout>1</defaultFairSharePreemptionTimeout>
 <defaultFairSharePreemptionThreshold>1.0</defaultFairSharePreemptionThreshold>
 
-<queue name=\"interactive\">	
-	<minReq>262144 mb, 128 vcores</minReq>
+<queue name=\"interactive0\">	
+	<!--<minReq>131072 mb, 64 vcores</minReq>-->
+	<!-- <minReq>196608 mb, 96 vcores</minReq> -->
+	<minReq>235520 mb, 115 vcores</minReq>
+	<speedDuration>60000</speedDuration>
+	<fairPriority>0.5</fairPriority>
+	<period>120000</period>
+	<weight>$weight</weight>
+	<schedulingPolicy>fifo</schedulingPolicy>
+</queue>
+<queue name=\"interactive1\">	
+	<!--<minReq>131072 mb, 64 vcores</minReq>-->
+	<!-- <minReq>196608 mb, 96 vcores</minReq> -->
+	<minReq>235520 mb, 115 vcores</minReq>
+	<fairPriority>0.5</fairPriority>
+	<speedDuration>60000</speedDuration>
+	<period>120000</period>
 	<weight>$weight</weight>
 	<schedulingPolicy>fifo</schedulingPolicy>
 </queue>
 <queue name=\"batch0\">
-	<weight>1</weight>	
-	<schedulingPolicy>fifo</schedulingPolicy>
-</queue>
-<queue name=\"batch1\">
 	<weight>1</weight>	
 	<schedulingPolicy>fifo</schedulingPolicy>
 </queue>
@@ -880,9 +887,12 @@ echo "#################################### install Hadoop Yarn #################
 
 			# slaves etc/hadoop/slaves
 			ssh $username@$1 "sudo rm -rf $hadoopFolder/$configFolder/slaves"
-			for svr in $slaveNodes; do			
-				ssh $username@$1 "echo $svr >> $hadoopFolder/$configFolder/slaves"
+			tempCMD=""
+			for svr in $slaveNodes; do	
+				tempCMD="$tempCMD echo $svr >> $hadoopFolder/$configFolder/slaves; "		
+				#ssh $username@$1 "echo $svr >> $hadoopFolder/$configFolder/slaves"
 			done
+			ssh $username@$1 "$tempCMD"
 			#ssh $username@$1 "sudo chown -R $username:$groupname $hadoopFolder"
 			
 }
@@ -893,11 +903,16 @@ echo "#################################### install Hadoop Yarn #################
 			ssh $username@$masterNode "sudo rm -rf $hadoopTgz"
 			scp $customizedHadoopPath $username@$masterNode:~/ 
 			# share upload file among the workers.
+			uploadCMD="echo 'multithread sharing....' "
 			for slave in $slaveNodes; do
 				ssh $username@$slave "sudo rm -rf $hadoopTgz"
-				ssh $username@$masterNode "scp $hadoopTgz $username@$slave:~/" &
+				uploadCMD="$uploadCMD & scp $hadoopTgz $username@$slave:~/ "
+				#ssh $username@$masterNode "scp $hadoopTgz $username@$slave:~/ "
 			done
-			wait			
+			#wait
+			uploadCMD="$uploadCMD & wait"
+			ssh $username@$masterNode "$uploadCMD"
+			
 		fi
 		for server in $serverList; do
 			installHadoopFunc $server &
@@ -1011,6 +1026,7 @@ fi
 ############################################### TEST CASES ###########################################
 # upload test cases
 
-
-echo "=====done set up $hostname====="
+echo ""
+echo "[INFO] $hostname "
+echo "[INFO] Finished at: $(date) "
 

@@ -1,3 +1,4 @@
-  echo "- run Interactive job 1 " 
-FULL_COMMAND="/users/tanle/spark/bin/spark-submit  --master yarn --class org.apache.spark.examples.SparkPi --deploy-mode cluster --driver-memory 1664M --executor-memory 1664M --executor-cores 1 --queue interactive /users/tanle/spark/examples/jars/spark-examples*.jar  100000"
-(TIMEFORMAT='%R'; time $FULL_COMMAND 2>workGenLogs/interactive-1.log) 2> workGenLogs/interactive-1.time
+~/hadoop/bin/hadoop jar ../WorkGen.jar org.apache.hadoop.examples.WorkGen -conf users/tanle/hadoop/conf/workGenKeyValue_conf.xsl -r 1 inputPath-interactive-1.txt workGenOutputTestInt-10 -queue interactive0 1.7869763E-5 1.0 >> workGenLogs/job-1_0.txt 2>> workGenLogs/job-1_0.txt  &  interactive1="$interactive1 $!"  
+wait $interactive1 
+~/hadoop/bin/hadoop fs -rm -r workGenOutputTestInt-10
+# inputSize 57303500
