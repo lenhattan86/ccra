@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path=""/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/hadoop-common"/>
+	<classpathentry kind="lib" path="/home/tanle/projects/ccra/hadoop/hadoop-dist/target/hadoop-dist-2.7.2.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/hadoop-mapreduce-client-app"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/hadoop-mapreduce-client-common"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/hadoop-mapreduce-client-core"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/hadoop-mapreduce-client-hs"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/hadoop-mapreduce-client-hs-plugins"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/hadoop-mapreduce-client-jobclient"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/hadoop-mapreduce-client-shuffle"/>
+	<classpathentry kind="output" path=""/>
+</classpath>
