@@ -5,17 +5,18 @@ username="tanle"
 
 #hostname="nm.yarnalytics.yarnrm-pg0.wisc.cloudlab.us"
 hostname="nm.yarn-perf.yarnrm-pg0.wisc.cloudlab.us"
+#hostname="nm.yarn-drf.yarnrm-pg0.wisc.cloudlab.us"
 
 # private server listl
 master="nm"
-#serverList="$master ctl cp-1 cp-2 cp-3 cp-4 cp-5 cp-6 cp-7 cp-8"
-serverList="$master ctl cp-1"
+serverList="$master ctl cp-1 cp-2 cp-3"
+#serverList="$master ctl cp-1"
 
 #jarFile="./spark/lib/spark-examples*.jar" 
-jarFile="./spark/examples/jars/spark-examples*.jar" # for spark 2.0
+jarFile="../spark/examples/jars/spark-examples*.jar" # for spark 2.0
 #jarFile="./spark-examples*.jar" # for customized jars
 
-cmdSpark="./spark/bin/spark-submit"
+cmdSpark="../spark/bin/spark-submit"
 
 className="org.apache.spark.examples.SparkPi"
 streamingClass="org.apache.spark.examples.streaming.HdfsWordCount"
@@ -27,18 +28,19 @@ executorCore="1"
 mode="cluster"
 #mode="client"
 
-timeToAcceptApp=60
+timeToAcceptApp=0
 
 if [ -z "$1" ]
 then
-	numOfapps=1
+	numOfapps=2
 else
 	numOfapps=$1
 fi
 
 if [ -z "$2" ]
 then
-	numOfIteration=20000  
+#	numOfIteration=100000
+	numOfIteration=500  	  
 else
 	numOfIteration=$2
 fi
@@ -46,14 +48,14 @@ fi
 if [ -z "$3" ]
 then
 	#sleepInterval=240  # at least 240
-	sleepInterval=30  # for a single interactive app
+	sleepInterval=240  # for a single interactive app
 else
 	sleepInterval=$2
 fi
 
 if [ -z "$4" ]
 then
-	numOfBatchJobs=2 
+	numOfBatchJobs=5 
 else
 	numOfBatchJobs=$4
 fi
@@ -61,8 +63,8 @@ fi
 if [ -z "$5" ]
 then
 	#batchIteration=$(($numOfIteration * 10 * $numOfapps))
-	batchIteration=50000
-#	batchIteration=10000    
+#	batchIteration=100000
+	batchIteration=100    
 else
 	batchIteration=$5
 fi
@@ -84,7 +86,7 @@ backlogBatchJobs () {
 	for i in `seq 1 $numOfBatchJobs`;
 	do
 		echo "run batch_1 $i" 		
-		FULL_COMMAND1="$cmdSpark --master yarn --class $className --deploy-mode $mode --driver-memory $executorMem --executor-memory $executorMem --executor-cores $executorCore --queue batch $jarFile $batchIteration"
+		FULL_COMMAND1="$cmdSpark --master yarn --class $className --deploy-mode $mode --driver-memory $executorMem --executor-memory $executorMem --executor-cores $executorCore --queue batch0 $jarFile $batchIteration"
 		(TIMEFORMAT='%R'; time $FULL_COMMAND1 2>$folder/batch1_$i) 2> $folder/batch_1$i.time & pid1=$!
 		sleep 20; 
 		if [ -v "$pid2" ]
@@ -105,11 +107,14 @@ runInteractiveJobs () {
 	for i in `seq 1 $numOfapps`;
 	do
 		echo "run interactive $i"
-		FULL_COMMAND2="$cmdSpark --master yarn --class $className --deploy-mode $mode --driver-memory $executorMem --executor-memory $executorMem --executor-cores $executorCore --queue interactive $jarFile $numOfIteration"
-		(TIMEFORMAT='%R'; time $FULL_COMMAND2 2>$folder/interactive$i) 2> $folder/interactive$i.time &		
+		FULL_COMMAND2="$cmdSpark --master yarn --class $className --deploy-mode $mode --driver-memory $executorMem --executor-memory $executorMem --executor-cores $executorCore --queue interactive0 $jarFile $numOfIteration"
+		(TIMEFORMAT='%R'; time $FULL_COMMAND2 2>$folder/interactive$i) 2> $folder/interactive0$i.time &		
 		pids="$pids $!"
 		echo "sleep $sleepInterval"
 		sleep $sleepInterval
+		#FULL_COMMAND4="$cmdSpark --master yarn --class $className --deploy-mode $mode --driver-memory $executorMem --executor-memory $executorMem --executor-cores $executorCore --queue interactive1 $jarFile $numOfIteration"
+		#(TIMEFORMAT='%R'; time $FULL_COMMAND4 2>$folder/interactive$i) 2> $folder/interactive1$i.time &		
+		#	pids="$pids $!"
 	done
 	wait $pids
 }
@@ -120,9 +125,11 @@ backlogBatchJobs & batches=$!
 echo "sleep $timeToAcceptApp"
 sleep $timeToAcceptApp 
 runInteractiveJobs & interactives=$!
-wait $interactives
+#wait $interactives
+wait $batches
 kill $pythonScript
 kill $batches 
+kill $interactives
 
 #cat $folder/batch*.time > $folder/batches.txt
 cat $folder/interactive*.time > $folder/interactives.txt

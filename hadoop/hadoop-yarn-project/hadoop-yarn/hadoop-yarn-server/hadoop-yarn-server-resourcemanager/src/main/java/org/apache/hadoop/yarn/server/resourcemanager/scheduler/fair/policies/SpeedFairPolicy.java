@@ -20,6 +20,8 @@ package org.apache.hadoop.yarn.server.resourcemanager.scheduler.fair.policies;
 
 import java.util.Collection;
 import java.util.Comparator;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 import org.apache.commons.logging.LogFactory;
 import org.apache.hadoop.classification.InterfaceAudience.Private;
@@ -43,9 +45,9 @@ import static org.apache.hadoop.yarn.server.resourcemanager.resource.ResourceTyp
  */
 @Private
 @Unstable
-public class InstantaneousGuaranteePolicy extends SchedulingPolicy {
+public class SpeedFairPolicy extends SchedulingPolicy {
 
-  public static final String NAME = "IGLF";
+  public static final String NAME = "SpeedFair";
 
   private InstantaneousGuaranteeComparator comparator = new InstantaneousGuaranteeComparator();
   private static final Log LOG = LogFactory.getLog(SchedulingPolicy.class);
@@ -72,11 +74,11 @@ public class InstantaneousGuaranteePolicy extends SchedulingPolicy {
       ComputeFairShares.computeSharesIGLF(schedulables, totalResources, type);
     }
   }
-  
+
   @Override
   public void computeSteadyShares(Collection<? extends FSQueue> queues, Resource totalResources) {
     for (ResourceType type : ResourceType.values()) {
-      ComputeFairShares.computeSteadySharesIGLF(queues, totalResources, type);
+      ComputeFairShares.computeSteadyShares(queues, totalResources, type);
     }
   }
 
@@ -107,6 +109,7 @@ public class InstantaneousGuaranteePolicy extends SchedulingPolicy {
   }
 
   public static class InstantaneousGuaranteeComparator implements Comparator<Schedulable> {
+
     private static final int NUM_RESOURCES = ResourceType.values().length;
 
     private Resource clusterCapacity;
@@ -116,45 +119,33 @@ public class InstantaneousGuaranteePolicy extends SchedulingPolicy {
     }
 
     @Override
-    public int compare(Schedulable s1, Schedulable s2) { // periodically adjust the resource allocation
+    public int compare(Schedulable s1, Schedulable s2) { // periodically adjust
+                                                         // the resource
+                                                         // allocation
       ResourceWeights sharesOfCluster1 = new ResourceWeights();
       ResourceWeights sharesOfCluster2 = new ResourceWeights();
-      ResourceWeights sharesOfMinShare1 = new ResourceWeights();
-      ResourceWeights sharesOfMinShare2 = new ResourceWeights();
       ResourceType[] resourceOrder1 = new ResourceType[NUM_RESOURCES];
       ResourceType[] resourceOrder2 = new ResourceType[NUM_RESOURCES];
 
-      float fairPriority1 = s1.getFairPriority(); 
-      float fairPriority2 = s2.getFairPriority();
-      
       // Calculate shares of the cluster for each resource both
-      // schedulables.      
+      // schedulables.
+      
       calculateShares(s1.getResourceUsage(), clusterCapacity, sharesOfCluster1, resourceOrder1,
-          s1.getWeights(), fairPriority1);
-      calculateShares(s1.getResourceUsage(), s1.getMinShare(), sharesOfMinShare1, null,
-          ResourceWeights.NEUTRAL, fairPriority1);
+          s1.getWeights(), s1.getMinReq());
+      
       calculateShares(s2.getResourceUsage(), clusterCapacity, sharesOfCluster2, resourceOrder2,
-          s2.getWeights(), fairPriority2);
-      calculateShares(s2.getResourceUsage(), s2.getMinShare(), sharesOfMinShare2, null,
-          ResourceWeights.NEUTRAL, fairPriority2);
+          s2.getWeights(), s2.getMinReq());
+      
+      System.out.println("sharesOfCluster1: "+sharesOfCluster1 + " sharesOfCluster2: "+sharesOfCluster2);
 
       // A queue is needy for its min share if its dominant resource
       // (with respect to the cluster capacity) is below its configured
       // min share
       // for that resource
-      boolean s1Needy = sharesOfMinShare1.getWeight(resourceOrder1[0]) < 1.0f;
-      boolean s2Needy = sharesOfMinShare2.getWeight(resourceOrder2[0]) < 1.0f;
 
       int res = 0;
-      if (!s2Needy && !s1Needy) {
-        res = compareShares(sharesOfCluster1, sharesOfCluster2, resourceOrder1, resourceOrder2);
-      } else if (s1Needy && !s2Needy) {
-        res = -1;
-      } else if (s2Needy && !s1Needy) {
-        res = 1;
-      } else { // both are needy below min share
-        res = compareShares(sharesOfMinShare1, sharesOfMinShare2, resourceOrder1, resourceOrder2);
-      }
+      res = compareShares(sharesOfCluster1, sharesOfCluster2, resourceOrder1, resourceOrder2);
+
       if (res == 0) {
         // Apps are tied in fairness ratio. Break the tie by submit
         // time.
@@ -162,7 +153,7 @@ public class InstantaneousGuaranteePolicy extends SchedulingPolicy {
       }
       return res;
     }
-
+    
     /**
      * Calculates and orders a resource's share of a pool in terms of two
      * vectors. The shares vector contains, for each resource, the fraction of
@@ -172,11 +163,14 @@ public class InstantaneousGuaranteePolicy extends SchedulingPolicy {
      * [CPU, MEMORY].
      */
     void calculateShares(Resource resource, Resource pool, ResourceWeights shares,
-        ResourceType[] resourceOrder, ResourceWeights weights, float fairPriority) { // iglf
+        ResourceType[] resourceOrder, ResourceWeights weights, Resource minReq) { // iglf
+      
+      resource = Resources.subtract(resource, minReq);
+      
       shares.setWeight(MEMORY, (float) resource.getMemory()
-          / (pool.getMemory() * weights.getWeight(MEMORY) * fairPriority));
+          / (pool.getMemory() * weights.getWeight(MEMORY)));
       shares.setWeight(CPU, (float) resource.getVirtualCores()
-          / (pool.getVirtualCores() * weights.getWeight(CPU) * fairPriority));
+          / (pool.getVirtualCores() * weights.getWeight(CPU)));
       // sort order vector by resource share
       if (resourceOrder != null) {
         if (shares.getWeight(MEMORY) > shares.getWeight(CPU)) {
@@ -188,6 +182,7 @@ public class InstantaneousGuaranteePolicy extends SchedulingPolicy {
         }
       }
     }
+
 
     private int compareShares(ResourceWeights shares1, ResourceWeights shares2,
         ResourceType[] resourceOrder1, ResourceType[] resourceOrder2) {

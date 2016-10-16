@@ -576,4 +576,8 @@ public class FSLeafQueue extends FSQueue {
       
     return startTime;
   }
+  @Override
+  public boolean isLeafQueue(){
+    return true;
+  }
 }

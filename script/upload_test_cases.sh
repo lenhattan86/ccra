@@ -1,8 +1,15 @@
-hostname="nm.yarn-perf.yarnrm-pg0.wisc.cloudlab.us"
-#hostname="nm.yarn-drf.yarnrm-pg0.wisc.cloudlab.us"
-#hostname="c220g1-030826.wisc.cloudlab.us" #drf
+defaulHostname="nm.yarn-perf.yarnrm-pg0.wisc.cloudlab.us"
+#defaulHostname="nm.yarn-drf.yarnrm-pg0.wisc.cloudlab.us"
+#defaulHostname="c220g1-030826.wisc.cloudlab.us" #drf
 
 echo "upload the files to $hostname"
+
+if [ -z "$1" ]
+then
+	hostname=$defaulHostname
+else
+	hostname="nm.$1.yarnrm-pg0.wisc.cloudlab.us"
+fi
 
 uploadTestCases () {
 	echo "upload $2 ................"

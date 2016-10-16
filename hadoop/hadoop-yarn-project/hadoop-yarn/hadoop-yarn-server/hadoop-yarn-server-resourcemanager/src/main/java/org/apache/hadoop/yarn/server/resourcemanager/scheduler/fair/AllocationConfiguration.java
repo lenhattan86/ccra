@@ -98,6 +98,8 @@ public class AllocationConfiguration extends ReservationSchedulerConfiguration {
   private final Map<String, Float> queueFairPriorities; //iglf 
   //Minimum resource required for each queue
   private final Map<String, Resource> minQueueReqs; // iglf
+  private final Map<String, Long> speedDurations; //iglf 
+    private final Map<String, Long> periods; //iglf 
 
 
   public AllocationConfiguration(Map<String, Resource> minQueueResources,
@@ -116,7 +118,7 @@ public class AllocationConfiguration extends ReservationSchedulerConfiguration {
       QueuePlacementPolicy placementPolicy,
       Map<FSQueueType, Set<String>> configuredQueues,
       ReservationQueueConfiguration globalReservationQueueConfig,
-      Set<String> reservableQueues, Map<String, Resource> minQueueReqs) {
+      Set<String> reservableQueues, Map<String, Resource> minQueueReqs, Map<String, Long> speedDurations, Map<String, Long> periods) {
     this.minQueueResources = minQueueResources;
     this.maxQueueResources = maxQueueResources;
     this.queueMaxApps = queueMaxApps;
@@ -132,6 +134,8 @@ public class AllocationConfiguration extends ReservationSchedulerConfiguration {
     this.fairSharePreemptionTimeouts = fairSharePreemptionTimeouts;
     this.fairSharePreemptionThresholds = fairSharePreemptionThresholds;
     this.queueFairPriorities = queueFairPriorities; //iglf
+    this.speedDurations = speedDurations;
+    this.periods = periods;
     this.queueAcls = queueAcls;
     this.reservableQueues = reservableQueues;
     this.globalReservationQueueConfig = globalReservationQueueConfig;
@@ -165,6 +169,8 @@ public class AllocationConfiguration extends ReservationSchedulerConfiguration {
     placementPolicy = QueuePlacementPolicy.fromConfiguration(conf,
         configuredQueues);
     this.minQueueReqs = new HashMap<String, Resource>();
+   this.speedDurations = new HashMap<String, Long>();
+   this.periods= new HashMap<String, Long>();
   }
   
   /**
@@ -358,6 +364,16 @@ public class AllocationConfiguration extends ReservationSchedulerConfiguration {
   public Resource getMinReqs(String queue) { 
     Resource minReq = minQueueReqs.get(queue);
     return (minReq == null) ? Resources.none() : minReq;
+  }
+
+  public long getSpeedDurations(String queue){
+  	Long speedDuration = this.speedDurations.get(queue);
+    	return (speedDuration == null) ? 0 : speedDuration;
+  }
+
+    public long getPeriod(String queue){
+  	Long period = this.periods.get(queue);
+    	return (period  == null) ? -1 : period ;
   }
   // iglf: END
 }

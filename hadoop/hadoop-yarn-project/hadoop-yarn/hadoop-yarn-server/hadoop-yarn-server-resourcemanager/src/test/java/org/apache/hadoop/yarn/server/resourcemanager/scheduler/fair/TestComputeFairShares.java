@@ -243,4 +243,18 @@ public class TestComputeFairShares {
     }
     verifyMemoryShares(8, 8, 0, 0);
   }
+  /*
+   * Equally share the remaining (excess) resource to the schedulables.
+   */
+  @Test
+  public void testEqualShareIGLF() {
+    scheds.add(new FakeSchedulable(64));
+    scheds.add(new FakeSchedulable(0));
+    ComputeFairShares.computeSharesIGLF(scheds,
+        Resources.createResource(128), ResourceType.MEMORY);
+    for (int i = 0; i < scheds.size(); i++) {
+      System.out.print(scheds.get(i).getFairShare().getMemory()+", ");
+    }
+    verifyMemoryShares(96, 32);
+  }
 }

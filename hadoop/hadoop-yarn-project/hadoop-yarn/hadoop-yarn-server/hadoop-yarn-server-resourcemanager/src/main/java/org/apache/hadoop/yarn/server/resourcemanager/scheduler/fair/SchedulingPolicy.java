@@ -25,7 +25,7 @@ import org.apache.hadoop.yarn.api.records.Resource;
 import org.apache.hadoop.yarn.server.resourcemanager.scheduler.fair.policies.DominantResourceFairnessPolicy;
 import org.apache.hadoop.yarn.server.resourcemanager.scheduler.fair.policies.FairSharePolicy;
 import org.apache.hadoop.yarn.server.resourcemanager.scheduler.fair.policies.FifoPolicy;
-import org.apache.hadoop.yarn.server.resourcemanager.scheduler.fair.policies.InstantaneousGuaranteePolicy;
+import org.apache.hadoop.yarn.server.resourcemanager.scheduler.fair.policies.SpeedFairPolicy;
 
 import java.util.Collection;
 import java.util.Comparator;
@@ -81,8 +81,8 @@ public abstract class SchedulingPolicy {
       clazz = FifoPolicy.class;
     } else if (text.equalsIgnoreCase(DominantResourceFairnessPolicy.NAME)) {
       clazz = DominantResourceFairnessPolicy.class;
-    } else if (text.equalsIgnoreCase(InstantaneousGuaranteePolicy.NAME)) { //iglf
-        clazz = InstantaneousGuaranteePolicy.class;
+    } else if (text.equalsIgnoreCase(SpeedFairPolicy.NAME)) { //iglf
+        clazz = SpeedFairPolicy.class;
     } else {
       try {
         clazz = Class.forName(policy);

@@ -240,6 +240,9 @@ public class AllocationFileLoaderService extends AbstractService {
     
     Map<String, Float> queueFairPriorities = new HashMap<String, Float>(); //iglf
     Map<String, Resource> minQueueReqs = new HashMap<String, Resource>();
+    Map<String, Long> speedDurations = new HashMap<String, Long>();	
+     Map<String, Long> periods = new HashMap<String, Long>();	
+      
 
     // Remember all queue names so we can display them on web UI, etc.
     // configuredQueues is segregated based on whether it is a leaf queue
@@ -358,7 +361,7 @@ public class AllocationFileLoaderService extends AbstractService {
           fairSharePreemptionThresholds, 
           queueFairPriorities, //iglf
           queueAcls, configuredQueues,
-          reservableQueues, minQueueReqs);
+          reservableQueues, minQueueReqs, speedDurations, periods);
     }
 
     // Load placement policy and pass it configured queues
@@ -409,7 +412,7 @@ public class AllocationFileLoaderService extends AbstractService {
         queueFairPriorities, //iglf
         queueAcls,
         newPlacementPolicy, configuredQueues, globalReservationQueueConfig,
-        reservableQueues, minQueueReqs);
+        reservableQueues, minQueueReqs, speedDurations, periods);
     
     lastSuccessfulReload = clock.getTime();
     lastReloadAttemptFailed = false;
@@ -433,7 +436,9 @@ public class AllocationFileLoaderService extends AbstractService {
       Map<String, Map<QueueACL, AccessControlList>> queueAcls,
       Map<FSQueueType, Set<String>> configuredQueues,
       Set<String> reservableQueues, 
-      Map<String, Resource> minQueueReqs)
+      Map<String, Resource> minQueueReqs,
+      Map<String, Long> speedDurations,
+      Map<String, Long> periods)
       throws AllocationConfigurationException {
     String queueName = element.getAttribute("name");
 
@@ -512,6 +517,14 @@ public class AllocationFileLoaderService extends AbstractService {
           String text = ((Text)field.getFirstChild()).getData().trim();
           Resource val = FairSchedulerConfiguration.parseResourceConfigValue(text);
           minQueueReqs.put(queueName, val);        
+      } else if ("speedDuration".equals(field.getTagName())) { //iglf
+          String text = ((Text)field.getFirstChild()).getData().trim();
+          Long val = Long.parseLong(text);
+          speedDurations.put(queueName, val);        
+      } else if ("period".equals(field.getTagName())) { //iglf
+          String text = ((Text)field.getFirstChild()).getData().trim();
+          Long val = Long.parseLong(text);
+          periods.put(queueName, val);        
       } else if ("queue".endsWith(field.getTagName()) || 
           "pool".equals(field.getTagName())) {
         loadQueue(queueName, field, minQueueResources, maxQueueResources,
@@ -519,7 +532,8 @@ public class AllocationFileLoaderService extends AbstractService {
             queuePolicies, minSharePreemptionTimeouts,
             fairSharePreemptionTimeouts, fairSharePreemptionThresholds,
             queueFairPriorities, //iglf
-            queueAcls, configuredQueues, reservableQueues, minQueueReqs);
+            queueAcls, configuredQueues, reservableQueues, minQueueReqs, speedDurations, 
+            periods);
         isLeaf = false;
       }
     }

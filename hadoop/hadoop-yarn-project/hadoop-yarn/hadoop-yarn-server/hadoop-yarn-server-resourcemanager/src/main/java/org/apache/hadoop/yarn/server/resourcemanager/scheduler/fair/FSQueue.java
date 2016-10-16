@@ -34,6 +34,7 @@ import org.apache.hadoop.yarn.api.records.QueueState;
 import org.apache.hadoop.yarn.api.records.Resource;
 import org.apache.hadoop.yarn.factories.RecordFactory;
 import org.apache.hadoop.yarn.factory.providers.RecordFactoryProvider;
+import org.apache.hadoop.yarn.server.resourcemanager.RMContext;
 import org.apache.hadoop.yarn.server.resourcemanager.resource.ResourceWeights;
 import org.apache.hadoop.yarn.server.resourcemanager.scheduler.Queue;
 import org.apache.hadoop.yarn.util.resource.Resources;
@@ -46,74 +47,84 @@ public abstract class FSQueue implements Queue, Schedulable {
   private final String name;
   protected final FairScheduler scheduler;
   private final FSQueueMetrics metrics;
-  
+
   protected final FSParentQueue parent;
-  protected final RecordFactory recordFactory =
-      RecordFactoryProvider.getRecordFactory(null);
-  
+  protected final RecordFactory recordFactory = RecordFactoryProvider.getRecordFactory(null);
+
   protected SchedulingPolicy policy = SchedulingPolicy.DEFAULT_POLICY;
 
   private long fairSharePreemptionTimeout = Long.MAX_VALUE;
   private long minSharePreemptionTimeout = Long.MAX_VALUE;
   private float fairSharePreemptionThreshold = 0.5f;
+
+  private float fairPriority = Schedulable.DEFAULT_FAIR_PRIORITY; // iglf
+  private Resource minReq = Resource.newInstance(0, 0);
+  private boolean isRunning = false; // iglf
+  private long speedDuration = 0;
+  private long period = -1;
   
-  private float fairPriority = Schedulable.DEFAULT_FAIR_PRIORITY; //iglf  
-  private boolean isRunning = false; //iglf 
+  private long startSessionTime = -1;
+  
 
   public float getFairPriority() {
-		return fairPriority;
+    if (!isDuringSpeedupDuration())
+      return fairPriority;
+    else
+      return (float) 1.0;
   }
 
   public void setFairPriority(float fairPriority) {
-		this.fairPriority = fairPriority;
+    this.fairPriority = fairPriority;
   }
 
-public FSQueue(String name, FairScheduler scheduler, FSParentQueue parent) {
+  public FSQueue(String name, FairScheduler scheduler, FSParentQueue parent) {
     this.name = name;
     this.scheduler = scheduler;
     this.metrics = FSQueueMetrics.forQueue(getName(), parent, true, scheduler.getConf());
     metrics.setMinShare(getMinShare());
     metrics.setMaxShare(getMaxShare());
     this.parent = parent;
-		this.fairPriority = scheduler.getAllocationConfiguration().getQueueFairPriority(name); //iglf
+    this.fairPriority = scheduler.getAllocationConfiguration().getQueueFairPriority(name); // iglf
+    this.speedDuration = scheduler.getAllocationConfiguration().getSpeedDurations(name);
+    this.period = scheduler.getAllocationConfiguration().getPeriod(name);
+    this.minReq = scheduler.getAllocationConfiguration().getMinReqs(name);
   }
-  
+
   public String getName() {
     return name;
   }
-  
+
   @Override
   public String getQueueName() {
     return name;
   }
-  
+
   public SchedulingPolicy getPolicy() {
     return policy;
   }
-  
+
   public FSParentQueue getParent() {
     return parent;
   }
 
   protected void throwPolicyDoesnotApplyException(SchedulingPolicy policy)
       throws AllocationConfigurationException {
-    throw new AllocationConfigurationException("SchedulingPolicy " + policy
-        + " does not apply to queue " + getName());
+    throw new AllocationConfigurationException(
+        "SchedulingPolicy " + policy + " does not apply to queue " + getName());
   }
 
-  public abstract void setPolicy(SchedulingPolicy policy)
-      throws AllocationConfigurationException;
+  public abstract void setPolicy(SchedulingPolicy policy) throws AllocationConfigurationException;
 
   @Override
   public ResourceWeights getWeights() {
     return scheduler.getAllocationConfiguration().getQueueWeight(getName());
   }
-  
+
   @Override
   public Resource getMinShare() {
     return scheduler.getAllocationConfiguration().getMinResources(getName());
   }
-  
+
   @Override
   public Resource getMaxShare() {
     return scheduler.getAllocationConfiguration().getMaxResources(getName());
@@ -121,7 +132,7 @@ public FSQueue(String name, FairScheduler scheduler, FSParentQueue parent) {
 
   @Override
   public long getStartTime() {
-//    return 0;
+    // return 0;
     return this.getAppStartTime();
   }
 
@@ -131,7 +142,7 @@ public FSQueue(String name, FairScheduler scheduler, FSParentQueue parent) {
     p.setPriority(1);
     return p;
   }
-  
+
   @Override
   public QueueInfo getQueueInfo(boolean includeChildQueues, boolean recursive) {
     QueueInfo queueInfo = recordFactory.newRecordInstance(QueueInfo.class);
@@ -140,15 +151,15 @@ public FSQueue(String name, FairScheduler scheduler, FSParentQueue parent) {
     if (scheduler.getClusterResource().getMemory() == 0) {
       queueInfo.setCapacity(0.0f);
     } else {
-      queueInfo.setCapacity((float) getFairShare().getMemory() /
-          scheduler.getClusterResource().getMemory());
+      queueInfo.setCapacity(
+          (float) getFairShare().getMemory() / scheduler.getClusterResource().getMemory());
     }
 
     if (getFairShare().getMemory() == 0) {
       queueInfo.setCurrentCapacity(0.0f);
     } else {
-      queueInfo.setCurrentCapacity((float) getResourceUsage().getMemory() /
-          getFairShare().getMemory());
+      queueInfo
+          .setCurrentCapacity((float) getResourceUsage().getMemory() / getFairShare().getMemory());
     }
 
     ArrayList<QueueInfo> childQueueInfos = new ArrayList<QueueInfo>();
@@ -162,7 +173,7 @@ public FSQueue(String name, FairScheduler scheduler, FSParentQueue parent) {
     queueInfo.setQueueState(QueueState.RUNNING);
     return queueInfo;
   }
-  
+
   @Override
   public FSQueueMetrics getMetrics() {
     return metrics;
@@ -251,20 +262,22 @@ public FSQueue(String name, FairScheduler scheduler, FSParentQueue parent) {
    * Gets the children of this queue, if any.
    */
   public abstract List<FSQueue> getChildQueues();
-  
+
   /**
-   * Adds all applications in the queue and its subqueues to the given collection.
-   * @param apps the collection to add the applications to
+   * Adds all applications in the queue and its subqueues to the given
+   * collection.
+   * 
+   * @param apps
+   *          the collection to add the applications to
    */
-  public abstract void collectSchedulerApplications(
-      Collection<ApplicationAttemptId> apps);
-  
+  public abstract void collectSchedulerApplications(Collection<ApplicationAttemptId> apps);
+
   /**
-   * Return the number of apps for which containers can be allocated.
-   * Includes apps in subqueues.
+   * Return the number of apps for which containers can be allocated. Includes
+   * apps in subqueues.
    */
   public abstract int getNumRunnableApps();
-  
+
   /**
    * Helper method to check if the queue should attempt assigning resources
    * 
@@ -285,41 +298,91 @@ public FSQueue(String name, FairScheduler scheduler, FSParentQueue parent) {
   public boolean isActive() {
     return getNumRunnableApps() > 0;
   }
-  
-  public boolean isRunning() { //iglf:
-    //TODO: find another condition to indicate there is ready app in the queue
-//    return getResourceUsage().getMemory()>0 || getResourceUsage().getVirtualCores()>0; // to slow
+
+  public boolean isRunning() { // iglf:
+    // TODO: find another condition to indicate there is ready app in the queue
+    // return getResourceUsage().getMemory()>0 ||
+    // getResourceUsage().getVirtualCores()>0; // to slow
     return isRunning;
   }
-  
-  public void setIsRunning(boolean isRunning){
+
+  public void setIsRunning(boolean isRunning) {
     this.isRunning = isRunning;
+    if(this.startSessionTime<=0){
+      this.startSessionTime = System.currentTimeMillis();
+    }
   }
 
   /** Convenient toString implementation for debugging. */
   @Override
   public String toString() {
-    return String.format("[%s, demand=%s, running=%s, share=%s, w=%s]",
-        getName(), getDemand(), getResourceUsage(), fairShare, getWeights());
+    return String.format("[%s, demand=%s, running=%s, share=%s, w=%s]", getName(), getDemand(),
+        getResourceUsage(), fairShare, getWeights());
   }
-  
+
   @Override
   public Set<String> getAccessibleNodeLabels() {
     // TODO, add implementation for FS
     return null;
   }
-  
+
   @Override
   public String getDefaultNodeLabelExpression() {
     // TODO, add implementation for FS
     return null;
   }
-  
+
   public abstract long getAppStartTime();
-  
+
   @Override
   public Resource getMinReq() {
-    return scheduler.getAllocationConfiguration().getMinReqs(getName());
+    Resource res = Resource.newInstance(0, 0);
+    
+    if (isDuringSpeedupDuration())
+      res = scheduler.getAllocationConfiguration().getMinReqs(getName());
+
+    return res; 
+  }
+
+  public RMContext getRMContext() { // iglf
+    return scheduler.getRMContext();
+  }
+
+  public Queue getParentQueue() {
+    return this.parent;
   }
   
+  public long getSpeedDuration(){
+    return this.speedDuration;
+  }
+
+  
+  public long getPeriod(){
+    return this.period;
+  }
+  public boolean isInteractive(){
+    if (this.getSpeedDuration()>0)
+      return true;
+    return false;
+  }
+  
+  public boolean isDuringSpeedupDuration(){
+//    long sTime = this.getStartTime();
+    long sTime = startSessionTime;
+    if(this.period <= 0){
+      return false;
+    }
+    if(sTime <= 0 && this.isInteractive()){
+      return true;
+    }
+    long lasted = (System.currentTimeMillis() - sTime);
+    if (lasted % this.period <= this.getSpeedDuration()) {
+      return true;
+    }
+    return false;
+  }
+  
+  public long getStartSessionTime(){
+    return startSessionTime;
+  }
 }

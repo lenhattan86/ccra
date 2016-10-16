@@ -84,6 +84,8 @@ import org.apache.hadoop.util.ToolRunner;
  */
 public class HDFSWrite extends Configured implements Tool {
   
+  public static boolean DISABLE_RANDOM = true;
+  
   /**
    * User counters
    */
@@ -169,6 +171,8 @@ public class HDFSWrite extends Configured implements Tool {
     private void randomizeBytes(byte[] data, int offset, int length) {
       for(int i=offset + length - 1; i >= offset; --i) {
         data[i] = (byte) random.nextInt(256);
+        if (DISABLE_RANDOM)
+          data[i] = (byte) 128;
       }
     }
     
@@ -220,6 +224,12 @@ public class HDFSWrite extends Configured implements Tool {
       valueSizeRange = 
         job.getInt("test.randomwrite.max_value", 20000) - minValueSize;
       System.out.println("[debug] valueSizeRange: "+valueSizeRange);
+      
+      if(DISABLE_RANDOM) {
+        numBytesToWrite = 128*1024*1024;
+        valueSizeRange = 0;
+        keySizeRange = 0;
+      }
     }
     
   }

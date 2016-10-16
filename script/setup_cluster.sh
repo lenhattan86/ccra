@@ -111,7 +111,7 @@ isDownload=false
 isExtract=true
 
 hostname="nm.yarn-perf.yarnrm-pg0.wisc.cloudlab.us"; shedulingPolicy="SpeedFair"; cp ~/.ssh/config.yarn-perf ~/.ssh/config; 
-#hostname="nm.yarn-drf.yarnrm-pg0.wisc.cloudlab.us"; shedulingPolicy="drf"; cp ~/.ssh/config.yarn-drf ~/.ssh/config; isUploadYarn=false ; 
+#hostname="nm.yarn-drf.yarnrm-pg0.wisc.cloudlab.us"; shedulingPolicy="drf"; cp ~/.ssh/config.yarn-drf ~/.ssh/config; isUploadYarn=true ; 
 
 customizedHadoopPath="/home/tanle/projects/ccra/hadoop/hadoop-dist/target/$hadoopTgz"
 
@@ -161,8 +161,10 @@ shudownSpark=false
 if $IS_INIT
 then
 	isDownload=true
-	isUploadYarn=true
+	isUploadYarn=false ; shedulingPolicy="drf" # check with the stable version first.
 	isExtract=true
+	
+	
 
 	isUploadKey=true
 #	isGenerateKey=false

@@ -97,6 +97,8 @@ public abstract class AbstractYarnScheduler
 
   protected RMContext rmContext;
   
+  
+  
   /*
    * All schedulers which are inheriting AbstractYarnScheduler should use
    * concurrent version of 'applications' map.
@@ -681,5 +683,9 @@ public abstract class AbstractYarnScheduler
       return attempt.getAppSchedulingInfo().getAllResourceRequests();
     }
     return null;
+  }
+  
+  public RMContext getRMContext(){ //iglf
+	  return this.rmContext;
   }
 }

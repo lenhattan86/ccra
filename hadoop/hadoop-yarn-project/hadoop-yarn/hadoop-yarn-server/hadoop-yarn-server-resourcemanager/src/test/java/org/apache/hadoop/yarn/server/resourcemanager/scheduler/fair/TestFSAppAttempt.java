@@ -31,7 +31,7 @@ import org.apache.hadoop.yarn.server.resourcemanager.scheduler.QueueMetrics;
 import org.apache.hadoop.yarn.server.resourcemanager.scheduler.fair.policies.DominantResourceFairnessPolicy;
 import org.apache.hadoop.yarn.server.resourcemanager.scheduler.fair.policies.FairSharePolicy;
 import org.apache.hadoop.yarn.server.resourcemanager.scheduler.fair.policies.FifoPolicy;
-import org.apache.hadoop.yarn.server.resourcemanager.scheduler.fair.policies.InstantaneousGuaranteePolicy;
+import org.apache.hadoop.yarn.server.resourcemanager.scheduler.fair.policies.SpeedFairPolicy;
 import org.apache.hadoop.yarn.util.Clock;
 import org.apache.hadoop.yarn.util.resource.Resources;
 import org.junit.Before;
@@ -275,7 +275,7 @@ public class TestFSAppAttempt extends FairSchedulerTestBase {
     Mockito.when(mockScheduler.getClock()).thenReturn(scheduler.getClock());
 
     final FSLeafQueue mockQueue = Mockito.mock(FSLeafQueue.class);
-    mockQueue.setPolicy(SchedulingPolicy.parse(InstantaneousGuaranteePolicy.NAME));
+    mockQueue.setPolicy(SchedulingPolicy.parse(SpeedFairPolicy.NAME));
 
     final Resource queueMaxResources = Resource.newInstance(5 * 1024, 3);
     final Resource queueFairShare = Resources.createResource(4096, 2);

@@ -22,8 +22,10 @@ import java.util.ArrayList;
 
 import org.apache.hadoop.yarn.api.records.Priority;
 import org.apache.hadoop.yarn.api.records.Resource;
+import org.apache.hadoop.yarn.server.resourcemanager.RMContext;
 import org.apache.hadoop.yarn.server.resourcemanager.resource.ResourceWeights;
 import org.apache.hadoop.yarn.server.resourcemanager.rmcontainer.RMContainer;
+import org.apache.hadoop.yarn.server.resourcemanager.scheduler.Queue;
 import org.apache.hadoop.yarn.util.Records;
 import org.apache.hadoop.yarn.util.resource.Resources;
 
@@ -55,6 +57,10 @@ public class FakeSchedulable implements Schedulable {
   }
   
   public FakeSchedulable(int minShare, int maxShare) {
+    this(minShare, maxShare, 1, 0, 0, 0);
+  }
+  
+  public FakeSchedulable(int minShare, int maxShare, int minReq) {
     this(minShare, maxShare, 1, 0, 0, 0);
   }
   
@@ -108,6 +114,18 @@ public class FakeSchedulable implements Schedulable {
     this.fairPriority = fairPriority;
   }
   
+  public FakeSchedulable(Resource minShare, Resource maxShare, ResourceWeights weights, Resource none,
+      Resource usage, long l, Resource minReq) {
+    this.minShare = minShare;
+    this.maxShare = maxShare;
+    this.weights = weights;
+    setFairShare(fairShare);
+    this.usage = usage;
+    this.priority = Records.newRecord(Priority.class);
+    this.startTime = 0;
+    this.minReq = minReq;
+  }
+
   @Override
   public Resource assignContainer(FSSchedulerNode node) {
     return null;
@@ -184,4 +202,34 @@ public class FakeSchedulable implements Schedulable {
   public Resource getMinReq() {
     return this.minReq;
   }
+
+@Override
+public RMContext getRMContext() { //iglf
+	// TODO Auto-generated method stub
+	return null;
+}
+
+@Override
+public Queue getParentQueue() {
+	// TODO Auto-generated method stub
+	return null;
+}
+
+@Override
+public long getSpeedDuration() {
+  // TODO Auto-generated method stub
+  return 0;
+}
+
+@Override
+public long getPeriod() {
+  // TODO Auto-generated method stub
+  return 0;
+}
+
+@Override
+public boolean isLeafQueue() {
+  // TODO Auto-generated method stub
+  return true;
+}
 }

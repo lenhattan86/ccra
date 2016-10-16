@@ -23,9 +23,9 @@ if $isGenScripts
 then
 	rm -rf workGen; mkdir workGen; javac -classpath $HADOOP_HOME/share/hadoop/common/\*:$HADOOP_HOME/share/hadoop/mapreduce/\*:$HADOOP_HOME/share/hadoop/mapreduce/lib/\* -d workGen WorkGen.java; jar -cvf WorkGen.jar -C workGen/ .
 
-	rm -rf scriptTest; javac -source 1.7  GenerateReplayScript.java; java GenerateReplayScript
+	rm -rf scriptTest; javac  GenerateReplayScript.java; java GenerateReplayScript
 
-	javac -source 1.7  GenerateSparkScripts.java; java GenerateSparkScripts
+	javac GenerateSparkScripts.java; java GenerateSparkScripts
 fi
 
 wait $prepareInput

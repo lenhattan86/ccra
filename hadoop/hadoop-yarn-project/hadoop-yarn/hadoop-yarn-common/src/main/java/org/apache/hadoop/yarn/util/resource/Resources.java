@@ -265,4 +265,12 @@ public class Resources {
     return createResource(Math.max(lhs.getMemory(), rhs.getMemory()),
         Math.max(lhs.getVirtualCores(), rhs.getVirtualCores()));
   }
+
+  public static boolean lessThanReq(Resource flexibleRes, Resource minReq) {
+    if (flexibleRes.getMemory() < minReq.getMemory())
+      return false;
+    if (flexibleRes.getVirtualCores() < minReq.getVirtualCores())
+      return false;
+    return true;
+  }
 }

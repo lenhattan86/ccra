@@ -24,8 +24,10 @@ import org.apache.hadoop.classification.InterfaceAudience.Private;
 import org.apache.hadoop.classification.InterfaceStability.Unstable;
 import org.apache.hadoop.yarn.api.records.Priority;
 import org.apache.hadoop.yarn.api.records.Resource;
+import org.apache.hadoop.yarn.server.resourcemanager.RMContext;
 import org.apache.hadoop.yarn.server.resourcemanager.resource.ResourceWeights;
 import org.apache.hadoop.yarn.server.resourcemanager.rmcontainer.RMContainer;
+import org.apache.hadoop.yarn.server.resourcemanager.scheduler.Queue;
 
 /**
  * A Schedulable represents an entity that can be scheduled such as an
@@ -108,12 +110,18 @@ public interface Schedulable {
   
   public void setFairPriority(float fairPriority); //iglf
   
-  public static final long HIGH_PRIORITY_DURATION = 120 * 1000; // mili seconds
+//  public static final long HIGH_PRIORITY_DURATION = 240 * 1000; // mili seconds
   
   public static final float DEFAULT_FAIR_PRIORITY = 1.0f;
   
+  public static final float DEFAULT_BUGDET = 2000;
+  
   /** Minimum Resource share required for the schedulable. */
   public Resource getMinReq();
+  
+  public long getSpeedDuration();
+  
+  public long getPeriod();
   
 //  public void setIglfPriorityDurations(ArrayList<Long> iglfDurations);
 //  
@@ -122,4 +130,10 @@ public interface Schedulable {
 //  public void setIglfPriorities(ArrayList<Double> iglfPriorities);
 //  
 //  public void getIglfPriorities();  
+  
+  public RMContext getRMContext(); //iglf
+  
+  public Queue getParentQueue(); //iglf
+  
+  public boolean isLeafQueue();
 }

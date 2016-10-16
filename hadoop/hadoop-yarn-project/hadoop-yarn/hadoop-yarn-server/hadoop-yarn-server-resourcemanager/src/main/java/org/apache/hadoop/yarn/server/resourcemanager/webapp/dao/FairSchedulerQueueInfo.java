@@ -66,6 +66,11 @@ public class FairSchedulerQueueInfo {
   private float fairPrioirity;
   private boolean isRunning;
   private ResourceInfo minReq;
+  private long speedDuration;  
+  private long period;
+  private long startSessionTime;
+  
+  private boolean isSpeedup;
   
   
 
@@ -81,6 +86,10 @@ private Collection<FairSchedulerQueueInfo> childQueues;
     fairPrioirity = queue.getFairPriority();
     isRunning = queue.isRunning();
     minReq = new ResourceInfo(queue.getMinReq());
+    speedDuration = queue.getSpeedDuration();
+    period = queue.getPeriod();
+    startSessionTime = queue.getStartSessionTime();
+    isSpeedup = queue.isDuringSpeedupDuration();
     
     queueName = queue.getName();
     schedulingPolicy = queue.getPolicy().getName();
@@ -221,5 +230,21 @@ private Collection<FairSchedulerQueueInfo> childQueues;
   
   public ResourceInfo getMinReq() {
     return minReq;
+  }
+  
+  public long getSpeedDuration() {
+    return speedDuration;
+  }
+
+  public long getPeriod() {
+    return period;
+  }
+  
+  public long getStartSessionTime(){
+    return this.startSessionTime;
+  }
+  
+  public boolean isDuringSpeedupDuration(){
+    return this.isSpeedup;
   }
 }

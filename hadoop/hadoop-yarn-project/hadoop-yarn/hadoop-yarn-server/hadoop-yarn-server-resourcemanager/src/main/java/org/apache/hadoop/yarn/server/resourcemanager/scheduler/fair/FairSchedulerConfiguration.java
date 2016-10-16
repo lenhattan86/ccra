@@ -110,7 +110,8 @@ public class FairSchedulerConfiguration extends Configuration {
   protected static final String PREEMPTION_INTERVAL = CONF_PREFIX + "preemptionInterval";
   protected static final int DEFAULT_PREEMPTION_INTERVAL = 5000;
   protected static final String WAIT_TIME_BEFORE_KILL = CONF_PREFIX + "waitTimeBeforeKill";
-  protected static final int DEFAULT_WAIT_TIME_BEFORE_KILL = 15000;
+  //protected static final int DEFAULT_WAIT_TIME_BEFORE_KILL = 15000; // iglf
+  protected static final int DEFAULT_WAIT_TIME_BEFORE_KILL = 1000; // iglf
 
   /** Whether to assign multiple containers in one check-in. */
   public static final String  ASSIGN_MULTIPLE = CONF_PREFIX + "assignmultiple";

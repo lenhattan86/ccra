@@ -236,8 +236,8 @@ public class WorkGen extends Configured implements Tool {
 		// Set user-supplied (possibly default) job configs
 		jobConf.setNumReduceTasks(num_reduces);
 
-		// System.out.println("default number of maps: " +
-		// jobConf.getNumMapTasks());
+		 System.out.println("default number of maps: " +
+		 jobConf.getNumMapTasks());
 		jobConf.setNumMapTasks(num_maps); // Tan Le: set this num_maps to
 											// increase the cluster utilization.
 		// System.out.println("modified number of maps: " +
