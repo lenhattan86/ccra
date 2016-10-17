@@ -34,7 +34,7 @@ hadoopTgz="hadoop-2.7.2.tar.gz"
 #hadoopLink="http://apache.claz.org/hadoop/common/hadoop-2.6.3/hadoop-2.6.3.tar.gz"
 #hadoopTgz="hadoop-2.6.3.tar.gz"
 
-yarnVcores=32
+yarnVcores=4
 vmemRatio=4
 #yarnNodeMem=131072 # 128 GB
 #yarnNodeMem=65536 # 64 GB
@@ -106,7 +106,7 @@ isOfficial=false
 isSingleNodeCluster=false	
 isUploadTestCase=false
 
-isUploadYarn=false
+isUploadYarn=true
 isDownload=false
 isExtract=true
 
@@ -440,7 +440,7 @@ echo "#################################### install Hadoop Yarn #################
 	else
 
 		installHadoopFunc () {
-			echo Set up Hadoop at $1
+			echo Set up Hadoop at $1 step 0
 			#if $isUploadYarn 
 			#then
 			#	ssh $username@$1 "sudo rm -rf $hadoopTgz"
@@ -463,8 +463,8 @@ echo "#################################### install Hadoop Yarn #################
 			scp ../SWIM/randomwriter_conf.xsl $1:~/hadoop/config
 			scp ../SWIM/workGenKeyValue_conf.xsl $1:~/hadoop/config
 			
-			echo Configure Hadoop at $1
-			ssh $username@$1 "echo export JAVA_HOME=$java_home > temp.txt; cat temp.txt ~/$hadoopFolder/$configFolder/hadoop-env.sh > temp2.txt ; mv temp2.txt ~/$hadoopFolder/$configFolder/hadoop-env.sh"
+			echo Configure Hadoop at $1 step 1
+			ssh $username@$1 "echo export JAVA_HOME=$java_home > temp.txt; cat temp.txt ~/$hadoopFolder/$configFolder/hadoop-env.sh > temp2.txt ; mv temp2.txt ~/$hadoopFolder/$configFolder/hadoop-env.sh "
 
 			if $isInitPath
 			then	
@@ -497,10 +497,11 @@ echo "#################################### install Hadoop Yarn #################
 				source .bashrc"
 				
 			fi
-
+			echo Configure Hadoop at $1 step 2
 			# etc/hadoop/core-site.xml
 			ssh $username@$1 "sudo rm -rf $hdfsDir; sudo mkdir $hdfsDir; sudo chmod 777 $hdfsDir"
-
+			echo Configure Hadoop at $1 step 3
+			sleep 2
 			ssh $username@$1 "echo '<?xml version=\"1.0\" encoding=\"UTF-8\"?>
 <?xml-stylesheet type=\"text/xsl\" href=\"configuration.xsl\"?>
 <configuration>
@@ -536,6 +537,7 @@ echo "#################################### install Hadoop Yarn #################
 				# ssh $username@$1 "sed -i -e 's/#export HADOOP_HEAPSIZE=/export HADOOP_HEAPSIZE=4096/g' $hadoopFolder/$configFolder/hadoop-env.sh"
 				# YARN_HEAPSIZE
 			# etc/hadoop/hdfs-site.xml
+			echo Set up Hadoop at $1 step 4
 			ssh $username@$1 "echo '<?xml version=\"1.0\" encoding=\"UTF-8\"?> 
 <?xml-stylesheet type=\"text/xsl\" href=\"configuration.xsl\"?>
 <configuration>
@@ -557,13 +559,13 @@ echo "#################################### install Hadoop Yarn #################
 
 </configuration>' > $hadoopFolder/$configFolder/hdfs-site.xml"
 
-			echo Configure Yarn at $1
+			echo Configure Yarn at $1 step 0
 
 			# etc/hadoop/yarn-site.xml
 			## Configurations for ResourceManager and NodeManager:
 
 			ssh $username@$1 "sudo rm -rf $yarnAppLogs; sudo mkdir $yarnAppLogs; sudo chmod 777 $yarnAppLogs"
-			
+			echo Configure Yarn at $1 step 1
 			ssh $username@$1 "echo '<?xml version=\"1.0\"?>
 <configuration>
 
@@ -712,6 +714,7 @@ echo "#################################### install Hadoop Yarn #################
 #			ssh $username@$1 "cgdelete cpu:yarn"
 
 # setup scheduler https://hadoop.apache.org/docs/r2.7.1/hadoop-yarn/hadoop-yarn-site/FairScheduler.html
+			echo Configure Yarn at $1 step 2
 			ssh $username@$1 "echo '<?xml version=\"1.0\"?>
 <allocations>
 
@@ -722,8 +725,8 @@ echo "#################################### install Hadoop Yarn #################
 
 <queue name=\"interactive0\">	
 	<!--<minReq>131072 mb, 64 vcores</minReq>-->
-	<!-- <minReq>196608 mb, 96 vcores</minReq> -->
-	<minReq>235520 mb, 115 vcores</minReq>
+	<minReq>24576 mb, 12 vcores</minReq>
+	<!-- <minReq>235520 mb, 115 vcores</minReq> -->
 	<speedDuration>60000</speedDuration>
 	<fairPriority>0.5</fairPriority>
 	<period>120000</period>
@@ -733,7 +736,8 @@ echo "#################################### install Hadoop Yarn #################
 <queue name=\"interactive1\">	
 	<!--<minReq>131072 mb, 64 vcores</minReq>-->
 	<!-- <minReq>196608 mb, 96 vcores</minReq> -->
-	<minReq>235520 mb, 115 vcores</minReq>
+	<minReq>24576 mb, 12 vcores</minReq>
+	<!-- <minReq>235520 mb, 115 vcores</minReq> -->
 	<fairPriority>0.5</fairPriority>
 	<speedDuration>60000</speedDuration>
 	<period>120000</period>
@@ -773,7 +777,7 @@ echo "#################################### install Hadoop Yarn #################
 </queue>
 
 </allocations>' > $fairSchedulerFile"
-
+			echo Configure Yarn at $1 step 3
 			ssh $username@$1 "echo '<?xml version=\"1.0\"?>
 <configuration>
   <property>
@@ -816,7 +820,7 @@ echo "#################################### install Hadoop Yarn #################
   </property>
 
 </configuration>' > $capacitySchedulerFile"
-		
+			echo Configure Yarn at $1 step 4
 			# etc/hadoop/mapred-site.xml
 			ssh $username@$1 "echo '<?xml version=\"1.0\"?>
 <?xml-stylesheet type=\"text/xsl\" href=\"configuration.xsl\"?>
@@ -886,7 +890,7 @@ echo "#################################### install Hadoop Yarn #################
 			
 			
 			# monitoring script in etc/hadoop/yarn-site.xml
-
+			echo Configure Yarn at $1 step 5
 			# slaves etc/hadoop/slaves
 			ssh $username@$1 "sudo rm -rf $hadoopFolder/$configFolder/slaves"
 			tempCMD=""
@@ -982,7 +986,7 @@ spark.streaming.dynamicAllocation.maxExecutors 500' > $sparkFolder/conf/spark-de
 			ssh $1 "echo $slave >> $sparkFolder/conf/slaves"
 		done
 
-		ssh $1 "cp ~/spark/lib/$sparkVer-yarn-shuffle.jar ~/hadoop/share/hadoop/yarn/ > .null.txt" 
+		#ssh $1 "cp ~/spark/lib/$sparkVer-yarn-shuffle.jar ~/hadoop/share/hadoop/yarn/ > .null.txt" 
 		ssh $1 "cp ~/spark/yarn/$sparkVer-yarn-shuffle.jar ~/hadoop/share/hadoop/yarn/" # for 2.0.0 version
 	}
 	for server in $serverList; do
@@ -991,7 +995,7 @@ spark.streaming.dynamicAllocation.maxExecutors 500' > $sparkFolder/conf/spark-de
 	wait
 else
 	for server in $serverList; do
-		ssh $server "cp ~/spark/lib/$sparkVer-yarn-shuffle.jar ~/hadoop/share/hadoop/yarn/ > .null.txt" 
+		#ssh $server "cp ~/spark/lib/$sparkVer-yarn-shuffle.jar ~/hadoop/share/hadoop/yarn/ > .null.txt" 
 		ssh $server "cp ~/spark/yarn/$sparkVer-yarn-shuffle.jar ~/hadoop/share/hadoop/yarn/" # for 2.0.0 version
 	done	
 fi
