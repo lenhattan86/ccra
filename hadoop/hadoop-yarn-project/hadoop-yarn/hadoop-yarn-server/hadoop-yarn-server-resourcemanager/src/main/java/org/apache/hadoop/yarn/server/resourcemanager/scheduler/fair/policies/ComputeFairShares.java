@@ -174,8 +174,81 @@ public class ComputeFairShares {
       }
     }
   }
+  
+  private static int numOfAdmittedQueues(Collection<? extends Schedulable> schedulables){
+    int num = 0;
+    for (Schedulable sched : schedulables) {
+      if (sched.isLeafQueue()) {
+        FSQueue queue = (FSQueue) sched;
+        if (queue.isRunning())
+          num++;
+      }
+    }
+    return num;
+  }
 
   private static void computeSharesInternalSpeedFair(Collection<? extends Schedulable> allSchedulables,
+      Resource totalResources, ResourceType type, boolean isSteadyShare) {
+
+    Collection<Schedulable> flexibleScheds = new ArrayList<Schedulable>();
+    int takenResourceByFixedShares = handleFixedFairShares(allSchedulables, flexibleScheds, isSteadyShare, type);
+
+    if (flexibleScheds.isEmpty()) {
+      return;
+    }
+
+    // Find an upper bound on R that we can use in our binary search. We
+    // start at R = 1 and double it until we have either used all the resources or
+    // we have met all Schedulables' max shares.
+    int totalMaxShare = 0;
+    for (Schedulable sched : flexibleScheds) {
+      int maxShare = getResourceValue(sched.getMaxShare(), type);
+      totalMaxShare = (int) Math.min((long) maxShare + (long) totalMaxShare, Integer.MAX_VALUE);
+      if (totalMaxShare == Integer.MAX_VALUE) {
+        break;
+      }
+    }
+    
+    int totalResource = Math.max((getResourceValue(totalResources, type) - takenResourceByFixedShares), 0);
+    totalResource = Math.min(totalMaxShare, totalResource);
+    
+    int takenResourceBySpeedFair = 0;
+    Collection<Schedulable> unsatisfiedScheds = new ArrayList<Schedulable>();
+    takenResourceBySpeedFair = guaranteeServiceRate(flexibleScheds, unsatisfiedScheds, type, totalResource);
+//    unsatisfiedScheds = flexibleScheds;
+
+    if (unsatisfiedScheds.isEmpty()) {
+      return;
+    }
+    
+    totalResource = totalResource - takenResourceBySpeedFair;
+
+    double rMax = 1.0;
+    while (resourceUsedWithWeightToResourceRatioIGLF(rMax, unsatisfiedScheds, type) < totalResource) {
+      rMax *= 2.0;
+    }
+    // Perform the binary search for up to COMPUTE_FAIR_SHARES_ITERATIONS steps
+    double left = 0;
+    double right = rMax;
+    for (int i = 0; i < COMPUTE_FAIR_SHARES_ITERATIONS; i++) {
+      double mid = (left + right) / 2.0;
+      int plannedResourceUsed = resourceUsedWithWeightToResourceRatioIGLF(mid, unsatisfiedScheds, type);
+      if (plannedResourceUsed == totalResource) {
+        right = mid;
+        break;
+      } else if (plannedResourceUsed < totalResource) {
+        left = mid;
+      } else {
+        right = mid;
+      }
+    }
+    // Set the fair shares based on the value of R we've converged to
+    for (Schedulable sched : unsatisfiedScheds) {
+        setResourceValue(computeShare(sched, right, type), sched.getFairShare(), type);
+    }
+  }
+  
+  private static void computeSharesInternalSpeedFairV1(Collection<? extends Schedulable> allSchedulables,
       Resource totalResources, ResourceType type, boolean isSteadyShare) {
 
     Collection<Schedulable> schedulables = new ArrayList<Schedulable>();
@@ -198,6 +271,8 @@ public class ComputeFairShares {
         break;
       }
     }
+    
+    // Share the resources based on minReq
 
     // int minReqResource = resourceUsedByMinReq(schedulables, type);
     int minReqResource = 0; 
@@ -205,8 +280,8 @@ public class ComputeFairShares {
     for (Schedulable sched : schedulables) {
       if (sched.isLeafQueue()) {
         FSQueue queue = (FSQueue) sched;
-        minReqResource += getResourceValue(sched.getMinReq(), type);
-        minReqMap.put(sched.getName(), sched.getMinReq());
+        minReqResource += getResourceValue(sched.getGuaranteeShare(), type);
+        minReqMap.put(sched.getName(), sched.getGuaranteeShare());
       } else {
         minReqMap.put(sched.getName(), Resource.newInstance(0, 0));
       }
@@ -339,6 +414,54 @@ public class ComputeFairShares {
         }
       }
     }
+  }
+  
+  /**
+   * Helper method to handle Schedulabes with fixed fairshares. Returns the resources taken by fixed
+   * fairshare schedulables, and adds the remaining to the passed nonFixedSchedulables.
+   */
+  private static int guaranteeServiceRate(Collection<? extends Schedulable> schedulables,
+      Collection<Schedulable> unsatisfiedSchedulables, ResourceType type, int maxResource) {
+    
+    int numAdmittedQueues = numOfAdmittedQueues(schedulables);
+    
+    int minReqResource = 0; 
+    int remainingRes = maxResource;
+    
+    for (Schedulable sched : schedulables) {
+      boolean isSatisfied = false;
+      if (sched.isLeafQueue()) {
+        FSQueue queue = (FSQueue) sched;
+        if (queue.isInteractive()){
+          // TODO recompute the resource rate for both steps
+          int  alpha = getResourceValue(sched.getAlpha(), type);
+          int guaranteedShare = 0;
+          if (queue.isDuringSpeedupDuration())
+            guaranteedShare = alpha;
+          else {
+            long speedupDuration = (int) queue.getSpeedDuration();
+            if (numAdmittedQueues>0 && queue.getPeriod()>speedupDuration){
+              // TODO: check the (maxResource*sched.getPeriod()/numOfLeafQueues - alpha*speedupDuration) is negative
+              float tmp = (maxResource*sched.getPeriod()/numAdmittedQueues - alpha*speedupDuration)/(queue.getPeriod() - speedupDuration);
+              guaranteedShare = (int) Math.max(tmp, 0);
+            }
+          }  
+            
+          if (guaranteedShare <= remainingRes && guaranteedShare > 0) {
+            minReqResource += guaranteedShare;
+            remainingRes = maxResource  - guaranteedShare;
+            setResourceValue(guaranteedShare, sched.getFairShare(), type);
+            queue.setGuaranteeShare(guaranteedShare, type);
+            isSatisfied = true;
+          }
+        }
+      } 
+      
+      if (!isSatisfied) {
+        unsatisfiedSchedulables.add(sched);
+      }
+    }
+    return minReqResource;
   }
 
   /**

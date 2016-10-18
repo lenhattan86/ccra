@@ -117,7 +117,9 @@ public interface Schedulable {
   public static final float DEFAULT_BUGDET = 2000;
   
   /** Minimum Resource share required for the schedulable. */
-  public Resource getMinReq();
+  public Resource getGuaranteeShare();
+  
+  public Resource getAlpha();
   
   public long getSpeedDuration();
   

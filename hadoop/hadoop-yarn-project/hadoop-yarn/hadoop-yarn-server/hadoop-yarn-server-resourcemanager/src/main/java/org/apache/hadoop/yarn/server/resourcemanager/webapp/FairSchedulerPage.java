@@ -84,7 +84,8 @@ public class FairSchedulerPage extends RmView {
       ResponseInfo ri = info("\'" + qinfo.getQueueName() + "\' Queue Status")
           ._("Scheduling policy:", qinfo.getSchedulingPolicy())._("Weights:", qinfo.getWeights().toString())
           ._("long-term fairness weight:", qinfo.getFairPriority()). // iglf
-          _("minReq:", qinfo.getMinReq().toString()). // iglf
+          _("alpha:", qinfo.getMinReq().toString()). // iglf
+          _("guaranteeRate:", qinfo.getGuaranteeShare().toString()). // iglf
           _("speedDuration:", qinfo.getSpeedDuration()/1000 + " secs"). // iglf
           _("period:", qinfo.getPeriod()/1000 + " secs"). // iglf
           _("startSessionTime:", startSessionTime ). // iglf

@@ -34,7 +34,7 @@ hadoopTgz="hadoop-2.7.2.tar.gz"
 #hadoopLink="http://apache.claz.org/hadoop/common/hadoop-2.6.3/hadoop-2.6.3.tar.gz"
 #hadoopTgz="hadoop-2.6.3.tar.gz"
 
-yarnVcores=4
+yarnVcores=32
 vmemRatio=4
 #yarnNodeMem=131072 # 128 GB
 #yarnNodeMem=65536 # 64 GB
@@ -103,24 +103,26 @@ echo "setup $hostname"
 
 REBOOT=false
 isOfficial=false
+TEST=true
 isSingleNodeCluster=false	
 isUploadTestCase=false
 
-isUploadYarn=true
+isUploadYarn=false
 isDownload=false
-isExtract=true
+isExtract=false
 
-hostname="nm.yarn-perf.yarnrm-pg0.wisc.cloudlab.us"; shedulingPolicy="SpeedFair"; cp ~/.ssh/config.yarn-perf ~/.ssh/config; 
+#hostname="nm.yarn-perf.yarnrm-pg0.wisc.cloudlab.us"; shedulingPolicy="SpeedFair"; cp ~/.ssh/config.yarn-perf ~/.ssh/config; 
 #hostname="nm.yarn-drf.yarnrm-pg0.wisc.cloudlab.us"; shedulingPolicy="drf"; cp ~/.ssh/config.yarn-drf ~/.ssh/config; isUploadYarn=true ; 
+hostname="nm.yarn-small.yarnrm-pg0.wisc.cloudlab.us"; shedulingPolicy="drf"; cp ~/.ssh/config.yarn-small ~/.ssh/config; 
 
 customizedHadoopPath="/home/tanle/projects/ccra/hadoop/hadoop-dist/target/$hadoopTgz"
 
-isUploadKey=false
+isUploadKey=true
 isGenerateKey=false	
-isPasswordlessSSH=false
+isPasswordlessSSH=true
 isAddToGroup=false
 
-isInstallBasePackages=false
+isInstallBasePackages=true
 
 isInstallGanglia=false
 startGanglia=false
@@ -200,10 +202,18 @@ then
 		slaveNodes="ctl cp-1 cp-2 cp-3 cp-4 cp-5 cp-6 cp-7"
 		numOfReplication=1
 	else
-		numOfworkers=4
-		serverList="nm ctl cp-1 cp-2 cp-3"
-		slaveNodes="ctl cp-1 cp-2 cp-3"
-		numOfReplication=1		
+		if $TEST
+		then
+			numOfworkers=2
+			serverList="nm ctl cp-1"
+			slaveNodes="ctl cp-1"
+			numOfReplication=1				
+		else
+			numOfworkers=4
+			serverList="nm ctl cp-1 cp-2 cp-3"
+			slaveNodes="ctl cp-1 cp-2 cp-3"
+			numOfReplication=1		
+		fi
 	fi
 elif $isAmazonEC
 then
@@ -310,10 +320,10 @@ then
 		ssh $username@$1 'sudo apt-get purge -y openjdk*
 			sudo apt-get purge -y oracle-java*
 			sudo apt-get install -y software-properties-common			
-			sudo add-apt-repository ppa:webupd8team/java
+			yes='' | sudo add-apt-repository ppa:webupd8team/java
 			sudo apt-get update
-			sudo echo oracle-java7-installer shared/accepted-oracle-license-v1-1 select true | sudo /usr/bin/debconf-set-selections	
-			sudo apt-get install -y oracle-java7-installer'
+			sudo echo oracle-java8-installer shared/accepted-oracle-license-v1-1 select true | sudo /usr/bin/debconf-set-selections	
+			sudo apt-get install -y oracle-java8-installer'
 		ssh $username@$1 "sudo apt-get install -y cgroup-tools; sudo apt-get install -y scala; sudo apt-get install -y vim"	
 	}
 	echo "TODO: install JAVA"
@@ -725,8 +735,8 @@ echo "#################################### install Hadoop Yarn #################
 
 <queue name=\"interactive0\">	
 	<!--<minReq>131072 mb, 64 vcores</minReq>-->
-	<minReq>24576 mb, 12 vcores</minReq>
-	<!-- <minReq>235520 mb, 115 vcores</minReq> -->
+	<!-- <minReq>24576 mb, 12 vcores</minReq> -->
+	<minReq>235520 mb, 115 vcores</minReq> 
 	<speedDuration>60000</speedDuration>
 	<fairPriority>0.5</fairPriority>
 	<period>120000</period>
@@ -736,8 +746,8 @@ echo "#################################### install Hadoop Yarn #################
 <queue name=\"interactive1\">	
 	<!--<minReq>131072 mb, 64 vcores</minReq>-->
 	<!-- <minReq>196608 mb, 96 vcores</minReq> -->
-	<minReq>24576 mb, 12 vcores</minReq>
-	<!-- <minReq>235520 mb, 115 vcores</minReq> -->
+	<!--<minReq>24576 mb, 12 vcores</minReq> -->
+	<minReq>235520 mb, 115 vcores</minReq> 
 	<fairPriority>0.5</fairPriority>
 	<speedDuration>60000</speedDuration>
 	<period>120000</period>

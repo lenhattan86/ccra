@@ -221,7 +221,10 @@ public class TestComputeFairShares {
     scheds.add(new FakeSchedulable(0));
     ComputeFairShares.computeSharesIGLF(scheds,
         Resources.createResource(64), ResourceType.MEMORY);
-    verifyMemoryShares(8+10, 8+10, 8+10, 10);
+    for (int i = 0; i < scheds.size(); i++) {
+      System.out.print(scheds.get(i).getFairShare().getMemory()+", ");
+    }
+    verifyMemoryShares(16, 16, 16, 16);
   }
   /*
    * Fair share among the running schedulables. (same resource for the same prioirty)
@@ -238,23 +241,30 @@ public class TestComputeFairShares {
     scheds.add(new FakeSchedulable(0));
     ComputeFairShares.computeSharesIGLF(scheds,
         Resources.createResource(16), ResourceType.MEMORY);
-    for (int i = 0; i < scheds.size(); i++) {
-      System.out.print(scheds.get(i).getFairShare().getMemory()+", ");
-    }
-    verifyMemoryShares(8, 8, 0, 0);
+    verifyMemoryShares(16, 16, 16, 16);
   }
   /*
    * Equally share the remaining (excess) resource to the schedulables.
    */
   @Test
   public void testEqualShareIGLF() {
-    scheds.add(new FakeSchedulable(64));
+    scheds.add(new FakeSchedulable(8));
     scheds.add(new FakeSchedulable(0));
     ComputeFairShares.computeSharesIGLF(scheds,
         Resources.createResource(128), ResourceType.MEMORY);
-    for (int i = 0; i < scheds.size(); i++) {
-      System.out.print(scheds.get(i).getFairShare().getMemory()+", ");
-    }
     verifyMemoryShares(96, 32);
   }
+  
+//  @Test
+//  public void test() {
+//    int maxResource = 128;
+//    long period = 12000;
+//    long speedupDuration = 60000;
+//    int alpha = 115;
+//    int numOfLeafQueues = 4;
+//    float tmp = (maxResource*period/numOfLeafQueues - alpha*speedupDuration)/(period - speedupDuration);
+//    scheds.add(new FakeSchedulable(64));
+//    scheds.add(new FakeSchedulable(0));
+//    verifyMemoryShares(96, 32);
+//  }
 }

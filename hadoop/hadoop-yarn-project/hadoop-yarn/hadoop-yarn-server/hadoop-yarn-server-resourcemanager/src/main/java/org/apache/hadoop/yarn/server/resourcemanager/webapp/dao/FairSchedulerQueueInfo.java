@@ -65,10 +65,11 @@ public class FairSchedulerQueueInfo {
   private ResourceWeights weights; //iglf
   private float fairPrioirity;
   private boolean isRunning;
-  private ResourceInfo minReq;
+  private ResourceInfo alpha;
   private long speedDuration;  
   private long period;
   private long startSessionTime;
+  private ResourceInfo guaranteeShare;
   
   private boolean isSpeedup;
   
@@ -85,7 +86,8 @@ private Collection<FairSchedulerQueueInfo> childQueues;
     weights = queue.getWeights(); //iglf
     fairPrioirity = queue.getFairPriority();
     isRunning = queue.isRunning();
-    minReq = new ResourceInfo(queue.getMinReq());
+    alpha = new ResourceInfo(queue.getAlpha());
+    guaranteeShare = new ResourceInfo(queue.getGuaranteeShare());
     speedDuration = queue.getSpeedDuration();
     period = queue.getPeriod();
     startSessionTime = queue.getStartSessionTime();
@@ -229,7 +231,7 @@ private Collection<FairSchedulerQueueInfo> childQueues;
   }
   
   public ResourceInfo getMinReq() {
-    return minReq;
+    return alpha;
   }
   
   public long getSpeedDuration() {
@@ -246,5 +248,9 @@ private Collection<FairSchedulerQueueInfo> childQueues;
   
   public boolean isDuringSpeedupDuration(){
     return this.isSpeedup;
+  }
+  
+  public ResourceInfo getGuaranteeShare() {
+    return guaranteeShare;
   }
 }

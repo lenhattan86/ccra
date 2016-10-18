@@ -42,57 +42,56 @@ public class FakeSchedulable implements Schedulable {
   private long startTime;
   private float fairPriority = 1.0f;
   private Resource minReq;
-  
+
   public FakeSchedulable() {
     this(0, Integer.MAX_VALUE, 1, 0, 0, 0);
   }
-  
+
   public FakeSchedulable(long startTime, float fairPriority) {
     this(0, Integer.MAX_VALUE, 1, 0, 0, startTime, fairPriority);
   }
-  
+
   public FakeSchedulable(int minShare) {
     this(minShare, Integer.MAX_VALUE, 1, 0, 0, 0);
     minReq = this.getMinShare();
   }
-  
+
   public FakeSchedulable(int minShare, int maxShare) {
     this(minShare, maxShare, 1, 0, 0, 0);
   }
-  
+
   public FakeSchedulable(int minShare, int maxShare, int minReq) {
     this(minShare, maxShare, 1, 0, 0, 0);
   }
-  
+
   public FakeSchedulable(int minShare, double memoryWeight) {
     this(minShare, Integer.MAX_VALUE, memoryWeight, 0, 0, 0);
   }
-  
+
   public FakeSchedulable(int minShare, int maxShare, double memoryWeight) {
     this(minShare, maxShare, memoryWeight, 0, 0, 0);
   }
-  
-  public FakeSchedulable(int minShare, int maxShare, double weight, int fairShare, int usage,
-      long startTime) {
+
+  public FakeSchedulable(int minShare, int maxShare, double weight, int fairShare, int usage, long startTime) {
     this(Resources.createResource(minShare, 0), Resources.createResource(maxShare, 0),
-        new ResourceWeights((float)weight), Resources.createResource(fairShare, 0),
-        Resources.createResource(usage, 0), startTime);
+        new ResourceWeights((float) weight), Resources.createResource(fairShare, 0), Resources.createResource(usage, 0),
+        startTime);
   }
-  
-  public FakeSchedulable(int minShare, int maxShare, double weight, int fairShare, int usage,
-      long startTime, float fairPrirotity) {
+
+  public FakeSchedulable(int minShare, int maxShare, double weight, int fairShare, int usage, long startTime,
+      float fairPrirotity) {
     this(Resources.createResource(minShare, 0), Resources.createResource(maxShare, 0),
-        new ResourceWeights((float)weight), Resources.createResource(fairShare, 0),
-        Resources.createResource(usage, 0), startTime, fairPrirotity);
+        new ResourceWeights((float) weight), Resources.createResource(fairShare, 0), Resources.createResource(usage, 0),
+        startTime, fairPrirotity);
   }
-  
+
   public FakeSchedulable(Resource minShare, ResourceWeights weights) {
-    this(minShare, Resources.createResource(Integer.MAX_VALUE, Integer.MAX_VALUE),
-        weights, Resources.createResource(0, 0), Resources.createResource(0, 0), 0);
+    this(minShare, Resources.createResource(Integer.MAX_VALUE, Integer.MAX_VALUE), weights,
+        Resources.createResource(0, 0), Resources.createResource(0, 0), 0);
   }
-  
-  public FakeSchedulable(Resource minShare, Resource maxShare,
-      ResourceWeights weight, Resource fairShare, Resource usage, long startTime) {
+
+  public FakeSchedulable(Resource minShare, Resource maxShare, ResourceWeights weight, Resource fairShare,
+      Resource usage, long startTime) {
     this.minShare = minShare;
     this.maxShare = maxShare;
     this.weights = weight;
@@ -101,9 +100,9 @@ public class FakeSchedulable implements Schedulable {
     this.priority = Records.newRecord(Priority.class);
     this.startTime = startTime;
   }
-  
-  public FakeSchedulable(Resource minShare, Resource maxShare,
-      ResourceWeights weight, Resource fairShare, Resource usage, long startTime, float fairPriority) {
+
+  public FakeSchedulable(Resource minShare, Resource maxShare, ResourceWeights weight, Resource fairShare,
+      Resource usage, long startTime, float fairPriority) {
     this.minShare = minShare;
     this.maxShare = maxShare;
     this.weights = weight;
@@ -113,9 +112,9 @@ public class FakeSchedulable implements Schedulable {
     this.startTime = startTime;
     this.fairPriority = fairPriority;
   }
-  
-  public FakeSchedulable(Resource minShare, Resource maxShare, ResourceWeights weights, Resource none,
-      Resource usage, long l, Resource minReq) {
+
+  public FakeSchedulable(Resource minShare, Resource maxShare, ResourceWeights weights, Resource none, Resource usage,
+      long l, Resource minReq) {
     this.minShare = minShare;
     this.maxShare = maxShare;
     this.weights = weights;
@@ -170,66 +169,77 @@ public class FakeSchedulable implements Schedulable {
   public long getStartTime() {
     return startTime;
   }
-  
+
   @Override
   public ResourceWeights getWeights() {
     return weights;
   }
-  
+
   @Override
   public Resource getMinShare() {
     return minShare;
   }
-  
+
   @Override
   public Resource getMaxShare() {
     return maxShare;
   }
 
   @Override
-  public void updateDemand() {}
-  
+  public void updateDemand() {
+  }
+
   @Override
-  public float getFairPriority() {//iglf
+  public float getFairPriority() {// iglf
     return fairPriority;
   }
-  
+
   public void setFairPriority(float fairPriority) {
     this.fairPriority = fairPriority;
   }
 
   @Override
-  public Resource getMinReq() {
+  public Resource getGuaranteeShare() {
     return this.minReq;
   }
 
-@Override
-public RMContext getRMContext() { //iglf
-	// TODO Auto-generated method stub
-	return null;
-}
+  @Override
+  public RMContext getRMContext() { // iglf
+    // TODO Auto-generated method stub
+    return null;
+  }
 
-@Override
-public Queue getParentQueue() {
-	// TODO Auto-generated method stub
-	return null;
-}
+  @Override
+  public Queue getParentQueue() {
+    // TODO Auto-generated method stub
+    return null;
+  }
 
-@Override
-public long getSpeedDuration() {
-  // TODO Auto-generated method stub
-  return 0;
-}
+  @Override
+  public long getSpeedDuration() {
+    // TODO Auto-generated method stub
+    return 0;
+  }
 
-@Override
-public long getPeriod() {
-  // TODO Auto-generated method stub
-  return 0;
-}
+  @Override
+  public long getPeriod() {
+    // TODO Auto-generated method stub
+    return 0;
+  }
 
-@Override
-public boolean isLeafQueue() {
-  // TODO Auto-generated method stub
-  return true;
-}
+  @Override
+  public boolean isLeafQueue() {
+    // TODO Auto-generated method stub
+    return false;
+  }
+
+  @Override
+  public Resource getAlpha() {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
+  public boolean isRunning() {
+    return true;
+  }
 }

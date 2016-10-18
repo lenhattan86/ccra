@@ -10,7 +10,7 @@ else
 fi
 
 resultPath="../results"
-newFolder="/runb2i1"
+newFolder="/runb2i1new"
 echo "download the files from $hostname"
 
 downloadOuput () {

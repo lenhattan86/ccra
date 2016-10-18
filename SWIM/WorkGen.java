@@ -30,6 +30,7 @@ import org.apache.hadoop.io.WritableComparable;
 import org.apache.hadoop.mapred.*;
 import org.apache.hadoop.mapred.lib.IdentityMapper;
 import org.apache.hadoop.mapred.lib.IdentityReducer;
+import org.apache.hadoop.mapreduce.MRJobConfig;
 import org.apache.hadoop.util.Tool;
 import org.apache.hadoop.util.ToolRunner;
 import java.io.BufferedReader;
@@ -194,6 +195,8 @@ public class WorkGen extends Configured implements Tool {
 		JobClient client = new JobClient(jobConf);
 		ClusterStatus cluster = client.getClusterStatus();
 		String queueName = "workgen";
+		long vcores = 1;
+		long memory = 1024;
 		int num_reduces = (int) (cluster.getMaxReduceTasks() * 0.45);
 		int num_maps = (int) (cluster.getMaxMapTasks() * 0.9);
 		String sort_reduces = jobConf.get("workGen.sort.reduces_per_host");
@@ -221,7 +224,11 @@ public class WorkGen extends Configured implements Tool {
 					outputValueClass = Class.forName(args[++i]).asSubclass(Writable.class);
 				} else if ("-queue".equals(args[i])) {
 					queueName = args[++i];
-				} else {
+//				} else if ("-vcores".equals(args[i])) {
+//          vcores = Integer.parseInt(args[++i]);
+        } else if ("-memory".equals(args[i])) {
+          memory = Integer.parseInt(args[++i]);
+        } else {
 					otherArgs.add(args[i]);
 				}
 			} catch (NumberFormatException except) {
@@ -237,7 +244,7 @@ public class WorkGen extends Configured implements Tool {
 		jobConf.setNumReduceTasks(num_reduces);
 
 		 System.out.println("default number of maps: " +
-		 jobConf.getNumMapTasks());
+		jobConf.getNumMapTasks());
 		jobConf.setNumMapTasks(num_maps); // Tan Le: set this num_maps to
 											// increase the cluster utilization.
 		// System.out.println("modified number of maps: " +
@@ -248,7 +255,10 @@ public class WorkGen extends Configured implements Tool {
 
 		jobConf.setOutputKeyClass(outputKeyClass);
 		jobConf.setOutputValueClass(outputValueClass);
-
+		
+		jobConf.setMemoryForReduceTask(memory);
+		jobConf.setMemoryForMapTask(memory);
+		
 		// Make sure there are exactly 4 parameters left.
 		if (otherArgs.size() != 4) {
 			System.out.println("ERROR: Wrong number of parameters: " + otherArgs.size() + " instead of 4.");

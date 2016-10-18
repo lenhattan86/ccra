@@ -211,11 +211,11 @@ public class GenerateReplayScript {
               numReduces = clusterSizeWorkload / 5;
             toWrite = "" + hadoopCommand + " jar " + pathToWorkGenJar + " org.apache.hadoop.examples.WorkGen -conf "
                 + pathToWorkGenConf + " " + "-r " + numReduces + " " + inputPath + " " + mOutputPath + " -queue "
-                + "batch" + k + " " + SIRatio + " " + OSRatio + " >> " + workloadOutputDir + "/batch-" + i + "_" + k
+                + "batch" + k + " -memory "+ 1024 + " " + SIRatio + " " + OSRatio + " >> " + workloadOutputDir + "/batch-" + i + "_" + k
                 + ".txt 2>> " + workloadOutputDir + "/batch-" + i + "_" + k + ".txt ";
           } else {
             toWrite = "" + hadoopCommand + " jar " + pathToWorkGenJar + " org.apache.hadoop.examples.WorkGen -conf "
-                + pathToWorkGenConf + " " + inputPath + " " + mOutputPath + " -queue " + "batch" + k + " " + SIRatio
+                + pathToWorkGenConf + " " + inputPath + " " + mOutputPath + " -queue " + "batch" + k + " -memory "+ 1024 + " " + SIRatio
                 + " " + OSRatio + " >> " + workloadOutputDir + "/batch-" + i + "_" + k + ".txt 2>> " + workloadOutputDir
                 + "/batch-" + i + "_" + k + ".txt ";
           }
@@ -410,11 +410,11 @@ public class GenerateReplayScript {
               numReduces = clusterSizeWorkload / 5;
             toWrite = "" + hadoopCommand + " jar " + pathToWorkGenJar + " org.apache.hadoop.examples.WorkGen -conf "
                 + pathToWorkGenConf + " " + "-r " + numReduces + " " + inputPath + " " + mOutputPath + " -queue "
-                + "interactive" + k + " " + SIRatio + " " + OSRatio + " >> " + workloadOutputDir + "/interactive-" + i + "_" + k
+                + "interactive" + k + " -memory "+ 1024 + " " + SIRatio + " " + OSRatio + " >> " + workloadOutputDir + "/interactive-" + i + "_" + k
                 + ".txt 2>> " + workloadOutputDir + "/interactive-" + i + "_" + k + ".txt ";
           } else {
             toWrite = "" + hadoopCommand + " jar " + pathToWorkGenJar + " org.apache.hadoop.examples.WorkGen -conf "
-                + pathToWorkGenConf + " " + inputPath + " " + mOutputPath + " -queue " + "interactive" + k + " "
+                + pathToWorkGenConf + " " + inputPath + " " + mOutputPath + " -queue " + "interactive" + k + " -memory "+ 1024 + " " 
                 + SIRatio + " " + OSRatio + " >> " + workloadOutputDir + "/interactive-" + i + "_" + k + ".txt 2>> "
                 + workloadOutputDir + "/interactive-" + i + "_" + k + ".txt ";
           }

@@ -127,17 +127,14 @@ public class SpeedFairPolicy extends SchedulingPolicy {
       ResourceType[] resourceOrder1 = new ResourceType[NUM_RESOURCES];
       ResourceType[] resourceOrder2 = new ResourceType[NUM_RESOURCES];
 
-      // Calculate shares of the cluster for each resource both
-      // schedulables.
+      // Calculate shares of the cluster for each resource both schedulables.
       
       calculateShares(s1.getResourceUsage(), clusterCapacity, sharesOfCluster1, resourceOrder1,
-          s1.getWeights(), s1.getMinReq());
+          s1.getWeights(), s1.getGuaranteeShare());
       
       calculateShares(s2.getResourceUsage(), clusterCapacity, sharesOfCluster2, resourceOrder2,
-          s2.getWeights(), s2.getMinReq());
+          s2.getWeights(), s2.getGuaranteeShare());
       
-      System.out.println("sharesOfCluster1: "+sharesOfCluster1 + " sharesOfCluster2: "+sharesOfCluster2);
-
       // A queue is needy for its min share if its dominant resource
       // (with respect to the cluster capacity) is below its configured
       // min share
@@ -162,7 +159,55 @@ public class SpeedFairPolicy extends SchedulingPolicy {
      * pool=<100 MB, 10 CPU>, shares will be [.1, .5] and resourceOrder will be
      * [CPU, MEMORY].
      */
+    
     void calculateShares(Resource resource, Resource pool, ResourceWeights shares,
+        ResourceType[] resourceOrder, ResourceWeights weights) { // iglf      
+    
+      shares.setWeight(MEMORY, (float) resource.getMemory()
+          / (pool.getMemory() * weights.getWeight(MEMORY)));
+      shares.setWeight(CPU, (float) resource.getVirtualCores()
+          / (pool.getVirtualCores() * weights.getWeight(CPU)));
+      // sort order vector by resource share
+      if (resourceOrder != null) {
+        if (shares.getWeight(MEMORY) > shares.getWeight(CPU)) {
+          resourceOrder[0] = MEMORY;
+          resourceOrder[1] = CPU;
+        } else {
+          resourceOrder[0] = CPU;
+          resourceOrder[1] = MEMORY;
+        }
+      }
+    }
+    
+    void calculateShares(Resource resource, Resource pool, ResourceWeights shares,
+        ResourceType[] resourceOrder, ResourceWeights weights, Resource minReq) { // iglf
+      
+      if (minReq.isEmpty()) {
+        shares.setWeight(MEMORY, (float) resource.getMemory()
+            / (pool.getMemory() * weights.getWeight(MEMORY)));
+        shares.setWeight(CPU, (float) resource.getVirtualCores()
+            / (pool.getVirtualCores() * weights.getWeight(CPU)));
+      } else {
+        shares.setWeight(MEMORY, 1);
+        shares.setWeight(CPU, 1);
+        if (resource.getMemory() < minReq.getMemory())
+          shares.setWeight(MEMORY, 0);
+        if (resource.getVirtualCores() < minReq.getVirtualCores())
+          shares.setWeight(CPU, 0);
+      }
+      // sort order vector by resource share
+      if (resourceOrder != null) {
+        if (shares.getWeight(MEMORY) > shares.getWeight(CPU)) {
+          resourceOrder[0] = MEMORY;
+          resourceOrder[1] = CPU;
+        } else {
+          resourceOrder[0] = CPU;
+          resourceOrder[1] = MEMORY;
+        }
+      }
+    }
+    
+    void calculateSharesv1(Resource resource, Resource pool, ResourceWeights shares,
         ResourceType[] resourceOrder, ResourceWeights weights, Resource minReq) { // iglf
       
       resource = Resources.subtract(resource, minReq);

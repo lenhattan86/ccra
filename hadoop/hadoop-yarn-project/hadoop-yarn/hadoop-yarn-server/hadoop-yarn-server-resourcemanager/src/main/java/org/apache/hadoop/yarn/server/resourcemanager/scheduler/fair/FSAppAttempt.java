@@ -199,9 +199,9 @@ public class FSAppAttempt extends SchedulerApplicationAttempt implements Schedul
       long startTime = fsQueue.getStartTime();
       long lasted = (System.currentTimeMillis() - startTime);
       if (fsQueue.isRunning() && fsQueue.isLeafQueue()) {
-        LOG.info(fsQueue.getName() + " getMinReq:" + fsQueue.getMinReq() + " demand: " + fsQueue.getDemand() + " usage: "
+        LOG.info(fsQueue.getName() + " getMinReq:" + fsQueue.getGuaranteeShare() + " demand: " + fsQueue.getDemand() + " usage: "
             + fsQueue.getResourceUsage() + "running " + fsQueue.isRunning() + " active: " + fsQueue.isActive() +" isLeafQueue():"+fsQueue.isLeafQueue());
-        Resource minReq = fsQueue.getMinReq();
+        Resource minReq = fsQueue.getGuaranteeShare();
         Resources.addTo(minReqResource, minReq);
       }
     }
@@ -775,7 +775,7 @@ public class FSAppAttempt extends SchedulerApplicationAttempt implements Schedul
   }
 
   @Override
-  public Resource getMinReq() {
+  public Resource getGuaranteeShare() {
     return Resources.none();
   }
 
@@ -809,6 +809,12 @@ public class FSAppAttempt extends SchedulerApplicationAttempt implements Schedul
   @Override
   public void setFairPriority(float fairPriority) {
     // TODO Auto-generated method stub
+  }
+
+  @Override
+  public Resource getAlpha() {
+    // TODO Auto-generated method stub
+    return null;
   }
 
 }

@@ -35,6 +35,7 @@ import org.apache.hadoop.yarn.api.records.Resource;
 import org.apache.hadoop.yarn.factories.RecordFactory;
 import org.apache.hadoop.yarn.factory.providers.RecordFactoryProvider;
 import org.apache.hadoop.yarn.server.resourcemanager.RMContext;
+import org.apache.hadoop.yarn.server.resourcemanager.resource.ResourceType;
 import org.apache.hadoop.yarn.server.resourcemanager.resource.ResourceWeights;
 import org.apache.hadoop.yarn.server.resourcemanager.scheduler.Queue;
 import org.apache.hadoop.yarn.util.resource.Resources;
@@ -65,6 +66,8 @@ public abstract class FSQueue implements Queue, Schedulable {
   
   private long startSessionTime = -1;
   
+  private Resource guaranteeShare = null;
+  
 
   public float getFairPriority() {
     if (!isDuringSpeedupDuration())
@@ -88,6 +91,7 @@ public abstract class FSQueue implements Queue, Schedulable {
     this.speedDuration = scheduler.getAllocationConfiguration().getSpeedDurations(name);
     this.period = scheduler.getAllocationConfiguration().getPeriod(name);
     this.minReq = scheduler.getAllocationConfiguration().getMinReqs(name);
+    this.guaranteeShare = Resources.clone(this.minReq);
   }
 
   public String getName() {
@@ -335,15 +339,18 @@ public abstract class FSQueue implements Queue, Schedulable {
   public abstract long getAppStartTime();
 
   @Override
-  public Resource getMinReq() {
+  public Resource getGuaranteeShare() {
+    return guaranteeShare; 
+  }
+  /*public Resource getGuaranteeShare() {
     Resource res = Resource.newInstance(0, 0);
     
     if (isDuringSpeedupDuration())
       res = scheduler.getAllocationConfiguration().getMinReqs(getName());
 
     return res; 
-  }
-
+  }*/
+  
   public RMContext getRMContext() { // iglf
     return scheduler.getRMContext();
   }
@@ -366,6 +373,11 @@ public abstract class FSQueue implements Queue, Schedulable {
     return false;
   }
   
+  public long lastedInPeriod(){
+    long lasted = (System.currentTimeMillis() - startSessionTime);
+    return lasted % this.period;
+  }
+  
   public boolean isDuringSpeedupDuration(){
 //    long sTime = this.getStartTime();
     long sTime = startSessionTime;
@@ -375,8 +387,8 @@ public abstract class FSQueue implements Queue, Schedulable {
     if(sTime <= 0 && this.isInteractive()){
       return true;
     }
-    long lasted = (System.currentTimeMillis() - sTime);
-    if (lasted % this.period <= this.getSpeedDuration()) {
+    long lasted = lastedInPeriod();
+    if (lasted <= this.getSpeedDuration()) {
       return true;
     }
     return false;
@@ -384,5 +396,20 @@ public abstract class FSQueue implements Queue, Schedulable {
   
   public long getStartSessionTime(){
     return startSessionTime;
+  }
+  
+  public Resource getAlpha(){
+    return this.minReq;
+  }
+  
+  public void setGuaranteeShare(Resource res){
+    this.guaranteeShare = res;
+  }
+
+  public void setGuaranteeShare(int guaranteedShare, ResourceType type) {
+    if (type.equals(ResourceType.CPU))
+      this.guaranteeShare.setVirtualCores(guaranteedShare);
+    else
+      this.guaranteeShare.setMemory(guaranteedShare);
   }
 }

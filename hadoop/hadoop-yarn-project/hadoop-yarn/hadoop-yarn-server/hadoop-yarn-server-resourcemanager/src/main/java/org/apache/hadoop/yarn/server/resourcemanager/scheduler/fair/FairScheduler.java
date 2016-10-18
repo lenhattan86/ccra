@@ -835,7 +835,7 @@ public class FairScheduler extends AbstractYarnScheduler<FSAppAttempt, FSSchedul
         
         LOG.info("[admission control] getFlexibleResource " + flexibleRes);
 //        if (flexibleRes.isEmpty()) {
-        if(!Resources.lessThanReq(flexibleRes, queue.getMinReq())){
+        if(!Resources.lessThanReq(flexibleRes, queue.getGuaranteeShare())){
           LOG.info("app " + appAttemptId + " in queue "+ queue.getQueueName()+ " isRunning: " + queue.isRunning());
           if (!queue.isRunning()||!queue.isInteractive()) { // this cause the accepted app can no longer
 //          if (!queue.getQueueName().startsWith("interactive")) {
