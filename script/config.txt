@@ -1,307 +1,37 @@
 StrictHostKeyChecking no 
 
-host cp-33 
-  Hostname ms0424.utah.cloudlab.us 
-  Port 22 
-  User tanle 
-  IdentityFile ~/Dropbox/Papers/System/Flink/cloudlab/cloudlab.pem 
-   
-host cp-32 
-  Hostname ms0610.utah.cloudlab.us 
-  Port 22 
-  User tanle 
-  IdentityFile ~/Dropbox/Papers/System/Flink/cloudlab/cloudlab.pem 
-   
-host nm 
-  Hostname ms0231.utah.cloudlab.us 
-  Port 22 
-  User tanle 
-  IdentityFile ~/Dropbox/Papers/System/Flink/cloudlab/cloudlab.pem 
-   
-host cp-38 
-  Hostname ms0437.utah.cloudlab.us 
-  Port 22 
-  User tanle 
-  IdentityFile ~/Dropbox/Papers/System/Flink/cloudlab/cloudlab.pem 
-   
-host cp-36 
-  Hostname ms0202.utah.cloudlab.us 
-  Port 22 
-  User tanle 
-  IdentityFile ~/Dropbox/Papers/System/Flink/cloudlab/cloudlab.pem 
-   
-host cp-37 
-  Hostname ms0219.utah.cloudlab.us 
-  Port 22 
-  User tanle 
-  IdentityFile ~/Dropbox/Papers/System/Flink/cloudlab/cloudlab.pem 
-   
-host cp-34 
-  Hostname ms0630.utah.cloudlab.us 
-  Port 22 
-  User tanle 
-  IdentityFile ~/Dropbox/Papers/System/Flink/cloudlab/cloudlab.pem 
-   
-host cp-35 
-  Hostname ms0435.utah.cloudlab.us 
-  Port 22 
-  User tanle 
-  IdentityFile ~/Dropbox/Papers/System/Flink/cloudlab/cloudlab.pem 
-   
-host cp-18 
-  Hostname ms0136.utah.cloudlab.us 
-  Port 22 
-  User tanle 
-  IdentityFile ~/Dropbox/Papers/System/Flink/cloudlab/cloudlab.pem 
-   
-host cp-19 
-  Hostname ms0117.utah.cloudlab.us 
-  Port 22 
-  User tanle 
-  IdentityFile ~/Dropbox/Papers/System/Flink/cloudlab/cloudlab.pem 
-   
-host cp-30 
-  Hostname ms0418.utah.cloudlab.us 
-  Port 22 
-  User tanle 
-  IdentityFile ~/Dropbox/Papers/System/Flink/cloudlab/cloudlab.pem 
-   
-host cp-31 
-  Hostname ms0131.utah.cloudlab.us 
-  Port 22 
-  User tanle 
-  IdentityFile ~/Dropbox/Papers/System/Flink/cloudlab/cloudlab.pem 
-   
-host cp-14 
-  Hostname ms0319.utah.cloudlab.us 
-  Port 22 
-  User tanle 
-  IdentityFile ~/Dropbox/Papers/System/Flink/cloudlab/cloudlab.pem 
-   
-host cp-15 
-  Hostname ms0133.utah.cloudlab.us 
-  Port 22 
-  User tanle 
-  IdentityFile ~/Dropbox/Papers/System/Flink/cloudlab/cloudlab.pem 
-   
-host cp-16 
-  Hostname ms0410.utah.cloudlab.us 
-  Port 22 
-  User tanle 
-  IdentityFile ~/Dropbox/Papers/System/Flink/cloudlab/cloudlab.pem 
-   
-host cp-17 
-  Hostname ms0112.utah.cloudlab.us 
-  Port 22 
-  User tanle 
-  IdentityFile ~/Dropbox/Papers/System/Flink/cloudlab/cloudlab.pem 
-   
-host cp-10 
-  Hostname ms0309.utah.cloudlab.us 
-  Port 22 
-  User tanle 
-  IdentityFile ~/Dropbox/Papers/System/Flink/cloudlab/cloudlab.pem 
-   
-host cp-11 
-  Hostname ms0327.utah.cloudlab.us 
-  Port 22 
-  User tanle 
-  IdentityFile ~/Dropbox/Papers/System/Flink/cloudlab/cloudlab.pem 
-   
-host cp-12 
-  Hostname ms0335.utah.cloudlab.us 
-  Port 22 
-  User tanle 
-  IdentityFile ~/Dropbox/Papers/System/Flink/cloudlab/cloudlab.pem 
-   
-host cp-13 
-  Hostname ms0209.utah.cloudlab.us 
-  Port 22 
-  User tanle 
-  IdentityFile ~/Dropbox/Papers/System/Flink/cloudlab/cloudlab.pem 
-   
-host cp-6 
-  Hostname ms0602.utah.cloudlab.us 
-  Port 22 
-  User tanle 
-  IdentityFile ~/Dropbox/Papers/System/Flink/cloudlab/cloudlab.pem 
-   
-host cp-7 
-  Hostname ms0416.utah.cloudlab.us 
-  Port 22 
-  User tanle 
-  IdentityFile ~/Dropbox/Papers/System/Flink/cloudlab/cloudlab.pem 
-   
 host cp-4 
-  Hostname ms0328.utah.cloudlab.us 
-  Port 22 
-  User tanle 
-  IdentityFile ~/Dropbox/Papers/System/Flink/cloudlab/cloudlab.pem 
-   
-host cp-5 
-  Hostname ms0109.utah.cloudlab.us 
+  Hostname c220g1-030816.wisc.cloudlab.us 
   Port 22 
   User tanle 
   IdentityFile ~/Dropbox/Papers/System/Flink/cloudlab/cloudlab.pem 
    
 host cp-2 
-  Hostname ms0333.utah.cloudlab.us 
+  Hostname c220g1-030603.wisc.cloudlab.us 
   Port 22 
   User tanle 
   IdentityFile ~/Dropbox/Papers/System/Flink/cloudlab/cloudlab.pem 
    
-host cp-3 
-  Hostname ms0332.utah.cloudlab.us 
+host nm 
+  Hostname c220g1-030809.wisc.cloudlab.us 
   Port 22 
   User tanle 
   IdentityFile ~/Dropbox/Papers/System/Flink/cloudlab/cloudlab.pem 
    
 host cp-1 
-  Hostname ms0212.utah.cloudlab.us 
-  Port 22 
-  User tanle 
-  IdentityFile ~/Dropbox/Papers/System/Flink/cloudlab/cloudlab.pem 
-   
-host cp-8 
-  Hostname ms0228.utah.cloudlab.us 
-  Port 22 
-  User tanle 
-  IdentityFile ~/Dropbox/Papers/System/Flink/cloudlab/cloudlab.pem 
-   
-host cp-9 
-  Hostname ms0226.utah.cloudlab.us 
-  Port 22 
-  User tanle 
-  IdentityFile ~/Dropbox/Papers/System/Flink/cloudlab/cloudlab.pem 
-   
-host cp-47 
-  Hostname ms0339.utah.cloudlab.us 
-  Port 22 
-  User tanle 
-  IdentityFile ~/Dropbox/Papers/System/Flink/cloudlab/cloudlab.pem 
-   
-host cp-46 
-  Hostname ms0635.utah.cloudlab.us 
-  Port 22 
-  User tanle 
-  IdentityFile ~/Dropbox/Papers/System/Flink/cloudlab/cloudlab.pem 
-   
-host cp-45 
-  Hostname ms0409.utah.cloudlab.us 
-  Port 22 
-  User tanle 
-  IdentityFile ~/Dropbox/Papers/System/Flink/cloudlab/cloudlab.pem 
-   
-host cp-44 
-  Hostname ms0438.utah.cloudlab.us 
-  Port 22 
-  User tanle 
-  IdentityFile ~/Dropbox/Papers/System/Flink/cloudlab/cloudlab.pem 
-   
-host cp-43 
-  Hostname ms0120.utah.cloudlab.us 
-  Port 22 
-  User tanle 
-  IdentityFile ~/Dropbox/Papers/System/Flink/cloudlab/cloudlab.pem 
-   
-host cp-42 
-  Hostname ms0312.utah.cloudlab.us 
-  Port 22 
-  User tanle 
-  IdentityFile ~/Dropbox/Papers/System/Flink/cloudlab/cloudlab.pem 
-   
-host cp-41 
-  Hostname ms0107.utah.cloudlab.us 
-  Port 22 
-  User tanle 
-  IdentityFile ~/Dropbox/Papers/System/Flink/cloudlab/cloudlab.pem 
-   
-host cp-40 
-  Hostname ms0613.utah.cloudlab.us 
-  Port 22 
-  User tanle 
-  IdentityFile ~/Dropbox/Papers/System/Flink/cloudlab/cloudlab.pem 
-   
-host cp-49 
-  Hostname ms0334.utah.cloudlab.us 
-  Port 22 
-  User tanle 
-  IdentityFile ~/Dropbox/Papers/System/Flink/cloudlab/cloudlab.pem 
-   
-host cp-48 
-  Hostname ms0105.utah.cloudlab.us 
-  Port 22 
-  User tanle 
-  IdentityFile ~/Dropbox/Papers/System/Flink/cloudlab/cloudlab.pem 
-   
-host cp-25 
-  Hostname ms0242.utah.cloudlab.us 
-  Port 22 
-  User tanle 
-  IdentityFile ~/Dropbox/Papers/System/Flink/cloudlab/cloudlab.pem 
-   
-host cp-24 
-  Hostname ms0405.utah.cloudlab.us 
-  Port 22 
-  User tanle 
-  IdentityFile ~/Dropbox/Papers/System/Flink/cloudlab/cloudlab.pem 
-   
-host cp-27 
-  Hostname ms0241.utah.cloudlab.us 
-  Port 22 
-  User tanle 
-  IdentityFile ~/Dropbox/Papers/System/Flink/cloudlab/cloudlab.pem 
-   
-host cp-26 
-  Hostname ms0642.utah.cloudlab.us 
-  Port 22 
-  User tanle 
-  IdentityFile ~/Dropbox/Papers/System/Flink/cloudlab/cloudlab.pem 
-   
-host cp-21 
-  Hostname ms0441.utah.cloudlab.us 
-  Port 22 
-  User tanle 
-  IdentityFile ~/Dropbox/Papers/System/Flink/cloudlab/cloudlab.pem 
-   
-host cp-20 
-  Hostname ms0403.utah.cloudlab.us 
-  Port 22 
-  User tanle 
-  IdentityFile ~/Dropbox/Papers/System/Flink/cloudlab/cloudlab.pem 
-   
-host cp-23 
-  Hostname ms0232.utah.cloudlab.us 
-  Port 22 
-  User tanle 
-  IdentityFile ~/Dropbox/Papers/System/Flink/cloudlab/cloudlab.pem 
-   
-host cp-22 
-  Hostname ms0225.utah.cloudlab.us 
+  Hostname c220g1-030625.wisc.cloudlab.us 
   Port 22 
   User tanle 
   IdentityFile ~/Dropbox/Papers/System/Flink/cloudlab/cloudlab.pem 
    
 host ctl 
-  Hostname ms0340.utah.cloudlab.us 
+  Hostname c220g1-030614.wisc.cloudlab.us 
   Port 22 
   User tanle 
   IdentityFile ~/Dropbox/Papers/System/Flink/cloudlab/cloudlab.pem 
    
-host cp-39 
-  Hostname ms0206.utah.cloudlab.us 
-  Port 22 
-  User tanle 
-  IdentityFile ~/Dropbox/Papers/System/Flink/cloudlab/cloudlab.pem 
-   
-host cp-29 
-  Hostname ms0245.utah.cloudlab.us 
-  Port 22 
-  User tanle 
-  IdentityFile ~/Dropbox/Papers/System/Flink/cloudlab/cloudlab.pem 
-   
-host cp-28 
-  Hostname ms0428.utah.cloudlab.us 
+host cp-3 
+  Hostname c220g1-030818.wisc.cloudlab.us 
   Port 22 
   User tanle 
   IdentityFile ~/Dropbox/Papers/System/Flink/cloudlab/cloudlab.pem 

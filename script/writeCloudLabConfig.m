@@ -1,9 +1,9 @@
 clear; close all; clc;
 
-data = importCloudlab('yarn_large.csv');
+data = importCloudlab('cloudlab.csv');
 
-fileToWrite ='config.txt';
-% fileToWrite ='~/Dropbox/temp/config.txt';
+%fileToWrite ='config.txt';
+fileToWrite ='~/Dropbox/temp/config.txt';
 
 fileID = fopen(fileToWrite,'w');
 fprintf(fileID,'StrictHostKeyChecking no \n\n');

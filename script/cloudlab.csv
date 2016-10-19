@@ -1,0 +1,11 @@
+cp-4	c220g1-030816	c220g1	ssh -p 22 tanle@c220g1-030816.wisc.cloudlab.us	,
+
+cp-2	c220g1-030603	c220g1	ssh -p 22 tanle@c220g1-030603.wisc.cloudlab.us	,
+
+nm	c220g1-030809	c220g1	ssh -p 22 tanle@c220g1-030809.wisc.cloudlab.us	,
+
+cp-1	c220g1-030625	c220g1	ssh -p 22 tanle@c220g1-030625.wisc.cloudlab.us	,
+
+ctl	c220g1-030614	c220g1	ssh -p 22 tanle@c220g1-030614.wisc.cloudlab.us	,
+
+cp-3	c220g1-030818	c220g1	ssh -p 22 tanle@c220g1-030818.wisc.cloudlab.us

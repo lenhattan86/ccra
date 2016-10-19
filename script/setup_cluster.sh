@@ -103,8 +103,8 @@ PARALLEL=5
 echo "setup $hostname"
 
 REBOOT=false
-isOfficial=false
-TEST=true
+isOfficial=true
+TEST=false
 isSingleNodeCluster=false	
 isUploadTestCase=false
 
@@ -160,8 +160,7 @@ if $isInstallHadoop
 then
 	isShutDownHadoop=true
 	restartHadoop=true
-	isFormatHDFS=true
-	isInstallSpark=true
+	isFormatHDFS=true	
 fi
 
 
@@ -460,7 +459,7 @@ echo "#################################### install Hadoop Yarn #################
 	else
 
 		installHadoopFunc () {
-			echo Set up Hadoop at $1 step 0
+			echo Configure up Hadoop at $1 step 0
 			#if $isUploadYarn 
 			#then
 			#	ssh $username@$1 "sudo rm -rf $hadoopTgz"
@@ -557,7 +556,7 @@ echo "#################################### install Hadoop Yarn #################
 				# ssh $username@$1 "sed -i -e 's/#export HADOOP_HEAPSIZE=/export HADOOP_HEAPSIZE=4096/g' $hadoopFolder/$configFolder/hadoop-env.sh"
 				# YARN_HEAPSIZE
 			# etc/hadoop/hdfs-site.xml
-			echo Set up Hadoop at $1 step 4
+			echo Configure Hadoop at $1 step 4
 			ssh $username@$1 "echo '<?xml version=\"1.0\" encoding=\"UTF-8\"?> 
 <?xml-stylesheet type=\"text/xsl\" href=\"configuration.xsl\"?>
 <configuration>
@@ -621,7 +620,8 @@ echo "#################################### install Hadoop Yarn #################
 
   <property>
     <name>yarn.nodemanager.aux-services</name>
-    <value>mapreduce_shuffle,spark_shuffle</value>
+<!--    <value>mapreduce_shuffle,spark_shuffle</value> -->
+    <value>mapreduce_shuffle</value>
   </property>
 
   <property>
@@ -913,15 +913,15 @@ echo "#################################### install Hadoop Yarn #################
 			echo Configure Yarn at $1 step 5
 			# slaves etc/hadoop/slaves
 			ssh $username@$1 "sudo rm -rf $hadoopFolder/$configFolder/slaves"
-			slaveStr=""
+			#slaveStr=""
 			tempCMD=""
 			for svr in $slaveNodes; do	
-				slaveStr="$slaveStr\n$svr"
-				#tempCMD="$tempCMD echo $svr >> $hadoopFolder/$configFolder/slaves; "		
+				#slaveStr="$slaveStr $svr"
+				tempCMD="$tempCMD echo $svr >> $hadoopFolder/$configFolder/slaves; "		
 				#ssh $username@$1 "echo $svr >> $hadoopFolder/$configFolder/slaves"
 			done
-			#ssh $username@$1 "$tempCMD"
-			ssh $username@$1 "echo $slaveStr > $hadoopFolder/$configFolder/slaves "
+			ssh $username@$1 "$tempCMD"
+			#ssh $username@$1 "echo $slaveStr > $hadoopFolder/$configFolder/slaves "
 			#ssh $username@$1 "sudo chown -R $username:$groupname $hadoopFolder"
 			
 }
@@ -982,21 +982,22 @@ if $isInstallSpark
 then 	
 	echo "#################################### Setup Spark #####################################"	
 	installSparkFunc () {
+		echo "install Spart at $1 - step 1"
 		if $isDownload
 		then
 			ssh $1 "sudo rm -rf $sparkTgz; wget $sparkDownloadLink >> log.txt"
 		fi
-		sleep 3
+		echo "install Spart at $1 - step 2"
 		if $isExtract
 		then			
 			ssh $1 "rm -rf $sparkFolder; tar -xvzf $sparkTgz >> log.txt; mv $sparkTgzFolder $sparkFolder"
 		fi
-		sleep 3
+		echo "install Spart at $1 - step 3"
 		ssh $1 "echo 'export SPARK_DIST_CLASSPATH=~/$hadoopFolder/bin/hadoop
 #export SPARK_JAVA_OPTS=-Dspark.driver.port=53411
 export HADOOP_CONF_DIR=$hadoopFolder/$configFolder
 export SPARK_MASTER_IP=$masterNode' > $sparkFolder/conf/spark-env.sh"
-
+		echo "install Spart at $1 - step 4"
 		ssh $1 "echo '
 spark.executor.memory 768m
 
@@ -1021,7 +1022,7 @@ spark.streaming.dynamicAllocation.scalingUpRatio 0.0005
 spark.streaming.dynamicAllocation.scalingDownRatio 0.0000001
 spark.streaming.dynamicAllocation.minExecutors 1
 spark.streaming.dynamicAllocation.maxExecutors 500' > $sparkFolder/conf/spark-defaults.conf"
-
+		echo "install Spart at $1 - step 5"
 		#Create /opt/spark-ver/conf/slaves add all the hostnames of spark slave nodes to it.
 		ssh $1 "sudo rm -rf $sparkFolder/conf/slaves"
 		for slave in $slaveNodes; do
