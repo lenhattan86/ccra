@@ -13,7 +13,7 @@ isAmazonEC=false
 username="tanle"
 groupname="yarnrm-PG0"
 
-java_home='/usr/lib/jvm/java-7-oracle'
+java_home='/usr/lib/jvm/java-8-oracle'
 
 echo "=====set up $hostname====="
 
@@ -34,7 +34,7 @@ hadoopTgz="hadoop-2.7.2.tar.gz"
 #hadoopLink="http://apache.claz.org/hadoop/common/hadoop-2.6.3/hadoop-2.6.3.tar.gz"
 #hadoopTgz="hadoop-2.6.3.tar.gz"
 
-yarnVcores=32
+yarnVcores=1
 vmemRatio=4
 #yarnNodeMem=131072 # 128 GB
 #yarnNodeMem=65536 # 64 GB
@@ -98,6 +98,7 @@ sparkDownloadLink="https://dist.apache.org/repos/dist/release/spark/spark-2.0.0-
 ##########
 
 IS_INIT=false
+PARALLEL=5
 
 echo "setup $hostname"
 
@@ -107,22 +108,23 @@ TEST=true
 isSingleNodeCluster=false	
 isUploadTestCase=false
 
-isUploadYarn=false
+isUploadYarn=true
 isDownload=false
-isExtract=false
+isExtract=true
 
 #hostname="nm.yarn-perf.yarnrm-pg0.wisc.cloudlab.us"; shedulingPolicy="SpeedFair"; cp ~/.ssh/config.yarn-perf ~/.ssh/config; 
 #hostname="nm.yarn-drf.yarnrm-pg0.wisc.cloudlab.us"; shedulingPolicy="drf"; cp ~/.ssh/config.yarn-drf ~/.ssh/config; isUploadYarn=true ; 
-hostname="nm.yarn-small.yarnrm-pg0.wisc.cloudlab.us"; shedulingPolicy="drf"; cp ~/.ssh/config.yarn-small ~/.ssh/config; 
+#hostname="nm.yarn-small.yarnrm-pg0.utah.cloudlab.us"; shedulingPolicy="drf"; cp ~/.ssh/config.yarn-small ~/.ssh/config; 
+hostname="nm.yarn-large.yarnrm-pg0.utah.cloudlab.us"; shedulingPolicy="drf"; cp ~/.ssh/config.yarn-large ~/.ssh/config;
 
 customizedHadoopPath="/home/tanle/projects/ccra/hadoop/hadoop-dist/target/$hadoopTgz"
 
-isUploadKey=true
+isUploadKey=false
 isGenerateKey=false	
-isPasswordlessSSH=true
+isPasswordlessSSH=false
 isAddToGroup=false
 
-isInstallBasePackages=true
+isInstallBasePackages=false
 
 isInstallGanglia=false
 startGanglia=false
@@ -142,12 +144,6 @@ isShutDownHadoop=false
 restartHadoop=false
 isFormatHDFS=false
 
-if $isInstallHadoop
-then
-	isShutDownHadoop=true
-	restartHadoop=true
-	isFormatHDFS=true
-fi
 
 isInstallFlink=false
 isModifyFlink=false
@@ -160,13 +156,20 @@ isModifySpark=false
 startSparkYarn=false
 shudownSpark=false
 
+if $isInstallHadoop
+then
+	isShutDownHadoop=true
+	restartHadoop=true
+	isFormatHDFS=true
+	isInstallSpark=true
+fi
+
+
 if $IS_INIT
 then
 	isDownload=true
 	isUploadYarn=false ; shedulingPolicy="drf" # check with the stable version first.
 	isExtract=true
-	
-	
 
 	isUploadKey=true
 #	isGenerateKey=false
@@ -197,16 +200,17 @@ then
 	clientNode="ctl"        
 	if $isOfficial
 	then
-		numOfworkers=8
-		serverList="nm ctl cp-1 cp-2 cp-3 cp-4 cp-5 cp-6 cp-7"
-		slaveNodes="ctl cp-1 cp-2 cp-3 cp-4 cp-5 cp-6 cp-7"
+		numOfworkers=40
+		#serverList="nm ctl cp-1 cp-2 cp-3 cp-4 cp-5 cp-6 cp-7 cp-8 cp-9 cp-10 cp-11 cp-12 cp-13 cp-14 cp-15 cp-16 cp-17 cp-18 cp-19 cp-20 cp-21 cp-22 cp-23 cp-24 cp-25 cp-26 cp-27 cp-28 cp-29 cp-30 cp-31 cp-32 cp-33 cp-34 cp-35 cp-36 cp-37 cp-38 cp-39 cp-40 cp-41 cp-42 cp-43 cp-44 cp-45 cp-46 cp-47 cp-48 cp-49"
+		serverList="nm ctl cp-1 cp-2 cp-3 cp-4 cp-5 cp-6 cp-7 cp-8 cp-9 cp-10 cp-11 cp-12 cp-13     cp-15 cp-16 cp-17 cp-18 cp-19 cp-20 cp-21 cp-22 cp-23 cp-24 cp-25 cp-26 cp-27   cp-29 cp-30 cp-31   cp-33 cp-34 cp-35 cp-36 cp-37 cp-38 cp-39 cp-40 cp-41 cp-42"
+		slaveNodes="ctl cp-1 cp-2 cp-3 cp-4 cp-5 cp-6 cp-7 cp-8 cp-9 cp-10 cp-11 cp-12 cp-13     cp-15 cp-16 cp-17 cp-18 cp-19 cp-20 cp-21 cp-22 cp-23 cp-24 cp-25 cp-26 cp-27   cp-29 cp-30 cp-31   cp-33 cp-34 cp-35 cp-36 cp-37 cp-38 cp-39 cp-40 cp-41 cp-42"
 		numOfReplication=1
 	else
 		if $TEST
 		then
-			numOfworkers=2
-			serverList="nm ctl cp-1"
-			slaveNodes="ctl cp-1"
+			numOfworkers=1
+			serverList="nm ctl"
+			slaveNodes="ctl"
 			numOfReplication=1				
 		else
 			numOfworkers=4
@@ -327,8 +331,14 @@ then
 		ssh $username@$1 "sudo apt-get install -y cgroup-tools; sudo apt-get install -y scala; sudo apt-get install -y vim"	
 	}
 	echo "TODO: install JAVA"
+	counter=0;
 	for server in $serverList; do
-		installPackages $server &
+		counter=$((counter+1))
+		installPackages $server &		
+		if [[ "$counter" -gt $PARALLEL ]]; then
+	       		counter=0;
+			wait
+	       	fi		
 	done
 	wait
 	echo ################################ install screen #####################################
@@ -461,14 +471,14 @@ echo "#################################### install Hadoop Yarn #################
 				echo downloading $hadoopVer		
 				ssh $username@$1 "sudo rm -rf $hadoopTgz; wget $hadoopLink >> log.txt"
 			fi
-
+#			sleep 3
 			if $isExtract
 			then 
 				echo extract $hadoopTgz
 				ssh $username@$1 "rm -rf $hadoopVer; rm -rf $hadoopFolder; tar -xvzf $hadoopTgz >> log.txt; mv $hadoopVer $hadoopFolder; mkdir $hadoopFolder/conf"
 			fi
 			# add JAVA_HOME
-			
+#			sleep 3
 			echo "copy SWIM config files for Facebook-trace simulation"
 			scp ../SWIM/randomwriter_conf.xsl $1:~/hadoop/config
 			scp ../SWIM/workGenKeyValue_conf.xsl $1:~/hadoop/config
@@ -903,12 +913,15 @@ echo "#################################### install Hadoop Yarn #################
 			echo Configure Yarn at $1 step 5
 			# slaves etc/hadoop/slaves
 			ssh $username@$1 "sudo rm -rf $hadoopFolder/$configFolder/slaves"
+			slaveStr=""
 			tempCMD=""
 			for svr in $slaveNodes; do	
-				tempCMD="$tempCMD echo $svr >> $hadoopFolder/$configFolder/slaves; "		
+				slaveStr="$slaveStr\n$svr"
+				#tempCMD="$tempCMD echo $svr >> $hadoopFolder/$configFolder/slaves; "		
 				#ssh $username@$1 "echo $svr >> $hadoopFolder/$configFolder/slaves"
 			done
-			ssh $username@$1 "$tempCMD"
+			#ssh $username@$1 "$tempCMD"
+			ssh $username@$1 "echo $slaveStr > $hadoopFolder/$configFolder/slaves "
 			#ssh $username@$1 "sudo chown -R $username:$groupname $hadoopFolder"
 			
 }
@@ -917,21 +930,39 @@ echo "#################################### install Hadoop Yarn #################
 		then
 			# upload to the nm
 			ssh $username@$masterNode "sudo rm -rf $hadoopTgz"
+			sleep 3
+			echo "scp $customizedHadoopPath $username@$masterNode:~/"
 			scp $customizedHadoopPath $username@$masterNode:~/ 
 			# share upload file among the workers.
-			uploadCMD="echo 'multithread sharing....' "
+			echo "multithread sharing...."
+			uploadCMD=""
+			counter=0
 			for slave in $slaveNodes; do
+				counter=$((counter+1))
 				ssh $username@$slave "sudo rm -rf $hadoopTgz"
-				uploadCMD="$uploadCMD & scp $hadoopTgz $username@$slave:~/ "
-				#ssh $username@$masterNode "scp $hadoopTgz $username@$slave:~/ "
+				if [[ "$counter" -gt $PARALLEL ]]; then
+			       		counter=0;
+					uploadCMD="$uploadCMD scp $hadoopTgz $slave:~/ ; "
+				else
+					uploadCMD="$uploadCMD scp $hadoopTgz $slave:~/ ; "
+					#ssh $username@$masterNode "scp $hadoopTgz $username@$slave:~/ "
+			       	fi
+				
 			done
 			#wait
-			uploadCMD="$uploadCMD & wait"
+			#uploadCMD="$uploadCMD ; wait"
+			echo $uploadCMD
 			ssh $username@$masterNode "$uploadCMD"
 			
 		fi
+		counter=0
 		for server in $serverList; do
-			installHadoopFunc $server &
+			counter=$((counter+1))
+			installHadoopFunc $server 
+			if [[ "$counter" -gt $PARALLEL ]]; then
+		       		counter=0;
+				wait
+		       	fi
 		done
 
 		wait				
@@ -955,11 +986,12 @@ then
 		then
 			ssh $1 "sudo rm -rf $sparkTgz; wget $sparkDownloadLink >> log.txt"
 		fi
+		sleep 3
 		if $isExtract
 		then			
 			ssh $1 "rm -rf $sparkFolder; tar -xvzf $sparkTgz >> log.txt; mv $sparkTgzFolder $sparkFolder"
 		fi
-
+		sleep 3
 		ssh $1 "echo 'export SPARK_DIST_CLASSPATH=~/$hadoopFolder/bin/hadoop
 #export SPARK_JAVA_OPTS=-Dspark.driver.port=53411
 export HADOOP_CONF_DIR=$hadoopFolder/$configFolder
@@ -999,8 +1031,14 @@ spark.streaming.dynamicAllocation.maxExecutors 500' > $sparkFolder/conf/spark-de
 		#ssh $1 "cp ~/spark/lib/$sparkVer-yarn-shuffle.jar ~/hadoop/share/hadoop/yarn/ > .null.txt" 
 		ssh $1 "cp ~/spark/yarn/$sparkVer-yarn-shuffle.jar ~/hadoop/share/hadoop/yarn/" # for 2.0.0 version
 	}
+	counter=0
 	for server in $serverList; do
-		installSparkFunc $server &
+		counter=$((counter+1))
+		installSparkFunc $server 		
+		if [[ "$counter" -gt $PARALLEL ]]; then
+	       		counter=0;
+			wait
+	       	fi
 	done
 	wait
 else
