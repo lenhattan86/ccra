@@ -34,7 +34,7 @@ hadoopTgz="hadoop-2.7.2.tar.gz"
 #hadoopLink="http://apache.claz.org/hadoop/common/hadoop-2.6.3/hadoop-2.6.3.tar.gz"
 #hadoopTgz="hadoop-2.6.3.tar.gz"
 
-yarnVcores=1
+yarnVcores=32
 vmemRatio=4
 #yarnNodeMem=131072 # 128 GB
 #yarnNodeMem=65536 # 64 GB
@@ -98,7 +98,7 @@ sparkDownloadLink="https://dist.apache.org/repos/dist/release/spark/spark-2.0.0-
 ##########
 
 IS_INIT=false
-PARALLEL=5
+PARALLEL=4
 
 echo "setup $hostname"
 
@@ -115,7 +115,7 @@ isExtract=true
 #hostname="nm.yarn-perf.yarnrm-pg0.wisc.cloudlab.us"; shedulingPolicy="SpeedFair"; cp ~/.ssh/config.yarn-perf ~/.ssh/config; 
 #hostname="nm.yarn-drf.yarnrm-pg0.wisc.cloudlab.us"; shedulingPolicy="drf"; cp ~/.ssh/config.yarn-drf ~/.ssh/config; isUploadYarn=true ; 
 #hostname="nm.yarn-small.yarnrm-pg0.utah.cloudlab.us"; shedulingPolicy="drf"; cp ~/.ssh/config.yarn-small ~/.ssh/config; 
-hostname="nm.yarn-large.yarnrm-pg0.utah.cloudlab.us"; shedulingPolicy="drf"; cp ~/.ssh/config.yarn-large ~/.ssh/config;
+hostname="nm.yarn-large.yarnrm-pg0.utah.cloudlab.us"; shedulingPolicy="SpeedFair"; cp ~/.ssh/config.yarn-large ~/.ssh/config;
 
 customizedHadoopPath="/home/tanle/projects/ccra/hadoop/hadoop-dist/target/$hadoopTgz"
 
@@ -248,7 +248,7 @@ echo ############### REBOOT all servers #############################
 
 	for server in $serverList; do		
 		echo reboot server $server
-		ssh $username@$server "ssh $server 'sudo reboot'" &
+		autossh $username@$server "ssh $server 'sudo reboot'" &
 	done
 	wait
 	echo "Waiting for 15 mins for the cluster to be ready."
@@ -281,25 +281,25 @@ echo ################################# passwordless SSH ########################
 		echo upload keys to $server
 		if ! $isSingleNodeCluster
 		then
-			ssh $username@$server 'sudo rm -rf $HOME/.ssh/id_dsa*'
+			autossh $username@$server 'sudo rm -rf $HOME/.ssh/id_dsa*'
 			scp ~/.ssh/id_dsa* $username@$server:~/.ssh/
 		fi
-		ssh $username@$server "cat ~/.ssh/id_dsa.pub >> ~/.ssh/authorized_keys ;
+		autossh $username@$server "cat ~/.ssh/id_dsa.pub >> ~/.ssh/authorized_keys ;
 		 chmod 0600 ~/.ssh/id_dsa*; 
 		 chmod 0600 ~/.ssh/authorized_keys; 
 		 rm -rf ~/.ssh/known_hosts; 	
 		 echo 'StrictHostKeyChecking no' >> ~/.ssh/config"
-#		ssh $username@$server "echo password less from localhost to $server"
+#		autossh $username@$server "echo password less from localhost to $server"
 	done	
 fi
 
 if $isAddToGroup
 then
 	for server in $serverList; do
-		ssh $username@$server "sudo addgroup $groupname;sudo adduser $username $groupname;	sudo adduser root $groupname" &
-		#ssh $username@$server "sudo adduser root $groupname" &
+		autossh $username@$server "sudo addgroup $groupname;sudo adduser $username $groupname;	sudo adduser root $groupname" &
+		#autossh $username@$server "sudo adduser root $groupname" &
 		
-		#ssh $username@$server "sudo adduser $username sudo"
+		#autossh $username@$server "sudo adduser $username sudo"
 		#sudo adduser --ingroup $groupname $username;
 	done
 	wait
@@ -307,7 +307,7 @@ fi
 
 if $isPasswordlessSSH
 then
-	passwordlessSSH () { ssh $username@$1 "ssh $2 'echo test passwordless SSH: $1 to $2'" ;}
+	passwordlessSSH () { autossh $username@$1 "ssh $2 'echo test passwordless SSH: $1 to $2'" ;}
 	for server1 in $serverList; do
 		for server2 in $serverList; do
 			passwordlessSSH $server1 $server2 &
@@ -320,14 +320,15 @@ if $isInstallBasePackages
 then
 	echo ################################# install JAVA ######################################
 	installPackages () {
-		ssh $username@$1 'sudo apt-get purge -y openjdk*
+		autossh $username@$1 'sudo apt-get -y install autossh
+			sudo apt-get purge -y openjdk*
 			sudo apt-get purge -y oracle-java*
 			sudo apt-get install -y software-properties-common			
 			yes='' | sudo add-apt-repository ppa:webupd8team/java
 			sudo apt-get update
 			sudo echo oracle-java8-installer shared/accepted-oracle-license-v1-1 select true | sudo /usr/bin/debconf-set-selections	
 			sudo apt-get install -y oracle-java8-installer'
-		ssh $username@$1 "sudo apt-get install -y cgroup-tools; sudo apt-get install -y scala; sudo apt-get install -y vim"	
+		autossh $username@$1 "sudo apt-get install -y cgroup-tools; sudo apt-get install -y scala; sudo apt-get install -y vim"	
 	}
 	echo "TODO: install JAVA"
 	counter=0;
@@ -341,7 +342,7 @@ then
 	done
 	wait
 	echo ################################ install screen #####################################
-	ssh $username@$masterNode "sudo apt-get install -y screen"
+	autossh $username@$masterNode "sudo apt-get install -y screen"
 	
 fi
 
@@ -350,22 +351,22 @@ if $isInstallGanglia
 then
 echo ################################# install Ganglia ###################################
 	echo "Configure Ganglia master node $masterNode"
-	ssh $username@$masterNode 'yes Y | sudo apt-get purge ganglia-monitor gmetad'
+	autossh $username@$masterNode 'yes Y | sudo apt-get purge ganglia-monitor gmetad'
 	### PLZ manually install Ganglia as we need to respond to some pop-ups
 	# we may restart the Apache2 twice
-	#ssh $username@$masterNode 'sudo apt-get install -y rrdtool  ganglia-webfrontend'
-	ssh $username@$masterNode 'sudo apt-get install -y ganglia-monitor gmetad'
+	#autossh $username@$masterNode 'sudo apt-get install -y rrdtool  ganglia-webfrontend'
+	autossh $username@$masterNode 'sudo apt-get install -y ganglia-monitor gmetad'
 	
 	# 
-	ssh $username@$masterNode "sudo cp /etc/ganglia-webfrontend/apache.conf /etc/apache2/sites-enabled/ganglia.conf ;
+	autossh $username@$masterNode "sudo cp /etc/ganglia-webfrontend/apache.conf /etc/apache2/sites-enabled/ganglia.conf ;
 	sudo sed -i -e 's/data_source \"my cluster\" localhost/data_source \"sbu flink\" 1 localhost/g' /etc/ganglia/gmetad.conf;
 	sudo sed -i -e 's/name = \"unspecified\"/name = \"sbu flink\"/g' /etc/ganglia/gmond.conf ;
 	sudo sed -i -e 's/mcast_join = 239.2.11.71/#mcast_join = 239.2.11.71/g' /etc/ganglia/gmond.conf;
 	sudo sed -i -e 's/bind = 239.2.11.71/#bind = 239.2.11.71/g' /etc/ganglia/gmond.conf"
-	ssh $username@$masterNode "sudo sed -i -e 's/udp_send_channel {/udp_send_channel { host=nm/g' /etc/ganglia/gmond.conf"
+	autossh $username@$masterNode "sudo sed -i -e 's/udp_send_channel {/udp_send_channel { host=nm/g' /etc/ganglia/gmond.conf"
 	
 	installGangliaFunc(){
-		ssh $username@$1 "yes Y | sudo apt-get purge ganglia-monitor;
+		autossh $username@$1 "yes Y | sudo apt-get purge ganglia-monitor;
 		sudo apt-get install -y ganglia-monitor;
 		sudo sed -i -e 's/name = \"unspecified\"/name = \"sbu flink\"/g' /etc/ganglia/gmond.conf;
 		sudo sed -i -e 's/mcast_join = 239.2.11.71/#mcast_join = 239.2.11.71/g' /etc/ganglia/gmond.conf;
@@ -383,9 +384,9 @@ if $startGanglia
 then
 	echo restart Ganglia
 	# restart all related services
-	ssh $username@$masterNode 'sudo service ganglia-monitor restart & sudo service gmetad restart & sudo service apache2 restart'
+	autossh $username@$masterNode 'sudo service ganglia-monitor restart & sudo service gmetad restart & sudo service apache2 restart'
 	for server in $slaveNodes; do
-		ssh $username@$server 'sudo service ganglia-monitor restart' &
+		autossh $username@$server 'sudo service ganglia-monitor restart' &
 	done
 	wait	
 fi
@@ -394,7 +395,7 @@ fi
 #################################### Apache Flink ################################
 if $shudownFlink
 then
-	ssh $masterNode "$flinkVer/bin/stop-cluster.sh"
+	autossh $masterNode "$flinkVer/bin/stop-cluster.sh"
 	#ssh $masterNode "$hadoopFolder/bin/yarn application -kill appplication_id"
 fi
 
@@ -403,24 +404,24 @@ then
 	installFlinkFunc () {
 		if $isDownload
 		then
-		ssh $1 "sudo rm -rf $flinkTgz; wget $flinkDownloadLink >> log.txt"
+		autossh $1 "sudo rm -rf $flinkTgz; wget $flinkDownloadLink >> log.txt"
 		fi
 		if $isExtract
 		then
-			ssh $1 "sudo rm -rf $flinkVer; tar -xvzf $flinkTgz >> log.txt"
+			autossh $1 "sudo rm -rf $flinkVer; tar -xvzf $flinkTgz >> log.txt"
 		fi
 		
 		#Replace localhost with resourcemanager in conf/flink-conf.yaml (jobmanager.rpc.address)
-		ssh $1 "sed -i -e 's/jobmanager.rpc.address: localhost/jobmanager.rpc.address: nm/g' $flinkVer/conf/flink-conf.yaml;
+		autossh $1 "sed -i -e 's/jobmanager.rpc.address: localhost/jobmanager.rpc.address: nm/g' $flinkVer/conf/flink-conf.yaml;
 		sed -i -e 's/jobmanager.heap.mb: 256/taskmanager.heap.mb: 1024/g' $flinkVer/conf/flink-conf.yaml;		
 		sed -i -e 's/taskmanager.heap.mb: 512/taskmanager.heap.mb: $yarnMaxMem/g' $flinkVer/conf/flink-conf.yaml;
 		sed -i -e 's/# taskmanager.network.numberOfBuffers: 2048/taskmanager.network.numberOfBuffers: $numNetworkBuffers/g' $flinkVer/conf/flink-conf.yaml"
 		#sed -i -e 's/taskmanager.numberOfTaskSlots: 1/taskmanager.numberOfTaskSlots: $yarnVcores/g' $flinkVer/conf/flink-conf.yaml;
 
 		#Add hostnames of all worker nodes to the slaves file flinkVer/conf/slaves"
-		ssh $1 "sudo rm -rf $flinkVer/conf/slaves"
+		autossh $1 "sudo rm -rf $flinkVer/conf/slaves"
 		for slave in $slaveNodes; do
-			ssh $1 "echo $slave >> $flinkVer/conf/slaves"
+			autossh $1 "echo $slave >> $flinkVer/conf/slaves"
 		done	
 	}
 	for server in $serverList; do
@@ -432,8 +433,8 @@ fi
 
 if $startFlinkStandalone	
 then
-	ssh $masterNode "$flinkVer/bin/stop-cluster.sh"
-	ssh $masterNode "$flinkVer/bin/start-cluster.sh"
+	autossh $masterNode "$flinkVer/bin/stop-cluster.sh"
+	autossh $masterNode "$flinkVer/bin/start-cluster.sh"
 fi	
 
 
@@ -444,10 +445,10 @@ fi
 if $isShutDownHadoop
 then
 	echo shutdown Hadoop and Yarn
-	ssh $username@$masterNode "$hadoopFolder/sbin/stop-dfs.sh;
+	autossh $username@$masterNode "$hadoopFolder/sbin/stop-dfs.sh;
 	$hadoopFolder/sbin/stop-yarn.sh"
 #	$hadoopFolder/sbin/yarn-daemon.sh --config $HADOOP_CONF_DIR stop proxyserver"
-#	ssh $username@$masterNode "$hadoopFolder/sbin/mr-jobhistory-daemon.sh --config $HADOOP_CONF_DIR stop historyserver"
+#	autossh $username@$masterNode "$hadoopFolder/sbin/mr-jobhistory-daemon.sh --config $HADOOP_CONF_DIR stop historyserver"
 fi 
 if $isInstallHadoop
 then
@@ -462,19 +463,19 @@ echo "#################################### install Hadoop Yarn #################
 			echo Configure up Hadoop at $1 step 0
 			#if $isUploadYarn 
 			#then
-			#	ssh $username@$1 "sudo rm -rf $hadoopTgz"
+			#	autossh $username@$1 "sudo rm -rf $hadoopTgz"
 			#	scp $customizedHadoopPath $username@$1:~/ 
 			#fi
 			if $isDownload
 			then		
 				echo downloading $hadoopVer		
-				ssh $username@$1 "sudo rm -rf $hadoopTgz; wget $hadoopLink >> log.txt"
+				autossh $username@$1 "sudo rm -rf $hadoopTgz; wget $hadoopLink >> log.txt"
 			fi
 #			sleep 3
 			if $isExtract
 			then 
 				echo extract $hadoopTgz
-				ssh $username@$1 "rm -rf $hadoopVer; rm -rf $hadoopFolder; tar -xvzf $hadoopTgz >> log.txt; mv $hadoopVer $hadoopFolder; mkdir $hadoopFolder/conf"
+				autossh $username@$1 "rm -rf $hadoopVer; rm -rf $hadoopFolder; tar -xvzf $hadoopTgz >> log.txt; mv $hadoopVer $hadoopFolder; mkdir $hadoopFolder/conf"
 			fi
 			# add JAVA_HOME
 #			sleep 3
@@ -483,14 +484,14 @@ echo "#################################### install Hadoop Yarn #################
 			scp ../SWIM/workGenKeyValue_conf.xsl $1:~/hadoop/config
 			
 			echo Configure Hadoop at $1 step 1
-			ssh $username@$1 "echo export JAVA_HOME=$java_home > temp.txt; cat temp.txt ~/$hadoopFolder/$configFolder/hadoop-env.sh > temp2.txt ; mv temp2.txt ~/$hadoopFolder/$configFolder/hadoop-env.sh "
+			autossh $username@$1 "echo export JAVA_HOME=$java_home > temp.txt; cat temp.txt ~/$hadoopFolder/$configFolder/hadoop-env.sh > temp2.txt ; mv temp2.txt ~/$hadoopFolder/$configFolder/hadoop-env.sh "
 
 			if $isInitPath
 			then	
-				ssh $username@$1 "echo export JAVA_HOME=$java_home >> .bashrc"				
+				autossh $username@$1 "echo export JAVA_HOME=$java_home >> .bashrc"				
 				# Administrators can configure individual daemons using the configuration options shown below in the table:	
-				#ssh $username@$1 'echo export HADOOP_NAMENODE_OPTS="-XX:+UseParallelGC" > temp.txt'
-				#ssh $username@$1 "cat /$hadoopFolder/$configFolder/hadoop-env.sh temp.txt > temp2.txt; mv temp2.txt /$hadoopFolder/$configFolder/hadoop-env.sh"
+				#autossh $username@$1 'echo export HADOOP_NAMENODE_OPTS="-XX:+UseParallelGC" > temp.txt'
+				#autossh $username@$1 "cat /$hadoopFolder/$configFolder/hadoop-env.sh temp.txt > temp2.txt; mv temp2.txt /$hadoopFolder/$configFolder/hadoop-env.sh"
 				# HADOOP_DATANODE_OPTS
 	 			# HADOOP_DATANODE_OPTS
 				# HADOOP_SECONDARYNAMENODE_OPTS	
@@ -503,12 +504,12 @@ echo "#################################### install Hadoop Yarn #################
 				# HADOOP_PID_DIR - The directory where the daemons’ process id files are stored.
 				# HADOOP_LOG_DIR - The directory where the daemons’ log files are stored. 
 				# HADOOP_HEAPSIZE
-				# ssh $username@$1 "sed -i -e 's/#export HADOOP_HEAPSIZE=/export HADOOP_HEAPSIZE=4096/g' $hadoopFolder/$configFolder/hadoop-env.sh"
+				# autossh $username@$1 "sed -i -e 's/#export HADOOP_HEAPSIZE=/export HADOOP_HEAPSIZE=4096/g' $hadoopFolder/$configFolder/hadoop-env.sh"
 				# YARN_HEAPSIZE
-				# ssh $username@$server "sed -i -e 's/# YARN_HEAPSIZE=1000/# YARN_HEAPSIZE=4096/g' $hadoopFolder/$configFolder/yarn-env.sh"
+				# autossh $username@$server "sed -i -e 's/# YARN_HEAPSIZE=1000/# YARN_HEAPSIZE=4096/g' $hadoopFolder/$configFolder/yarn-env.sh"
 			
 				# configure HADOOP_PREFIX 
-				ssh $username@$1 "echo export HADOOP_PREFIX=~/$hadoopFolder >> .bashrc;
+				autossh $username@$1 "echo export HADOOP_PREFIX=~/$hadoopFolder >> .bashrc;
 				echo export HADOOP_YARN_HOME=~/$hadoopFolder >> .bashrc;
 				echo export HADOOP_HOME=~/$hadoopFolder >> .bashrc;				
 				echo export HADOOP_CONF_DIR=~/$hadoopFolder/$configFolder >> .bashrc;
@@ -518,10 +519,10 @@ echo "#################################### install Hadoop Yarn #################
 			fi
 			echo Configure Hadoop at $1 step 2
 			# etc/hadoop/core-site.xml
-			ssh $username@$1 "sudo rm -rf $hdfsDir; sudo mkdir $hdfsDir; sudo chmod 777 $hdfsDir"
+			autossh $username@$1 "sudo rm -rf $hdfsDir; sudo mkdir $hdfsDir; sudo chmod 777 $hdfsDir"
 			echo Configure Hadoop at $1 step 3
 			#sleep 2
-			ssh $username@$1 "echo '<?xml version=\"1.0\" encoding=\"UTF-8\"?>
+			autossh $username@$1 "echo '<?xml version=\"1.0\" encoding=\"UTF-8\"?>
 <?xml-stylesheet type=\"text/xsl\" href=\"configuration.xsl\"?>
 <configuration>
 
@@ -553,11 +554,11 @@ echo "#################################### install Hadoop Yarn #################
 				# HADOOP_PID_DIR - The directory where the daemons’ process id files are stored.
 				# HADOOP_LOG_DIR - The directory where the daemons’ log files are stored. 
 				# HADOOP_HEAPSIZE
-				# ssh $username@$1 "sed -i -e 's/#export HADOOP_HEAPSIZE=/export HADOOP_HEAPSIZE=4096/g' $hadoopFolder/$configFolder/hadoop-env.sh"
+				# autossh $username@$1 "sed -i -e 's/#export HADOOP_HEAPSIZE=/export HADOOP_HEAPSIZE=4096/g' $hadoopFolder/$configFolder/hadoop-env.sh"
 				# YARN_HEAPSIZE
 			# etc/hadoop/hdfs-site.xml
 			echo Configure Hadoop at $1 step 4
-			ssh $username@$1 "echo '<?xml version=\"1.0\" encoding=\"UTF-8\"?> 
+			autossh $username@$1 "echo '<?xml version=\"1.0\" encoding=\"UTF-8\"?> 
 <?xml-stylesheet type=\"text/xsl\" href=\"configuration.xsl\"?>
 <configuration>
 
@@ -583,9 +584,9 @@ echo "#################################### install Hadoop Yarn #################
 			# etc/hadoop/yarn-site.xml
 			## Configurations for ResourceManager and NodeManager:
 
-			ssh $username@$1 "sudo rm -rf $yarnAppLogs; sudo mkdir $yarnAppLogs; sudo chmod 777 $yarnAppLogs"
+			autossh $username@$1 "sudo rm -rf $yarnAppLogs; sudo mkdir $yarnAppLogs; sudo chmod 777 $yarnAppLogs"
 			echo Configure Yarn at $1 step 1
-			ssh $username@$1 "echo '<?xml version=\"1.0\"?>
+			autossh $username@$1 "echo '<?xml version=\"1.0\"?>
 <configuration>
 
   <property>
@@ -658,23 +659,28 @@ echo "#################################### install Hadoop Yarn #################
     <name>yarn.nodemanager.resource.memory-mb</name>
     <value>$yarnNodeMem</value>
   </property>
+
+  <property>
+    <name>yarn.nodemanager.vmem-check-enabled</name>
+    <value>false</value>
+  </property>
 	
 </configuration>' > $hadoopFolder/$configFolder/yarn-site.xml"
 
 
 #yarn.nodemanager.linux-container-executor.group=#configured value of yarn.nodemanager.linux-container-executor.group
 #allowed.system.users=##comma separated list of system users who CAN run applications
-#			ssh $username@$1 "sudo sed -i -e 's/yarn.nodemanager.linux-container-executor.group=#/yarn.nodemanager.linux-container-executor.group=$groupname#/g' $hadoopFolder/$configFolder/container-executor.cfg"
-#			ssh $username@$1 "sudo chown root:$groupname $hadoopFolder/$configFolder/container-executor.cfg"
-#			ssh $username@$1 "sudo chown root:$groupname $hadoopFolder/bin/container-executor"
-#			ssh $username@$1 "sudo chmod 6050 $hadoopFolder/bin/container-executor"
-#			ssh $username@$1 "sudo mkdir $cgroupYarn"
-#			ssh $username@$1 "sudo chmod -R 777 $cgroupYarn"			
-#			ssh $username@$1 "cgdelete cpu:yarn"
+#			autossh $username@$1 "sudo sed -i -e 's/yarn.nodemanager.linux-container-executor.group=#/yarn.nodemanager.linux-container-executor.group=$groupname#/g' $hadoopFolder/$configFolder/container-executor.cfg"
+#			autossh $username@$1 "sudo chown root:$groupname $hadoopFolder/$configFolder/container-executor.cfg"
+#			autossh $username@$1 "sudo chown root:$groupname $hadoopFolder/bin/container-executor"
+#			autossh $username@$1 "sudo chmod 6050 $hadoopFolder/bin/container-executor"
+#			autossh $username@$1 "sudo mkdir $cgroupYarn"
+#			autossh $username@$1 "sudo chmod -R 777 $cgroupYarn"			
+#			autossh $username@$1 "cgdelete cpu:yarn"
 
 # setup scheduler https://hadoop.apache.org/docs/r2.7.1/hadoop-yarn/hadoop-yarn-site/FairScheduler.html
 			echo Configure Yarn at $1 step 2
-			ssh $username@$1 "echo '<?xml version=\"1.0\"?>
+			autossh $username@$1 "echo '<?xml version=\"1.0\"?>
 <allocations>
 
 <defaultQueueSchedulingPolicy>$shedulingPolicy</defaultQueueSchedulingPolicy>
@@ -685,10 +691,10 @@ echo "#################################### install Hadoop Yarn #################
 <queue name=\"interactive0\">	
 	<!--<minReq>131072 mb, 64 vcores</minReq>-->
 	<!-- <minReq>24576 mb, 12 vcores</minReq> -->
-	<minReq>235520 mb, 115 vcores</minReq> 
-	<speedDuration>60000</speedDuration>
+	<minReq>1179648 mb, 1152 vcores</minReq> 
+	<speedDuration>90000</speedDuration>
 	<fairPriority>0.5</fairPriority>
-	<period>120000</period>
+	<period>240000</period>
 	<weight>$weight</weight>
 	<schedulingPolicy>fifo</schedulingPolicy>
 </queue>
@@ -696,10 +702,32 @@ echo "#################################### install Hadoop Yarn #################
 	<!--<minReq>131072 mb, 64 vcores</minReq>-->
 	<!-- <minReq>196608 mb, 96 vcores</minReq> -->
 	<!--<minReq>24576 mb, 12 vcores</minReq> -->
-	<minReq>235520 mb, 115 vcores</minReq> 
+	<minReq>1179648 mb, 1152 vcores</minReq> 
 	<fairPriority>0.5</fairPriority>
-	<speedDuration>60000</speedDuration>
-	<period>120000</period>
+	<speedDuration>90000</speedDuration>
+	<period>240000</period>
+	<weight>$weight</weight>
+	<schedulingPolicy>fifo</schedulingPolicy>
+</queue>
+<queue name=\"interactive2\">	
+	<!--<minReq>131072 mb, 64 vcores</minReq>-->
+	<!-- <minReq>196608 mb, 96 vcores</minReq> -->
+	<!--<minReq>24576 mb, 12 vcores</minReq> -->
+	<minReq>1179648 mb, 1152 vcores</minReq> 
+	<fairPriority>0.5</fairPriority>
+	<speedDuration>90000</speedDuration>
+	<period>240000</period>
+	<weight>$weight</weight>
+	<schedulingPolicy>fifo</schedulingPolicy>
+</queue>
+<queue name=\"interactive3\">	
+	<!--<minReq>131072 mb, 64 vcores</minReq>-->
+	<!-- <minReq>196608 mb, 96 vcores</minReq> -->
+	<!--<minReq>24576 mb, 12 vcores</minReq> -->
+	<minReq>1179648 mb, 1152 vcores</minReq> 
+	<fairPriority>0.5</fairPriority>
+	<speedDuration>90000</speedDuration>
+	<period>240000</period>
 	<weight>$weight</weight>
 	<schedulingPolicy>fifo</schedulingPolicy>
 </queue>
@@ -711,7 +739,14 @@ echo "#################################### install Hadoop Yarn #################
 	<weight>1</weight>	
 	<schedulingPolicy>fifo</schedulingPolicy>
 </queue>
-
+<queue name=\"batch2\">
+	<weight>1</weight>	
+	<schedulingPolicy>fifo</schedulingPolicy>
+</queue>
+<queue name=\"batch3\">
+	<weight>1</weight>	
+	<schedulingPolicy>fifo</schedulingPolicy>
+</queue>
 <!--
 <queue name=\"interactive1\">
 	<minReq>8192 mb,4 vcores</minReq>
@@ -737,7 +772,7 @@ echo "#################################### install Hadoop Yarn #################
 
 </allocations>' > $fairSchedulerFile"
 			echo Configure Yarn at $1 step 3
-			ssh $username@$1 "echo '<?xml version=\"1.0\"?>
+			autossh $username@$1 "echo '<?xml version=\"1.0\"?>
 <configuration>
   <property>
     <name>yarn.scheduler.capacity.resource-calculator</name>
@@ -781,7 +816,7 @@ echo "#################################### install Hadoop Yarn #################
 </configuration>' > $capacitySchedulerFile"
 			echo Configure Yarn at $1 step 4
 			# etc/hadoop/mapred-site.xml
-			ssh $username@$1 "echo '<?xml version=\"1.0\"?>
+			autossh $username@$1 "echo '<?xml version=\"1.0\"?>
 <?xml-stylesheet type=\"text/xsl\" href=\"configuration.xsl\"?>
 <configuration>
 
@@ -851,24 +886,24 @@ echo "#################################### install Hadoop Yarn #################
 			# monitoring script in etc/hadoop/yarn-site.xml
 			echo Configure Yarn at $1 step 5
 			# slaves etc/hadoop/slaves
-			ssh $username@$1 "sudo rm -rf $hadoopFolder/$configFolder/slaves"
+			autossh $username@$1 "sudo rm -rf $hadoopFolder/$configFolder/slaves"
 			#slaveStr=""
 			tempCMD=""
 			for svr in $slaveNodes; do	
 				#slaveStr="$slaveStr $svr"
 				tempCMD="$tempCMD echo $svr >> $hadoopFolder/$configFolder/slaves; "		
-				#ssh $username@$1 "echo $svr >> $hadoopFolder/$configFolder/slaves"
+				#autossh $username@$1 "echo $svr >> $hadoopFolder/$configFolder/slaves"
 			done
-			ssh $username@$1 "$tempCMD"
-			#ssh $username@$1 "echo $slaveStr > $hadoopFolder/$configFolder/slaves "
-			#ssh $username@$1 "sudo chown -R $username:$groupname $hadoopFolder"
+			autossh $username@$1 "$tempCMD"
+			#autossh $username@$1 "echo $slaveStr > $hadoopFolder/$configFolder/slaves "
+			#autossh $username@$1 "sudo chown -R $username:$groupname $hadoopFolder"
 			
 }
 		
 		if $isUploadYarn 
 		then
 			# upload to the nm
-			ssh $username@$masterNode "sudo rm -rf $hadoopTgz"
+			autossh $username@$masterNode "sudo rm -rf $hadoopTgz"
 			sleep 3
 			echo "scp $customizedHadoopPath $username@$masterNode:~/"
 			scp $customizedHadoopPath $username@$masterNode:~/ 
@@ -878,26 +913,26 @@ echo "#################################### install Hadoop Yarn #################
 			counter=0
 			for slave in $slaveNodes; do
 				counter=$((counter+1))
-				ssh $username@$slave "sudo rm -rf $hadoopTgz"
+				autossh $username@$slave "sudo rm -rf $hadoopTgz"
 				if [[ "$counter" -gt $PARALLEL ]]; then
 			       		counter=0;
 					uploadCMD="$uploadCMD scp $hadoopTgz $slave:~/ ; "
 				else
 					uploadCMD="$uploadCMD scp $hadoopTgz $slave:~/ ; "
-					#ssh $username@$masterNode "scp $hadoopTgz $username@$slave:~/ "
+					#autossh $username@$masterNode "scp $hadoopTgz $username@$slave:~/ "
 			       	fi
 				
 			done
 			#wait
 			#uploadCMD="$uploadCMD ; wait"
 			echo $uploadCMD
-			ssh $username@$masterNode "$uploadCMD"
+			autossh $username@$masterNode "$uploadCMD"
 			
 		fi
 		counter=0
 		for server in $serverList; do
 			counter=$((counter+1))
-			installHadoopFunc $server 
+			installHadoopFunc $server &
 			if [[ "$counter" -gt $PARALLEL ]]; then
 		       		counter=0;
 				wait
@@ -962,18 +997,18 @@ spark.streaming.dynamicAllocation.minExecutors 1
 spark.streaming.dynamicAllocation.maxExecutors 500' > $sparkFolder/conf/spark-defaults.conf"
 		echo "install Spart at $1 - step 5"
 		#Create /opt/spark-ver/conf/slaves add all the hostnames of spark slave nodes to it.
-		ssh $1 "sudo rm -rf $sparkFolder/conf/slaves"
+		autossh $1 "sudo rm -rf $sparkFolder/conf/slaves"
 		for slave in $slaveNodes; do
 			ssh $1 "echo $slave >> $sparkFolder/conf/slaves"
 		done
 
 		#ssh $1 "cp ~/spark/lib/$sparkVer-yarn-shuffle.jar ~/hadoop/share/hadoop/yarn/ > .null.txt" 
-		ssh $1 "cp ~/spark/yarn/$sparkVer-yarn-shuffle.jar ~/hadoop/share/hadoop/yarn/" # for 2.0.0 version
+		autossh $1 "cp ~/spark/yarn/$sparkVer-yarn-shuffle.jar ~/hadoop/share/hadoop/yarn/" # for 2.0.0 version
 	}
 	counter=0
 	for server in $serverList; do
 		counter=$((counter+1))
-		installSparkFunc $server 		
+		installSparkFunc $server &	
 		if [[ "$counter" -gt $PARALLEL ]]; then
 	       		counter=0;
 			wait
@@ -983,7 +1018,7 @@ spark.streaming.dynamicAllocation.maxExecutors 500' > $sparkFolder/conf/spark-de
 else
 	for server in $serverList; do
 		#ssh $server "cp ~/spark/lib/$sparkVer-yarn-shuffle.jar ~/hadoop/share/hadoop/yarn/ > .null.txt" 
-		ssh $server "cp ~/spark/yarn/$sparkVer-yarn-shuffle.jar ~/hadoop/share/hadoop/yarn/" # for 2.0.0 version
+		autossh $server "cp ~/spark/yarn/$sparkVer-yarn-shuffle.jar ~/hadoop/share/hadoop/yarn/" # for 2.0.0 version
 	done	
 fi
 
@@ -993,26 +1028,26 @@ if $restartHadoop
 then
 	# shutdown all before starting.
 	echo "============================stopping Hadoop (HDFS) and Yarn ========================="
-	ssh $username@$masterNode "$hadoopFolder/sbin/stop-dfs.sh; $hadoopFolder/sbin/stop-yarn.sh"
+	autossh $username@$masterNode "$hadoopFolder/sbin/stop-dfs.sh; $hadoopFolder/sbin/stop-yarn.sh"
 	echo '============================ starting Hadoop==================================='
 
 	if $isFormatHDFS
 	then
-		ssh $username@$masterNode "sudo rm -rf $hdfsDir; sudo mkdir $hdfsDir; sudo chmod 777 $hdfsDir"
-		ssh $username@$masterNode "yes Y | $hadoopFolder/bin/hdfs namenode -format HDFS4Flink"
+		autossh $username@$masterNode "sudo rm -rf $hdfsDir; sudo mkdir $hdfsDir; sudo chmod 777 $hdfsDir"
+		autossh $username@$masterNode "yes Y | $hadoopFolder/bin/hdfs namenode -format HDFS4Flink"
 	fi
-	ssh $username@$masterNode "$hadoopFolder/sbin/start-dfs.sh"
+	autossh $username@$masterNode "$hadoopFolder/sbin/start-dfs.sh"
 	echo '============================ starting Yarn==================================='
 	# operating YARN
-	ssh $username@$masterNode "$hadoopFolder/sbin/start-yarn.sh"
+	autossh $username@$masterNode "$hadoopFolder/sbin/start-yarn.sh"
 	# operating MapReduce
-	#ssh $username@$masterNode '$HADOOP_PREFIX/sbin/mr-jobhistory-daemon.sh --config $HADOOP_CONF_DIR start historyserver'	
+	#autossh $username@$masterNode '$HADOOP_PREFIX/sbin/mr-jobhistory-daemon.sh --config $HADOOP_CONF_DIR start historyserver'	
 fi
 
 if $isInstallSpark 
 then 
 	echo "#################################### start Spark #####################################"
-	ssh $masterNode "~/spark/sbin/stop-all.sh; ~/spark/sbin/start-all.sh;"
+	autossh $masterNode "~/spark/sbin/stop-all.sh; ~/spark/sbin/start-all.sh;"
 fi
 
 

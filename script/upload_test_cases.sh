@@ -1,17 +1,7 @@
 defaulHostname="nm.yarn-perf.yarnrm-pg0.wisc.cloudlab.us"
 #defaulHostname="nm.yarn-drf.yarnrm-pg0.wisc.cloudlab.us"
 #defaulHostname="c220g1-030826.wisc.cloudlab.us" #drf
-serverList="cp-1 cp-2 cp-3 cp-4  cp-5  cp-6  cp-4 cp-4 cp-4 cp-4 cp-4 cp-10"
-counter=0
-PARALLEL=4
-for server in $serverList; do
-	counter=$((counter+1))
-	echo $server; sleep 10 &		
-	if [[ "$counter" -gt $PARALLEL ]]; then
-       		counter=0;
-		wait
-       	fi
-done
+defaultDomain="yarnrm-pg0.utah.cloudlab.us"
 
 echo "upload the files to $hostname"
 
@@ -19,7 +9,7 @@ if [ -z "$1" ]
 then
 	hostname=$defaulHostname
 else
-	hostname="nm.$1.yarnrm-pg0.wisc.cloudlab.us"
+	hostname="nm.$1.$defaultDomain"
 fi
 
 uploadTestCases () {
