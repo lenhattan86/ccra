@@ -8,8 +8,9 @@
 
 ######################### System Variables #####################
 
-isCloudLab=true
+isCloudLab=false
 isAmazonEC=false
+isLocalhost=true	
 username="tanle"
 groupname="yarnrm-PG0"
 
@@ -35,16 +36,27 @@ hadoopTgz="hadoop-2.7.2.tar.gz"
 #hadoopTgz="hadoop-2.6.3.tar.gz"
 
 yarnVcores=32
+if $isLocalhost
+then
+	yarnVcores=16
+fi
 vmemRatio=4
 #yarnNodeMem=131072 # 128 GB
 #yarnNodeMem=65536 # 64 GB
-yarnNodeMem=$((2*$yarnVcores*1024)) # 2 times of number of vcores
+yarnNodeMem=$(($yarnVcores*1024)) # 2 times of number of vcores
 #yarnNodeMem=32768 # 32 GB
 
+
 yarnMaxMem=32768 # for each container
-fairSchedulerFile="/users/tanle/$hadoopFolder/etc/fair-scheduler.xml"
-capacitySchedulerFile="/users/tanle/$hadoopFolder/etc/capacity-scheduler.xml"
 isCapacityScheduler=false
+if $isLocalhost
+then
+	temp="/home/$username"
+else
+	temp="/users/$username"
+fi
+fairSchedulerFile="$temp/$hadoopFolder/etc/fair-scheduler.xml"
+capacitySchedulerFile="$temp/$hadoopFolder/etc/capacity-scheduler.xml"
 if $isCapacityScheduler
 then
 	schedulerFile=$capacitySchedulerFile
@@ -57,7 +69,7 @@ fi
 shedulingPolicy="SpeedFair"; weight=1
 
 hdfsDir="/dev/hdfs"
-#hdfsDir="/users/tanle/hdfs"
+#hdfsDir="$temp/hdfs"
 #hdfsDir="/proj/yarnrm-PG0/hdfs"
 
 #yarnAppLogs="/dev/yarn-logs"
@@ -105,17 +117,28 @@ echo "setup $hostname"
 REBOOT=false
 isOfficial=true
 TEST=false
-isSingleNodeCluster=false	
-isUploadTestCase=false
 
 isUploadYarn=true
 isDownload=false
 isExtract=true
+if $isUploadYarn
+then
+	isExtract=true
+elif $isDownload
+then
+	isExtract=true
+fi
 
-#hostname="nm.yarn-perf.yarnrm-pg0.wisc.cloudlab.us"; shedulingPolicy="SpeedFair"; cp ~/.ssh/config.yarn-perf ~/.ssh/config; 
-#hostname="nm.yarn-drf.yarnrm-pg0.wisc.cloudlab.us"; shedulingPolicy="drf"; cp ~/.ssh/config.yarn-drf ~/.ssh/config; isUploadYarn=true ; 
-#hostname="nm.yarn-small.yarnrm-pg0.utah.cloudlab.us"; shedulingPolicy="drf"; cp ~/.ssh/config.yarn-small ~/.ssh/config; 
-hostname="nm.yarn-large.yarnrm-pg0.utah.cloudlab.us"; shedulingPolicy="SpeedFair"; cp ~/.ssh/config.yarn-large ~/.ssh/config;
+if $isLocalhost
+then
+	hostname="localhost"; 
+else
+	#hostname="nm.yarn-perf.yarnrm-pg0.wisc.cloudlab.us"; shedulingPolicy="SpeedFair"; cp ~/.ssh/config.yarn-perf ~/.ssh/config; 
+	#hostname="nm.yarn-drf.yarnrm-pg0.wisc.cloudlab.us"; shedulingPolicy="drf"; cp ~/.ssh/config.yarn-drf ~/.ssh/config; isUploadYarn=true ; 
+	#hostname="nm.yarn-small.yarnrm-pg0.utah.cloudlab.us"; shedulingPolicy="drf"; cp ~/.ssh/config.yarn-small ~/.ssh/config; 
+	hostname="nm.yarn-large.yarnrm-pg0.utah.cloudlab.us"; shedulingPolicy="SpeedFair"; cp ~/.ssh/config.yarn-large ~/.ssh/config;
+fi
+
 
 customizedHadoopPath="/home/tanle/projects/ccra/hadoop/hadoop-dist/target/$hadoopTgz"
 
@@ -202,6 +225,7 @@ then
 		numOfworkers=40
 		#serverList="nm ctl cp-1 cp-2 cp-3 cp-4 cp-5 cp-6 cp-7 cp-8 cp-9 cp-10 cp-11 cp-12 cp-13 cp-14 cp-15 cp-16 cp-17 cp-18 cp-19 cp-20 cp-21 cp-22 cp-23 cp-24 cp-25 cp-26 cp-27 cp-28 cp-29 cp-30 cp-31 cp-32 cp-33 cp-34 cp-35 cp-36 cp-37 cp-38 cp-39 cp-40 cp-41 cp-42 cp-43 cp-44 cp-45 cp-46 cp-47 cp-48 cp-49"
 		serverList="nm ctl cp-1 cp-2 cp-3 cp-4 cp-5 cp-6 cp-7 cp-8 cp-9 cp-10 cp-11 cp-12 cp-13     cp-15 cp-16 cp-17 cp-18 cp-19 cp-20 cp-21 cp-22 cp-23 cp-24 cp-25 cp-26 cp-27   cp-29 cp-30 cp-31   cp-33 cp-34 cp-35 cp-36 cp-37 cp-38 cp-39 cp-40 cp-41 cp-42"
+		#serverList="cp-21 cp-30"
 		slaveNodes="ctl cp-1 cp-2 cp-3 cp-4 cp-5 cp-6 cp-7 cp-8 cp-9 cp-10 cp-11 cp-12 cp-13     cp-15 cp-16 cp-17 cp-18 cp-19 cp-20 cp-21 cp-22 cp-23 cp-24 cp-25 cp-26 cp-27   cp-29 cp-30 cp-31   cp-33 cp-34 cp-35 cp-36 cp-37 cp-38 cp-39 cp-40 cp-41 cp-42"
 		numOfReplication=1
 	else
@@ -222,14 +246,21 @@ elif $isAmazonEC
 then
 	echo "Amazon EC"
 else
-	if $isSingleNodeCluster
+	
+	if $isLocalhost
 	then
+		echo "Setup Yarn on localhost"
 		masterNode="localhost"
 		serverList="localhost"
 		slaveNodes="localhost"
 		numOfReplication=1
 		numOfworkers=1
 		isUploadKey=false
+		isInstallBasePackages=false
+		isInstallGanglia=false
+		isInstallFlink=false
+		isAddToGroup=false
+		isInitPath=false # use it if working on the new computer
 	fi
 fi
 
@@ -476,15 +507,16 @@ echo "#################################### install Hadoop Yarn #################
 			then 
 				echo extract $hadoopTgz
 				autossh $username@$1 "rm -rf $hadoopVer; rm -rf $hadoopFolder; tar -xvzf $hadoopTgz >> log.txt; mv $hadoopVer $hadoopFolder; mkdir $hadoopFolder/conf"
-			fi
-			# add JAVA_HOME
-#			sleep 3
-			echo "copy SWIM config files for Facebook-trace simulation"
-			scp ../SWIM/randomwriter_conf.xsl $1:~/hadoop/config
-			scp ../SWIM/workGenKeyValue_conf.xsl $1:~/hadoop/config
+				# add JAVA_HOME
+	#			sleep 3
+				echo "copy SWIM config files for Facebook-trace simulation"
+				scp ../SWIM/randomwriter_conf.xsl $1:~/hadoop/config
+				scp ../SWIM/workGenKeyValue_conf.xsl $1:~/hadoop/config
 			
-			echo Configure Hadoop at $1 step 1
-			autossh $username@$1 "echo export JAVA_HOME=$java_home > temp.txt; cat temp.txt ~/$hadoopFolder/$configFolder/hadoop-env.sh > temp2.txt ; mv temp2.txt ~/$hadoopFolder/$configFolder/hadoop-env.sh "
+				echo Configure Hadoop at $1 step 1
+				autossh $username@$1 "echo export JAVA_HOME=$java_home > temp.txt; cat temp.txt ~/$hadoopFolder/$configFolder/hadoop-env.sh > temp2.txt ; mv temp2.txt ~/$hadoopFolder/$configFolder/hadoop-env.sh "
+			fi
+			
 
 			if $isInitPath
 			then	
@@ -680,7 +712,9 @@ echo "#################################### install Hadoop Yarn #################
 
 # setup scheduler https://hadoop.apache.org/docs/r2.7.1/hadoop-yarn/hadoop-yarn-site/FairScheduler.html
 			echo Configure Yarn at $1 step 2
-			autossh $username@$1 "echo '<?xml version=\"1.0\"?>
+			if $isLocalhost
+			then
+				autossh $username@$1 "echo  '<?xml version=\"1.0\"?>
 <allocations>
 
 <defaultQueueSchedulingPolicy>$shedulingPolicy</defaultQueueSchedulingPolicy>
@@ -689,43 +723,57 @@ echo "#################################### install Hadoop Yarn #################
 <defaultFairSharePreemptionThreshold>1.0</defaultFairSharePreemptionThreshold>
 
 <queue name=\"interactive0\">	
-	<!--<minReq>131072 mb, 64 vcores</minReq>-->
-	<!-- <minReq>24576 mb, 12 vcores</minReq> -->
-	<minReq>1179648 mb, 1152 vcores</minReq> 
+	<minReq>12288 mb, 12 vcores</minReq> 
+	<speedDuration>20000</speedDuration>
+	<period>200000</period>
+	<weight>$weight</weight>
+	<schedulingPolicy>fifo</schedulingPolicy>
+</queue>
+<queue name=\"batch0\">
+	<weight>1</weight>	
+	<schedulingPolicy>fifo</schedulingPolicy>
+</queue>
+<queue name=\"batch1\">
+	<weight>1</weight>	
+	<schedulingPolicy>fifo</schedulingPolicy>
+</queue>
+<queue name=\"tanle\">
+	<weight>1</weight>
+	<schedulingPolicy>fifo</schedulingPolicy>	
+</queue>
+</allocations>' > $fairSchedulerFile"
+			else
+			autossh $username@$1 "echo  '<?xml version=\"1.0\"?>
+<allocations>
+
+<defaultQueueSchedulingPolicy>$shedulingPolicy</defaultQueueSchedulingPolicy>
+<defaultMinSharePreemptionTimeout>1</defaultMinSharePreemptionTimeout>
+<defaultFairSharePreemptionTimeout>1</defaultFairSharePreemptionTimeout>
+<defaultFairSharePreemptionThreshold>1.0</defaultFairSharePreemptionThreshold>
+
+<queue name=\"interactive0\">	
+	<minReq>983040 mb, 960 vcores</minReq> 
 	<speedDuration>90000</speedDuration>
-	<fairPriority>0.5</fairPriority>
 	<period>240000</period>
 	<weight>$weight</weight>
 	<schedulingPolicy>fifo</schedulingPolicy>
 </queue>
 <queue name=\"interactive1\">	
-	<!--<minReq>131072 mb, 64 vcores</minReq>-->
-	<!-- <minReq>196608 mb, 96 vcores</minReq> -->
-	<!--<minReq>24576 mb, 12 vcores</minReq> -->
-	<minReq>1179648 mb, 1152 vcores</minReq> 
-	<fairPriority>0.5</fairPriority>
+	<minReq>983040 mb, 960 vcores</minReq> 
 	<speedDuration>90000</speedDuration>
 	<period>240000</period>
 	<weight>$weight</weight>
 	<schedulingPolicy>fifo</schedulingPolicy>
 </queue>
 <queue name=\"interactive2\">	
-	<!--<minReq>131072 mb, 64 vcores</minReq>-->
-	<!-- <minReq>196608 mb, 96 vcores</minReq> -->
-	<!--<minReq>24576 mb, 12 vcores</minReq> -->
-	<minReq>1179648 mb, 1152 vcores</minReq> 
-	<fairPriority>0.5</fairPriority>
+	<minReq>983040 mb, 960 vcores</minReq> 
 	<speedDuration>90000</speedDuration>
 	<period>240000</period>
 	<weight>$weight</weight>
 	<schedulingPolicy>fifo</schedulingPolicy>
 </queue>
 <queue name=\"interactive3\">	
-	<!--<minReq>131072 mb, 64 vcores</minReq>-->
-	<!-- <minReq>196608 mb, 96 vcores</minReq> -->
-	<!--<minReq>24576 mb, 12 vcores</minReq> -->
-	<minReq>1179648 mb, 1152 vcores</minReq> 
-	<fairPriority>0.5</fairPriority>
+	<minReq>983040 mb, 960 vcores</minReq> 
 	<speedDuration>90000</speedDuration>
 	<period>240000</period>
 	<weight>$weight</weight>
@@ -747,23 +795,22 @@ echo "#################################### install Hadoop Yarn #################
 	<weight>1</weight>	
 	<schedulingPolicy>fifo</schedulingPolicy>
 </queue>
-<!--
-<queue name=\"interactive1\">
-	<minReq>8192 mb,4 vcores</minReq>
-</queue>
-
-<queue name=\"interactive2\">
-	<minReq>8192 mb,4 vcores</minReq>
-</queue>
-
-<queue name=\"interactive3\">
-	<minReq>8192 mb,4 vcores</minReq>
-</queue>
-
-<queue name=\"batch\">
+<queue name=\"batch4\">
 	<weight>1</weight>	
+	<schedulingPolicy>fifo</schedulingPolicy>
 </queue>
--->
+<queue name=\"batch5\">
+	<weight>1</weight>	
+	<schedulingPolicy>fifo</schedulingPolicy>
+</queue>
+<queue name=\"batch6\">
+	<weight>1</weight>	
+	<schedulingPolicy>fifo</schedulingPolicy>
+</queue>
+<queue name=\"batch7\">
+	<weight>1</weight>	
+	<schedulingPolicy>fifo</schedulingPolicy>
+</queue>
 
 <queue name=\"tanle\">
 	<weight>1</weight>
@@ -771,6 +818,8 @@ echo "#################################### install Hadoop Yarn #################
 </queue>
 
 </allocations>' > $fairSchedulerFile"
+			fi
+
 			echo Configure Yarn at $1 step 3
 			autossh $username@$1 "echo '<?xml version=\"1.0\"?>
 <configuration>
@@ -907,27 +956,31 @@ echo "#################################### install Hadoop Yarn #################
 			sleep 3
 			echo "scp $customizedHadoopPath $username@$masterNode:~/"
 			scp $customizedHadoopPath $username@$masterNode:~/ 
-			# share upload file among the workers.
-			echo "multithread sharing...."
-			uploadCMD=""
-			counter=0
-			for slave in $slaveNodes; do
-				counter=$((counter+1))
-				autossh $username@$slave "sudo rm -rf $hadoopTgz"
-				if [[ "$counter" -gt $PARALLEL ]]; then
-			       		counter=0;
-					uploadCMD="$uploadCMD scp $hadoopTgz $slave:~/ ; "
-				else
-					uploadCMD="$uploadCMD scp $hadoopTgz $slave:~/ ; "
-					#autossh $username@$masterNode "scp $hadoopTgz $username@$slave:~/ "
-			       	fi
+			if $isLocalhost
+			then
+				echo "uploaded Yarn ..."
+			else
+				# share upload file among the workers.
+				echo "multithread sharing...."
+				uploadCMD=""
+				counter=0
+				for slave in $slaveNodes; do
+					counter=$((counter+1))
+					autossh $username@$slave "sudo rm -rf $hadoopTgz"
+					if [[ "$counter" -gt $PARALLEL ]]; then
+				       		counter=0;
+						uploadCMD="$uploadCMD scp $hadoopTgz $slave:~/ ; "
+					else
+						uploadCMD="$uploadCMD scp $hadoopTgz $slave:~/ ; "
+						#autossh $username@$masterNode "scp $hadoopTgz $username@$slave:~/ "
+				       	fi
 				
-			done
-			#wait
-			#uploadCMD="$uploadCMD ; wait"
-			echo $uploadCMD
-			autossh $username@$masterNode "$uploadCMD"
-			
+				done
+				#wait
+				#uploadCMD="$uploadCMD ; wait"
+				echo $uploadCMD
+				autossh $username@$masterNode "$uploadCMD"
+			fi
 		fi
 		counter=0
 		for server in $serverList; do

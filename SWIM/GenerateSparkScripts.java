@@ -14,6 +14,7 @@ public class GenerateSparkScripts {
   /*
    * Workload file format constants for field indices
    */
+  
   static final int INTER_JOB_SLEEP_TIME = 2;
   static final int INPUT_DATA_SIZE = 3;
   static final int SHUFFLE_DATA_SIZE = 4;
@@ -166,16 +167,16 @@ public class GenerateSparkScripts {
         run.write(toWrite.toCharArray(), 0, toWrite.length());
       }
 
-       toWrite = "wait $runBatches ; ";
-      toWrite += " wait $runInteractives; sleep 10 \n";
+      toWrite  = "wait $runBatches ; ";
+      toWrite += "wait $runInteractives; sleep 240 \n";
       run.write(toWrite.toCharArray(), 0, toWrite.length());
 
       // toWrite = "cat " + workloadOutputDir + "/interactive-*.time > " + workloadOutputDir +
       // "/allJobs.time";
       // run.write(toWrite.toCharArray(), 0, toWrite.length());
 
-      toWrite = "\n kill $pythonScript";
-      run.write(toWrite.toCharArray(), 0, toWrite.length());
+//      toWrite = "\n kill $pythonScript";
+//      run.write(toWrite.toCharArray(), 0, toWrite.length());
 
       // toWrite = "\n kill $runInteractives";
       // run.write(toWrite.toCharArray(), 0, toWrite.length());
@@ -310,13 +311,14 @@ public class GenerateSparkScripts {
 
     ArrayList<ArrayList<String>> workloadData = new ArrayList<ArrayList<String>>();
 
-    String hostName = "nm.yarn-perf.yarnrm-pg0.wisc.cloudlab.us";
+//    String hostName = "nm.yarn-perf.yarnrm-pg0.wisc.cloudlab.us";
     // String hostName = "nm.yarn-drf.yarnrm-pg0.wisc.cloudlab.us";
+    String hostName = "http://nm.yarn-large.yarnrm-pg0.utah.cloudlab.us/";
 
     String fileWorkloadPath = "FB-2009_samples_24_times_1hr_0_first200.tsv";
 
     int clusterSizeRaw = 600;
-    int clusterSizeWorkload = 4;
+    int clusterSizeWorkload = GenerateReplayScript.NUM_CP_NODES;
     String scriptDirPath = "scriptsTest";
     String workloadOutputDir = "workGenLogs";
     String sparkCommand = "/users/tanle/spark/bin/spark-submit ";

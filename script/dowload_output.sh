@@ -1,16 +1,17 @@
-defaulHostname="nm.yarn-perf.yarnrm-pg0.wisc.cloudlab.us"
+#defaulHostname="nm.yarn-perf.yarnrm-pg0.wisc.cloudlab.us"
 #defaulHostname="nm.yarn-drf.yarnrm-pg0.wisc.cloudlab.us"
 #defaulHostname="c220g1-030826.wisc.cloudlab.us" #drf
+defaulHostname="nm.yarn-large.yarnrm-pg0.utah.cloudlab.us"
 
 if [ -z "$1" ]
 then
 	hostname=$defaulHostname
 else
-	hostname="nm.$1.yarnrm-pg0.wisc.cloudlab.us"
+	hostname="nm.$1.yarnrm-pg0.utah.cloudlab.us"
 fi
 
 resultPath="../results"
-newFolder="/runb2i1new"
+newFolder="/runb8i1"
 echo "download the files from $hostname"
 
 downloadOuput () {

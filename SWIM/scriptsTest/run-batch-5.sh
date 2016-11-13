@@ -1,6 +1,4 @@
-sleep 8 ; ~/hadoop/bin/hadoop jar ../WorkGen.jar org.apache.hadoop.examples.WorkGen -conf users/tanle/hadoop/conf/workGenKeyValue_conf.xsl -r 1 inputPath-batch-5.txt workGenOutputTest-50 -queue batch0 -memory 1024 3.7798738E-5 0.47276086 >> workGenLogs/batch-5_0.txt 2>> workGenLogs/batch-5_0.txt  &  batch5="$batch5 $!"  
-sleep 5 ; ~/hadoop/bin/hadoop jar ../WorkGen.jar org.apache.hadoop.examples.WorkGen -conf users/tanle/hadoop/conf/workGenKeyValue_conf.xsl -r 1 inputPath-batch-5.txt workGenOutputTest-51 -queue batch1 -memory 1024 3.7798738E-5 0.47276086 >> workGenLogs/batch-5_1.txt 2>> workGenLogs/batch-5_1.txt  &  batch5="$batch5 $!"  
+~/hadoop/bin/hadoop jar ../WorkGen.jar org.apache.hadoop.examples.WorkGen -conf users/tanle/hadoop/conf/workGenKeyValue_conf.xsl -m 704 -r 1 inputPath-batch-5.txt workGenOutputTest-5 -queue batch1 -map.vcores 6 -red.vcores 4 -map.memory 3072 -red.memory 5120 3.780572E-4 0.047267355 >> workGenLogs/batch-5.txt 2>> workGenLogs/batch-5.txt  &  batch5=$!  
 wait $batch5 
-~/hadoop/bin/hadoop fs -rm -r workGenOutputTest-50
-~/hadoop/bin/hadoop fs -rm -r workGenOutputTest-51
+~/hadoop/bin/hadoop fs -rm -r workGenOutputTest-5
 # inputSize 57303500

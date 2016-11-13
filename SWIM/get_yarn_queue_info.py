@@ -49,19 +49,18 @@ writer = csv.writer(ofile, dialect='excel')
 while True:
     try:
         response = urllib2.urlopen(url)
+        info_json = json.loads(response.read())
+        timestamp = time.strftime("%H:%M:%S")
+        for queue in info_json['scheduler']['schedulerInfo']['rootQueue']['childQueues']:
+	    queue_name = queue['queueName']
+	    used_memory = queue['usedResources']['memory']
+	    used_cpus = queue['usedResources']['vCores']
+	    row = [timestamp, queue_name, used_cpus, used_memory]
+	    writer.writerow(row)
+        time.sleep(interval)
     except:
-        print 'Could not access URL:', url
-        sys.exit(-1)
-    info_json = json.loads(response.read())
-    timestamp = time.strftime("%H:%M:%S")
-    for queue in info_json['scheduler']['schedulerInfo']['rootQueue']['childQueues']:
-        queue_name = queue['queueName']
-        used_memory = queue['usedResources']['memory']
-        used_cpus = queue['usedResources']['vCores']
-        row = [timestamp, queue_name, used_cpus, used_memory]
-#         print row
-        writer.writerow(row)
-    time.sleep(interval)
+        print 'Could not access URL:', url        
+
 
 
 

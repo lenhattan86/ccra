@@ -211,8 +211,8 @@ public class HDFSWrite extends Configured implements Tool {
      */
     @Override
     public void configure(JobConf job) {
-      numBytesToWrite = job.getLong("test.randomwrite.bytes_per_map", 1*1024*1024*1024);
-//      numBytesToWrite = job.getLong("test.randomwrite.bytes_per_map", 128*1024*1024);
+//      numBytesToWrite = job.getLong("test.randomwrite.bytes_per_map", 1*1024*1024*1024);
+      numBytesToWrite = job.getLong("test.randomwrite.bytes_per_map", 128*1024*1024);
       System.out.println("[debug] numBytesToWrite: "+numBytesToWrite);
       minKeySize = job.getInt("test.randomwrite.min_key", 10);
       System.out.println("[debug] minKeySize: "+minKeySize);
@@ -226,7 +226,8 @@ public class HDFSWrite extends Configured implements Tool {
       System.out.println("[debug] valueSizeRange: "+valueSizeRange);
       
       if(DISABLE_RANDOM) {
-        numBytesToWrite = 128*1024*1024;
+//        numBytesToWrite = 16*1024*1024;
+        numBytesToWrite = 1024*1024;
         valueSizeRange = 0;
         keySizeRange = 0;
       }
