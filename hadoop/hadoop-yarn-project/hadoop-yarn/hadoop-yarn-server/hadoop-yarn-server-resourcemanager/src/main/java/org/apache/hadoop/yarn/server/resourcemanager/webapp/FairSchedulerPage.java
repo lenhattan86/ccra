@@ -81,9 +81,11 @@ public class FairSchedulerPage extends RmView {
         startSessionTime += lasted;
       }
       
-      ResponseInfo ri = info("\'" + qinfo.getQueueName() + "\' Queue Status")
-          ._("Scheduling policy:", qinfo.getSchedulingPolicy())._("Weights:", qinfo.getWeights().toString())
-          ._("long-term fairness weight:", qinfo.getFairPriority()). // iglf
+      ResponseInfo ri = info("\'" + qinfo.getQueueName() + "\' Queue Status").
+          _("Scheduling policy:", qinfo.getSchedulingPolicy()).
+          _("Weights:", qinfo.getWeights().toString()).
+          _("isBursty:", "not updated").
+          _("isAdmitted:", "not updated").
           _("alpha:", qinfo.getMinReq().toString()). // iglf
           _("guaranteeRate:", qinfo.getGuaranteeShare().toString()). // iglf
           _("speedDuration:", qinfo.getSpeedDuration()/1000 + " secs"). // iglf
@@ -91,11 +93,11 @@ public class FairSchedulerPage extends RmView {
           _("startSessionTime:", startSessionTime ). // iglf
           _("isRunning:", qinfo.isRunning()). // iglf
           _("isSpeedup:", qinfo.isDuringSpeedupDuration()). // iglf
-          _("Used Resources:", qinfo.getUsedResources().toString())
-          ._("Num Active Applications:", qinfo.getNumActiveApplications())
-          ._("Num Pending Applications:", qinfo.getNumPendingApplications())
-          ._("Min Resources:", qinfo.getMinResources().toString())
-          ._("Max Resources:", qinfo.getMaxResources().toString());
+          _("Resource usage:", qinfo.getUsedResources().toString()).
+          _("Num Active Applications:", qinfo.getNumActiveApplications()).
+          _("Num Pending Applications:", qinfo.getNumPendingApplications()).
+          _("Min Resources:", qinfo.getMinResources().toString()).
+          _("Max Resources:", qinfo.getMaxResources().toString());
       int maxApps = qinfo.getMaxApplications();
       if (maxApps < Integer.MAX_VALUE) {
         ri._("Max Running Applications:", qinfo.getMaxApplications());

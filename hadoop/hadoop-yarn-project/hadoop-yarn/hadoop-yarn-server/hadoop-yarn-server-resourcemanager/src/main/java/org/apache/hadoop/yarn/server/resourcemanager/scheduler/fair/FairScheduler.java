@@ -174,7 +174,6 @@ public class FairScheduler extends AbstractYarnScheduler<FSAppAttempt, FSSchedul
   private Comparator<NodeId> nodeAvailableResourceComparator = new NodeAvailableResourceComparator(); // Node
                                                                                                       // available
                                                                                                       // resource
-                                                                                                      // comparator
   protected double nodeLocalityThreshold; // Cluster threshold for node locality
   protected double rackLocalityThreshold; // Cluster threshold for rack locality
   protected long nodeLocalityDelayMs; // Delay for node locality

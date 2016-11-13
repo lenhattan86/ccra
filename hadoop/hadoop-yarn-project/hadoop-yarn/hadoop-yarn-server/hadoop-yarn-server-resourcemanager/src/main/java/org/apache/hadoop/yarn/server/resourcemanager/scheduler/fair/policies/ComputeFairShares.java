@@ -444,6 +444,7 @@ public class ComputeFairShares {
               // TODO: check the (maxResource*sched.getPeriod()/numOfLeafQueues - alpha*speedupDuration) is negative
               float tmp = (maxResource*sched.getPeriod()/numAdmittedQueues - alpha*speedupDuration)/(queue.getPeriod() - speedupDuration);
               guaranteedShare = (int) Math.max(tmp, 0);
+              guaranteedShare = (int) Math.min(guaranteedShare, maxResource);
             }
           }  
             
