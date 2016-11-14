@@ -1,0 +1,6 @@
+# change: hadoop version--> hadoop 2.6.0
+
+# compile TEZ
+mvn clean package -DskipTests=true -Dmaven.javadoc.skip=true
+
+
