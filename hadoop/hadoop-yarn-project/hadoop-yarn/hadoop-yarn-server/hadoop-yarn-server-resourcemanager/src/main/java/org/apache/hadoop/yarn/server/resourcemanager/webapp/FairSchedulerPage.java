@@ -71,26 +71,26 @@ public class FairSchedulerPage extends RmView {
 
     @Override
     protected void render(Block html) {
-      String startSessionTime = "not started";
-      if(qinfo.getStartSessionTime()>0) {
+      String startSessionTime = "na";
+      if(qinfo.getStartTime()>=0) {
         startSessionTime = new SimpleDateFormat("yyyy.MM.dd HH:mm:ss").
-            format(new Date(qinfo.getStartSessionTime()));
+            format(new Date(qinfo.getStartTime()));
         String lasted = "";
         if (qinfo.getPeriod()>0)
-          lasted = " periodically lasted: "+ ((System.currentTimeMillis() - qinfo.getStartSessionTime()) % qinfo.getPeriod())/1000 + " secs"; 
+          lasted = " periodically lasted: "+ ((System.currentTimeMillis() - qinfo.getStartTime()) % qinfo.getPeriod())/1000 + " secs"; 
         startSessionTime += lasted;
       }
       
       ResponseInfo ri = info("\'" + qinfo.getQueueName() + "\' Queue Status").
           _("Scheduling policy:", qinfo.getSchedulingPolicy()).
           _("Weights:", qinfo.getWeights().toString()).
-          _("isBursty:", "not updated").
-          _("isAdmitted:", "not updated").
+          _("isBursty:", qinfo.isBursty()).
+          _("isAdmitted:", qinfo.isAmitted()).
           _("alpha:", qinfo.getMinReq().toString()). // iglf
           _("guaranteeRate:", qinfo.getGuaranteeShare().toString()). // iglf
-          _("speedDuration:", qinfo.getSpeedDuration()/1000 + " secs"). // iglf
+          _("Stage 1 duration:", qinfo.getSpeedDuration()/1000 + " secs"). // iglf
           _("period:", qinfo.getPeriod()/1000 + " secs"). // iglf
-          _("startSessionTime:", startSessionTime ). // iglf
+          _("startTime:", startSessionTime ). // iglf
           _("isRunning:", qinfo.isRunning()). // iglf
           _("isSpeedup:", qinfo.isDuringSpeedupDuration()). // iglf
           _("Resource usage:", qinfo.getUsedResources().toString()).

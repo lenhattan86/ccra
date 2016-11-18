@@ -121,7 +121,7 @@ public interface Schedulable {
   
   public Resource getAlpha();
   
-  public long getSpeedDuration();
+  public long getStage1Duration();
   
   public long getPeriod();
   
@@ -138,4 +138,6 @@ public interface Schedulable {
   public Queue getParentQueue(); //iglf
   
   public boolean isLeafQueue();
+  
+  public boolean isAdmitted();
 }

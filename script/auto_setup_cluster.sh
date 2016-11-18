@@ -8,9 +8,18 @@
 
 ######################### System Variables #####################
 
-isCloudLab=false
+isCloudLab=true
 isAmazonEC=false
-isLocalhost=true	
+isLocalhost=false
+IS_INIT=false
+isOfficial=false
+TEST=true
+if $isLocalhost
+then
+	isCloudLab=false
+	isAmazonEC=false
+	IS_INIT=false
+fi
 username="tanle"
 groupname="yarnrm-PG0"
 
@@ -102,21 +111,32 @@ sparkFolder="spark"
 #sparkTgzFolder="spark-1.6.1-bin-hadoop2.6"
 #sparkDownloadLink="http://apache.claz.org/spark/spark-1.6.1/spark-1.6.1-bin-hadoop2.6.tgz"
 
-sparkVer="spark-2.0.0-preview"
-sparkTgz="spark-2.0.0-preview-bin-hadoop2.7.tgz"
-sparkTgzFolder="spark-2.0.0-preview-bin-hadoop2.7"
-sparkDownloadLink="https://dist.apache.org/repos/dist/release/spark/spark-2.0.0-preview/spark-2.0.0-preview-bin-hadoop2.7.tgz"
+sparkVer="spark-2.0.2"
+sparkTgz="spark-2.0.2-bin-hadoop2.7.tgz"
+sparkTgzFolder="spark-2.0.2-bin-hadoop2.7"
+if $isLocalhost
+then
+	sparkDownloadLink="http://mirror.navercorp.com/apache/spark/spark-2.0.2/spark-2.0.2-bin-hadoop2.7.tgz"
+else
+	sparkDownloadLink="http://d3kbcqa49mib13.cloudfront.net/spark-2.0.2-bin-hadoop2.7.tgz"
+fi
 
 ##########
 
-IS_INIT=false
-PARALLEL=4
+PARALLEL=5
 
-echo "setup $hostname"
+if $isLocalhost
+then
+	hostname="localhost"; 
+else
+	#hostname="ctl.yarn-perf.yarnrm-pg0.utah.cloudlab.us"; shedulingPolicy="SpeedFair"; cp ~/.ssh/config.yarn-perf ~/.ssh/config; 
+	#hostname="ctl.yarn-drf.yarnrm-pg0.utah.cloudlab.us"; shedulingPolicy="drf"; cp ~/.ssh/config.yarn-drf ~/.ssh/config; isUploadYarn=true ; 
+	hostname="ctl.yarn-small.yarnrm-pg0.wisc.cloudlab.us"; shedulingPolicy="drf"; cp ~/.ssh/config.yarn-small ~/.ssh/config; 
+	#hostname="ctl.yarn-large.yarnrm-pg0.utah.cloudlab.us"; shedulingPolicy="SpeedFair"; cp ~/.ssh/config.yarn-large ~/.ssh/config;
+fi
+echo "==== Running the setup for the cluster $hostname ======="
 
 REBOOT=false
-isOfficial=true
-TEST=false
 
 isUploadYarn=true
 isDownload=false
@@ -129,23 +149,15 @@ then
 	isExtract=true
 fi
 
-if $isLocalhost
-then
-	hostname="localhost"; 
-else
-	#hostname="nm.yarn-perf.yarnrm-pg0.wisc.cloudlab.us"; shedulingPolicy="SpeedFair"; cp ~/.ssh/config.yarn-perf ~/.ssh/config; 
-	#hostname="nm.yarn-drf.yarnrm-pg0.wisc.cloudlab.us"; shedulingPolicy="drf"; cp ~/.ssh/config.yarn-drf ~/.ssh/config; isUploadYarn=true ; 
-	#hostname="nm.yarn-small.yarnrm-pg0.utah.cloudlab.us"; shedulingPolicy="drf"; cp ~/.ssh/config.yarn-small ~/.ssh/config; 
-	hostname="nm.yarn-large.yarnrm-pg0.utah.cloudlab.us"; shedulingPolicy="SpeedFair"; cp ~/.ssh/config.yarn-large ~/.ssh/config;
-fi
+
 
 
 customizedHadoopPath="/home/tanle/projects/ccra/hadoop/hadoop-dist/target/$hadoopTgz"
 
-isUploadKey=false
-isGenerateKey=false	
-isPasswordlessSSH=false
-isAddToGroup=false
+isUploadKey=true
+isGenerateKey=true	
+isPasswordlessSSH=true
+isAddToGroup=true
 
 isInstallBasePackages=false
 
@@ -156,7 +168,7 @@ then
 	startGanglia=true
 fi
 
-isInstallHadoop=true
+isInstallHadoop=false
 isInitPath=false
 if $isDownload
 then
@@ -186,11 +198,19 @@ then
 	isFormatHDFS=true	
 fi
 
+if $isInstallSpark
+then
+	shuffleStr="mapreduce_shuffle,spark_shuffle"
+else
+	shuffleStr="mapreduce_shuffle"
+fi
+
 
 if $IS_INIT
 then
+	shedulingPolicy="drf"
 	isDownload=true
-	isUploadYarn=false ; shedulingPolicy="drf" # check with the stable version first.
+	isUploadYarn=true
 	isExtract=true
 
 	isUploadKey=true
@@ -213,33 +233,33 @@ then
 
 	isInstallSpark=true
 
-#	shedulingPolicy="drf"; weight=3
 fi
 
 if $isCloudLab
 then
-	masterNode="nm"
-	clientNode="ctl"        
+	echo " at CLOUDLAB "
+	masterNode="ctl"
 	if $isOfficial
 	then
 		numOfworkers=40
-		#serverList="nm ctl cp-1 cp-2 cp-3 cp-4 cp-5 cp-6 cp-7 cp-8 cp-9 cp-10 cp-11 cp-12 cp-13 cp-14 cp-15 cp-16 cp-17 cp-18 cp-19 cp-20 cp-21 cp-22 cp-23 cp-24 cp-25 cp-26 cp-27 cp-28 cp-29 cp-30 cp-31 cp-32 cp-33 cp-34 cp-35 cp-36 cp-37 cp-38 cp-39 cp-40 cp-41 cp-42 cp-43 cp-44 cp-45 cp-46 cp-47 cp-48 cp-49"
-		serverList="nm ctl cp-1 cp-2 cp-3 cp-4 cp-5 cp-6 cp-7 cp-8 cp-9 cp-10 cp-11 cp-12 cp-13     cp-15 cp-16 cp-17 cp-18 cp-19 cp-20 cp-21 cp-22 cp-23 cp-24 cp-25 cp-26 cp-27   cp-29 cp-30 cp-31   cp-33 cp-34 cp-35 cp-36 cp-37 cp-38 cp-39 cp-40 cp-41 cp-42"
+		#serverList="$masterNode ctl cp-1 cp-2 cp-3 cp-4 cp-5 cp-6 cp-7 cp-8 cp-9 cp-10 cp-11 cp-12 cp-13 cp-14 cp-15 cp-16 cp-17 cp-18 cp-19 cp-20 cp-21 cp-22 cp-23 cp-24 cp-25 cp-26 cp-27 cp-28 cp-29 cp-30 cp-31 cp-32 cp-33 cp-34 cp-35 cp-36 cp-37 cp-38 cp-39 cp-40 cp-41 cp-42 cp-43 cp-44 cp-45 cp-46 cp-47 cp-48 cp-49"
+		serverList="$masterNode cp-1 cp-2 cp-3 cp-4 cp-5 cp-6 cp-7 cp-8 cp-9 cp-10 cp-11 cp-12 cp-13     cp-15 cp-16 cp-17 cp-18 cp-19 cp-20 cp-21 cp-22 cp-23 cp-24 cp-25 cp-26 cp-27   cp-29 cp-30 cp-31   cp-33 cp-34 cp-35 cp-36 cp-37 cp-38 cp-39 cp-40 cp-41 cp-42"
 		#serverList="cp-21 cp-30"
-		slaveNodes="ctl cp-1 cp-2 cp-3 cp-4 cp-5 cp-6 cp-7 cp-8 cp-9 cp-10 cp-11 cp-12 cp-13     cp-15 cp-16 cp-17 cp-18 cp-19 cp-20 cp-21 cp-22 cp-23 cp-24 cp-25 cp-26 cp-27   cp-29 cp-30 cp-31   cp-33 cp-34 cp-35 cp-36 cp-37 cp-38 cp-39 cp-40 cp-41 cp-42"
+		slaveNodes="cp-1 cp-2 cp-3 cp-4 cp-5 cp-6 cp-7 cp-8 cp-9 cp-10 cp-11 cp-12 cp-13     cp-15 cp-16 cp-17 cp-18 cp-19 cp-20 cp-21 cp-22 cp-23 cp-24 cp-25 cp-26 cp-27   cp-29 cp-30 cp-31   cp-33 cp-34 cp-35 cp-36 cp-37 cp-38 cp-39 cp-40 cp-41 cp-42"
 		numOfReplication=1
 	else
 		if $TEST
 		then
 			numOfworkers=1
-			serverList="nm ctl"
-			slaveNodes="ctl"
-			numOfReplication=1				
+			serverList="$masterNode cp-1"
+			slaveNodes="cp-1"
+			numOfReplication=1
+
 		else
-			numOfworkers=4
-			serverList="nm ctl cp-1 cp-2 cp-3"
-			slaveNodes="ctl cp-1 cp-2 cp-3"
-			numOfReplication=1		
+			numOfworkers=8
+			serverList="$masterNode cp-1 cp-2 cp-3 cp-4 cp-5 cp-6 cp-7 cp-8"
+			slaveNodes="cp-1 cp-2 cp-3 cp-4 cp-5 cp-6 cp-7 cp-8"
+			numOfReplication=1
 		fi
 	fi
 elif $isAmazonEC
@@ -295,10 +315,12 @@ echo ################################# passwordless SSH ########################
             	read -p "Do you wish to generate new public keys ?" yn
             case $yn in
                 [Yy]* ) 
-			sudo rm -rf $HOME/.ssh/id_dsa*
+			sudo rm -rf $HOME/.ssh/id_rsa*
 			sudo rm -rf $HOME/.ssh/authorized_keys*
-			yes Y | ssh-keygen -t dsa -P '' -f ~/.ssh/id_dsa	
-			sudo chmod 600 $HOME/.ssh/id_dsa*
+			yes Y | ssh-keygen -t rsa -P '' -f ~/.ssh/id_rsa	
+			cat ~/.ssh/id_rsa.pub >> ~/.ssh/authorized_keys
+			sudo chmod 600 $HOME/.ssh/id_rsa*
+			sudo chmod 0600 ~/.ssh/authorized_keys
 			echo 'StrictHostKeyChecking no' >> ~/.ssh/config
 			break;;
                 [Nn]* ) exit;;
@@ -308,15 +330,13 @@ echo ################################# passwordless SSH ########################
 		
 	fi
 	rm -rf ~/.ssh/known_hosts
+	echo "uploading keys"
 	for server in $serverList; do
 		echo upload keys to $server
-		if ! $isSingleNodeCluster
-		then
-			autossh $username@$server 'sudo rm -rf $HOME/.ssh/id_dsa*'
-			scp ~/.ssh/id_dsa* $username@$server:~/.ssh/
-		fi
-		autossh $username@$server "cat ~/.ssh/id_dsa.pub >> ~/.ssh/authorized_keys ;
-		 chmod 0600 ~/.ssh/id_dsa*; 
+		autossh $username@$server 'sudo rm -rf $HOME/.ssh/id_rsa*'
+		scp ~/.ssh/id_rsa* $username@$server:~/.ssh/
+		autossh $username@$server "cat ~/.ssh/id_rsa.pub >> ~/.ssh/authorized_keys ;
+		 chmod 0600 ~/.ssh/id_rsa*; 
 		 chmod 0600 ~/.ssh/authorized_keys; 
 		 rm -rf ~/.ssh/known_hosts; 	
 		 echo 'StrictHostKeyChecking no' >> ~/.ssh/config"
@@ -338,11 +358,12 @@ fi
 
 if $isPasswordlessSSH
 then
-	passwordlessSSH () { autossh $username@$1 "ssh $2 'echo test passwordless SSH: $1 to $2'" ;}
-	for server1 in $serverList; do
-		for server2 in $serverList; do
-			passwordlessSSH $server1 $server2 &
-		done
+	passwordlessSSH () { 
+		echo "test ssh from $1 to $2"
+		ssh $username@$1 "ssh $2 'echo test passwordless SSH: $1 to $2'" ;
+	}
+	for server1 in $serverList; do		
+		passwordlessSSH $masterNode $server1 &
 	done
 	wait
 fi
@@ -394,14 +415,14 @@ echo ################################# install Ganglia #########################
 	sudo sed -i -e 's/name = \"unspecified\"/name = \"sbu flink\"/g' /etc/ganglia/gmond.conf ;
 	sudo sed -i -e 's/mcast_join = 239.2.11.71/#mcast_join = 239.2.11.71/g' /etc/ganglia/gmond.conf;
 	sudo sed -i -e 's/bind = 239.2.11.71/#bind = 239.2.11.71/g' /etc/ganglia/gmond.conf"
-	autossh $username@$masterNode "sudo sed -i -e 's/udp_send_channel {/udp_send_channel { host=nm/g' /etc/ganglia/gmond.conf"
+	autossh $username@$masterNode "sudo sed -i -e 's/udp_send_channel {/udp_send_channel { host=$masterNode/g' /etc/ganglia/gmond.conf"
 	
 	installGangliaFunc(){
 		autossh $username@$1 "yes Y | sudo apt-get purge ganglia-monitor;
 		sudo apt-get install -y ganglia-monitor;
 		sudo sed -i -e 's/name = \"unspecified\"/name = \"sbu flink\"/g' /etc/ganglia/gmond.conf;
 		sudo sed -i -e 's/mcast_join = 239.2.11.71/#mcast_join = 239.2.11.71/g' /etc/ganglia/gmond.conf;
-		sudo sed -i -e 's/udp_send_channel {/udp_send_channel { host=nm/g' /etc/ganglia/gmond.conf"
+		sudo sed -i -e 's/udp_send_channel {/udp_send_channel { host=$masterNode/g' /etc/ganglia/gmond.conf"
 	}
 
 	for server in $slaveNodes; do
@@ -443,7 +464,7 @@ then
 		fi
 		
 		#Replace localhost with resourcemanager in conf/flink-conf.yaml (jobmanager.rpc.address)
-		autossh $1 "sed -i -e 's/jobmanager.rpc.address: localhost/jobmanager.rpc.address: nm/g' $flinkVer/conf/flink-conf.yaml;
+		autossh $1 "sed -i -e 's/jobmanager.rpc.address: localhost/jobmanager.rpc.address: $masterNode/g' $flinkVer/conf/flink-conf.yaml;
 		sed -i -e 's/jobmanager.heap.mb: 256/taskmanager.heap.mb: 1024/g' $flinkVer/conf/flink-conf.yaml;		
 		sed -i -e 's/taskmanager.heap.mb: 512/taskmanager.heap.mb: $yarnMaxMem/g' $flinkVer/conf/flink-conf.yaml;
 		sed -i -e 's/# taskmanager.network.numberOfBuffers: 2048/taskmanager.network.numberOfBuffers: $numNetworkBuffers/g' $flinkVer/conf/flink-conf.yaml"
@@ -492,12 +513,12 @@ echo "#################################### install Hadoop Yarn #################
 
 		installHadoopFunc () {
 			echo Configure up Hadoop at $1 step 0
-			#if $isUploadYarn 
-			#then
+			if $isUploadYarn 
+			then
 			#	autossh $username@$1 "sudo rm -rf $hadoopTgz"
 			#	scp $customizedHadoopPath $username@$1:~/ 
-			#fi
-			if $isDownload
+				echo already uploaded Yarn onto $1
+			elif $isDownload
 			then		
 				echo downloading $hadoopVer		
 				autossh $username@$1 "sudo rm -rf $hadoopTgz; wget $hadoopLink >> log.txt"
@@ -653,8 +674,7 @@ echo "#################################### install Hadoop Yarn #################
 
   <property>
     <name>yarn.nodemanager.aux-services</name>
-<!--    <value>mapreduce_shuffle,spark_shuffle</value> -->
-    <value>mapreduce_shuffle</value>
+    <value>$shuffleStr</value>
   </property>
 
   <property>
@@ -724,8 +744,8 @@ echo "#################################### install Hadoop Yarn #################
 
 <queue name=\"interactive0\">	
 	<minReq>12288 mb, 12 vcores</minReq> 
-	<speedDuration>20000</speedDuration>
-	<period>200000</period>
+	<speedDuration>10000</speedDuration>
+	<period>50000</period>
 	<weight>$weight</weight>
 	<schedulingPolicy>fifo</schedulingPolicy>
 </queue>
@@ -951,7 +971,7 @@ echo "#################################### install Hadoop Yarn #################
 		
 		if $isUploadYarn 
 		then
-			# upload to the nm
+			# upload to the $masterNode
 			autossh $username@$masterNode "sudo rm -rf $hadoopTgz"
 			sleep 3
 			echo "scp $customizedHadoopPath $username@$masterNode:~/"
@@ -1008,22 +1028,22 @@ if $isInstallSpark
 then 	
 	echo "#################################### Setup Spark #####################################"	
 	installSparkFunc () {
-		echo "install Spart at $1 - step 1"
+		echo "install Spark at $1 - step 1"
 		if $isDownload
 		then
 			ssh $1 "sudo rm -rf $sparkTgz; wget $sparkDownloadLink >> log.txt"
 		fi
-		echo "install Spart at $1 - step 2"
+		echo "install Spark at $1 - step 2"
 		if $isExtract
 		then			
 			ssh $1 "rm -rf $sparkFolder; tar -xvzf $sparkTgz >> log.txt; mv $sparkTgzFolder $sparkFolder"
 		fi
-		echo "install Spart at $1 - step 3"
+		echo "install Spark at $1 - step 3"
 		ssh $1 "echo 'export SPARK_DIST_CLASSPATH=~/$hadoopFolder/bin/hadoop
 #export SPARK_JAVA_OPTS=-Dspark.driver.port=53411
 export HADOOP_CONF_DIR=$hadoopFolder/$configFolder
 export SPARK_MASTER_IP=$masterNode' > $sparkFolder/conf/spark-env.sh"
-		echo "install Spart at $1 - step 4"
+		echo "install Spark at $1 - step 4"
 		ssh $1 "echo '
 spark.executor.memory 768m
 
@@ -1048,7 +1068,7 @@ spark.streaming.dynamicAllocation.scalingUpRatio 0.0005
 spark.streaming.dynamicAllocation.scalingDownRatio 0.0000001
 spark.streaming.dynamicAllocation.minExecutors 1
 spark.streaming.dynamicAllocation.maxExecutors 500' > $sparkFolder/conf/spark-defaults.conf"
-		echo "install Spart at $1 - step 5"
+		echo "install Spark at $1 - step 5"
 		#Create /opt/spark-ver/conf/slaves add all the hostnames of spark slave nodes to it.
 		autossh $1 "sudo rm -rf $sparkFolder/conf/slaves"
 		for slave in $slaveNodes; do

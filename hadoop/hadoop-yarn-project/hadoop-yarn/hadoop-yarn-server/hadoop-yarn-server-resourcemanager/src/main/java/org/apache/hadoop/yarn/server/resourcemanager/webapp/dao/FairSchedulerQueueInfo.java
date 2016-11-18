@@ -68,10 +68,13 @@ public class FairSchedulerQueueInfo {
   private ResourceInfo alpha;
   private long speedDuration;  
   private long period;
-  private long startSessionTime;
+  private long startTime;
   private ResourceInfo guaranteeShare;
   
   private boolean isSpeedup;
+  
+  boolean admitted;
+  boolean isBursty;
   
   
 
@@ -88,10 +91,12 @@ private Collection<FairSchedulerQueueInfo> childQueues;
     isRunning = queue.isRunning();
     alpha = new ResourceInfo(queue.getAlpha());
     guaranteeShare = new ResourceInfo(queue.getGuaranteeShare());
-    speedDuration = queue.getSpeedDuration();
+    speedDuration = queue.getStage1Duration();
     period = queue.getPeriod();
-    startSessionTime = queue.getStartSessionTime();
+    startTime = queue.getStartTime();
     isSpeedup = queue.isDuringSpeedupDuration();
+    admitted = queue.isAdmitted();
+    isBursty= queue.isBursty();
     
     queueName = queue.getName();
     schedulingPolicy = queue.getPolicy().getName();
@@ -242,8 +247,8 @@ private Collection<FairSchedulerQueueInfo> childQueues;
     return period;
   }
   
-  public long getStartSessionTime(){
-    return this.startSessionTime;
+  public long getStartTime(){
+    return this.startTime;
   }
   
   public boolean isDuringSpeedupDuration(){
@@ -252,5 +257,13 @@ private Collection<FairSchedulerQueueInfo> childQueues;
   
   public ResourceInfo getGuaranteeShare() {
     return guaranteeShare;
+  }
+  
+  public boolean isAmitted() {
+    return admitted;
+  }
+  
+  public boolean isBursty(){
+    return isBursty;
   }
 }

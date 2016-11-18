@@ -790,7 +790,7 @@ public class FSAppAttempt extends SchedulerApplicationAttempt implements Schedul
   }
 
   @Override
-  public long getSpeedDuration() {
+  public long getStage1Duration() {
     // TODO Auto-generated method stub
     return 0;
   }
@@ -815,6 +815,12 @@ public class FSAppAttempt extends SchedulerApplicationAttempt implements Schedul
   public Resource getAlpha() {
     // TODO Auto-generated method stub
     return null;
+  }
+
+  @Override
+  public boolean isAdmitted() {
+    // TODO Auto-generated method stub
+    return false;
   }
 
 }

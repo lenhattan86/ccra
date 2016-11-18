@@ -61,12 +61,16 @@ public abstract class FSQueue implements Queue, Schedulable {
   private float fairPriority = Schedulable.DEFAULT_FAIR_PRIORITY; // iglf
   private Resource minReq = Resource.newInstance(0, 0);
   private boolean isRunning = false; // iglf
-  private long speedDuration = 0;
+  private long stage1Duration = 0;
   private long period = -1;
   
   private long startSessionTime = -1;
+  private long startTime = 0;
+  private Resource receivedResource = null;
   
   private Resource guaranteeShare = null;
+  
+  private boolean admitted = false;
   
 
   public float getFairPriority() {
@@ -88,10 +92,12 @@ public abstract class FSQueue implements Queue, Schedulable {
     metrics.setMaxShare(getMaxShare());
     this.parent = parent;
     this.fairPriority = scheduler.getAllocationConfiguration().getQueueFairPriority(name); // iglf
-    this.speedDuration = scheduler.getAllocationConfiguration().getSpeedDurations(name);
+    this.stage1Duration = scheduler.getAllocationConfiguration().getSpeedDurations(name);
     this.period = scheduler.getAllocationConfiguration().getPeriod(name);
     this.minReq = scheduler.getAllocationConfiguration().getMinReqs(name);
+    this.startTime = scheduler.getAllocationConfiguration().getStartTime(name);
     this.guaranteeShare = Resources.clone(this.minReq);
+    this.receivedResource = Resource.newInstance(0, 0);
   }
 
   public String getName() {
@@ -136,8 +142,7 @@ public abstract class FSQueue implements Queue, Schedulable {
 
   @Override
   public long getStartTime() {
-    // return 0;
-    return this.getAppStartTime();
+     return startTime;
   }
 
   @Override
@@ -359,36 +364,42 @@ public abstract class FSQueue implements Queue, Schedulable {
     return this.parent;
   }
   
-  public long getSpeedDuration(){
-    return this.speedDuration;
+  public long getStage1Duration(){
+    return this.stage1Duration;
   }
 
   
   public long getPeriod(){
     return this.period;
   }
-  public boolean isInteractive(){
-    if (this.getSpeedDuration()>0)
+  
+  public boolean isBursty(){
+    if (this.getStage1Duration()>0)
+      return true;
+    return false;
+  }
+  
+  public boolean isBatch(){
+    if (this.getQueueName().contains("batch")) //TODO: add a property for batch queue
       return true;
     return false;
   }
   
   public long lastedInPeriod(){
-    long lasted = (System.currentTimeMillis() - startSessionTime);
+    long lasted = (System.currentTimeMillis() - this.getStartTime());
     return lasted % this.period;
   }
   
   public boolean isDuringSpeedupDuration(){
-//    long sTime = this.getStartTime();
-    long sTime = startSessionTime;
+    long sTime = this.getStartTime();
     if(this.period <= 0){
       return false;
     }
-    if(sTime <= 0 && this.isInteractive()){
+    if(sTime <= 0 && this.isBursty()){
       return true;
     }
     long lasted = lastedInPeriod();
-    if (lasted <= this.getSpeedDuration()) {
+    if (lasted <= this.getStage1Duration()) {
       return true;
     }
     return false;
@@ -411,5 +422,18 @@ public abstract class FSQueue implements Queue, Schedulable {
       this.guaranteeShare.setVirtualCores(guaranteedShare);
     else
       this.guaranteeShare.setMemory(guaranteedShare);
+  }
+  
+  @Override
+  public boolean isAdmitted(){
+    return this.admitted;
+  }
+  
+  public void setAdmitted(boolean admitted){
+    this.admitted = admitted;
+  }
+  
+  public FairScheduler getScheduler(){
+    return this.scheduler;
   }
 }

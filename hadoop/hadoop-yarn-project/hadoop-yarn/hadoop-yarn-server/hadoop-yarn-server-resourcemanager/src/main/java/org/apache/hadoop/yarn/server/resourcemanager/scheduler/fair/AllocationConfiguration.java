@@ -34,9 +34,11 @@ import org.apache.hadoop.yarn.util.resource.Resources;
 import com.google.common.annotations.VisibleForTesting;
 
 public class AllocationConfiguration extends ReservationSchedulerConfiguration {
-  private static final AccessControlList EVERYBODY_ACL = new AccessControlList("*");
-  private static final AccessControlList NOBODY_ACL = new AccessControlList(" ");
-  
+  private static final AccessControlList EVERYBODY_ACL = new AccessControlList(
+      "*");
+  private static final AccessControlList NOBODY_ACL = new AccessControlList(
+      " ");
+
   // Minimum resource allocation for each queue
   private final Map<String, Resource> minQueueResources;
 
@@ -45,8 +47,9 @@ public class AllocationConfiguration extends ReservationSchedulerConfiguration {
   final Map<String, Resource> maxQueueResources;
   // Sharing weights for each queue
   private final Map<String, ResourceWeights> queueWeights;
-  
-  // Max concurrent running applications for each queue and for each user; in addition,
+
+  // Max concurrent running applications for each queue and for each user; in
+  // addition,
   // for users that have no max specified, we use the userMaxJobsDefault.
   @VisibleForTesting
   final Map<String, Integer> queueMaxApps;
@@ -62,7 +65,8 @@ public class AllocationConfiguration extends ReservationSchedulerConfiguration {
   // ACL's for each queue. Only specifies non-default ACL's from configuration.
   private final Map<String, Map<QueueACL, AccessControlList>> queueAcls;
 
-  // Min share preemption timeout for each queue in seconds. If a job in the queue
+  // Min share preemption timeout for each queue in seconds. If a job in the
+  // queue
   // waits this long without receiving its guaranteed share, it is allowed to
   // preempt other jobs' tasks.
   private final Map<String, Long> minSharePreemptionTimeouts;
@@ -77,30 +81,30 @@ public class AllocationConfiguration extends ReservationSchedulerConfiguration {
   // fairshare * fairSharePreemptionThreshold resources, it is allowed to
   // preempt other queues' tasks.
   private final Map<String, Float> fairSharePreemptionThresholds;
-  
+
   private final Set<String> reservableQueues;
 
   private final Map<String, SchedulingPolicy> schedulingPolicies;
-  
+
   private final SchedulingPolicy defaultSchedulingPolicy;
-  
+
   // Policy for mapping apps to queues
   @VisibleForTesting
   QueuePlacementPolicy placementPolicy;
-  
-  //Configured queues in the alloc xml
+
+  // Configured queues in the alloc xml
   @VisibleForTesting
   Map<FSQueueType, Set<String>> configuredQueues;
 
   // Reservation system configuration
   private ReservationQueueConfiguration globalReservationQueueConfig;
-  
-  private final Map<String, Float> queueFairPriorities; //iglf 
-  //Minimum resource required for each queue
-  private final Map<String, Resource> minQueueReqs; // iglf
-  private final Map<String, Long> speedDurations; //iglf 
-    private final Map<String, Long> periods; //iglf 
 
+  private final Map<String, Float> queueFairPriorities; // iglf
+  // Minimum resource required for each queue
+  private final Map<String, Resource> minQueueReqs; // iglf
+  private final Map<String, Long> speedDurations; // iglf
+  private final Map<String, Long> periods; // iglf
+  private final Map<String, Long> startTimes; // iglf
 
   public AllocationConfiguration(Map<String, Resource> minQueueResources,
       Map<String, Resource> maxQueueResources,
@@ -113,12 +117,14 @@ public class AllocationConfiguration extends ReservationSchedulerConfiguration {
       Map<String, Long> minSharePreemptionTimeouts,
       Map<String, Long> fairSharePreemptionTimeouts,
       Map<String, Float> fairSharePreemptionThresholds,
-      Map<String, Float> queueFairPriorities, //iglf
+      Map<String, Float> queueFairPriorities, // iglf
       Map<String, Map<QueueACL, AccessControlList>> queueAcls,
       QueuePlacementPolicy placementPolicy,
       Map<FSQueueType, Set<String>> configuredQueues,
       ReservationQueueConfiguration globalReservationQueueConfig,
-      Set<String> reservableQueues, Map<String, Resource> minQueueReqs, Map<String, Long> speedDurations, Map<String, Long> periods) {
+      Set<String> reservableQueues, Map<String, Resource> minQueueReqs,
+      Map<String, Long> speedDurations, Map<String, Long> periods,
+      Map<String, Long> startTimes) {
     this.minQueueResources = minQueueResources;
     this.maxQueueResources = maxQueueResources;
     this.queueMaxApps = queueMaxApps;
@@ -133,9 +139,10 @@ public class AllocationConfiguration extends ReservationSchedulerConfiguration {
     this.minSharePreemptionTimeouts = minSharePreemptionTimeouts;
     this.fairSharePreemptionTimeouts = fairSharePreemptionTimeouts;
     this.fairSharePreemptionThresholds = fairSharePreemptionThresholds;
-    this.queueFairPriorities = queueFairPriorities; //iglf
+    this.queueFairPriorities = queueFairPriorities; // iglf
     this.speedDurations = speedDurations;
     this.periods = periods;
+    this.startTimes = startTimes;
     this.queueAcls = queueAcls;
     this.reservableQueues = reservableQueues;
     this.globalReservationQueueConfig = globalReservationQueueConfig;
@@ -143,7 +150,7 @@ public class AllocationConfiguration extends ReservationSchedulerConfiguration {
     this.configuredQueues = configuredQueues;
     this.minQueueReqs = minQueueReqs;
   }
-  
+
   public AllocationConfiguration(Configuration conf) {
     minQueueResources = new HashMap<String, Resource>();
     maxQueueResources = new HashMap<String, Resource>();
@@ -158,7 +165,7 @@ public class AllocationConfiguration extends ReservationSchedulerConfiguration {
     minSharePreemptionTimeouts = new HashMap<String, Long>();
     fairSharePreemptionTimeouts = new HashMap<String, Long>();
     fairSharePreemptionThresholds = new HashMap<String, Float>();
-    queueFairPriorities = new HashMap<String, Float>(); //iglf
+    queueFairPriorities = new HashMap<String, Float>(); // iglf
     schedulingPolicies = new HashMap<String, SchedulingPolicy>();
     defaultSchedulingPolicy = SchedulingPolicy.DEFAULT_POLICY;
     reservableQueues = new HashSet<>();
@@ -169,13 +176,14 @@ public class AllocationConfiguration extends ReservationSchedulerConfiguration {
     placementPolicy = QueuePlacementPolicy.fromConfiguration(conf,
         configuredQueues);
     this.minQueueReqs = new HashMap<String, Resource>();
-   this.speedDurations = new HashMap<String, Long>();
-   this.periods= new HashMap<String, Long>();
+    this.speedDurations = new HashMap<String, Long>();
+    this.periods = new HashMap<String, Long>();
+    this.startTimes = new HashMap<String, Long>();
   }
-  
+
   /**
    * Get the ACLs associated with this queue. If a given ACL is not explicitly
-   * configured, include the default value for that ACL.  The default for the
+   * configured, include the default value for that ACL. The default for the
    * root queue is everybody ("*") and the default for all other queues is
    * nobody ("")
    */
@@ -189,7 +197,7 @@ public class AllocationConfiguration extends ReservationSchedulerConfiguration {
     }
     return (queue.equals("root")) ? EVERYBODY_ACL : NOBODY_ACL;
   }
-  
+
   /**
    * Get a queue's min share preemption timeout configured in the allocation
    * file, in milliseconds. Return -1 if not set.
@@ -204,9 +212,10 @@ public class AllocationConfiguration extends ReservationSchedulerConfiguration {
    * file, in milliseconds. Return -1 if not set.
    */
   public long getFairSharePreemptionTimeout(String queueName) {
-    Long fairSharePreemptionTimeout = fairSharePreemptionTimeouts.get(queueName);
-    return (fairSharePreemptionTimeout == null) ?
-        -1 : fairSharePreemptionTimeout;
+    Long fairSharePreemptionTimeout = fairSharePreemptionTimeouts
+        .get(queueName);
+    return (fairSharePreemptionTimeout == null) ? -1
+        : fairSharePreemptionTimeout;
   }
 
   /**
@@ -214,10 +223,10 @@ public class AllocationConfiguration extends ReservationSchedulerConfiguration {
    * Return -1f if not set.
    */
   public float getFairSharePreemptionThreshold(String queueName) {
-    Float fairSharePreemptionThreshold =
-        fairSharePreemptionThresholds.get(queueName);
-    return (fairSharePreemptionThreshold == null) ?
-        -1f : fairSharePreemptionThreshold;
+    Float fairSharePreemptionThreshold = fairSharePreemptionThresholds
+        .get(queueName);
+    return (fairSharePreemptionThreshold == null) ? -1f
+        : fairSharePreemptionThreshold;
   }
 
   public ResourceWeights getQueueWeight(String queue) {
@@ -228,7 +237,7 @@ public class AllocationConfiguration extends ReservationSchedulerConfiguration {
   public void setQueueWeight(String queue, ResourceWeights weight) {
     queueWeights.put(queue, weight);
   }
-  
+
   public int getUserMaxApps(String user) {
     Integer maxApps = userMaxApps.get(user);
     return (maxApps == null) ? userMaxAppsDefault : maxApps;
@@ -238,7 +247,7 @@ public class AllocationConfiguration extends ReservationSchedulerConfiguration {
     Integer maxApps = queueMaxApps.get(queue);
     return (maxApps == null) ? queueMaxAppsDefault : maxApps;
   }
-  
+
   public float getQueueMaxAMShare(String queue) {
     Float maxAMShare = queueMaxAMShares.get(queue);
     return (maxAMShare == null) ? queueMaxAMShareDefault : maxAMShare;
@@ -246,6 +255,7 @@ public class AllocationConfiguration extends ReservationSchedulerConfiguration {
 
   /**
    * Get the minimum resource allocation for the given queue.
+   * 
    * @return the cap set on this queue, or 0 if not set.
    */
   public Resource getMinResources(String queue) {
@@ -255,14 +265,16 @@ public class AllocationConfiguration extends ReservationSchedulerConfiguration {
 
   /**
    * Get the maximum resource allocation for the given queue.
+   * 
    * @return the cap set on this queue, or Integer.MAX_VALUE if not set.
    */
 
   public Resource getMaxResources(String queueName) {
     Resource maxQueueResource = maxQueueResources.get(queueName);
-    return (maxQueueResource == null) ? Resources.unbounded() : maxQueueResource;
+    return (maxQueueResource == null) ? Resources.unbounded()
+        : maxQueueResource;
   }
-  
+
   public boolean hasAccess(String queueName, QueueACL acl,
       UserGroupInformation user) {
     int lastPeriodIndex = queueName.length();
@@ -274,23 +286,23 @@ public class AllocationConfiguration extends ReservationSchedulerConfiguration {
 
       lastPeriodIndex = queueName.lastIndexOf('.', lastPeriodIndex - 1);
     }
-    
+
     return false;
   }
-  
+
   public SchedulingPolicy getSchedulingPolicy(String queueName) {
     SchedulingPolicy policy = schedulingPolicies.get(queueName);
     return (policy == null) ? defaultSchedulingPolicy : policy;
   }
-  
+
   public SchedulingPolicy getDefaultSchedulingPolicy() {
     return defaultSchedulingPolicy;
   }
-  
+
   public Map<FSQueueType, Set<String>> getConfiguredQueues() {
     return configuredQueues;
   }
-  
+
   public QueuePlacementPolicy getPlacementPolicy() {
     return placementPolicy;
   }
@@ -354,26 +366,34 @@ public class AllocationConfiguration extends ReservationSchedulerConfiguration {
   public void setAverageCapacity(int avgCapacity) {
     globalReservationQueueConfig.setAverageCapacity(avgCapacity);
   }
-  
-//iglf: START
+
+  // iglf: START
   public float getQueueFairPriority(String queue) {
     Float fairPriority = queueFairPriorities.get(queue);
-    return (fairPriority == null) ? Schedulable.DEFAULT_FAIR_PRIORITY : fairPriority;
-  }  
-  
-  public Resource getMinReqs(String queue) { 
+    return (fairPriority == null) ? Schedulable.DEFAULT_FAIR_PRIORITY
+        : fairPriority;
+  }
+
+  public Resource getMinReqs(String queue) {
     Resource minReq = minQueueReqs.get(queue);
     return (minReq == null) ? Resources.none() : minReq;
   }
 
-  public long getSpeedDurations(String queue){
-  	Long speedDuration = this.speedDurations.get(queue);
-    	return (speedDuration == null) ? 0 : speedDuration;
+  public long getSpeedDurations(String queue) {
+    Long speedDuration = this.speedDurations.get(queue);
+    return (speedDuration == null) ? 0 : speedDuration;
   }
 
-    public long getPeriod(String queue){
-  	Long period = this.periods.get(queue);
-    	return (period  == null) ? -1 : period ;
+  public long getPeriod(String queue) {
+    Long period = this.periods.get(queue);
+    return (period == null) ? -1 : period;
+  }
+
+  public long getStartTime(String queue) {
+    Long now = System.currentTimeMillis();
+    now = (now/1000); now = now * 1000;
+    Long startTime = this.startTimes.get(queue);
+    return (startTime == null) ? now : startTime+now;
   }
   // iglf: END
 }

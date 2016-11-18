@@ -216,7 +216,7 @@ public class FakeSchedulable implements Schedulable {
   }
 
   @Override
-  public long getSpeedDuration() {
+  public long getStage1Duration() {
     // TODO Auto-generated method stub
     return 0;
   }
@@ -241,5 +241,11 @@ public class FakeSchedulable implements Schedulable {
 
   public boolean isRunning() {
     return true;
+  }
+
+  @Override
+  public boolean isAdmitted() {
+    // TODO Auto-generated method stub
+    return false;
   }
 }

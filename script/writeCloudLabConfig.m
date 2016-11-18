@@ -23,7 +23,8 @@ fmt = [fmt_01 fmt_02 fmt_03 fmt_04 fmt_05 fmt_06];
  
 
 sId = 1;
-for i=1:length(data)
+dataSize = size(data);
+for i=1:dataSize(1)
     hostname = data{i,4};
     if length(data{i,1})<10
         fprintf(fileID,fmt, data{i,1}, hostname(17:length(hostname)));

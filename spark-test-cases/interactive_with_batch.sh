@@ -1,5 +1,5 @@
 # Start timming
-
+isLocalhost=true
 yarnAppLogs="/dev/shm/yarn-logs"
 username="tanle"
 
@@ -7,16 +7,28 @@ username="tanle"
 hostname="nm.yarn-perf.yarnrm-pg0.wisc.cloudlab.us"
 #hostname="nm.yarn-drf.yarnrm-pg0.wisc.cloudlab.us"
 
+
 # private server listl
 master="nm"
 serverList="$master ctl cp-1 cp-2 cp-3"
 #serverList="$master ctl cp-1"
+
+
 
 #jarFile="./spark/lib/spark-examples*.jar" 
 jarFile="../spark/examples/jars/spark-examples*.jar" # for spark 2.0
 #jarFile="./spark-examples*.jar" # for customized jars
 
 cmdSpark="../spark/bin/spark-submit"
+
+if $isLocalhost
+then
+	hostname="localhost"
+	master="localhost"
+	serverList="localhost"
+	cmdSpark="/home/tanle/spark/bin/spark-submit"
+	jarFile="/home/tanle/spark/examples/jars/spark-examples*.jar"
+fi
 
 className="org.apache.spark.examples.SparkPi"
 streamingClass="org.apache.spark.examples.streaming.HdfsWordCount"
@@ -40,7 +52,7 @@ fi
 if [ -z "$2" ]
 then
 #	numOfIteration=100000
-	numOfIteration=500  	  
+	numOfIteration=10000  	  
 else
 	numOfIteration=$2
 fi
@@ -55,7 +67,7 @@ fi
 
 if [ -z "$4" ]
 then
-	numOfBatchJobs=5 
+	numOfBatchJobs=2
 else
 	numOfBatchJobs=$4
 fi
@@ -64,10 +76,12 @@ if [ -z "$5" ]
 then
 	#batchIteration=$(($numOfIteration * 10 * $numOfapps))
 #	batchIteration=100000
-	batchIteration=100    
+	batchIteration=5000    
 else
 	batchIteration=$5
 fi
+
+batchInterval=0
 
 folder="log$numOfapps"
 rm -rf $folder
@@ -88,14 +102,15 @@ backlogBatchJobs () {
 		echo "run batch_1 $i" 		
 		FULL_COMMAND1="$cmdSpark --master yarn --class $className --deploy-mode $mode --driver-memory $executorMem --executor-memory $executorMem --executor-cores $executorCore --queue batch0 $jarFile $batchIteration"
 		(TIMEFORMAT='%R'; time $FULL_COMMAND1 2>$folder/batch1_$i) 2> $folder/batch_1$i.time & pid1=$!
-		sleep 20; 
+		sleep $batchInterval; 
 		if [ -v "$pid2" ]
 		then
 			echo "waiting for batch_2 $i"
 			wait $pid2
 		fi
+		FULL_COMMAND2="$cmdSpark --master yarn --class $className --deploy-mode $mode --driver-memory $executorMem --executor-memory $executorMem --executor-cores $executorCore --queue batch1 $jarFile $batchIteration"
 		echo "run batch_2 $i"
-		(TIMEFORMAT='%R'; time $FULL_COMMAND1 2>$folder/batch2_$i) 2> $folder/batch_2$i.time & pid2=$!
+		(TIMEFORMAT='%R'; time $FULL_COMMAND2 2>$folder/batch2_$i) 2> $folder/batch_2$i.time & pid2=$!
 		echo "waiting for batch_1 $i"
 		wait $pid1		
 	done
