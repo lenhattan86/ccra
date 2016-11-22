@@ -678,12 +678,12 @@ public class TestReservations {
     Container container = TestUtils.getMockContainer(containerId,
         node_1.getNodeID(), Resources.createResource(2*GB), priorityMap);
     RMContainer rmContainer = new RMContainerImpl(container, appAttemptId,
-        node_1.getNodeID(), "user", rmContext);
+        node_1.getNodeID(), "user", rmContext, null); //iglf
 
     Container container_1 = TestUtils.getMockContainer(containerId,
         node_0.getNodeID(), Resources.createResource(1*GB), priorityMap);
     RMContainer rmContainer_1 = new RMContainerImpl(container_1, appAttemptId,
-        node_0.getNodeID(), "user", rmContext);
+        node_0.getNodeID(), "user", rmContext, null); //iglf
 
     // no reserved containers
     NodeId unreserveId =
@@ -748,7 +748,7 @@ public class TestReservations {
     Container container = TestUtils.getMockContainer(containerId,
         node_1.getNodeID(), Resources.createResource(2*GB), priorityMap);
     RMContainer rmContainer = new RMContainerImpl(container, appAttemptId,
-        node_1.getNodeID(), "user", rmContext);
+        node_1.getNodeID(), "user", rmContext, null); //iglf
 
     // nothing reserved
     boolean res = a.findNodeToUnreserve(csContext.getClusterResource(),

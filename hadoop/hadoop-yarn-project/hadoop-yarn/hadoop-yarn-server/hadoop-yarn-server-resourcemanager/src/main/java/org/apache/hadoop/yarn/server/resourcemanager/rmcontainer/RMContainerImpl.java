@@ -28,6 +28,7 @@ import org.apache.commons.lang.time.DateUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.hadoop.yarn.api.records.ApplicationAttemptId;
+import org.apache.hadoop.yarn.api.records.ApplicationId;
 import org.apache.hadoop.yarn.api.records.Container;
 import org.apache.hadoop.yarn.api.records.ContainerExitStatus;
 import org.apache.hadoop.yarn.api.records.ContainerId;
@@ -49,7 +50,11 @@ import org.apache.hadoop.yarn.server.resourcemanager.rmapp.attempt.RMAppAttemptE
 import org.apache.hadoop.yarn.server.resourcemanager.rmapp.attempt.event.RMAppAttemptContainerFinishedEvent;
 import org.apache.hadoop.yarn.server.resourcemanager.rmnode.RMNodeCleanContainerEvent;
 import org.apache.hadoop.yarn.state.InvalidStateTransitonException;
+import org.apache.hadoop.yarn.server.resourcemanager.scheduler.Queue;
+import org.apache.hadoop.yarn.server.resourcemanager.scheduler.SchedulerApplicationAttempt;
 import org.apache.hadoop.yarn.server.resourcemanager.scheduler.event.ContainerRescheduledEvent;
+import org.apache.hadoop.yarn.server.resourcemanager.scheduler.fair.FSAppAttempt;
+import org.apache.hadoop.yarn.server.resourcemanager.scheduler.fair.FSLeafQueue;
 import org.apache.hadoop.yarn.state.MultipleArcTransition;
 import org.apache.hadoop.yarn.state.SingleArcTransition;
 import org.apache.hadoop.yarn.state.StateMachine;
@@ -165,19 +170,27 @@ public class RMContainerImpl implements RMContainer {
   private ContainerStatus finishedStatus;
   private boolean isAMContainer;
   private List<ResourceRequest> resourceRequests;
+  
+  private SchedulerApplicationAttempt appAttempt = null;
 
   private boolean saveNonAMContainerMetaInfo;
 
   public RMContainerImpl(Container container,
       ApplicationAttemptId appAttemptId, NodeId nodeId, String user,
-      RMContext rmContext) {
+      RMContext rmContext
+      , SchedulerApplicationAttempt appAttempt) //iglf
+  { 
     this(container, appAttemptId, nodeId, user, rmContext, System
       .currentTimeMillis());
+
+    //iglf:pass the application using this container.
+    this.appAttempt = appAttempt;
   }
 
   public RMContainerImpl(Container container,
       ApplicationAttemptId appAttemptId, NodeId nodeId,
-      String user, RMContext rmContext, long creationTime) {
+      String user, RMContext rmContext, long creationTime
+      ) { 
     this.stateMachine = stateMachineFactory.make(this);
     this.containerId = container.getId();
     this.nodeId = nodeId;
@@ -210,6 +223,7 @@ public class RMContainerImpl implements RMContainer {
       rmContext.getSystemMetricsPublisher().containerCreated(
           this, this.creationTime);
     }
+
   }
 
   @Override
@@ -396,7 +410,6 @@ public class RMContainerImpl implements RMContainer {
   @Override
   public void handle(RMContainerEvent event) {
     LOG.debug("Processing " + event.getContainerId() + " of type " + event.getType());
-    LOG.info("Processing " + event.getContainerId() + " of event " + event.getType()); //iglf:
     try {
       writeLock.lock();
       RMContainerState oldState = getState();
@@ -577,8 +590,13 @@ public class RMContainerImpl implements RMContainer {
                              * usedMillis / DateUtils.MILLIS_PER_SECOND;
         rmAttempt.getRMAppAttemptMetrics()
                   .updateAggregateAppResourceUsage(memorySeconds,vcoreSeconds);
+        
       }
     }
+  }
+  
+  public SchedulerApplicationAttempt getAppAttempt(){ //iglf:
+    return this.appAttempt;
   }
 
   private static final class ContainerFinishedAtAcquiredState extends

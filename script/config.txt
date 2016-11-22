@@ -1,13 +1,55 @@
 StrictHostKeyChecking no 
 
-host ctl 
-  Hostname ms1141.utah.cloudlab.us 
+host cp-6 
+  Hostname c220g1-030825.wisc.cloudlab.us 
+  Port 22 
+  User tanle 
+  IdentityFile ~/Dropbox/Papers/System/Flink/cloudlab/cloudlab.pem 
+   
+host cp-7 
+  Hostname c220g1-030828.wisc.cloudlab.us 
+  Port 22 
+  User tanle 
+  IdentityFile ~/Dropbox/Papers/System/Flink/cloudlab/cloudlab.pem 
+   
+host cp-4 
+  Hostname c220g1-030826.wisc.cloudlab.us 
+  Port 22 
+  User tanle 
+  IdentityFile ~/Dropbox/Papers/System/Flink/cloudlab/cloudlab.pem 
+   
+host cp-5 
+  Hostname c220g1-030830.wisc.cloudlab.us 
+  Port 22 
+  User tanle 
+  IdentityFile ~/Dropbox/Papers/System/Flink/cloudlab/cloudlab.pem 
+   
+host cp-2 
+  Hostname c220g1-030824.wisc.cloudlab.us 
+  Port 22 
+  User tanle 
+  IdentityFile ~/Dropbox/Papers/System/Flink/cloudlab/cloudlab.pem 
+   
+host cp-3 
+  Hostname c220g1-030823.wisc.cloudlab.us 
   Port 22 
   User tanle 
   IdentityFile ~/Dropbox/Papers/System/Flink/cloudlab/cloudlab.pem 
    
 host cp-1 
-  Hostname ms1107.utah.cloudlab.us 
+  Hostname c220g1-030821.wisc.cloudlab.us 
+  Port 22 
+  User tanle 
+  IdentityFile ~/Dropbox/Papers/System/Flink/cloudlab/cloudlab.pem 
+   
+host cp-8 
+  Hostname c220g1-030829.wisc.cloudlab.us 
+  Port 22 
+  User tanle 
+  IdentityFile ~/Dropbox/Papers/System/Flink/cloudlab/cloudlab.pem 
+   
+host ctl 
+  Hostname c220g1-030827.wisc.cloudlab.us 
   Port 22 
   User tanle 
   IdentityFile ~/Dropbox/Papers/System/Flink/cloudlab/cloudlab.pem 

@@ -184,8 +184,6 @@ public class ComputeFairShares {
       } else {
         setResourceValue(computeShare(sched, right, type), sched.getFairShare(),
             type);
-        LOG.info("sched: " + sched.getName() + " resource: "
-            + sched.getResourceUsage());
       }
     }
   }

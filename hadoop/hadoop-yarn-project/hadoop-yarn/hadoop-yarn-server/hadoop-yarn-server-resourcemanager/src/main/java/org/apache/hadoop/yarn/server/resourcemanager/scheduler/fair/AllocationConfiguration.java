@@ -22,6 +22,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.lang.time.DateUtils;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.security.UserGroupInformation;
 import org.apache.hadoop.security.authorize.AccessControlList;
@@ -391,9 +392,14 @@ public class AllocationConfiguration extends ReservationSchedulerConfiguration {
 
   public long getStartTime(String queue) {
     Long now = System.currentTimeMillis();
-    now = (now/1000); now = now * 1000;
+    now = (now/DateUtils.MILLIS_PER_SECOND); 
+    now = now * DateUtils.MILLIS_PER_SECOND;
     Long startTime = this.startTimes.get(queue);
-    return (startTime == null) ? now : startTime+now;
+    if (startTime == null)
+      return now;
+    
+    // use this trick to disable startTime, when startTime=-1.
+    return (startTime >= 0) ? startTime+now : startTime;
   }
   // iglf: END
 }

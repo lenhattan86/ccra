@@ -24,6 +24,7 @@ import java.text.SimpleDateFormat;
 import java.util.Collection;
 import java.util.Date;
 
+import org.apache.commons.lang.time.DateUtils;
 import org.apache.hadoop.yarn.server.resourcemanager.ResourceManager;
 import org.apache.hadoop.yarn.server.resourcemanager.resource.ResourceType;
 import org.apache.hadoop.yarn.server.resourcemanager.scheduler.fair.FairScheduler;
@@ -71,33 +72,41 @@ public class FairSchedulerPage extends RmView {
 
     @Override
     protected void render(Block html) {
-      String startSessionTime = "na";
-      if(qinfo.getStartTime()>=0) {
-        startSessionTime = new SimpleDateFormat("yyyy.MM.dd HH:mm:ss").
-            format(new Date(qinfo.getStartTime()));
+      String startTime = " NA(" + qinfo.getStartTime() + ")";
+      if (qinfo.getStartTime() >= 0) {
+        startTime = new SimpleDateFormat("yyyy.MM.dd HH:mm:ss")
+            .format(new Date(qinfo.getStartTime()));
         String lasted = "";
-        if (qinfo.getPeriod()>0)
-          lasted = " periodically lasted: "+ ((System.currentTimeMillis() - qinfo.getStartTime()) % qinfo.getPeriod())/1000 + " secs"; 
-        startSessionTime += lasted;
+        if (qinfo.getPeriod() > 0)
+          lasted = " periodically lasted: "
+              + ((System.currentTimeMillis() - qinfo.getStartTime())
+                  % qinfo.getPeriod()) / DateUtils.MILLIS_PER_SECOND
+              + " secs";
+        startTime += lasted;
       }
-      
-      ResponseInfo ri = info("\'" + qinfo.getQueueName() + "\' Queue Status").
-          _("Scheduling policy:", qinfo.getSchedulingPolicy()).
-          _("Weights:", qinfo.getWeights().toString()).
-          _("isBursty:", qinfo.isBursty()).
-          _("isAdmitted:", qinfo.isAmitted()).
-          _("alpha:", qinfo.getMinReq().toString()). // iglf
+      String aggregateRes = "";
+      if (qinfo.getQueueMetrics() != null)
+        aggregateRes = "" + (long) qinfo.getQueueMetrics().getMemorySeconds()
+            + " MB-secs," + (long) qinfo.getQueueMetrics().getVcoreSeconds()
+            + " vcore-secs";
+
+      ResponseInfo ri = info("\'" + qinfo.getQueueName() + "\' Queue Status")
+          ._("Scheduling policy:", qinfo.getSchedulingPolicy())
+          ._("Weights:", qinfo.getWeights().toString())
+          ._("isBursty:", qinfo.isBursty())._("isAdmitted:", qinfo.isAmitted())
+          ._("alpha:", qinfo.getMinReq().toString()). // iglf
           _("guaranteeRate:", qinfo.getGuaranteeShare().toString()). // iglf
-          _("Stage 1 duration:", qinfo.getSpeedDuration()/1000 + " secs"). // iglf
-          _("period:", qinfo.getPeriod()/1000 + " secs"). // iglf
-          _("startTime:", startSessionTime ). // iglf
+          _("Stage 1 duration:", qinfo.getSpeedDuration() / 1000 + " secs"). // iglf
+          _("period:", qinfo.getPeriod() / 1000 + " secs"). // iglf
+          _("startTime:", startTime). // iglf
           _("isRunning:", qinfo.isRunning()). // iglf
           _("isSpeedup:", qinfo.isDuringSpeedupDuration()). // iglf
-          _("Resource usage:", qinfo.getUsedResources().toString()).
-          _("Num Active Applications:", qinfo.getNumActiveApplications()).
-          _("Num Pending Applications:", qinfo.getNumPendingApplications()).
-          _("Min Resources:", qinfo.getMinResources().toString()).
-          _("Max Resources:", qinfo.getMaxResources().toString());
+          _("Resource usage:", qinfo.getUsedResources().toString())
+          ._("Periodic aggregated usage:", aggregateRes)
+          ._("Num Active Applications:", qinfo.getNumActiveApplications())
+          ._("Num Pending Applications:", qinfo.getNumPendingApplications())
+          ._("Min Resources:", qinfo.getMinResources().toString())
+          ._("Max Resources:", qinfo.getMaxResources().toString());
       int maxApps = qinfo.getMaxApplications();
       if (maxApps < Integer.MAX_VALUE) {
         ri._("Max Running Applications:", qinfo.getMaxApplications());
@@ -106,7 +115,8 @@ public class FairSchedulerPage extends RmView {
       ri._(INSTANTANEOUS_FAIR_SHARE + ":", qinfo.getFairShare().toString());
       html._(InfoBlock.class);
 
-      // clear the info contents so this queue's info doesn't accumulate into another queue's info
+      // clear the info contents so this queue's info doesn't accumulate into
+      // another queue's info
       ri.clear();
     }
   }
@@ -121,7 +131,8 @@ public class FairSchedulerPage extends RmView {
 
     @Override
     public void render(Block html) {
-      Collection<FairSchedulerQueueInfo> subQueues = fsqinfo.qinfo.getChildQueues();
+      Collection<FairSchedulerQueueInfo> subQueues = fsqinfo.qinfo
+          .getChildQueues();
       UL<Hamlet> ul = html.ul("#pq");
       for (FairSchedulerQueueInfo info : subQueues) {
         float capacity = info.getMaxResourcesFraction();
@@ -129,14 +140,21 @@ public class FairSchedulerPage extends RmView {
         float instantaneousFairShare = info.getFairShareMemoryFraction();
         float used = info.getUsedMemoryFraction();
         LI<UL<Hamlet>> li = ul.li().a(_Q).$style(width(capacity * Q_MAX_WIDTH))
-            .$title(join(join(STEADY_FAIR_SHARE + ":", percent(steadyFairShare)),
-                join(" " + INSTANTANEOUS_FAIR_SHARE + ":", percent(instantaneousFairShare))))
-            .span().$style(join(Q_GIVEN, ";font-size:1px;", width(steadyFairShare / capacity)))._('.')._().span()
-            .$style(join(Q_INSTANTANEOUS_FS, ";font-size:1px;", width(instantaneousFairShare / capacity)))._('.')._()
+            .$title(
+                join(join(STEADY_FAIR_SHARE + ":", percent(steadyFairShare)),
+                    join(" " + INSTANTANEOUS_FAIR_SHARE + ":",
+                        percent(instantaneousFairShare))))
             .span()
+            .$style(join(Q_GIVEN, ";font-size:1px;",
+                width(steadyFairShare / capacity)))
+            ._('.')._().span()
+            .$style(join(Q_INSTANTANEOUS_FS, ";font-size:1px;",
+                width(instantaneousFairShare / capacity)))
+            ._('.')._().span()
             .$style(join(width(used / capacity), ";font-size:1px;left:0%;",
                 used > instantaneousFairShare ? Q_OVER : Q_UNDER))
-            ._('.')._().span(".q", info.getQueueName())._().span().$class("qstats").$style(left(Q_STATS_POS))
+            ._('.')._().span(".q", info.getQueueName())._().span()
+            .$class("qstats").$style(left(Q_STATS_POS))
             ._(join(percent(used), " used"))._();
 
         fsqinfo.qinfo = info;
@@ -164,57 +182,77 @@ public class FairSchedulerPage extends RmView {
 
     @Override
     public void render(Block html) {
-      String currentTime = new SimpleDateFormat("yyyy.MM.dd HH:mm:ss").
-          format(new Date(System.currentTimeMillis()));
+      String currentTime = new SimpleDateFormat("yyyy.MM.dd HH:mm:ss")
+          .format(new Date(System.currentTimeMillis()));
       html._(MetricsOverviewTable.class);
-      UL<DIV<DIV<Hamlet>>> ul = html.div("#cs-wrapper.ui-widget").div(".ui-widget-header.ui-corner-top")
-          ._("Application Queues")._().div("#cs.ui-widget-content.ui-corner-bottom").ul();
+      UL<DIV<DIV<Hamlet>>> ul = html.div("#cs-wrapper.ui-widget")
+          .div(".ui-widget-header.ui-corner-top")._("Application Queues")._()
+          .div("#cs.ui-widget-content.ui-corner-bottom").ul();
       if (fs == null) {
-        ul.li().a(_Q).$style(width(Q_MAX_WIDTH)).span().$style(Q_END)._("100% ")._().span(".q", "default")._()._();
+        ul.li().a(_Q).$style(width(Q_MAX_WIDTH)).span().$style(Q_END)._("100% ")
+            ._().span(".q", "default")._()._();
       } else {
         FairSchedulerInfo sinfo = new FairSchedulerInfo(fs);
         fsqinfo.qinfo = sinfo.getRootQueueInfo();
         float used = fsqinfo.qinfo.getUsedMemoryFraction();
 
-        ul.li().$style("margin-bottom: 1em").span().$style("font-weight: bold")._("Legend:")._().span()
-            .$class("qlegend ui-corner-all").$style(Q_GIVEN)
+        ul.li().$style("margin-bottom: 1em").span().$style("font-weight: bold")
+            ._("Legend:")._().span().$class("qlegend ui-corner-all")
+            .$style(Q_GIVEN)
             .$title("The steady fair shares consider all queues, "
                 + "both active (with running applications) and inactive.")
-            ._(STEADY_FAIR_SHARE)._().span().$class("qlegend ui-corner-all").$style(Q_INSTANTANEOUS_FS)
-            .$title("The instantaneous fair shares consider only active " + "queues (with running applications).")
-            ._(INSTANTANEOUS_FAIR_SHARE)._().span().$class("qlegend ui-corner-all").$style(Q_UNDER)._("Used")._().span()
-            .$class("qlegend ui-corner-all").$style(Q_OVER)._("Used (over fair share)")._().span()
-            .$class("qlegend ui-corner-all ui-state-default")._("Max Capacity")._().span()
-            .$class("qlegend ui-corner-all ui-state-default"). // iglf
-            _("Policy: " + sinfo.getRootQueueInfo().getSchedulingPolicy() + " current time: "+currentTime)._()._().li().a(_Q).$style(width(Q_MAX_WIDTH))
-            .span().$style(join(width(used), ";left:0%;", used > 1 ? Q_OVER : Q_UNDER))._(".")._().span(".q", "root")
-            ._().span().$class("qstats").$style(left(Q_STATS_POS))._(join(percent(used), " used"))._()
+            ._(STEADY_FAIR_SHARE)._().span().$class("qlegend ui-corner-all")
+            .$style(Q_INSTANTANEOUS_FS)
+            .$title("The instantaneous fair shares consider only active "
+                + "queues (with running applications).")
+            ._(INSTANTANEOUS_FAIR_SHARE)._().span()
+            .$class("qlegend ui-corner-all").$style(Q_UNDER)._("Used")._()
+            .span().$class("qlegend ui-corner-all").$style(Q_OVER)
+            ._("Used (over fair share)")._().span()
+            .$class("qlegend ui-corner-all ui-state-default")._("Max Capacity")
+            ._().span().$class("qlegend ui-corner-all ui-state-default"). // iglf
+            _("Policy: " + sinfo.getRootQueueInfo().getSchedulingPolicy()
+                + " current time: " + currentTime)
+            ._()._().li().a(_Q).$style(width(Q_MAX_WIDTH)).span()
+            .$style(join(width(used), ";left:0%;", used > 1 ? Q_OVER : Q_UNDER))
+            ._(".")._().span(".q", "root")._().span().$class("qstats")
+            .$style(left(Q_STATS_POS))._(join(percent(used), " used"))._()
             ._(QueueBlock.class)._();
       }
-      ul._()._().script().$type("text/javascript")._("$('#cs').hide();")._()._()._(FairSchedulerAppsBlock.class);
+      ul._()._().script().$type("text/javascript")._("$('#cs').hide();")._()._()
+          ._(FairSchedulerAppsBlock.class);
     }
   }
 
   @Override
   protected void postHead(Page.HTML<_> html) {
     html.style().$type("text/css")
-        ._("#cs { padding: 0.5em 0 1em 0; margin-bottom: 1em; position: relative }", "#cs ul { list-style: none }",
+        ._("#cs { padding: 0.5em 0 1em 0; margin-bottom: 1em; position: relative }",
+            "#cs ul { list-style: none }",
             "#cs a { font-weight: normal; margin: 2px; position: relative }",
             "#cs a span { font-weight: normal; font-size: 80% }",
             "#cs-wrapper .ui-widget-header { padding: 0.2em 0.5em }",
             ".qstats { font-weight: normal; font-size: 80%; position: absolute }",
-            ".qlegend { font-weight: normal; padding: 0 1em; margin: 1em }", "table.info tr th {width: 50%}")
+            ".qlegend { font-weight: normal; padding: 0 1em; margin: 1em }",
+            "table.info tr th {width: 50%}")
         ._(). // to center info table
         script("/static/jt/jquery.jstree.js").script().$type("text/javascript")
-        ._("$(function() {", "  $('#cs a span').addClass('ui-corner-all').css('position', 'absolute');",
-            "  $('#cs').bind('loaded.jstree', function (e, data) {", "    var callback = { call:reopenQueryNodes }",
-            "    data.inst.open_node('#pq', callback);", "   }).", "    jstree({",
-            "    core: { animation: 188, html_titles: true },", "    plugins: ['themeroller', 'html_data', 'ui'],",
+        ._("$(function() {",
+            "  $('#cs a span').addClass('ui-corner-all').css('position', 'absolute');",
+            "  $('#cs').bind('loaded.jstree', function (e, data) {",
+            "    var callback = { call:reopenQueryNodes }",
+            "    data.inst.open_node('#pq', callback);", "   }).",
+            "    jstree({", "    core: { animation: 188, html_titles: true },",
+            "    plugins: ['themeroller', 'html_data', 'ui'],",
             "    themeroller: { item_open: 'ui-icon-minus',",
-            "      item_clsd: 'ui-icon-plus', item_leaf: 'ui-icon-gear'", "    }", "  });",
-            "  $('#cs').bind('select_node.jstree', function(e, data) {", "    var queues = $('.q', data.rslt.obj);",
-            "    var q = '^' + queues.first().text();", "    q += queues.length == 1 ? '$' : '\\\\.';",
-            "    $('#apps').dataTable().fnFilter(q, 4, true);", "  });", "  $('#cs').show();", "});")
+            "      item_clsd: 'ui-icon-plus', item_leaf: 'ui-icon-gear'",
+            "    }", "  });",
+            "  $('#cs').bind('select_node.jstree', function(e, data) {",
+            "    var queues = $('.q', data.rslt.obj);",
+            "    var q = '^' + queues.first().text();",
+            "    q += queues.length == 1 ? '$' : '\\\\.';",
+            "    $('#apps').dataTable().fnFilter(q, 4, true);", "  });",
+            "  $('#cs').show();", "});")
         ._()._(SchedulerPageUtil.QueueBlockUtil.class);
   }
 

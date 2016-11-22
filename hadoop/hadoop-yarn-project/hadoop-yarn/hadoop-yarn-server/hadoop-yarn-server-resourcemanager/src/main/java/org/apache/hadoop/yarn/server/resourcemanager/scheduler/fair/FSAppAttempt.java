@@ -338,7 +338,7 @@ public class FSAppAttempt extends SchedulerApplicationAttempt implements Schedul
 
     // Create RMContainer
     RMContainer rmContainer = new RMContainerImpl(container, getApplicationAttemptId(), node.getNodeID(),
-        appSchedulingInfo.getUser(), rmContext);
+        appSchedulingInfo.getUser(), rmContext, this);
 
     // Add it to allContainers list.
     newlyAllocatedContainers.add(rmContainer);
@@ -534,8 +534,6 @@ public class FSAppAttempt extends SchedulerApplicationAttempt implements Schedul
   }
 
   private Resource assignContainer(FSSchedulerNode node, boolean reserved) {
-    LOG.info("assignContainer(FSSchedulerNode node:" + node.getNodeName() + ", boolean reserved=" + reserved + ") for "
-        + this.getApplicationAttemptId());
     if (LOG.isDebugEnabled()) {
       LOG.debug("Node offered to app: " + getName() + " reserved: " + reserved);
     }

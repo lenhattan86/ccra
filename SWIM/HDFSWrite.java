@@ -224,9 +224,9 @@ public class HDFSWrite extends Configured implements Tool {
       valueSizeRange = 
         job.getInt("test.randomwrite.max_value", 20000) - minValueSize;
       System.out.println("[debug] valueSizeRange: "+valueSizeRange);
+      numBytesToWrite = 16*1024*1024;
       
       if(DISABLE_RANDOM) {
-//        numBytesToWrite = 16*1024*1024;
         numBytesToWrite = 1024*1024;
         valueSizeRange = 0;
         keySizeRange = 0;
@@ -250,6 +250,7 @@ public class HDFSWrite extends Configured implements Tool {
     }
     
     Path outDir = new Path(args[0]);
+    
     JobConf job = new JobConf(getConf());
     
     job.setJarByClass(HDFSWrite.class);
@@ -287,6 +288,11 @@ public class HDFSWrite extends Configured implements Tool {
 
     int numMaps = (int) (totalBytesToWrite / numBytesToWritePerMap);
     job.setNumMapTasks(numMaps);
+    
+    if (args.length>1) {
+      String queueName = args[1];
+      job.set("mapreduce.job.queuename", queueName);
+    }
     
     System.out.println("numMapsPerHost: "+ numMapsPerHost);
     System.out.println("numBytesToWritePerMap: "+ numBytesToWritePerMap);

@@ -152,9 +152,9 @@ public class ResourceMgrDelegate extends YarnClient {
       ClusterMetrics oldMetrics =
           new ClusterMetrics(1, 1, 1, 1, 1, 1,
 //              metrics.getNumNodeManagers() * 10, //default=10, why they hard code this part?
-              metrics.getNumNodeManagers() * 32, //iglf
+              metrics.getNumNodeManagers() * 32, //iglf increase the map slots n = num of nodes * 32
 //              metrics.getNumNodeManagers() * 2, 1, //default=2, why they hard code this value?
-              metrics.getNumNodeManagers() * 8, 1, //iglf
+              metrics.getNumNodeManagers() * 8, 1, //iglf- increase the reduce slots
               metrics.getNumNodeManagers(), 0, 0);
       return oldMetrics;
     } catch (YarnException e) {

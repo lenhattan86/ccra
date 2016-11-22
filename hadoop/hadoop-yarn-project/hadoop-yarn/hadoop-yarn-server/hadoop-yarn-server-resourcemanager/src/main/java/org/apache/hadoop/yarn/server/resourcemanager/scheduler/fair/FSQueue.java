@@ -99,6 +99,13 @@ public abstract class FSQueue implements Queue, Schedulable {
     this.guaranteeShare = Resources.clone(this.minReq);
     this.receivedResource = Resource.newInstance(0, 0);
   }
+  
+  public FSQueue(String name){
+    this.name = name;
+    scheduler=null;
+    metrics=null;
+    parent=null;
+  }
 
   public String getName() {
     return name;
@@ -317,8 +324,9 @@ public abstract class FSQueue implements Queue, Schedulable {
 
   public void setIsRunning(boolean isRunning) {
     this.isRunning = isRunning;
-    if(this.startSessionTime<=0){
-      this.startSessionTime = System.currentTimeMillis();
+    if(this.startTime<=0){
+//      this.startSessionTime = System.currentTimeMillis();
+      this.startTime = System.currentTimeMillis();
     }
   }
 
@@ -435,5 +443,17 @@ public abstract class FSQueue implements Queue, Schedulable {
   
   public FairScheduler getScheduler(){
     return this.scheduler;
+  }
+  
+  public void setStage1Period(long period){
+    this.stage1Duration = period;
+  }
+  
+  public void setPeriod(long period){
+    this.period = period;
+  }
+  
+  public void setAlpha(Resource alpha){
+    this.minReq = Resource.newInstance(alpha.getMemory(), alpha.getVirtualCores());
   }
 }

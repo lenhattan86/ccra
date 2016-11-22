@@ -1250,7 +1250,7 @@ public class TestClientRMService {
     Container container = Container.newInstance(
         ContainerId.newContainerId(attemptId, 1), null, "", null, null, null);
     RMContainerImpl containerimpl = spy(new RMContainerImpl(container,
-        attemptId, null, "", rmContext));
+        attemptId, null, "", rmContext, null)); //iglf
     Map<ApplicationAttemptId, RMAppAttempt> attempts = 
       new HashMap<ApplicationAttemptId, RMAppAttempt>();
     attempts.put(attemptId, rmAppAttemptImpl);

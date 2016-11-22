@@ -52,6 +52,57 @@ import com.google.common.base.Splitter;
 @InterfaceAudience.Private
 @Metrics(context="yarn")
 public class QueueMetrics implements MetricsSource {
+  //iglf - begin
+  @Metric("Aggregate memory-seconds") MutableCounterLong memorySeconds;
+  @Metric("Aggregate vcore-seconds") MutableCounterLong vcoreSeconds;
+//  public void updateAggregateAppResourceUsage(long memorySeconds,
+//      long vcoreSeconds) {
+//    this.memorySeconds.incr(memorySeconds);
+//    this.vcoreSeconds.incr(vcoreSeconds);
+//  }
+//public long getMemorySeconds(){
+//return memorySeconds.value();
+//}
+//
+//public long getVcoreSeconds(){
+//return vcoreSeconds.value();
+//}
+  
+  public void updateAggregateAppResourceUsage(double memorySeconds,
+      double vcoreSeconds) {
+//    LOG.info("updateAggregateAppResourceUsage plus: "+memorySeconds+","+vcoreSeconds+"");
+    double newMemSecs = this.getMemorySeconds()+memorySeconds;
+    double newVcoreSecs = this.getVcoreSeconds()+vcoreSeconds;    
+    setAggregateAppResourceUsage(newMemSecs, newVcoreSecs);
+//    LOG.info("updateAggregateAppResourceUsage after: "+this.getMemorySeconds()+","+this.getVcoreSeconds()+"");
+  }
+  
+  public void setAggregateAppResourceUsage(double memorySeconds, double vcoreSeconds){
+    long memBits = Double.doubleToLongBits(memorySeconds);
+    long vcoreBits = Double.doubleToLongBits(vcoreSeconds);
+    this.memorySeconds.set(memBits);
+    this.vcoreSeconds.set(vcoreBits);
+  }
+  
+  public double getMemorySeconds(){
+    return Double.longBitsToDouble(memorySeconds.value());
+  }
+  
+  public double getVcoreSeconds(){
+    return Double.longBitsToDouble(vcoreSeconds.value());
+  }
+  
+  public QueueMetrics(){
+    registry=null;
+    queueName=null;
+    parent=null;
+    metricsSystem=null;
+    runningTime=null;
+    users=null;
+    conf=null;
+  }
+  //iglf - end
+  
   @Metric("# of apps submitted") MutableCounterInt appsSubmitted;
   @Metric("# of running apps") MutableGaugeInt appsRunning;
   @Metric("# of pending apps") MutableGaugeInt appsPending;

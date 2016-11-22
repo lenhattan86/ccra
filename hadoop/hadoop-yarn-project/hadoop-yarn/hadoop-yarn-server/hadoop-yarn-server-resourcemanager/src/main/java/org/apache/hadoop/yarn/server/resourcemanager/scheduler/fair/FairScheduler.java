@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.apache.commons.lang.time.DateUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.hadoop.classification.InterfaceAudience.LimitedPrivate;
@@ -189,7 +190,7 @@ public class FairScheduler
 
   @VisibleForTesting
   final MaxRunningAppsEnforcer maxRunningEnforcer;
-  
+
   // admision control.
   final boolean ENABLE_ADMISSION = true;
 
@@ -328,6 +329,29 @@ public class FairScheduler
 
     long duration = getClock().getTime() - start;
     fsOpDurations.addUpdateCallDuration(duration);
+
+    // iglf
+    updateAggregatedResource(queueMgr.getQueues());
+  }
+
+  public void updateAggregatedResource(
+      Collection<? extends Schedulable> schedulables) {
+    for (Schedulable sched : schedulables) {
+      if (sched.isLeafQueue()) {
+        FSQueue queue = (FSQueue) sched;
+        double factor =  (double)updateInterval / DateUtils.MILLIS_PER_SECOND;
+        double memorySeconds = (queue.getResourceUsage().getMemory() * factor);
+        double vcoreSeconds = (queue.getResourceUsage().getVirtualCores()
+            * factor);
+        boolean reset = queue.lastedInPeriod()<updateInterval;
+        if(reset)
+          queue.getMetrics().setAggregateAppResourceUsage(memorySeconds,
+              vcoreSeconds);
+        else
+          queue.getMetrics().updateAggregateAppResourceUsage(memorySeconds,
+              vcoreSeconds);
+      }
+    }
   }
 
   /**
@@ -908,14 +932,14 @@ public class FairScheduler
         // TODO: check the root policy
         // if the remaining flexible is less than the demand
         FSQueue queue = application.getQueue();
-        Resource flexibleRes = application.getFlexibleResource();
+        // Resource flexibleRes = application.getFlexibleResource();
 
-        LOG.info("[admission control] getFlexibleResource " + flexibleRes);
+        // LOG.info("[admission control] getFlexibleResource " + flexibleRes);
         // if (flexibleRes.isEmpty()) {
         if (!queue.isAdmitted()) {
           // this cause the accepted app can no longer
-          LOG.info("[admission control] Cannot allocate " + appAttemptId
-              + "as "+queue.getName()+" is not admitted ");
+          LOG.info("[admission control] Cannot allocate " + appAttemptId + "as "
+              + queue.getName() + " is not admitted ");
           return null;
         }
         queue.setIsRunning(true); // TODO: it does not work well

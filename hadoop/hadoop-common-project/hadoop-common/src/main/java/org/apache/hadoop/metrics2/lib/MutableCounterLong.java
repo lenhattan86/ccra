@@ -52,6 +52,11 @@ public class MutableCounterLong extends MutableCounter {
     value.addAndGet(delta);
     setChanged();
   }
+  
+  public void set(long val){ //iglf
+    value.set(val);
+    setChanged();
+  }
 
   public long value() {
     return value.get();

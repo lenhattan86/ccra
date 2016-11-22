@@ -29,6 +29,7 @@ import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.xml.bind.annotation.XmlTransient;
 
 import org.apache.hadoop.yarn.server.resourcemanager.resource.ResourceWeights;
+import org.apache.hadoop.yarn.server.resourcemanager.scheduler.QueueMetrics;
 import org.apache.hadoop.yarn.server.resourcemanager.scheduler.fair.AllocationConfiguration;
 import org.apache.hadoop.yarn.server.resourcemanager.scheduler.fair.FSLeafQueue;
 import org.apache.hadoop.yarn.server.resourcemanager.scheduler.fair.FSQueue;
@@ -76,17 +77,20 @@ public class FairSchedulerQueueInfo {
   boolean admitted;
   boolean isBursty;
   
+  @XmlTransient
+  private QueueMetrics queueMetrics; //iglf
+  
   
 
 private Collection<FairSchedulerQueueInfo> childQueues;
   
   public FairSchedulerQueueInfo() {
-  }
+  } // JAXB needs this
   
   public FairSchedulerQueueInfo(FSQueue queue, FairScheduler scheduler) {
     AllocationConfiguration allocConf = scheduler.getAllocationConfiguration();
-    
-    weights = queue.getWeights(); //iglf
+    //iglf - begin
+    weights = queue.getWeights(); 
     fairPrioirity = queue.getFairPriority();
     isRunning = queue.isRunning();
     alpha = new ResourceInfo(queue.getAlpha());
@@ -97,7 +101,8 @@ private Collection<FairSchedulerQueueInfo> childQueues;
     isSpeedup = queue.isDuringSpeedupDuration();
     admitted = queue.isAdmitted();
     isBursty= queue.isBursty();
-    
+    queueMetrics=queue.getMetrics();
+    //iglf - begin
     queueName = queue.getName();
     schedulingPolicy = queue.getPolicy().getName();
     
@@ -265,5 +270,9 @@ private Collection<FairSchedulerQueueInfo> childQueues;
   
   public boolean isBursty(){
     return isBursty;
+  }
+  
+  public QueueMetrics getQueueMetrics(){
+    return this.queueMetrics;
   }
 }

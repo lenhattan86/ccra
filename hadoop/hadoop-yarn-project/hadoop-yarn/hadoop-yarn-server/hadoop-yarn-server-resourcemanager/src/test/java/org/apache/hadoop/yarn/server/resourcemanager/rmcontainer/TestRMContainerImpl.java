@@ -111,7 +111,7 @@ public class TestRMContainerImpl {
     when(rmContext.getSystemMetricsPublisher()).thenReturn(publisher);
     when(rmContext.getYarnConfiguration()).thenReturn(new YarnConfiguration());
     RMContainer rmContainer = new RMContainerImpl(container, appAttemptId,
-        nodeId, "user", rmContext);
+        nodeId, "user", rmContext, null); //iglf
 
     assertEquals(RMContainerState.NEW, rmContainer.getState());
     assertEquals(resource, rmContainer.getAllocatedResource());
@@ -201,7 +201,7 @@ public class TestRMContainerImpl {
     when(rmContext.getSystemMetricsPublisher()).thenReturn(publisher);
     when(rmContext.getYarnConfiguration()).thenReturn(new YarnConfiguration());
     RMContainer rmContainer = new RMContainerImpl(container, appAttemptId,
-        nodeId, "user", rmContext);
+        nodeId, "user", rmContext, null); //iglf
 
     assertEquals(RMContainerState.NEW, rmContainer.getState());
     assertEquals(resource, rmContainer.getAllocatedResource());

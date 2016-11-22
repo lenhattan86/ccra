@@ -9,6 +9,9 @@ import java.util.Comparator;
 
 import org.apache.hadoop.yarn.api.records.Resource;
 import org.apache.hadoop.yarn.server.resourcemanager.resource.ResourceWeights;
+import org.apache.hadoop.yarn.server.resourcemanager.scheduler.capacity.LeafQueue;
+import org.apache.hadoop.yarn.server.resourcemanager.scheduler.fair.FSLeafQueue;
+import org.apache.hadoop.yarn.server.resourcemanager.scheduler.fair.FSQueue;
 import org.apache.hadoop.yarn.server.resourcemanager.scheduler.fair.FakeSchedulable;
 import org.apache.hadoop.yarn.server.resourcemanager.scheduler.fair.Schedulable;
 import org.apache.hadoop.yarn.server.utils.BuilderUtils;
@@ -26,6 +29,13 @@ public class TestSpeedFairPolicy {
     SpeedFairPolicy policy = new SpeedFairPolicy();
     policy.initialize(BuilderUtils.newResource(clusterMem, clusterCpu));
     return policy.getComparator();
+  }
+  
+  private SpeedFairPolicy createPolicy(int clusterMem,
+      int clusterCpu) {
+    SpeedFairPolicy policy = new SpeedFairPolicy();
+    policy.initialize(BuilderUtils.newResource(clusterMem, clusterCpu));
+    return policy;
   }
   
   private Schedulable createSchedulable(int memUsage, int cpuUsage) {
@@ -72,6 +82,26 @@ public class TestSpeedFairPolicy {
     return sched;
   }
   
+  private Schedulable createSchedulable(int memUsage, int cpuUsage,
+      ResourceWeights weights, int minMemShare, int minCpuShare, long startTime, int minMemReq, int minCPUReq, long stage1Duration, long period) {
+    Resource usage = BuilderUtils.newResource(memUsage, cpuUsage);
+    Resource minShare = BuilderUtils.newResource(minMemShare, minCpuShare);
+    Resource minReq = BuilderUtils.newResource(minMemReq, minCPUReq);
+    Schedulable sched = new FakeSchedulable(minShare, Resources.createResource(Integer.MAX_VALUE, Integer.MAX_VALUE),
+        weights, Resources.none(), usage, startTime);
+    return sched;
+  }
+  
+  private FSQueue createFSQueue(int minMemReq, int minCPUReq, long stage1Duration, long period) {
+    Resource minReq = BuilderUtils.newResource(minMemReq, minCPUReq);
+    FSQueue queue = new FSLeafQueue("bursty0");
+    queue.setStage1Period(stage1Duration);
+    queue.setPeriod(period);
+    queue.setAlpha(minReq);
+    return (FSQueue) queue;
+  }
+  
+  
   private Schedulable createSchedulable(int memUsage, int cpuUsage, long startTime) {
     return createSchedulable(memUsage, cpuUsage, ResourceWeights.NEUTRAL, 0, 0, startTime, 0, 0);
   }
@@ -88,5 +118,13 @@ public class TestSpeedFairPolicy {
     assertTrue(createComparator(256, 128).compare(
         createSchedulable(128+16, 64+24, 128 , 94),
         createSchedulable(48, 8, 0 , 0)) == 0);
+  }
+  
+  @Test 
+  public void testResFairnessCond() {
+    FSQueue queue = createFSQueue(16384, 16, 60000, 240000);
+    SpeedFairPolicy policy = createPolicy(16384, 16);
+    Resource capacity = BuilderUtils.newResource(16384, 16);
+    assertTrue(policy.resFairnessCond(queue, 0, 3, capacity));
   }
 }

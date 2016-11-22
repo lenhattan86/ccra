@@ -79,6 +79,17 @@ public class FSLeafQueue extends FSQueue {
     amResourceUsage = Resource.newInstance(0, 0);
   }
   
+  public FSLeafQueue(String name){
+    super(name);
+    this.lastTimeAtMinShare = 0;
+    this.lastTimeAtFairShareThreshold = 0;
+    activeUsersManager = null;
+    amResourceUsage = Resource.newInstance(0, 0);
+//    scheduler=null;
+//    metrics=null;
+//    parent=null;
+  }
+  
   public void addApp(FSAppAttempt app, boolean runnable) {
     writeLock.lock();
     try {

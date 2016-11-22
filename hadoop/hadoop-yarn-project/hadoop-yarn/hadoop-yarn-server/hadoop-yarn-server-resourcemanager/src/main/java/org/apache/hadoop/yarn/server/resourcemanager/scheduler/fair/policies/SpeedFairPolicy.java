@@ -31,11 +31,13 @@ import org.apache.hadoop.classification.InterfaceStability.Unstable;
 import org.apache.hadoop.yarn.api.records.Resource;
 import org.apache.hadoop.yarn.server.resourcemanager.resource.ResourceType;
 import org.apache.hadoop.yarn.server.resourcemanager.resource.ResourceWeights;
+import org.apache.hadoop.yarn.server.resourcemanager.scheduler.QueueMetrics;
 import org.apache.hadoop.yarn.server.resourcemanager.scheduler.fair.FSQueue;
 import org.apache.hadoop.yarn.server.resourcemanager.scheduler.fair.Schedulable;
 import org.apache.hadoop.yarn.server.resourcemanager.scheduler.fair.SchedulingPolicy;
 import org.apache.hadoop.yarn.util.resource.Resources;
 import org.apache.commons.logging.LogFactory;
+import org.apache.commons.lang.time.DateUtils;
 import org.apache.commons.logging.Log;
 
 import static org.apache.hadoop.yarn.server.resourcemanager.resource.ResourceType.*;
@@ -50,9 +52,12 @@ import static org.apache.hadoop.yarn.server.resourcemanager.resource.ResourceTyp
 public class SpeedFairPolicy extends SchedulingPolicy {
 
   public static final String NAME = "SpeedFair";
+  private static boolean ENABLE_COMPENSATION = true;
 
   private InstantaneousGuaranteeComparator comparator = new InstantaneousGuaranteeComparator();
   private static final Log LOG = LogFactory.getLog(SchedulingPolicy.class);
+
+  private static final boolean DEBUG = false;
 
   @Override
   public String getName() {
@@ -154,6 +159,17 @@ public class SpeedFairPolicy extends SchedulingPolicy {
         // Apps are tied in fairness ratio. Break the tie by submit time.
         res = (int) (s1.getStartTime() - s2.getStartTime());
       }
+      
+/*      if (s1.isLeafQueue()){
+        // break the deadlock when
+        FSQueue q1 = (FSQueue)s1; FSQueue q2 = (FSQueue)s2;
+        if (q1.getNumRunnableApps()>0 && q2.getNumRunnableApps()==0)
+          res = -1;
+        else if (q1.getNumRunnableApps()==0 && q2.getNumRunnableApps()>0) {
+          res = 1;
+        }
+      }
+*/        
       return res;
     }
 
@@ -168,29 +184,9 @@ public class SpeedFairPolicy extends SchedulingPolicy {
 
     void calculateShares(Resource resource, Resource pool,
         ResourceWeights shares, ResourceType[] resourceOrder,
-        ResourceWeights weights) { // iglf
+        ResourceWeights weights, Resource guranteedRes) { // iglf
 
-      shares.setWeight(MEMORY, (float) resource.getMemory()
-          / (pool.getMemory() * weights.getWeight(MEMORY)));
-      shares.setWeight(CPU, (float) resource.getVirtualCores()
-          / (pool.getVirtualCores() * weights.getWeight(CPU)));
-      // sort order vector by resource share
-      if (resourceOrder != null) {
-        if (shares.getWeight(MEMORY) > shares.getWeight(CPU)) {
-          resourceOrder[0] = MEMORY;
-          resourceOrder[1] = CPU;
-        } else {
-          resourceOrder[0] = CPU;
-          resourceOrder[1] = MEMORY;
-        }
-      }
-    }
-
-    void calculateShares(Resource resource, Resource pool,
-        ResourceWeights shares, ResourceType[] resourceOrder,
-        ResourceWeights weights, Resource minReq) { // iglf
-
-      if (minReq.isEmpty()) {
+      if (guranteedRes.isEmpty()) {
         shares.setWeight(MEMORY, (float) resource.getMemory()
             / (pool.getMemory() * weights.getWeight(MEMORY)));
         shares.setWeight(CPU, (float) resource.getVirtualCores()
@@ -198,33 +194,11 @@ public class SpeedFairPolicy extends SchedulingPolicy {
       } else {
         shares.setWeight(MEMORY, 1);
         shares.setWeight(CPU, 1);
-        if (resource.getMemory() < minReq.getMemory())
+        if (resource.getMemory() < guranteedRes.getMemory())
           shares.setWeight(MEMORY, 0);
-        if (resource.getVirtualCores() < minReq.getVirtualCores())
+        if (resource.getVirtualCores() < guranteedRes.getVirtualCores())
           shares.setWeight(CPU, 0);
       }
-      // sort order vector by resource share
-      if (resourceOrder != null) {
-        if (shares.getWeight(MEMORY) > shares.getWeight(CPU)) {
-          resourceOrder[0] = MEMORY;
-          resourceOrder[1] = CPU;
-        } else {
-          resourceOrder[0] = CPU;
-          resourceOrder[1] = MEMORY;
-        }
-      }
-    }
-
-    void calculateSharesv1(Resource resource, Resource pool,
-        ResourceWeights shares, ResourceType[] resourceOrder,
-        ResourceWeights weights, Resource minReq) { // iglf
-
-      resource = Resources.subtract(resource, minReq);
-
-      shares.setWeight(MEMORY, (float) resource.getMemory()
-          / (pool.getMemory() * weights.getWeight(MEMORY)));
-      shares.setWeight(CPU, (float) resource.getVirtualCores()
-          / (pool.getVirtualCores() * weights.getWeight(CPU)));
       // sort order vector by resource share
       if (resourceOrder != null) {
         if (shares.getWeight(MEMORY) > shares.getWeight(CPU)) {
@@ -330,7 +304,6 @@ public class SpeedFairPolicy extends SchedulingPolicy {
   private void periodicSchedule(
       Collection<? extends Schedulable> allSchedulables,
       Resource totalResources) {
-    LOG.info("totalResources: " + totalResources);
 
     ArrayList<Schedulable> flexibleScheds = new ArrayList<Schedulable>();
     handleFixedFairShares(allSchedulables, flexibleScheds, totalResources);
@@ -343,18 +316,10 @@ public class SpeedFairPolicy extends SchedulingPolicy {
     ArrayList<Schedulable> admittedBurstyQueues = new ArrayList<Schedulable>();
     ArrayList<Schedulable> admittedBatchQueues = new ArrayList<Schedulable>();
 
-//    LOG.info("allSchedulables: " + printQueueList(allSchedulables));
-//    LOG.info("flexibleScheds: " + printQueueList(flexibleScheds));
     updateQueueStatus(flexibleScheds, admittedBurstyQueues, admittedBatchQueues,
         bestEffortQueues);
-//    LOG.info("admittedBurstyQueues: " + printQueueList(admittedBurstyQueues));
-//    LOG.info("admittedBatchQueues: " + printQueueList(admittedBatchQueues));
-//    LOG.info("bestEffortQueues: " + printQueueList(bestEffortQueues));
     admit(bestEffortQueues, admittedBurstyQueues, admittedBatchQueues,
         totalResources);
-//    LOG.info("admittedBurstyQueues: " + printQueueList(admittedBurstyQueues));
-//    LOG.info("admittedBatchQueues: " + printQueueList(admittedBatchQueues));
-//    LOG.info("bestEffortQueues: " + printQueueList(bestEffortQueues));
 
     allocate(allSchedulables, admittedBurstyQueues, admittedBatchQueues,
         totalResources);
@@ -371,7 +336,6 @@ public class SpeedFairPolicy extends SchedulingPolicy {
       ArrayList<Schedulable> bestEffortQueues) {
 
     for (Schedulable sched : allQueues) {
-      LOG.info(sched.getName() + " sched.isLeafQueue():" + sched.isLeafQueue());
       if (sched.isLeafQueue()) {
         FSQueue queue = (FSQueue) sched;
         if (queue.isAdmitted()) {
@@ -433,10 +397,9 @@ public class SpeedFairPolicy extends SchedulingPolicy {
         if (queue.isBursty()) {
           boolean condition1 = resGuarateeCond(queue, admittedBurstyQueues,
               admittedBatchQueues, totalResource);
-          boolean condition2 = resFairnessCond(queue, admittedBurstyQueues,
-              admittedBatchQueues, totalResource);
-          LOG.info(sched.getName() + " condition1:" + condition1
-              + " condition2: " + condition2);
+          boolean condition2 = resFairnessCond(queue,
+              admittedBurstyQueues.size(), admittedBatchQueues.size(),
+              totalResource);
           if (condition1 && condition2) {
             queue.setAdmitted(true);
             admittedBurstyQueues.add(queue);
@@ -444,7 +407,6 @@ public class SpeedFairPolicy extends SchedulingPolicy {
         } else {
           boolean condition1 = condFairness4Batch(queue, admittedBurstyQueues,
               admittedBatchQueues, totalResource);
-          LOG.info(sched.getName() + " condition1:" + condition1);
           if (condition1) {
             queue.setAdmitted(true);
             admittedBatchQueues.add(queue);
@@ -467,15 +429,21 @@ public class SpeedFairPolicy extends SchedulingPolicy {
       if (sched.isLeafQueue()) {
         FSQueue A = (FSQueue) sched;
         Resource alpha = A.getAlpha();
-        Resource lhs = Resources.multiply(alpha, A.getStage1Duration());
-        Resource rhs = Resources.multiply(capacity, A.getPeriod());
+        Resource lhs = Resources.multiply(alpha,
+            A.getStage1Duration() / DateUtils.MILLIS_PER_SECOND);
+        Resource rhs = Resources.multiply(capacity,
+            A.getPeriod() / DateUtils.MILLIS_PER_SECOND);
         double denom = Math.max(
             admittedBurstyQueues.size() + admittedBatchQueues.size() + 1,
             Double.MIN_VALUE);
         Resources.multiply(rhs, 1 / denom);
         condition = Resources.fitsIn(lhs, rhs);
-        if (!condition)
+        if (!condition) {
+          log(newBatchQueue + " condFairness4Batch: " + condition + " lhs: "
+              + lhs + " rhs: " + rhs);
           break;
+        }
+
       }
     }
 
@@ -501,8 +469,11 @@ public class SpeedFairPolicy extends SchedulingPolicy {
       }
       Resource alpha = newBusrtyQueue.getAlpha();
       result = Resources.fitsIn(alpha, Resources.subtract(capacity, burstyRes));
-      if (!result)
+      if (!result) {
+        log(newBusrtyQueue.getName() + " resGuarateeCond: " + result + "alpha: "
+            + alpha + " remaining: " + Resources.subtract(capacity, burstyRes));
         break;
+      }
     }
     return result;
   }
@@ -511,35 +482,42 @@ public class SpeedFairPolicy extends SchedulingPolicy {
       int numAdmittedBursty, int numAdmittedBatch, Resource capacity) {
     Resource res = Resource.newInstance(0, 0);
     Resource alpha = burstyQueue.getAlpha();
-    Resource guaranteedRes = Resources.multiply(alpha, burstyQueue.getStage1Duration());
-    double lasting = (time - burstyQueue.getStartTime()) % burstyQueue.getPeriod();
-    boolean inStage1 = lasting <= burstyQueue.getStage1Duration();
+    double period = burstyQueue.getPeriod() / DateUtils.MILLIS_PER_SECOND;
+    double stage1Duration = burstyQueue.getStage1Duration()
+        / DateUtils.MILLIS_PER_SECOND;
+    Resource guaranteedRes = Resources.multiply(alpha, period);
+    double lasting = (time - burstyQueue.getStartTime()) % stage1Duration;
+    boolean inStage1 = lasting <= stage1Duration;
     if (inStage1)
       res = alpha;
     else {
-      if (burstyQueue.getPeriod() - burstyQueue.getStage1Duration() > 0) {
+      if (period - stage1Duration > 0) {
         Resource nom = Resources.multiply(capacity,
-            burstyQueue.getPeriod() / ((double) (numAdmittedBursty + numAdmittedBatch)));
+            period / ((double) (numAdmittedBursty + numAdmittedBatch)));
         nom = Resources.subtract(nom, guaranteedRes);
         Resource beta = Resources.multiply(nom,
-            1.0 / ((double) (burstyQueue.getPeriod() - burstyQueue.getStage1Duration())));
+            1.0 / ((double) (period - stage1Duration)));
         res = beta;
       }
     }
     return res;
   }
 
-  private boolean resFairnessCond(FSQueue newQueue,
-      Collection<Schedulable> admittedBurstyQueues,
-      Collection<Schedulable> admittedBatchQueues, Resource capacity) {
+  public boolean resFairnessCond(FSQueue newQueue, int admittedBurstyQueuesSize,
+      int admittedBatchQueuesSize, Resource capacity) {
+    // TODO add time dimension
     Resource alpha = newQueue.getAlpha();
-    Resource lhs = Resources.multiply(alpha, newQueue.getStage1Duration());
-    Resource rhs = Resources.multiply(capacity, newQueue.getPeriod());
-    double denom = Math.max(
-        admittedBurstyQueues.size() + admittedBatchQueues.size() + 1,
-        Double.MIN_VALUE);
-    rhs = Resources.multiply(rhs, 1 / denom);
+    Resource lhs = Resources.multiply(alpha,
+        newQueue.getStage1Duration() / DateUtils.MILLIS_PER_SECOND);
+    Resource rhs = Resources.multiply(capacity,
+        newQueue.getPeriod() / DateUtils.MILLIS_PER_SECOND);
+    double denom = admittedBurstyQueuesSize + admittedBatchQueuesSize + 1;
+    rhs = Resources.multiply(rhs, (1.0 / denom));
     boolean result = Resources.fitsIn(lhs, rhs);
+    if (!result) {
+      log(newQueue.getName() + " resFairnessCond: " + result + " lhs: " + lhs
+          + " rhs: " + rhs + " capacity: " + capacity);
+    }
     return result;
   }
 
@@ -547,7 +525,6 @@ public class SpeedFairPolicy extends SchedulingPolicy {
       Collection<? extends Schedulable> admittedBurstyQueues,
       Collection<? extends Schedulable> admittedBatchQueues,
       Resource totalResources) {
-    // TODO Auto-generated method stub
     for (ResourceType type : ResourceType.values()) {
 
       int totalMaxShare = 0;
@@ -565,8 +542,8 @@ public class SpeedFairPolicy extends SchedulingPolicy {
           .max((ComputeFairShares.getResourceValue(totalResources, type)), 0);
       totalResource = Math.min(totalMaxShare, totalResource);
 
-      int takenResourceBySpeedFair = guaranteeServiceRate(admittedBurstyQueues, admittedBatchQueues.size(),
-          type, totalResource);
+      int takenResourceBySpeedFair = guaranteeServiceRate(admittedBurstyQueues,
+          admittedBatchQueues.size(), type, totalResource);
 
       if (admittedBatchQueues.isEmpty()) {
         return;
@@ -624,11 +601,12 @@ public class SpeedFairPolicy extends SchedulingPolicy {
   }
 
   private static int guaranteeServiceRate(
-      Collection<? extends Schedulable> admittedBurstyQueues, int numAdmittedBatch, ResourceType type,
-      int maxResource) {
+      Collection<? extends Schedulable> admittedBurstyQueues,
+      int numAdmittedBatch, ResourceType type, int maxResource) {
 
     int numAdmittedBursty = admittedBurstyQueues.size();
     int minReqResource = 0;
+    int takenByBursty = 0;
     int remainingRes = maxResource;
 
     for (Schedulable sched : admittedBurstyQueues) {
@@ -637,29 +615,64 @@ public class SpeedFairPolicy extends SchedulingPolicy {
         // TODO recompute the resource rate for both steps
         int alpha = ComputeFairShares.getResourceValue(sched.getAlpha(), type);
         int guaranteedShare = 0;
-        if (queue.isDuringSpeedupDuration())
-          guaranteedShare = alpha;
-        else {
-          long stage1Duration = (int) queue.getStage1Duration();
-          if (numAdmittedBursty > 0 && queue.getPeriod() > stage1Duration) {
-            float tmp = (maxResource * sched.getPeriod() / ((float)(numAdmittedBursty+numAdmittedBatch))
-                - alpha * stage1Duration)
-                / (queue.getPeriod() - stage1Duration);
-            guaranteedShare = (int) Math.max(tmp, 0);
-            guaranteedShare = (int) Math.min(guaranteedShare, maxResource);
+        long stage1Duration = (long) queue.getStage1Duration()
+            / DateUtils.MILLIS_PER_SECOND;
+        long period = queue.getPeriod() / DateUtils.MILLIS_PER_SECOND;
+        long lasted = queue.lastedInPeriod();
+        
+        if (ENABLE_COMPENSATION) {
+          long receivedRes = getAggregateResouce(queue.getMetrics(), type);
+          long stage1Res = alpha * stage1Duration;
+          if (receivedRes<stage1Res)
+            guaranteedShare = alpha;
+          else{
+            if (period > lasted) {
+              float tmp = (maxResource * period
+                  / ((float) (numAdmittedBursty + numAdmittedBatch))
+                  - receivedRes) / (period - lasted);
+              guaranteedShare = (int) Math.max(tmp, 0);
+              guaranteedShare = (int) Math.min(guaranteedShare, maxResource);
+            }
+          }
+        } else {
+          if (queue.isDuringSpeedupDuration())
+            guaranteedShare = (int) alpha;
+          else {
+            if (period > stage1Duration) {
+              float tmp = (maxResource * period
+                  / ((float) (numAdmittedBursty + numAdmittedBatch))
+                  - alpha * stage1Duration) / (period - stage1Duration);
+              guaranteedShare = (int) Math.max(tmp, 0);
+              guaranteedShare = (int) Math.min(guaranteedShare, maxResource);
+            }
           }
         }
-
-        if (guaranteedShare <= remainingRes && guaranteedShare > 0) {
+        
+        if (guaranteedShare <= remainingRes && guaranteedShare >= 0) {
           minReqResource += guaranteedShare;
           remainingRes = maxResource - guaranteedShare;
           ComputeFairShares.setResourceValue(guaranteedShare,
               sched.getFairShare(), type);
           queue.setGuaranteeShare(guaranteedShare, type);
         }
+        
+        takenByBursty += ComputeFairShares.getResourceValue(sched.getResourceUsage(), type);
       }
     }
-    return minReqResource;
+    
+    return Math.min(minReqResource, takenByBursty);
+  }
+
+private static long getAggregateResouce(QueueMetrics metrics, ResourceType type){
+  if (type.equals(ResourceType.MEMORY))
+    return (long) metrics.getMemorySeconds();
+  else
+    return (long) metrics.getVcoreSeconds();
+}
+
+  private void log(String msg) {
+    if (DEBUG)
+      LOG.info(msg);
   }
 
 }

@@ -95,7 +95,8 @@ public class GenerateSparkScripts {
       System.out.println();
 
       boolean enable_spark = false;
-      if (false) {
+      
+      if (enable_spark) {
         FileWriter runSparkJobs = new FileWriter(scriptDirPath + "/interactives.sh");
         int numOfJobs = workloadData.size();
         numOfJobs = 4;
@@ -168,15 +169,15 @@ public class GenerateSparkScripts {
       }
 
       toWrite  = "wait $runBatches ; ";
-      toWrite += "wait $runInteractives; sleep 240 \n";
+      toWrite += "wait $runInteractives; \n";
       run.write(toWrite.toCharArray(), 0, toWrite.length());
 
       // toWrite = "cat " + workloadOutputDir + "/interactive-*.time > " + workloadOutputDir +
       // "/allJobs.time";
       // run.write(toWrite.toCharArray(), 0, toWrite.length());
 
-//      toWrite = "\n kill $pythonScript";
-//      run.write(toWrite.toCharArray(), 0, toWrite.length());
+      toWrite = "\nsleep 100; kill $pythonScript";
+      run.write(toWrite.toCharArray(), 0, toWrite.length());
 
       // toWrite = "\n kill $runInteractives";
       // run.write(toWrite.toCharArray(), 0, toWrite.length());
@@ -311,9 +312,7 @@ public class GenerateSparkScripts {
 
     ArrayList<ArrayList<String>> workloadData = new ArrayList<ArrayList<String>>();
 
-//    String hostName = "nm.yarn-perf.yarnrm-pg0.wisc.cloudlab.us";
-    // String hostName = "nm.yarn-drf.yarnrm-pg0.wisc.cloudlab.us";
-    String hostName = "http://nm.yarn-large.yarnrm-pg0.utah.cloudlab.us/";
+    String hostName = "ctl.yarn-perf.yarnrm-pg0.wisc.cloudlab.us";
 
     String fileWorkloadPath = "FB-2009_samples_24_times_1hr_0_first200.tsv";
 

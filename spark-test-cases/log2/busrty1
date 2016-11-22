@@ -1,0 +1,96 @@
+16/11/22 15:29:09 WARN util.NativeCodeLoader: Unable to load native-hadoop library for your platform... using builtin-java classes where applicable
+16/11/22 15:29:10 INFO client.RMProxy: Connecting to ResourceManager at localhost/127.0.0.1:8032
+16/11/22 15:29:10 INFO yarn.Client: Requesting a new application from cluster with 1 NodeManagers
+16/11/22 15:29:10 INFO yarn.Client: Verifying our application has not requested more than the maximum memory capability of the cluster (16384 MB per container)
+16/11/22 15:29:10 INFO yarn.Client: Will allocate AM container, with 1152 MB memory including 384 MB overhead
+16/11/22 15:29:10 INFO yarn.Client: Setting up container launch context for our AM
+16/11/22 15:29:10 INFO yarn.Client: Setting up the launch environment for our AM container
+16/11/22 15:29:10 INFO yarn.Client: Preparing resources for our AM container
+16/11/22 15:29:10 WARN yarn.Client: Neither spark.yarn.jars nor spark.yarn.archive is set, falling back to uploading libraries under SPARK_HOME.
+16/11/22 15:29:18 INFO yarn.Client: Uploading resource file:/tmp/spark-a3ea2234-41e8-4d1b-9b3e-9a8060a871a2/__spark_libs__1522437974092779934.zip -> hdfs://localhost:9000/user/tanle/.sparkStaging/application_1479795078578_0007/__spark_libs__1522437974092779934.zip
+16/11/22 15:29:19 INFO yarn.Client: Uploading resource file:/home/tanle/spark/examples/jars/spark-examples_2.11-2.0.2.jar -> hdfs://localhost:9000/user/tanle/.sparkStaging/application_1479795078578_0007/spark-examples_2.11-2.0.2.jar
+16/11/22 15:29:19 INFO yarn.Client: Uploading resource file:/tmp/spark-a3ea2234-41e8-4d1b-9b3e-9a8060a871a2/__spark_conf__8286714972536530027.zip -> hdfs://localhost:9000/user/tanle/.sparkStaging/application_1479795078578_0007/__spark_conf__.zip
+16/11/22 15:29:19 INFO spark.SecurityManager: Changing view acls to: tanle
+16/11/22 15:29:19 INFO spark.SecurityManager: Changing modify acls to: tanle
+16/11/22 15:29:19 INFO spark.SecurityManager: Changing view acls groups to: 
+16/11/22 15:29:19 INFO spark.SecurityManager: Changing modify acls groups to: 
+16/11/22 15:29:19 INFO spark.SecurityManager: SecurityManager: authentication disabled; ui acls disabled; users  with view permissions: Set(tanle); groups with view permissions: Set(); users  with modify permissions: Set(tanle); groups with modify permissions: Set()
+16/11/22 15:29:19 INFO yarn.Client: Submitting application application_1479795078578_0007 to ResourceManager
+16/11/22 15:29:19 INFO impl.YarnClientImpl: Submitted application application_1479795078578_0007
+16/11/22 15:29:20 INFO yarn.Client: Application report for application_1479795078578_0007 (state: ACCEPTED)
+16/11/22 15:29:20 INFO yarn.Client: 
+	 client token: N/A
+	 diagnostics: N/A
+	 ApplicationMaster host: N/A
+	 ApplicationMaster RPC port: -1
+	 queue: root.bursty0
+	 start time: 1479796159619
+	 final status: UNDEFINED
+	 tracking URL: http://tan-ubuntu:8088/proxy/application_1479795078578_0007/
+	 user: tanle
+16/11/22 15:29:21 INFO yarn.Client: Application report for application_1479795078578_0007 (state: ACCEPTED)
+16/11/22 15:29:22 INFO yarn.Client: Application report for application_1479795078578_0007 (state: ACCEPTED)
+16/11/22 15:29:23 INFO yarn.Client: Application report for application_1479795078578_0007 (state: ACCEPTED)
+16/11/22 15:29:24 INFO yarn.Client: Application report for application_1479795078578_0007 (state: ACCEPTED)
+16/11/22 15:29:25 INFO yarn.Client: Application report for application_1479795078578_0007 (state: ACCEPTED)
+16/11/22 15:29:26 INFO yarn.Client: Application report for application_1479795078578_0007 (state: ACCEPTED)
+16/11/22 15:29:27 INFO yarn.Client: Application report for application_1479795078578_0007 (state: ACCEPTED)
+16/11/22 15:29:28 INFO yarn.Client: Application report for application_1479795078578_0007 (state: RUNNING)
+16/11/22 15:29:28 INFO yarn.Client: 
+	 client token: N/A
+	 diagnostics: N/A
+	 ApplicationMaster host: 10.12.26.85
+	 ApplicationMaster RPC port: 0
+	 queue: root.bursty0
+	 start time: 1479796159619
+	 final status: UNDEFINED
+	 tracking URL: http://tan-ubuntu:8088/proxy/application_1479795078578_0007/
+	 user: tanle
+16/11/22 15:29:29 INFO yarn.Client: Application report for application_1479795078578_0007 (state: RUNNING)
+16/11/22 15:29:30 INFO yarn.Client: Application report for application_1479795078578_0007 (state: RUNNING)
+16/11/22 15:29:31 INFO yarn.Client: Application report for application_1479795078578_0007 (state: RUNNING)
+16/11/22 15:29:32 INFO yarn.Client: Application report for application_1479795078578_0007 (state: RUNNING)
+16/11/22 15:29:33 INFO yarn.Client: Application report for application_1479795078578_0007 (state: RUNNING)
+16/11/22 15:29:34 INFO yarn.Client: Application report for application_1479795078578_0007 (state: RUNNING)
+16/11/22 15:29:35 INFO yarn.Client: Application report for application_1479795078578_0007 (state: RUNNING)
+16/11/22 15:29:36 INFO yarn.Client: Application report for application_1479795078578_0007 (state: RUNNING)
+16/11/22 15:29:37 INFO yarn.Client: Application report for application_1479795078578_0007 (state: RUNNING)
+16/11/22 15:29:38 INFO yarn.Client: Application report for application_1479795078578_0007 (state: RUNNING)
+16/11/22 15:29:39 INFO yarn.Client: Application report for application_1479795078578_0007 (state: RUNNING)
+16/11/22 15:29:40 INFO yarn.Client: Application report for application_1479795078578_0007 (state: RUNNING)
+16/11/22 15:29:41 INFO yarn.Client: Application report for application_1479795078578_0007 (state: RUNNING)
+16/11/22 15:29:42 INFO yarn.Client: Application report for application_1479795078578_0007 (state: RUNNING)
+16/11/22 15:29:43 INFO yarn.Client: Application report for application_1479795078578_0007 (state: RUNNING)
+16/11/22 15:29:44 INFO yarn.Client: Application report for application_1479795078578_0007 (state: RUNNING)
+16/11/22 15:29:45 INFO yarn.Client: Application report for application_1479795078578_0007 (state: RUNNING)
+16/11/22 15:29:46 INFO yarn.Client: Application report for application_1479795078578_0007 (state: RUNNING)
+16/11/22 15:29:47 INFO yarn.Client: Application report for application_1479795078578_0007 (state: RUNNING)
+16/11/22 15:29:48 INFO yarn.Client: Application report for application_1479795078578_0007 (state: RUNNING)
+16/11/22 15:29:49 INFO yarn.Client: Application report for application_1479795078578_0007 (state: RUNNING)
+16/11/22 15:29:50 INFO yarn.Client: Application report for application_1479795078578_0007 (state: RUNNING)
+16/11/22 15:29:51 INFO yarn.Client: Application report for application_1479795078578_0007 (state: RUNNING)
+16/11/22 15:29:52 INFO yarn.Client: Application report for application_1479795078578_0007 (state: RUNNING)
+16/11/22 15:29:53 INFO yarn.Client: Application report for application_1479795078578_0007 (state: RUNNING)
+16/11/22 15:29:54 INFO yarn.Client: Application report for application_1479795078578_0007 (state: RUNNING)
+16/11/22 15:29:55 INFO yarn.Client: Application report for application_1479795078578_0007 (state: RUNNING)
+16/11/22 15:29:56 INFO yarn.Client: Application report for application_1479795078578_0007 (state: RUNNING)
+16/11/22 15:29:57 INFO yarn.Client: Application report for application_1479795078578_0007 (state: RUNNING)
+16/11/22 15:29:58 INFO yarn.Client: Application report for application_1479795078578_0007 (state: RUNNING)
+16/11/22 15:29:59 INFO yarn.Client: Application report for application_1479795078578_0007 (state: RUNNING)
+16/11/22 15:30:00 INFO yarn.Client: Application report for application_1479795078578_0007 (state: RUNNING)
+16/11/22 15:30:01 INFO yarn.Client: Application report for application_1479795078578_0007 (state: RUNNING)
+16/11/22 15:30:02 INFO yarn.Client: Application report for application_1479795078578_0007 (state: RUNNING)
+16/11/22 15:30:03 INFO yarn.Client: Application report for application_1479795078578_0007 (state: FINISHED)
+16/11/22 15:30:03 INFO yarn.Client: 
+	 client token: N/A
+	 diagnostics: N/A
+	 ApplicationMaster host: 10.12.26.85
+	 ApplicationMaster RPC port: 0
+	 queue: root.bursty0
+	 start time: 1479796159619
+	 final status: SUCCEEDED
+	 tracking URL: http://tan-ubuntu:8088/proxy/application_1479795078578_0007/
+	 user: tanle
+16/11/22 15:30:03 INFO yarn.Client: Deleting staging directory hdfs://localhost:9000/user/tanle/.sparkStaging/application_1479795078578_0007
+16/11/22 15:30:03 INFO util.ShutdownHookManager: Shutdown hook called
+16/11/22 15:30:03 INFO util.ShutdownHookManager: Deleting directory /tmp/spark-a3ea2234-41e8-4d1b-9b3e-9a8060a871a2

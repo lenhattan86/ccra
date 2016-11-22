@@ -1,18 +1,27 @@
-#defaulHostname="nm.yarn-perf.yarnrm-pg0.wisc.cloudlab.us"
-#defaulHostname="nm.yarn-drf.yarnrm-pg0.wisc.cloudlab.us"
-#defaulHostname="c220g1-030826.wisc.cloudlab.us" #drf
-defaulHostname="nm.yarn-large.yarnrm-pg0.utah.cloudlab.us"
+defaulHostname="ctl.yarn-perf.yarnrm-pg0.wisc.cloudlab.us"
 
 if [ -z "$1" ]
 then
 	hostname=$defaulHostname
 else
-	hostname="nm.$1.yarnrm-pg0.utah.cloudlab.us"
+	hostname="nm.$1.yarnrm-pg0.wisc.cloudlab.us"
 fi
 
 resultPath="../results"
-newFolder="/runb8i1"
+newFolder="/runb3i1"
 echo "download the files from $hostname"
+
+prompt () {
+	while true; do
+	    read -p "Do you wish to overwrite $hostname $newFolder? " yn
+	    case $yn in
+		[Yy]* ) make install; break;;
+		[Nn]* ) exit;;
+		* ) echo "Please answer yes or no.";;
+	    esac
+	done
+}
+
 
 downloadOuput () {
 	echo "download $2 ................"
@@ -25,6 +34,8 @@ downloadOuput () {
 	ssh tanle@$hostname "rm -rf $1.tar"
 	rm -rf $resultPath/$method$newFolder/$1.tar;
 }
+
+#prompt
 
 tarFile="scriptTest"; folder="~/SWIM/scriptsTest"; downloadOuput $tarFile $folder
 

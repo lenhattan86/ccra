@@ -28,8 +28,12 @@ public class GenerateReplayScript {
   static final int SHUFFLE_DATA_SIZE = 4;
   static final int OUTPUT_DATA_SIZE = 5;
 
-  static final int NUM_CP_NODES = 40;
-  static final int[] failedNodes = {14, 28, 32};
+  static final int NUM_CP_NODES = 8;
+  static final int[] failedNodes = {};
+  private static final boolean ENABLE_ARRIVAL_TRACES = false;
+  
+  private static final int BURSTY_CPU = 3;
+  private static final int BURSTY_MEM = 5*1024;
   
   public static boolean isFailed(int node){
     boolean res = false;
@@ -41,7 +45,7 @@ public class GenerateReplayScript {
 
   public static String cleanYarnLogFiles(int numComputeNodes) {
 
-    String servers = "nm ctl ";
+    String servers = "ctl ";
     int idx = 0;
     for (int i = 1; i <= numComputeNodes; i++) {
       idx++;
@@ -263,12 +267,8 @@ public class GenerateReplayScript {
 
         toWrite = "./run-batch-" + i + ".sh &\n";
         runAllJobs.write(toWrite.toCharArray(), 0, toWrite.length());
-
-        toWrite = "sleep " + sleep + "\n"; // TODO: use the code for arrival times from traces.
-        runAllJobs.write(toWrite.toCharArray(), 0, toWrite.length());
-
-        if (i % 10 == 0) {
-          toWrite = GenerateReplayScript.cleanYarnLogFiles(NUM_CP_NODES-1);
+        if (ENABLE_ARRIVAL_TRACES) {
+          toWrite = "sleep " + sleep + "\n"; // TODO: use the code for arrival times from traces.
           runAllJobs.write(toWrite.toCharArray(), 0, toWrite.length());
         }
 
@@ -299,7 +299,7 @@ public class GenerateReplayScript {
       int clusterSizeWorkload, int inputPartitionSize, int inputPartitionCount, String scriptDirPath,
       String hdfsInputDir, String hdfsOutputPrefix, long totalDataPerReduce, String workloadOutputDir,
       String hadoopCommand, String pathToWorkGenJar, String pathToWorkGenConf, int arrivalPeriod,
-      int numInteractiveJobs, int NUM_QUEUES) throws Exception {
+      int numInteractiveJobs, int NUM_QUEUES, int numMaps) throws Exception {
 
     hdfsOutputPrefix += "Int";
 
@@ -418,20 +418,20 @@ public class GenerateReplayScript {
             if (numReduces > clusterSizeWorkload)
               numReduces = clusterSizeWorkload / 5;
             toWrite = "" + hadoopCommand + " jar " + pathToWorkGenJar + " org.apache.hadoop.examples.WorkGen -conf "
-                + pathToWorkGenConf + " " + "-r " + numReduces + " " + inputPath + " " + mOutputPath + " -queue "
+                + pathToWorkGenConf + " " + "-m " + numMaps + " " + "-r " + numReduces + " " + inputPath + " " + mOutputPath + " -queue "
                 //+ "interactive" + k + " -map.vcores " + MAP_VCORES[idx + k] + " -red.vcores " + RED_VCORES[idx + k]
-                + "interactive" + k + " -map.vcores " + 2 + " -red.vcores " + 2
+                + "bursty" + k + " -map.vcores " + BURSTY_CPU + " -red.vcores " + BURSTY_CPU
                 //+ " -map.memory " + MAP_MEM[idx + k] + " -red.memory " + RED_MEM[idx + k] + " " + SIRatio + " "
-                + " -map.memory " + 2048 + " -red.memory " + 2048 + " " + SIRatio + " "
+                + " -map.memory " + BURSTY_MEM + " -red.memory " + BURSTY_MEM + " " + SIRatio + " "
                 + OSRatio + " >> " + workloadOutputDir + "/interactive-" + i + "_" + k + ".txt 2>> " + workloadOutputDir
                 + "/interactive-" + i + "_" + k + ".txt ";
           } else {
             toWrite = "" + hadoopCommand + " jar " + pathToWorkGenJar + " org.apache.hadoop.examples.WorkGen -conf "
-                + pathToWorkGenConf + " " + inputPath + " " + mOutputPath + " -queue " + "interactive" + k
+                + pathToWorkGenConf + " " + "-m " + numMaps + " " + inputPath + " " + mOutputPath + " -queue " + "bursty" + k
                 //+ " -map.vcores " + MAP_VCORES[idx + k] + " -red.vcores " + RED_VCORES[idx + k] + " -map.memory "
-                + " -map.vcores " + 2 + " -red.vcores " + 2 + " -map.memory "
+                + " -map.vcores " + BURSTY_CPU + " -red.vcores " + BURSTY_CPU + " -map.memory "
                 //+ MAP_MEM[idx + k] + " -red.memory " + RED_MEM[idx + k] + " " + SIRatio + " " + OSRatio + " >> "
-                + 2048 + " -red.memory " + 2048 + " " + SIRatio + " " + OSRatio + " >> "
+                + BURSTY_MEM + " -red.memory " + BURSTY_MEM + " " + SIRatio + " " + OSRatio + " >> "
                 + workloadOutputDir + "/interactive-" + i + "_" + k + ".txt 2>> " + workloadOutputDir + "/interactive-"
                 + i + "_" + k + ".txt ";
           }
@@ -735,14 +735,15 @@ public class GenerateReplayScript {
     }
 
     // print shell scripts
-
+    
+    int burstyAppNum = 10;
     printBatchUsingTraces(workloadData, clusterSizeRaw, clusterSizeWorkload, inputPartitionSize, inputPartitionCount,
         scriptDirPath, hdfsInputDir, hdfsOutputPrefix, totalDataPerReduce, workloadOutputDir, hadoopCommand,
-        pathToWorkGenJar, pathToWorkGenConf, 40, 2, (int)(1280*5.5/10)); // should try with 6
+        pathToWorkGenJar, pathToWorkGenConf, burstyAppNum*6, 3, (int)(256*0.7)); // should try with 6
 
     printInteractiveJobs(workloadData, clusterSizeRaw, clusterSizeWorkload, inputPartitionSize, inputPartitionCount,
         scriptDirPath, hdfsInputDir, hdfsOutputPrefix, totalDataPerReduce, workloadOutputDir, hadoopCommand,
-        pathToWorkGenJar, pathToWorkGenConf, 240, 10, 1);
+        pathToWorkGenJar, pathToWorkGenConf, 100, burstyAppNum, 1, (int)(256*0.9));
 
     System.out.println("Parameter values for randomwriter_conf.xsl:");
     System.out.println("test.randomwrite.total_bytes: " + totalInput);

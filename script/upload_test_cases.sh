@@ -1,7 +1,8 @@
-defaulHostname="nm.yarn-perf.yarnrm-pg0.wisc.cloudlab.us"
+defaulHostname="ctl.yarn-perf.yarnrm-pg0.wisc.cloudlab.us"
 #defaulHostname="nm.yarn-drf.yarnrm-pg0.wisc.cloudlab.us"
 #defaulHostname="c220g1-030826.wisc.cloudlab.us" #drf
-defaultDomain="yarnrm-pg0.utah.cloudlab.us"
+
+defaultDomain="yarnrm-pg0.wisc.cloudlab.us"
 
 echo "upload the files to $hostname"
 
@@ -9,8 +10,19 @@ if [ -z "$1" ]
 then
 	hostname=$defaulHostname
 else
-	hostname="nm.$1.$defaultDomain"
+	hostname="ctl.$1.$defaultDomain"
 fi
+
+prompt () {
+	while true; do
+	    read -p "Do you wish to upload new test cases onto $hostname?" yn
+	    case $yn in
+		[Yy]* ) make install; break;;
+		[Nn]* ) exit;;
+		* ) echo "Please answer yes or no.";;
+	    esac
+	done
+}
 
 uploadTestCases () {
 	echo "upload $2 ................"
@@ -22,6 +34,8 @@ uploadTestCases () {
 	rm -rf $1.tar
 	ssh tanle@$hostname "rm -rf $1.tar;"
 }
+
+#prompt
 
 tarFile="SWIM"; testCase="../SWIM"; rm -rf .$testCase/*.class; uploadTestCases $tarFile $testCase &
 

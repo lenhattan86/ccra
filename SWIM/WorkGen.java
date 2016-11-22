@@ -60,6 +60,7 @@ public class WorkGen extends Configured implements Tool {
   }
   
   final static boolean ENABLE_DISK_IO = false; 
+  static final boolean INCREASE_CPU_BOUND = false;
 
   /**
    * User counters
@@ -115,7 +116,9 @@ public class WorkGen extends Configured implements Tool {
         }
         shuffleInputRatioTemp -= 1.0d;
       } // end while
-//      WorkGen.runDumpCompuation(WorkGen.nLoop);
+      if(INCREASE_CPU_BOUND) {
+        WorkGen.runDumpCompuation(WorkGen.nLoop);
+      }
     } // end map()
 
     @Override
@@ -177,7 +180,8 @@ public class WorkGen extends Configured implements Tool {
             }
             outputShuffleRatioTemp -= 1.0d;
           } // end while
-  //        RatioReducer.runDumpCompuation(nLoop);
+          if(INCREASE_CPU_BOUND)
+            WorkGen.runDumpCompuation(nLoop);
         }
       }
     }
@@ -216,6 +220,7 @@ public class WorkGen extends Configured implements Tool {
     long mapMem = 1024, redMem=1024;
     int num_reduces = (int) (cluster.getMaxReduceTasks() * 0.45);
 //    int num_maps = (int) (cluster.getMaxMapTasks() * 0.9);
+//    int num_maps = (int) (cluster.getMaxMapTasks() * 0.5);
     int num_maps = (int) (cluster.getMaxMapTasks() * 0.5);
     String sort_reduces = jobConf.get("workGen.sort.reduces_per_host");
     if (sort_reduces != null) {

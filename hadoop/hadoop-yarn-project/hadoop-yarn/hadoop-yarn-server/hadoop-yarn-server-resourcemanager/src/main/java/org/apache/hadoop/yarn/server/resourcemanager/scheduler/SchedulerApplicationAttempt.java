@@ -310,7 +310,7 @@ public class SchedulerApplicationAttempt {
     if (rmContainer == null) {
       rmContainer = 
           new RMContainerImpl(container, getApplicationAttemptId(), 
-              node.getNodeID(), appSchedulingInfo.getUser(), rmContext);
+              node.getNodeID(), appSchedulingInfo.getUser(), rmContext, this); //iglf
         
       Resources.addTo(currentReservation, container.getResource());
       
