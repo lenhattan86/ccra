@@ -1,5 +1,5 @@
-#HADOOP_HOME=~/hadoop
-HADOOP_HOME=../hadoop/hadoop-dist/target/hadoop-2.7.2
+HADOOP_HOME=~/hadoop
+#HADOOP_HOME=../hadoop/hadoop-dist/target/hadoop-2.7.2
 scriptTestFolder="scriptsTest"
 
 # Compile MapReduce jobs

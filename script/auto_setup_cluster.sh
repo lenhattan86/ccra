@@ -1,5 +1,11 @@
 #!/bin/bash
 
+## constants
+SPEEDFAIR="SpeedFair"
+DRF="drf"
+Strict="Strict"
+DRFW="drf-w"
+
 ## author: Tan N. Le ~ CS department Stony Brook University
 
 ### DO this command first at master node #####
@@ -14,13 +20,16 @@ AUTOSSH_PORT=20000
 
 ######################### System Variables #####################
 
-isCloudLab=true
+isCloudLab=false
 isAmazonEC=false
-isLocalhost=false
+isLocalhost=true
 IS_INIT=false
 isOfficial=false
 TEST=false
 SSH_CMD="autossh"
+METHOD=$Strict
+yarnFramework="yarn"
+
 if $isLocalhost
 then
 	isCloudLab=false
@@ -37,6 +46,7 @@ echo "=====set up $hostname====="
 ######################### Hadoop  #####################
 hadoopFolder="hadoop"
 configFolder="etc/hadoop"
+tezConfigFolder="etc/tez"
 
 hadoopVer="hadoop-2.7.2"
 hadoopLink="http://apache.claz.org/hadoop/common/hadoop-2.7.2/hadoop-2.7.2.tar.gz"
@@ -82,7 +92,26 @@ else
 	scheduler="org.apache.hadoop.yarn.server.resourcemanager.scheduler.fair.FairScheduler" 
 fi
 
-shedulingPolicy="SpeedFair"; weight=1
+echo "METHOD: $METHOD"
+
+if [ "$METHOD" == "$SPEED_FAIR" ];
+then
+        shedulingPolicy="SpeedFair"; weight=1
+elif [ "$METHOD" == "$DRF" ];
+then
+	shedulingPolicy="drf"; weight=1
+elif [ "$METHOD" == "$Strict" ];
+then
+	shedulingPolicy="drf"; weight=999999
+elif [ "$METHOD" == "$DRFW" ];
+then
+	shedulingPolicy="drf"; weight=4
+else
+	echo "This method does not exist."; exit;
+	shedulingPolicy="drf";
+fi
+
+echo $schedulingPolicy
 
 hdfsDir="/dev/hdfs"
 #hdfsDir="$temp/hdfs"
@@ -94,6 +123,14 @@ yarnAppLogs="/dev/shm/yarn-logs" # only used in hadoop 2.7
 
 cgroupYarn="~/$hadoopFolder/cgroup"
 numOfReplication=3
+
+
+tezVersion="0.8.4"
+
+tezTar="tez-$tezVersion.tar.gz"
+tezMinTaz="tez-$tezVersion-minimal.tar.gz"
+TEZ_JARS="$hadoopFolder/tez_jars"
+TEZ_CONF_DIR="$hadoopFolder/$tezConfigFolder"
 
 ######################### Flink  #####################
 
@@ -136,18 +173,18 @@ if $isLocalhost
 then
 	hostname="localhost"; 
 else
-	hostname="ctl.yarn-perf.yarnrm-pg0.wisc.cloudlab.us"; shedulingPolicy="SpeedFair"; cp ~/.ssh/config.yarn-perf ~/.ssh/config; 
-	#hostname="ctl.yarn-drf.yarnrm-pg0.utah.cloudlab.us"; shedulingPolicy="drf"; cp ~/.ssh/config.yarn-drf ~/.ssh/config; isUploadYarn=true ; 
-	#hostname="ctl.yarn-small.yarnrm-pg0.wisc.cloudlab.us"; shedulingPolicy="drf"; cp ~/.ssh/config.yarn-small ~/.ssh/config; 
-	#hostname="ctl.yarn-large.yarnrm-pg0.utah.cloudlab.us"; shedulingPolicy="SpeedFair"; cp ~/.ssh/config.yarn-large ~/.ssh/config;
+	hostname="ctl.yarn-perf.yarnrm-pg0.wisc.cloudlab.us"; cp ~/.ssh/config.yarn-perf ~/.ssh/config; 
+	#hostname="ctl.yarn-drf.yarnrm-pg0.utah.cloudlab.us"; cp ~/.ssh/config.yarn-drf ~/.ssh/config; isUploadYarn=true ; 
+	#hostname="ctl.yarn-small.yarnrm-pg0.wisc.cloudlab.us"; cp ~/.ssh/config.yarn-small ~/.ssh/config; 
+	#hostname="ctl.yarn-large.yarnrm-pg0.utah.cloudlab.us"; cp ~/.ssh/config.yarn-large ~/.ssh/config;
 fi
 echo "==== Running the setup for the cluster $hostname ======="
 
 REBOOT=false
 
-isUploadYarn=true
+isUploadYarn=false
 isDownload=false
-isExtract=true
+isExtract=false
 if $isUploadYarn
 then
 	isExtract=true
@@ -194,6 +231,13 @@ isInstallSpark=true
 isModifySpark=false
 startSparkYarn=false
 shudownSpark=false
+
+isInstallTez=true
+isUploadTez=true
+if $isInstallTez
+then
+	yarnFramework="yarn-tez"
+fi
 
 if $isInstallHadoop
 then
@@ -541,9 +585,11 @@ echo "#################################### install Hadoop Yarn #################
 				scp ../SWIM/workGenKeyValue_conf.xsl $1:~/hadoop/config
 			
 				echo Configure Hadoop at $1 step 1
+				
 				$SSH_CMD $username@$1 "echo export JAVA_HOME=$java_home > temp.txt; cat temp.txt ~/$hadoopFolder/$configFolder/hadoop-env.sh > temp2.txt ; mv temp2.txt ~/$hadoopFolder/$configFolder/hadoop-env.sh "
+				# for Tez
+				$SSH_CMD $username@$1 "echo export HADOOP_CLASSPATH=${TEZ_CONF_DIR}:${TEZ_JARS}/*:${TEZ_JARS}/lib/* > temp.txt; cat temp.txt ~/$hadoopFolder/$configFolder/hadoop-env.sh > temp2.txt ; mv temp2.txt ~/$hadoopFolder/$configFolder/hadoop-env.sh "
 			fi
-			
 
 			if $isInitPath
 			then	
@@ -579,7 +625,7 @@ echo "#################################### install Hadoop Yarn #################
 			echo Configure Hadoop at $1 step 2
 			# etc/hadoop/core-site.xml
 			$SSH_CMD $username@$1 "sudo rm -rf $hdfsDir; sudo mkdir $hdfsDir; sudo chmod 777 $hdfsDir"
-			echo Configure Hadoop at $1 step 3
+			echo Configure Hadoop at $1 step 3 core-site.xml
 			#sleep 2
 			$SSH_CMD $username@$1 "echo '<?xml version=\"1.0\" encoding=\"UTF-8\"?>
 <?xml-stylesheet type=\"text/xsl\" href=\"configuration.xsl\"?>
@@ -616,7 +662,7 @@ echo "#################################### install Hadoop Yarn #################
 				# $SSH_CMD $username@$1 "sed -i -e 's/#export HADOOP_HEAPSIZE=/export HADOOP_HEAPSIZE=4096/g' $hadoopFolder/$configFolder/hadoop-env.sh"
 				# YARN_HEAPSIZE
 			# etc/hadoop/hdfs-site.xml
-			echo Configure Hadoop at $1 step 4
+			echo Configure Hadoop at $1 step 4 hdfs-site.xml
 			$SSH_CMD $username@$1 "echo '<?xml version=\"1.0\" encoding=\"UTF-8\"?> 
 <?xml-stylesheet type=\"text/xsl\" href=\"configuration.xsl\"?>
 <configuration>
@@ -644,7 +690,8 @@ echo "#################################### install Hadoop Yarn #################
 			## Configurations for ResourceManager and NodeManager:
 
 			$SSH_CMD $username@$1 "sudo rm -rf $yarnAppLogs; sudo mkdir $yarnAppLogs; sudo chmod 777 $yarnAppLogs"
-			echo Configure Yarn at $1 step 1
+
+			echo Configure Yarn at $1 step 1 yarn-site.xml
 			$SSH_CMD $username@$1 "echo '<?xml version=\"1.0\"?>
 <configuration>
 
@@ -737,7 +784,7 @@ echo "#################################### install Hadoop Yarn #################
 #			$SSH_CMD $username@$1 "cgdelete cpu:yarn"
 
 # setup scheduler https://hadoop.apache.org/docs/r2.7.1/hadoop-yarn/hadoop-yarn-site/FairScheduler.html
-			echo Configure Yarn at $1 step 2
+			echo Configure Yarn at $1 step 2 $fairSchedulerFile
 			if $isLocalhost
 			then
 				$SSH_CMD $username@$1 "echo  '<?xml version=\"1.0\"?>
@@ -807,7 +854,7 @@ echo "#################################### install Hadoop Yarn #################
 </allocations>' > $fairSchedulerFile"
 			fi
 
-			echo Configure Yarn at $1 step 3
+			echo Configure Yarn at $1 step 3 $capacitySchedulerFile
 			$SSH_CMD $username@$1 "echo '<?xml version=\"1.0\"?>
 <configuration>
   <property>
@@ -850,7 +897,7 @@ echo "#################################### install Hadoop Yarn #################
   </property>
 
 </configuration>' > $capacitySchedulerFile"
-			echo Configure Yarn at $1 step 4
+			echo Configure Yarn at $1 step 4 - mapred-site.xml
 			# etc/hadoop/mapred-site.xml
 			$SSH_CMD $username@$1 "echo '<?xml version=\"1.0\"?>
 <?xml-stylesheet type=\"text/xsl\" href=\"configuration.xsl\"?>
@@ -858,7 +905,7 @@ echo "#################################### install Hadoop Yarn #################
 
   <property>
     <name>mapreduce.framework.name</name>
-    <value>yarn</value>
+    <value>$yarnFramework</value>
   </property>
 
   <property>
@@ -920,7 +967,7 @@ echo "#################################### install Hadoop Yarn #################
 			
 			
 			# monitoring script in etc/hadoop/yarn-site.xml
-			echo Configure Yarn at $1 step 5
+			echo Configure Yarn at $1 step 5 - $hadoopFolder/$configFolder/slaves
 			# slaves etc/hadoop/slaves
 			$SSH_CMD $username@$1 "sudo rm -rf $hadoopFolder/$configFolder/slaves"
 			#slaveStr=""
@@ -933,8 +980,9 @@ echo "#################################### install Hadoop Yarn #################
 			$SSH_CMD $username@$1 "$tempCMD"
 			#$SSH_CMD $username@$1 "echo $slaveStr > $hadoopFolder/$configFolder/slaves "
 			#$SSH_CMD $username@$1 "sudo chown -R $username:$groupname $hadoopFolder"
-			
+
 }
+			
 		
 		if $isUploadYarn 
 		then
@@ -1054,6 +1102,7 @@ else
 	done	
 fi
 
+
 ########################## restart all #########################
 
 if $restartHadoop
@@ -1081,6 +1130,84 @@ then
 	echo "#################################### start Spark #####################################"
 	$SSH_CMD $masterNode "~/spark/sbin/stop-all.sh; ~/spark/sbin/start-all.sh;"
 fi
+
+########################################################## install TEZ##########################################
+
+
+if $isInstallTez
+then
+
+	if $isUploadTez
+	then
+		# upload to the $masterNode
+		$SSH_CMD $username@$masterNode "rm -rf $TEZ_JARS; mkdir $TEZ_JARS"
+		echo "scp $customizedHadoopPath $username@$masterNode:~/"
+		scp ~/projects/ccra/tez/tez-dist/target/$tezMinTaz  $username@$masterNode:~/
+		if $isLocalhost
+		then
+			echo "uploaded Tez ..."
+		else
+			# share upload file among the workers.
+			echo "multithread sharing...."
+			uploadCMD=""
+			counter=0
+			for slave in $slaveNodes; do
+				counter=$((counter+1))
+				$SSH_CMD $username@$slave "rm -rf $TEZ_JARS; mkdir $TEZ_JARS"
+				uploadCMD="$uploadCMD scp $tezMinTaz $slave:~/ ; "
+			done
+			uploadCMD="$uploadCMD"
+			echo $uploadCMD
+			$SSH_CMD $username@$masterNode "$uploadCMD"
+		fi
+	fi
+
+	installTezFunc () {
+		#tez-site.xml configuration. (done)
+
+		echo Configure Tez at $1 step 1 tez-site.xml
+		$SSH_CMD $username@$1 "mkdir $TEZ_CONF_DIR"
+		$SSH_CMD $username@$1 "echo '<?xml version=\"1.0\"?>
+		<configuration>
+		  	<property>
+			     <name>tez.lib.uris</name>
+			     <value>hdfs://$masterNode:9000//apps/tez/tez-0.8.4.tar.gz</value>
+			</property>
+			<property>
+			     <name>tez.simulation.enabled</name>
+			     <value>true</value>
+			</property>
+		</configuration>' > $hadoopFolder/$tezConfigFolder/tez-site.xml"
+
+		#Extract the tez minimal tarball created in step 2 to a local directory
+		#$SSH_CMD $username@$1 "rm -rf $TEZ_JARS; mkdir $TEZ_JARS"
+		#scp ~/projects/ccra/tez/tez-dist/target/tez-0.8.4-minimal.tar.gz  $username@$$1:~/
+		if $isUploadTez
+		then
+			$SSH_CMD $username@$1 "tar -xvzf $tezMinTaz -C $TEZ_JARS"
+		fi
+	}
+
+	$SSH_CMD $username@$masterNode "hadoop/bin/hadoop dfs -mkdir /apps"
+	$SSH_CMD $username@$masterNode "hadoop/bin/hadoop dfs -mkdir /apps/tez"
+	scp ~/projects/ccra/tez/tez-dist/target/tez-0.8.4.tar.gz $username@$masterNode:~/
+	$SSH_CMD $username@$masterNode "hadoop/bin/hadoop dfs -copyFromLocal tez-0.8.4.tar.gz /apps/tez/"
+	
+	counter=0
+	for server in $serverList; do
+		counter=$((counter+1))
+		installTezFunc $server &	
+		if [[ "$counter" -gt $PARALLEL ]]; then
+	       		counter=0;
+			wait
+	       	fi
+	done
+	wait
+
+# test: hadoop/bin/hadoop jar hadoop/tez_jars/tez-tests-0.8.4.jar testorderedwordcount -DUSE_TEZ_SESSION=true input output
+# test: hadoop/bin/hadoop jar hadoop/tez_jars/tez-examples-0.8.4.jar joindatagen -DUSE_TEZ_SESSION=true datagen1.txt 1024 datagen2.txt 1024 result_path 10
+fi
+
 
 
 ############################################### TEST CASES ###########################################

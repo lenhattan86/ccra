@@ -157,8 +157,8 @@ public class GenerateSparkScripts {
       toWrite = "./batches-all.sh & runBatches=$! \n";
       run.write(toWrite.toCharArray(), 0, toWrite.length());
 
-      // toWrite = "sleep 30 \n";
-      // run.write(toWrite.toCharArray(), 0, toWrite.length());
+       toWrite = "sleep 100 \n";
+       run.write(toWrite.toCharArray(), 0, toWrite.length());
 
       if (enable_spark) {
         toWrite = "./interactives.sh & runInteractives=$! \n";

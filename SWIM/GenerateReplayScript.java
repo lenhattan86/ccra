@@ -736,10 +736,10 @@ public class GenerateReplayScript {
 
     // print shell scripts
     
-    int burstyAppNum = 10;
+    int burstyAppNum = 15;
     printBatchUsingTraces(workloadData, clusterSizeRaw, clusterSizeWorkload, inputPartitionSize, inputPartitionCount,
         scriptDirPath, hdfsInputDir, hdfsOutputPrefix, totalDataPerReduce, workloadOutputDir, hadoopCommand,
-        pathToWorkGenJar, pathToWorkGenConf, burstyAppNum*6, 3, (int)(256*0.7)); // should try with 6
+        pathToWorkGenJar, pathToWorkGenConf, burstyAppNum*6, 3, (int)(256*0.8)); // should try with 6
 
     printInteractiveJobs(workloadData, clusterSizeRaw, clusterSizeWorkload, inputPartitionSize, inputPartitionCount,
         scriptDirPath, hdfsInputDir, hdfsOutputPrefix, totalDataPerReduce, workloadOutputDir, hadoopCommand,
