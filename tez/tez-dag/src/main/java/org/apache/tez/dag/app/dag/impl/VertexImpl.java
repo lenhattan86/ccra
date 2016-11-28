@@ -4547,7 +4547,7 @@ public class VertexImpl implements org.apache.tez.dag.app.dag.Vertex, EventHandl
     }
   }
   
-   // SpeedFair <<
+   // emulation <<
 //   hopefully this are tasks and not attempts
   @Override
   public int getRemainingTasks() {
@@ -4558,5 +4558,5 @@ public class VertexImpl implements org.apache.tez.dag.app.dag.Vertex, EventHandl
       readLock.unlock();
     }
   }
-  // SpeedFair >>
+  // emulation >>
 }

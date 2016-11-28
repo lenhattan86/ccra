@@ -29,6 +29,7 @@ TEST=false
 SSH_CMD="autossh"
 METHOD=$Strict
 yarnFramework="yarn"
+enableSim="true"
 
 if $isLocalhost
 then
@@ -48,18 +49,10 @@ hadoopFolder="hadoop"
 configFolder="etc/hadoop"
 tezConfigFolder="etc/tez"
 
-hadoopVer="hadoop-2.7.2"
-hadoopLink="http://apache.claz.org/hadoop/common/hadoop-2.7.2/hadoop-2.7.2.tar.gz"
-hadoopTgz="hadoop-2.7.2.tar.gz"
-#hadoopTgz="hadoop-2.7.2-max.tar.gz"
-
-#hadoopVer="hadoop-2.6.4"
-#hadoopLink="http://apache.claz.org/hadoop/common/hadoop-2.6.4/hadoop-2.6.4.tar.gz"
-#hadoopTgz="hadoop-2.6.4.tar.gz"
-
-#hadoopVer="hadoop-2.6.3"
-#hadoopLink="http://apache.claz.org/hadoop/common/hadoop-2.6.3/hadoop-2.6.3.tar.gz"
-#hadoopTgz="hadoop-2.6.3.tar.gz"
+hadoopVersion="2.7.2.1"
+hadoopFullVer="hadoop-$hadoopVersion"
+hadoopLink="http://apache.claz.org/hadoop/common/hadoop-$hadoopVersion/hadoop-$hadoopVersion.tar.gz"
+hadoopTgz="hadoop-$hadoopVersion.tar.gz"
 
 yarnVcores=32
 if $isLocalhost
@@ -182,7 +175,7 @@ echo "==== Running the setup for the cluster $hostname ======="
 
 REBOOT=false
 
-isUploadYarn=false
+isUploadYarn=true
 isDownload=false
 isExtract=false
 if $isUploadYarn
@@ -570,14 +563,14 @@ echo "#################################### install Hadoop Yarn #################
 				echo already uploaded Yarn onto $1
 			elif $isDownload
 			then		
-				echo downloading $hadoopVer		
+				echo downloading $hadoopTgz		
 				$SSH_CMD $username@$1 "sudo rm -rf $hadoopTgz; wget $hadoopLink >> log.txt"
 			fi
 #			sleep 3
 			if $isExtract
 			then 
 				echo extract $hadoopTgz
-				$SSH_CMD $username@$1 "rm -rf $hadoopVer; rm -rf $hadoopFolder; tar -xvzf $hadoopTgz >> log.txt; mv $hadoopVer $hadoopFolder; mkdir $hadoopFolder/conf"
+				$SSH_CMD $username@$1 "rm -rf $hadoopFullVer; rm -rf $hadoopFolder; tar -xvzf $hadoopTgz >> log.txt; mv $hadoopFullVer $hadoopFolder; mkdir $hadoopFolder/conf"
 				# add JAVA_HOME
 				
 				# "copy SWIM config files for Facebook-trace simulation"
@@ -694,6 +687,11 @@ echo "#################################### install Hadoop Yarn #################
 			echo Configure Yarn at $1 step 1 yarn-site.xml
 			$SSH_CMD $username@$1 "echo '<?xml version=\"1.0\"?>
 <configuration>
+
+  <property>
+    <name>tez.simulation.enabled</name>
+    <value>$enableSim</value>
+  </property>
 
   <property>
     <name>yarn.resourcemanager.hostname</name>
@@ -963,6 +961,11 @@ echo "#################################### install Hadoop Yarn #################
     <value>12</value>
   </property>
 
+  <property>
+    <name>tez.simulation.enabled</name>
+    <value>$enableSim</value>
+  </property>
+
 </configuration>' > $hadoopFolder/$configFolder/mapred-site.xml"
 			
 			
@@ -1175,7 +1178,7 @@ then
 			</property>
 			<property>
 			     <name>tez.simulation.enabled</name>
-			     <value>true</value>
+			     <value>$enableSim</value>
 			</property>
 		</configuration>' > $hadoopFolder/$tezConfigFolder/tez-site.xml"
 

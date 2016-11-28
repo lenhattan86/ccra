@@ -132,10 +132,187 @@ public abstract class Resource implements Comparable<Resource> {
 
   @Override
   public String toString() {
-    return "<memory:" + getMemory() + ", vCores:" + getVirtualCores() + ">";
+    String str = "<memory:" + getMemory() + ", vCores:" + getVirtualCores() + ">";
+    // emulation <<
+    str+= " <cpu:" + this.getCpu()+",vmem:" +getVMem()+ " > " ;
+    str+= " <network-in:" + this.getInNetwork()+",network-out:" +getOutNetwork()+ " > " ;
+    str+= " <storage-in:" + this.getInStorage()+",storage-out:" +getOutStorage()+ " > " ;
+    str+= " <duration:" + this.getTaskDuration()+">" ;
+    // emulation >>
+    return str;
   }
   
   public boolean isEmpty(){ // iglf
     return this.getMemory()<=0 && this.getVirtualCores()<=0;
   }
+
+  //emulation <<
+  
+  public static Resource newInstance(int cpu, int vmemory,
+      int in_nw, int out_nw,
+      int in_st, int out_st) {
+      Resource resource = Records.newRecord(Resource.class);      
+      
+    resource.setCpu(cpu);
+    resource.setVMem(vmemory);
+    resource.setInNetwork(in_nw);
+    resource.setOutNetwork(out_nw);
+    resource.setInStorage(in_st);
+    resource.setOutStorage(out_st);
+    
+    return resource;
+  }
+  
+  /**
+   * return if the resource is for an AM container or not
+   */
+  public abstract boolean isAMResource();
+
+  /**
+   * return if the resource is for a MAP task
+   */
+  public abstract boolean isMapResource();
+  
+  /**
+   * set the resource for a map task
+   */
+  public abstract void setMapResource();
+  
+  @Public
+  @Evolving
+  public abstract int getCpu();
+
+  @Public
+  @Evolving
+  public abstract void setCpu(int cpu_avail);
+
+  @Public
+  @Evolving
+  public abstract int getVMem();
+
+  @Public
+  @Evolving
+  public abstract void setVMem(int mem_avail);
+  
+  @Public
+  @Evolving
+  public abstract int getInNetwork();  
+
+  @Public
+  @Evolving
+  public abstract void setInNetwork(int in_network);
+
+  @Public
+  @Evolving
+  public abstract int getOutNetwork();  
+
+  @Public
+  @Evolving
+  public abstract void setOutNetwork(int out_network);
+  
+  @Public
+  @Evolving
+  public abstract int getInStorage();  
+
+  @Public
+  @Evolving
+  public abstract void setInStorage(int in_storage);
+
+  @Public
+  @Evolving
+  public abstract int getOutStorage();  
+
+  @Public
+  @Evolving
+  public abstract void setOutStorage(int out_storage);  
+  
+  @Public
+  @Evolving
+  public abstract int getCpuOther();
+
+  @Public
+  @Evolving
+  public abstract void setCpuOther(int cpu_avail);
+
+  @Public
+  @Evolving
+  public abstract int getVMemOther();
+
+  @Public
+  @Evolving
+  public abstract void setVMemOther(int mem_avail);
+  
+  @Public
+  @Evolving
+  public abstract int getInNetworkOther();  
+
+  @Public
+  @Evolving
+  public abstract void setInNetworkOther(int in_network);
+
+  @Public
+  @Evolving
+  public abstract int getOutNetworkOther();  
+
+  @Public
+  @Evolving
+  public abstract void setOutNetworkOther(int out_network);
+  
+  @Public
+  @Evolving
+  public abstract int getInStorageOther();  
+
+  @Public
+  @Evolving
+  public abstract void setInStorageOther(int in_storage);
+
+  @Public
+  @Evolving
+  public abstract int getOutStorageOther();  
+
+  @Public
+  @Evolving
+  public abstract void setOutStorageOther(int out_storage);  
+
+  
+  @Public
+  @Evolving
+  public abstract int getRemMapTasksToSched();  
+
+  @Public
+  @Evolving
+  public abstract void setRemMapTasksToSched(int tasks_to_sched);  
+  
+  @Public
+  @Evolving
+  public abstract int getRemRedTasksToSched();  
+
+  @Public
+  @Evolving
+  public abstract void setRemRedTasksToSched(int tasks_to_sched);  
+  
+  @Public
+  @Evolving
+  public abstract int getMapTaskDuration();  
+
+  @Public
+  @Evolving
+  public abstract void setMapTaskDuration(int task_duration); 
+  
+  @Public
+  @Evolving
+  public abstract int getRedTaskDuration();  
+
+  @Public
+  @Evolving
+  public abstract void setRedTaskDuration(int task_duration);  
+  
+  @Public
+  @Evolving
+  public abstract int getTaskDuration();  
+
+  @Public
+  @Evolving
+  public abstract void setTaskDuration(int task_duration); 
+  // emulation >>
 }

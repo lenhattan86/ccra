@@ -203,9 +203,9 @@ public class TezGroupedSplitsInputFormat<K, V>
         curReader = wrappedInputFormat.getRecordReader(
             groupedSplit.wrappedSplits.get(idx), job, reporter);
         
-        // SpeedFair <<
+        // emulation <<
         inputSize = groupedSplit.wrappedSplits.get(idx).getLength();
-        // SpeedFair >>
+        // emulation >>
         
       } catch (Exception e) {
         throw new RuntimeException (e);
@@ -235,12 +235,12 @@ public class TezGroupedSplitsInputFormat<K, V>
     return conf;
   }
   
-  //SpeedFair <<
+  //emulation <<
    long inputSize = -1;
    public long getInputSplitSize() {
      long inputSizeReport = inputSize;
      inputSize = -1;
      return inputSizeReport;
    }
-   // SpeedFair >>
+   // emulation >>
 }

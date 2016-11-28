@@ -1,0 +1,1612 @@
+[INFO] Scanning for projects...
+[WARNING] 
+[WARNING] Some problems were encountered while building the effective model for org.apache.tez:tez-yarn-timeline-history-with-acls:jar:0.8.4
+[WARNING] 'dependencies.dependency.(groupId:artifactId:type:classifier)' must be unique: org.apache.hadoop:hadoop-hdfs:jar -> duplicate declaration of version (?) @ line 69, column 17
+[WARNING] 
+[WARNING] Some problems were encountered while building the effective model for org.apache.tez:tez-history-parser:jar:0.8.4
+[WARNING] 'dependencies.dependency.(groupId:artifactId:type:classifier)' must be unique: org.apache.hadoop:hadoop-hdfs:jar -> duplicate declaration of version (?) @ line 71, column 17
+[WARNING] 
+[WARNING] Some problems were encountered while building the effective model for org.apache.tez:tez-docs:pom:0.8.4
+[WARNING] 'reporting.plugins.plugin.version' for org.apache.maven.plugins:maven-project-info-reports-plugin is missing. @ line 442, column 17
+[WARNING] 
+[WARNING] It is highly recommended to fix these problems because they threaten the stability of your build.
+[WARNING] 
+[WARNING] For this reason, future Maven versions might no longer support building such malformed projects.
+[WARNING] 
+[INFO] ------------------------------------------------------------------------
+[INFO] Reactor Build Order:
+[INFO] 
+[INFO] tez
+[INFO] hadoop-shim
+[INFO] tez-api
+[INFO] tez-common
+[INFO] tez-runtime-internals
+[INFO] tez-runtime-library
+[INFO] tez-mapreduce
+[INFO] tez-examples
+[INFO] tez-dag
+[INFO] tez-tests
+[INFO] tez-ext-service-tests
+[INFO] tez-ui
+[INFO] tez-ui2
+[INFO] tez-plugins
+[INFO] tez-yarn-timeline-history
+[INFO] tez-yarn-timeline-history-with-acls
+[INFO] tez-history-parser
+[INFO] tez-tools
+[INFO] tez-perf-analyzer
+[INFO] tez-job-analyzer
+[INFO] tez-javadoc-tools
+[INFO] hadoop-shim-impls
+[INFO] hadoop-shim-2.6
+[INFO] tez-dist
+[INFO] Tez
+[INFO]                                                                         
+[INFO] ------------------------------------------------------------------------
+[INFO] Building tez 0.8.4
+[INFO] ------------------------------------------------------------------------
+[INFO] 
+[INFO] --- maven-clean-plugin:3.0.0:clean (default-clean) @ tez ---
+[INFO] Deleting /home/tanle/projects/ccra/tez/target
+[INFO] 
+[INFO] --- maven-enforcer-plugin:1.4:enforce (clean) @ tez ---
+[INFO] 
+[INFO] --- buildnumber-maven-plugin:1.1:create (default) @ tez ---
+[INFO] Checking for local modifications: skipped.
+[INFO] Updating project files from SCM: skipped.
+[INFO] Executing: /bin/sh -c cd /home/tanle/projects/ccra/tez && git rev-parse --verify HEAD
+[INFO] Working directory: /home/tanle/projects/ccra/tez
+[INFO] Storing buildNumber: 1ba414b73fc2c968908f833e2322c8d36cb9854d at timestamp: 1480233718557
+[INFO] Executing: /bin/sh -c cd /home/tanle/projects/ccra/tez && git rev-parse --verify HEAD
+[INFO] Working directory: /home/tanle/projects/ccra/tez
+[INFO] Storing buildScmBranch: UNKNOWN
+[INFO] 
+[INFO] --- build-helper-maven-plugin:1.8:maven-version (maven-version) @ tez ---
+[INFO] 
+[INFO] --- maven-jar-plugin:2.4:test-jar (default) @ tez ---
+[WARNING] JAR will be empty - no content was marked for inclusion!
+[INFO] Building jar: /home/tanle/projects/ccra/tez/target/tez-0.8.4-tests.jar
+[INFO]                                                                         
+[INFO] ------------------------------------------------------------------------
+[INFO] Building hadoop-shim 0.8.4
+[INFO] ------------------------------------------------------------------------
+[INFO] 
+[INFO] --- maven-clean-plugin:3.0.0:clean (default-clean) @ hadoop-shim ---
+[INFO] Deleting /home/tanle/projects/ccra/tez/hadoop-shim/target
+[INFO] 
+[INFO] --- buildnumber-maven-plugin:1.1:create (default) @ hadoop-shim ---
+[INFO] Checking for local modifications: skipped.
+[INFO] Updating project files from SCM: skipped.
+[INFO] Executing: /bin/sh -c cd /home/tanle/projects/ccra/tez/hadoop-shim && git rev-parse --verify HEAD
+[INFO] Working directory: /home/tanle/projects/ccra/tez/hadoop-shim
+[INFO] Storing buildNumber: 1ba414b73fc2c968908f833e2322c8d36cb9854d at timestamp: 1480233719072
+[INFO] Executing: /bin/sh -c cd /home/tanle/projects/ccra/tez/hadoop-shim && git rev-parse --verify HEAD
+[INFO] Working directory: /home/tanle/projects/ccra/tez/hadoop-shim
+[INFO] Storing buildScmBranch: UNKNOWN
+[INFO] 
+[INFO] --- build-helper-maven-plugin:1.8:maven-version (maven-version) @ hadoop-shim ---
+[INFO] 
+[INFO] --- maven-resources-plugin:2.6:resources (default-resources) @ hadoop-shim ---
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] skip non existing resourceDirectory /home/tanle/projects/ccra/tez/hadoop-shim/src/main/resources
+[INFO] 
+[INFO] --- maven-compiler-plugin:3.1:compile (default-compile) @ hadoop-shim ---
+[INFO] Changes detected - recompiling the module!
+[INFO] Compiling 4 source files to /home/tanle/projects/ccra/tez/hadoop-shim/target/classes
+[INFO] 
+[INFO] --- maven-resources-plugin:2.6:testResources (default-testResources) @ hadoop-shim ---
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] Copying 1 resource
+[INFO] 
+[INFO] --- maven-compiler-plugin:3.1:testCompile (default-testCompile) @ hadoop-shim ---
+[INFO] Changes detected - recompiling the module!
+[INFO] Compiling 2 source files to /home/tanle/projects/ccra/tez/hadoop-shim/target/test-classes
+[INFO] 
+[INFO] --- maven-surefire-plugin:2.14.1:test (default-test) @ hadoop-shim ---
+[INFO] Tests are skipped.
+[INFO] 
+[INFO] --- maven-jar-plugin:2.4:jar (default-jar) @ hadoop-shim ---
+[INFO] Building jar: /home/tanle/projects/ccra/tez/hadoop-shim/target/hadoop-shim-0.8.4.jar
+[INFO] 
+[INFO] --- maven-jar-plugin:2.4:test-jar (default) @ hadoop-shim ---
+[INFO] Building jar: /home/tanle/projects/ccra/tez/hadoop-shim/target/hadoop-shim-0.8.4-tests.jar
+[INFO]                                                                         
+[INFO] ------------------------------------------------------------------------
+[INFO] Building tez-api 0.8.4
+[INFO] ------------------------------------------------------------------------
+[INFO] 
+[INFO] --- maven-clean-plugin:3.0.0:clean (default-clean) @ tez-api ---
+[INFO] Deleting /home/tanle/projects/ccra/tez/tez-api/target
+[INFO] 
+[INFO] --- buildnumber-maven-plugin:1.1:create (default) @ tez-api ---
+[INFO] Checking for local modifications: skipped.
+[INFO] Updating project files from SCM: skipped.
+[INFO] Executing: /bin/sh -c cd /home/tanle/projects/ccra/tez/tez-api && git rev-parse --verify HEAD
+[INFO] Working directory: /home/tanle/projects/ccra/tez/tez-api
+[INFO] Storing buildNumber: 1ba414b73fc2c968908f833e2322c8d36cb9854d at timestamp: 1480233720230
+[INFO] Executing: /bin/sh -c cd /home/tanle/projects/ccra/tez/tez-api && git rev-parse --verify HEAD
+[INFO] Working directory: /home/tanle/projects/ccra/tez/tez-api
+[INFO] Storing buildScmBranch: UNKNOWN
+[INFO] 
+[INFO] --- build-helper-maven-plugin:1.8:maven-version (maven-version) @ tez-api ---
+[INFO] 
+[INFO] --- hadoop-maven-plugins:2.7.2.1:protoc (compile-protoc) @ tez-api ---
+[INFO] 
+[INFO] --- maven-resources-plugin:2.6:resources (default-resources) @ tez-api ---
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] Copying 3 resources
+[INFO] Copying 1 resource
+[INFO] 
+[INFO] --- maven-compiler-plugin:3.1:compile (default-compile) @ tez-api ---
+[INFO] Changes detected - recompiling the module!
+[INFO] Compiling 176 source files to /home/tanle/projects/ccra/tez/tez-api/target/classes
+[INFO] 
+[INFO] --- maven-resources-plugin:2.6:testResources (default-testResources) @ tez-api ---
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] Copying 7 resources
+[INFO] 
+[INFO] --- maven-compiler-plugin:3.1:testCompile (default-testCompile) @ tez-api ---
+[INFO] Changes detected - recompiling the module!
+[INFO] Compiling 23 source files to /home/tanle/projects/ccra/tez/tez-api/target/test-classes
+[INFO] 
+[INFO] --- maven-surefire-plugin:2.14.1:test (default-test) @ tez-api ---
+[INFO] Tests are skipped.
+[INFO] 
+[INFO] --- maven-jar-plugin:2.4:jar (default-jar) @ tez-api ---
+[INFO] Building jar: /home/tanle/projects/ccra/tez/tez-api/target/tez-api-0.8.4.jar
+[INFO] 
+[INFO] --- maven-jar-plugin:2.4:test-jar (default) @ tez-api ---
+[INFO] Building jar: /home/tanle/projects/ccra/tez/tez-api/target/tez-api-0.8.4-tests.jar
+[INFO]                                                                         
+[INFO] ------------------------------------------------------------------------
+[INFO] Building tez-common 0.8.4
+[INFO] ------------------------------------------------------------------------
+[INFO] 
+[INFO] --- maven-clean-plugin:3.0.0:clean (default-clean) @ tez-common ---
+[INFO] Deleting /home/tanle/projects/ccra/tez/tez-common/target
+[INFO] 
+[INFO] --- buildnumber-maven-plugin:1.1:create (default) @ tez-common ---
+[INFO] Checking for local modifications: skipped.
+[INFO] Updating project files from SCM: skipped.
+[INFO] Executing: /bin/sh -c cd /home/tanle/projects/ccra/tez/tez-common && git rev-parse --verify HEAD
+[INFO] Working directory: /home/tanle/projects/ccra/tez/tez-common
+[INFO] Storing buildNumber: 1ba414b73fc2c968908f833e2322c8d36cb9854d at timestamp: 1480233724851
+[INFO] Executing: /bin/sh -c cd /home/tanle/projects/ccra/tez/tez-common && git rev-parse --verify HEAD
+[INFO] Working directory: /home/tanle/projects/ccra/tez/tez-common
+[INFO] Storing buildScmBranch: UNKNOWN
+[INFO] 
+[INFO] --- build-helper-maven-plugin:1.8:maven-version (maven-version) @ tez-common ---
+[INFO] 
+[INFO] --- maven-resources-plugin:2.6:resources (default-resources) @ tez-common ---
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] Copying 2 resources
+[INFO] 
+[INFO] --- maven-compiler-plugin:3.1:compile (default-compile) @ tez-common ---
+[INFO] Changes detected - recompiling the module!
+[INFO] Compiling 30 source files to /home/tanle/projects/ccra/tez/tez-common/target/classes
+[WARNING] /home/tanle/projects/ccra/tez/tez-common/src/main/java/org/apache/tez/util/TezMxBeanResourceCalculator.java: /home/tanle/projects/ccra/tez/tez-common/src/main/java/org/apache/tez/util/TezMxBeanResourceCalculator.java uses or overrides a deprecated API.
+[WARNING] /home/tanle/projects/ccra/tez/tez-common/src/main/java/org/apache/tez/util/TezMxBeanResourceCalculator.java: Recompile with -Xlint:deprecation for details.
+[INFO] 
+[INFO] --- maven-resources-plugin:2.6:testResources (default-testResources) @ tez-common ---
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] Copying 3 resources
+[INFO] 
+[INFO] --- maven-compiler-plugin:3.1:testCompile (default-testCompile) @ tez-common ---
+[INFO] Changes detected - recompiling the module!
+[INFO] Compiling 8 source files to /home/tanle/projects/ccra/tez/tez-common/target/test-classes
+[WARNING] /home/tanle/projects/ccra/tez/tez-common/src/test/java/org/apache/tez/util/TestTezMxBeanResourceCalculator.java: /home/tanle/projects/ccra/tez/tez-common/src/test/java/org/apache/tez/util/TestTezMxBeanResourceCalculator.java uses or overrides a deprecated API.
+[WARNING] /home/tanle/projects/ccra/tez/tez-common/src/test/java/org/apache/tez/util/TestTezMxBeanResourceCalculator.java: Recompile with -Xlint:deprecation for details.
+[INFO] 
+[INFO] --- maven-surefire-plugin:2.14.1:test (default-test) @ tez-common ---
+[INFO] Tests are skipped.
+[INFO] 
+[INFO] --- maven-jar-plugin:2.4:jar (default-jar) @ tez-common ---
+[INFO] Building jar: /home/tanle/projects/ccra/tez/tez-common/target/tez-common-0.8.4.jar
+[INFO] 
+[INFO] --- maven-jar-plugin:2.4:test-jar (default) @ tez-common ---
+[INFO] Building jar: /home/tanle/projects/ccra/tez/tez-common/target/tez-common-0.8.4-tests.jar
+[INFO]                                                                         
+[INFO] ------------------------------------------------------------------------
+[INFO] Building tez-runtime-internals 0.8.4
+[INFO] ------------------------------------------------------------------------
+[INFO] 
+[INFO] --- maven-clean-plugin:3.0.0:clean (default-clean) @ tez-runtime-internals ---
+[INFO] Deleting /home/tanle/projects/ccra/tez/tez-runtime-internals/target
+[INFO] 
+[INFO] --- buildnumber-maven-plugin:1.1:create (default) @ tez-runtime-internals ---
+[INFO] Checking for local modifications: skipped.
+[INFO] Updating project files from SCM: skipped.
+[INFO] Executing: /bin/sh -c cd /home/tanle/projects/ccra/tez/tez-runtime-internals && git rev-parse --verify HEAD
+[INFO] Working directory: /home/tanle/projects/ccra/tez/tez-runtime-internals
+[INFO] Storing buildNumber: 1ba414b73fc2c968908f833e2322c8d36cb9854d at timestamp: 1480233725251
+[INFO] Executing: /bin/sh -c cd /home/tanle/projects/ccra/tez/tez-runtime-internals && git rev-parse --verify HEAD
+[INFO] Working directory: /home/tanle/projects/ccra/tez/tez-runtime-internals
+[INFO] Storing buildScmBranch: UNKNOWN
+[INFO] 
+[INFO] --- build-helper-maven-plugin:1.8:maven-version (maven-version) @ tez-runtime-internals ---
+[INFO] 
+[INFO] --- hadoop-maven-plugins:2.7.2.1:protoc (compile-protoc) @ tez-runtime-internals ---
+[INFO] 
+[INFO] --- maven-resources-plugin:2.6:resources (default-resources) @ tez-runtime-internals ---
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] Copying 2 resources
+[INFO] 
+[INFO] --- maven-compiler-plugin:3.1:compile (default-compile) @ tez-runtime-internals ---
+[INFO] Changes detected - recompiling the module!
+[INFO] Compiling 48 source files to /home/tanle/projects/ccra/tez/tez-runtime-internals/target/classes
+[WARNING] /home/tanle/projects/ccra/tez/tez-runtime-internals/src/main/java/org/apache/tez/runtime/metrics/TaskCounterUpdater.java: /home/tanle/projects/ccra/tez/tez-runtime-internals/src/main/java/org/apache/tez/runtime/metrics/TaskCounterUpdater.java uses or overrides a deprecated API.
+[WARNING] /home/tanle/projects/ccra/tez/tez-runtime-internals/src/main/java/org/apache/tez/runtime/metrics/TaskCounterUpdater.java: Recompile with -Xlint:deprecation for details.
+[INFO] 
+[INFO] --- maven-resources-plugin:2.6:testResources (default-testResources) @ tez-runtime-internals ---
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] Copying 3 resources
+[INFO] 
+[INFO] --- maven-compiler-plugin:3.1:testCompile (default-testCompile) @ tez-runtime-internals ---
+[INFO] Changes detected - recompiling the module!
+[INFO] Compiling 12 source files to /home/tanle/projects/ccra/tez/tez-runtime-internals/target/test-classes
+[INFO] 
+[INFO] --- maven-surefire-plugin:2.14.1:test (default-test) @ tez-runtime-internals ---
+[INFO] Tests are skipped.
+[INFO] 
+[INFO] --- maven-jar-plugin:2.4:jar (default-jar) @ tez-runtime-internals ---
+[INFO] Building jar: /home/tanle/projects/ccra/tez/tez-runtime-internals/target/tez-runtime-internals-0.8.4.jar
+[INFO] 
+[INFO] --- maven-jar-plugin:2.4:test-jar (default) @ tez-runtime-internals ---
+[INFO] Building jar: /home/tanle/projects/ccra/tez/tez-runtime-internals/target/tez-runtime-internals-0.8.4-tests.jar
+[INFO]                                                                         
+[INFO] ------------------------------------------------------------------------
+[INFO] Building tez-runtime-library 0.8.4
+[INFO] ------------------------------------------------------------------------
+[INFO] 
+[INFO] --- maven-clean-plugin:3.0.0:clean (default-clean) @ tez-runtime-library ---
+[INFO] Deleting /home/tanle/projects/ccra/tez/tez-runtime-library/target
+[INFO] 
+[INFO] --- buildnumber-maven-plugin:1.1:create (default) @ tez-runtime-library ---
+[INFO] Checking for local modifications: skipped.
+[INFO] Updating project files from SCM: skipped.
+[INFO] Executing: /bin/sh -c cd /home/tanle/projects/ccra/tez/tez-runtime-library && git rev-parse --verify HEAD
+[INFO] Working directory: /home/tanle/projects/ccra/tez/tez-runtime-library
+[INFO] Storing buildNumber: 1ba414b73fc2c968908f833e2322c8d36cb9854d at timestamp: 1480233726413
+[INFO] Executing: /bin/sh -c cd /home/tanle/projects/ccra/tez/tez-runtime-library && git rev-parse --verify HEAD
+[INFO] Working directory: /home/tanle/projects/ccra/tez/tez-runtime-library
+[INFO] Storing buildScmBranch: UNKNOWN
+[INFO] 
+[INFO] --- build-helper-maven-plugin:1.8:maven-version (maven-version) @ tez-runtime-library ---
+[INFO] 
+[INFO] --- hadoop-maven-plugins:2.7.2.1:protoc (compile-protoc) @ tez-runtime-library ---
+[INFO] 
+[INFO] --- maven-resources-plugin:2.6:resources (default-resources) @ tez-runtime-library ---
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] Copying 2 resources
+[INFO] 
+[INFO] --- maven-compiler-plugin:3.1:compile (default-compile) @ tez-runtime-library ---
+[INFO] Changes detected - recompiling the module!
+[INFO] Compiling 116 source files to /home/tanle/projects/ccra/tez/tez-runtime-library/target/classes
+[WARNING] /home/tanle/projects/ccra/tez/tez-runtime-library/src/main/java/org/apache/tez/runtime/library/utils/FastByteComparisons.java:[26,16] sun.misc.Unsafe is internal proprietary API and may be removed in a future release
+[WARNING] /home/tanle/projects/ccra/tez/tez-runtime-library/src/main/java/org/apache/tez/runtime/library/utils/FastByteComparisons.java:[120,20] sun.misc.Unsafe is internal proprietary API and may be removed in a future release
+[WARNING] /home/tanle/projects/ccra/tez/tez-runtime-library/src/main/java/org/apache/tez/runtime/library/utils/FastByteComparisons.java:[126,22] sun.misc.Unsafe is internal proprietary API and may be removed in a future release
+[WARNING] /home/tanle/projects/ccra/tez/tez-runtime-library/src/main/java/org/apache/tez/runtime/library/utils/FastByteComparisons.java:[131,29] sun.misc.Unsafe is internal proprietary API and may be removed in a future release
+[WARNING] /home/tanle/projects/ccra/tez/tez-runtime-library/src/main/java/org/apache/tez/runtime/library/common/sort/impl/dflt/DefaultSorter.java: /home/tanle/projects/ccra/tez/tez-runtime-library/src/main/java/org/apache/tez/runtime/library/common/sort/impl/dflt/DefaultSorter.java uses or overrides a deprecated API.
+[WARNING] /home/tanle/projects/ccra/tez/tez-runtime-library/src/main/java/org/apache/tez/runtime/library/common/sort/impl/dflt/DefaultSorter.java: Recompile with -Xlint:deprecation for details.
+[INFO] 
+[INFO] --- maven-resources-plugin:2.6:testResources (default-testResources) @ tez-runtime-library ---
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] Copying 4 resources
+[INFO] 
+[INFO] --- maven-compiler-plugin:3.1:testCompile (default-testCompile) @ tez-runtime-library ---
+[INFO] Changes detected - recompiling the module!
+[INFO] Compiling 41 source files to /home/tanle/projects/ccra/tez/tez-runtime-library/target/test-classes
+[INFO] 
+[INFO] --- maven-surefire-plugin:2.14.1:test (default-test) @ tez-runtime-library ---
+[INFO] Tests are skipped.
+[INFO] 
+[INFO] --- maven-jar-plugin:2.4:jar (default-jar) @ tez-runtime-library ---
+[INFO] Building jar: /home/tanle/projects/ccra/tez/tez-runtime-library/target/tez-runtime-library-0.8.4.jar
+[INFO] 
+[INFO] --- maven-jar-plugin:2.4:test-jar (default) @ tez-runtime-library ---
+[INFO] Building jar: /home/tanle/projects/ccra/tez/tez-runtime-library/target/tez-runtime-library-0.8.4-tests.jar
+[INFO]                                                                         
+[INFO] ------------------------------------------------------------------------
+[INFO] Building tez-mapreduce 0.8.4
+[INFO] ------------------------------------------------------------------------
+[INFO] 
+[INFO] --- maven-clean-plugin:3.0.0:clean (default-clean) @ tez-mapreduce ---
+[INFO] Deleting /home/tanle/projects/ccra/tez/tez-mapreduce/target
+[INFO] 
+[INFO] --- buildnumber-maven-plugin:1.1:create (default) @ tez-mapreduce ---
+[INFO] Checking for local modifications: skipped.
+[INFO] Updating project files from SCM: skipped.
+[INFO] Executing: /bin/sh -c cd /home/tanle/projects/ccra/tez/tez-mapreduce && git rev-parse --verify HEAD
+[INFO] Working directory: /home/tanle/projects/ccra/tez/tez-mapreduce
+[INFO] Storing buildNumber: 1ba414b73fc2c968908f833e2322c8d36cb9854d at timestamp: 1480233728526
+[INFO] Executing: /bin/sh -c cd /home/tanle/projects/ccra/tez/tez-mapreduce && git rev-parse --verify HEAD
+[INFO] Working directory: /home/tanle/projects/ccra/tez/tez-mapreduce
+[INFO] Storing buildScmBranch: UNKNOWN
+[INFO] 
+[INFO] --- build-helper-maven-plugin:1.8:maven-version (maven-version) @ tez-mapreduce ---
+[INFO] 
+[INFO] --- hadoop-maven-plugins:2.7.2.1:protoc (compile-protoc) @ tez-mapreduce ---
+[INFO] 
+[INFO] --- maven-resources-plugin:2.6:resources (default-resources) @ tez-mapreduce ---
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] Copying 3 resources
+[INFO] 
+[INFO] --- maven-compiler-plugin:3.1:compile (default-compile) @ tez-mapreduce ---
+[INFO] Changes detected - recompiling the module!
+[INFO] Compiling 81 source files to /home/tanle/projects/ccra/tez/tez-mapreduce/target/classes
+[WARNING] /home/tanle/projects/ccra/tez/tez-mapreduce/src/main/java/org/apache/tez/mapreduce/hadoop/mapreduce/JobContextImpl.java: Some input files use or override a deprecated API.
+[WARNING] /home/tanle/projects/ccra/tez/tez-mapreduce/src/main/java/org/apache/tez/mapreduce/hadoop/mapreduce/JobContextImpl.java: Recompile with -Xlint:deprecation for details.
+[WARNING] /home/tanle/projects/ccra/tez/tez-mapreduce/src/main/java/org/apache/tez/mapreduce/hadoop/mapred/MRCounters.java: /home/tanle/projects/ccra/tez/tez-mapreduce/src/main/java/org/apache/tez/mapreduce/hadoop/mapred/MRCounters.java uses unchecked or unsafe operations.
+[WARNING] /home/tanle/projects/ccra/tez/tez-mapreduce/src/main/java/org/apache/tez/mapreduce/hadoop/mapred/MRCounters.java: Recompile with -Xlint:unchecked for details.
+[INFO] 
+[INFO] --- maven-resources-plugin:2.6:testResources (default-testResources) @ tez-mapreduce ---
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] Copying 3 resources
+[INFO] 
+[INFO] --- maven-compiler-plugin:3.1:testCompile (default-testCompile) @ tez-mapreduce ---
+[INFO] Changes detected - recompiling the module!
+[INFO] Compiling 18 source files to /home/tanle/projects/ccra/tez/tez-mapreduce/target/test-classes
+[INFO] 
+[INFO] --- maven-surefire-plugin:2.14.1:test (default-test) @ tez-mapreduce ---
+[INFO] Tests are skipped.
+[INFO] 
+[INFO] --- maven-jar-plugin:2.4:jar (default-jar) @ tez-mapreduce ---
+[INFO] Building jar: /home/tanle/projects/ccra/tez/tez-mapreduce/target/tez-mapreduce-0.8.4.jar
+[INFO] 
+[INFO] --- maven-jar-plugin:2.4:test-jar (default) @ tez-mapreduce ---
+[INFO] Building jar: /home/tanle/projects/ccra/tez/tez-mapreduce/target/tez-mapreduce-0.8.4-tests.jar
+[INFO]                                                                         
+[INFO] ------------------------------------------------------------------------
+[INFO] Building tez-examples 0.8.4
+[INFO] ------------------------------------------------------------------------
+[INFO] 
+[INFO] --- maven-clean-plugin:3.0.0:clean (default-clean) @ tez-examples ---
+[INFO] Deleting /home/tanle/projects/ccra/tez/tez-examples/target
+[INFO] 
+[INFO] --- buildnumber-maven-plugin:1.1:create (default) @ tez-examples ---
+[INFO] Checking for local modifications: skipped.
+[INFO] Updating project files from SCM: skipped.
+[INFO] Executing: /bin/sh -c cd /home/tanle/projects/ccra/tez/tez-examples && git rev-parse --verify HEAD
+[INFO] Working directory: /home/tanle/projects/ccra/tez/tez-examples
+[INFO] Storing buildNumber: 1ba414b73fc2c968908f833e2322c8d36cb9854d at timestamp: 1480233729537
+[INFO] Executing: /bin/sh -c cd /home/tanle/projects/ccra/tez/tez-examples && git rev-parse --verify HEAD
+[INFO] Working directory: /home/tanle/projects/ccra/tez/tez-examples
+[INFO] Storing buildScmBranch: UNKNOWN
+[INFO] 
+[INFO] --- build-helper-maven-plugin:1.8:maven-version (maven-version) @ tez-examples ---
+[INFO] 
+[INFO] --- maven-resources-plugin:2.6:resources (default-resources) @ tez-examples ---
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] Copying 2 resources
+[INFO] 
+[INFO] --- maven-compiler-plugin:3.1:compile (default-compile) @ tez-examples ---
+[INFO] Changes detected - recompiling the module!
+[INFO] Compiling 9 source files to /home/tanle/projects/ccra/tez/tez-examples/target/classes
+[INFO] 
+[INFO] --- maven-resources-plugin:2.6:testResources (default-testResources) @ tez-examples ---
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] Copying 2 resources
+[INFO] 
+[INFO] --- maven-compiler-plugin:3.1:testCompile (default-testCompile) @ tez-examples ---
+[INFO] No sources to compile
+[INFO] 
+[INFO] --- maven-surefire-plugin:2.14.1:test (default-test) @ tez-examples ---
+[INFO] Tests are skipped.
+[INFO] 
+[INFO] --- maven-jar-plugin:2.4:jar (default-jar) @ tez-examples ---
+[INFO] Building jar: /home/tanle/projects/ccra/tez/tez-examples/target/tez-examples-0.8.4.jar
+[INFO] 
+[INFO] --- maven-jar-plugin:2.4:test-jar (default) @ tez-examples ---
+[INFO] Building jar: /home/tanle/projects/ccra/tez/tez-examples/target/tez-examples-0.8.4-tests.jar
+[INFO]                                                                         
+[INFO] ------------------------------------------------------------------------
+[INFO] Building tez-dag 0.8.4
+[INFO] ------------------------------------------------------------------------
+[INFO] 
+[INFO] --- maven-clean-plugin:3.0.0:clean (default-clean) @ tez-dag ---
+[INFO] Deleting /home/tanle/projects/ccra/tez/tez-dag/target
+[INFO] 
+[INFO] --- buildnumber-maven-plugin:1.1:create (default) @ tez-dag ---
+[INFO] Checking for local modifications: skipped.
+[INFO] Updating project files from SCM: skipped.
+[INFO] Executing: /bin/sh -c cd /home/tanle/projects/ccra/tez/tez-dag && git rev-parse --verify HEAD
+[INFO] Working directory: /home/tanle/projects/ccra/tez/tez-dag
+[INFO] Storing buildNumber: 1ba414b73fc2c968908f833e2322c8d36cb9854d at timestamp: 1480233729804
+[INFO] Executing: /bin/sh -c cd /home/tanle/projects/ccra/tez/tez-dag && git rev-parse --verify HEAD
+[INFO] Working directory: /home/tanle/projects/ccra/tez/tez-dag
+[INFO] Storing buildScmBranch: UNKNOWN
+[INFO] 
+[INFO] --- build-helper-maven-plugin:1.8:maven-version (maven-version) @ tez-dag ---
+[INFO] 
+[INFO] --- hadoop-maven-plugins:2.7.2.1:protoc (compile-protoc) @ tez-dag ---
+[INFO] 
+[INFO] --- maven-resources-plugin:2.6:resources (default-resources) @ tez-dag ---
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] Copying 3 resources
+[INFO] Copying 1 resource
+[INFO] 
+[INFO] --- maven-compiler-plugin:3.1:compile (default-compile) @ tez-dag ---
+[INFO] Changes detected - recompiling the module!
+[INFO] Compiling 259 source files to /home/tanle/projects/ccra/tez/tez-dag/target/classes
+[INFO] 
+[INFO] --- maven-resources-plugin:2.6:testResources (default-testResources) @ tez-dag ---
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] Copying 3 resources
+[INFO] 
+[INFO] --- maven-compiler-plugin:3.1:testCompile (default-testCompile) @ tez-dag ---
+[INFO] Changes detected - recompiling the module!
+[INFO] Compiling 63 source files to /home/tanle/projects/ccra/tez/tez-dag/target/test-classes
+[WARNING] /home/tanle/projects/ccra/tez/tez-dag/src/test/java/org/apache/tez/dag/app/TestRecoveryParser.java: /home/tanle/projects/ccra/tez/tez-dag/src/test/java/org/apache/tez/dag/app/TestRecoveryParser.java uses or overrides a deprecated API.
+[WARNING] /home/tanle/projects/ccra/tez/tez-dag/src/test/java/org/apache/tez/dag/app/TestRecoveryParser.java: Recompile with -Xlint:deprecation for details.
+[INFO] 
+[INFO] --- maven-surefire-plugin:2.14.1:test (default-test) @ tez-dag ---
+[INFO] Tests are skipped.
+[INFO] 
+[INFO] --- maven-jar-plugin:2.4:jar (default-jar) @ tez-dag ---
+[INFO] Building jar: /home/tanle/projects/ccra/tez/tez-dag/target/tez-dag-0.8.4.jar
+[INFO] 
+[INFO] --- maven-jar-plugin:2.4:test-jar (default) @ tez-dag ---
+[INFO] Building jar: /home/tanle/projects/ccra/tez/tez-dag/target/tez-dag-0.8.4-tests.jar
+[INFO]                                                                         
+[INFO] ------------------------------------------------------------------------
+[INFO] Building tez-tests 0.8.4
+[INFO] ------------------------------------------------------------------------
+[INFO] 
+[INFO] --- maven-clean-plugin:3.0.0:clean (default-clean) @ tez-tests ---
+[INFO] Deleting /home/tanle/projects/ccra/tez/tez-tests/target
+[INFO] 
+[INFO] --- buildnumber-maven-plugin:1.1:create (default) @ tez-tests ---
+[INFO] Checking for local modifications: skipped.
+[INFO] Updating project files from SCM: skipped.
+[INFO] Executing: /bin/sh -c cd /home/tanle/projects/ccra/tez/tez-tests && git rev-parse --verify HEAD
+[INFO] Working directory: /home/tanle/projects/ccra/tez/tez-tests
+[INFO] Storing buildNumber: 1ba414b73fc2c968908f833e2322c8d36cb9854d at timestamp: 1480233734211
+[INFO] Executing: /bin/sh -c cd /home/tanle/projects/ccra/tez/tez-tests && git rev-parse --verify HEAD
+[INFO] Working directory: /home/tanle/projects/ccra/tez/tez-tests
+[INFO] Storing buildScmBranch: UNKNOWN
+[INFO] 
+[INFO] --- build-helper-maven-plugin:1.8:maven-version (maven-version) @ tez-tests ---
+[INFO] 
+[INFO] --- maven-resources-plugin:2.6:resources (default-resources) @ tez-tests ---
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] Copying 2 resources
+[INFO] 
+[INFO] --- maven-compiler-plugin:3.1:compile (default-compile) @ tez-tests ---
+[INFO] Changes detected - recompiling the module!
+[INFO] Compiling 19 source files to /home/tanle/projects/ccra/tez/tez-tests/target/classes
+[WARNING] /home/tanle/projects/ccra/tez/tez-tests/src/main/java/org/apache/tez/mapreduce/examples/Sort.java: /home/tanle/projects/ccra/tez/tez-tests/src/main/java/org/apache/tez/mapreduce/examples/Sort.java uses or overrides a deprecated API.
+[WARNING] /home/tanle/projects/ccra/tez/tez-tests/src/main/java/org/apache/tez/mapreduce/examples/Sort.java: Recompile with -Xlint:deprecation for details.
+[INFO] 
+[INFO] --- maven-resources-plugin:2.6:testResources (default-testResources) @ tez-tests ---
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] Copying 2 resources
+[INFO] 
+[INFO] --- maven-compiler-plugin:3.1:testCompile (default-testCompile) @ tez-tests ---
+[INFO] Changes detected - recompiling the module!
+[INFO] Compiling 29 source files to /home/tanle/projects/ccra/tez/tez-tests/target/test-classes
+[WARNING] /home/tanle/projects/ccra/tez/tez-tests/src/test/java/org/apache/tez/test/TestRecovery.java: /home/tanle/projects/ccra/tez/tez-tests/src/test/java/org/apache/tez/test/TestRecovery.java uses or overrides a deprecated API.
+[WARNING] /home/tanle/projects/ccra/tez/tez-tests/src/test/java/org/apache/tez/test/TestRecovery.java: Recompile with -Xlint:deprecation for details.
+[INFO] 
+[INFO] --- maven-surefire-plugin:2.14.1:test (default-test) @ tez-tests ---
+[INFO] Tests are skipped.
+[INFO] 
+[INFO] --- maven-jar-plugin:2.4:jar (default-jar) @ tez-tests ---
+[INFO] Building jar: /home/tanle/projects/ccra/tez/tez-tests/target/tez-tests-0.8.4.jar
+[INFO] 
+[INFO] --- maven-jar-plugin:2.4:test-jar (default) @ tez-tests ---
+[INFO] Building jar: /home/tanle/projects/ccra/tez/tez-tests/target/tez-tests-0.8.4-tests.jar
+[INFO]                                                                         
+[INFO] ------------------------------------------------------------------------
+[INFO] Building tez-ext-service-tests 0.8.4
+[INFO] ------------------------------------------------------------------------
+[INFO] 
+[INFO] --- maven-clean-plugin:3.0.0:clean (default-clean) @ tez-ext-service-tests ---
+[INFO] Deleting /home/tanle/projects/ccra/tez/tez-ext-service-tests/target
+[INFO] 
+[INFO] --- buildnumber-maven-plugin:1.1:create (default) @ tez-ext-service-tests ---
+[INFO] Checking for local modifications: skipped.
+[INFO] Updating project files from SCM: skipped.
+[INFO] Executing: /bin/sh -c cd /home/tanle/projects/ccra/tez/tez-ext-service-tests && git rev-parse --verify HEAD
+[INFO] Working directory: /home/tanle/projects/ccra/tez/tez-ext-service-tests
+[INFO] Storing buildNumber: 1ba414b73fc2c968908f833e2322c8d36cb9854d at timestamp: 1480233734988
+[INFO] Executing: /bin/sh -c cd /home/tanle/projects/ccra/tez/tez-ext-service-tests && git rev-parse --verify HEAD
+[INFO] Working directory: /home/tanle/projects/ccra/tez/tez-ext-service-tests
+[INFO] Storing buildScmBranch: UNKNOWN
+[INFO] 
+[INFO] --- build-helper-maven-plugin:1.8:maven-version (maven-version) @ tez-ext-service-tests ---
+[INFO] 
+[INFO] --- hadoop-maven-plugins:2.7.2.1:protoc (compile-protoc) @ tez-ext-service-tests ---
+[INFO] 
+[INFO] --- maven-resources-plugin:2.6:resources (default-resources) @ tez-ext-service-tests ---
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] skip non existing resourceDirectory /home/tanle/projects/ccra/tez/tez-ext-service-tests/src/main/resources
+[INFO] skip non existing resourceDirectory /home/tanle/projects/ccra/tez/tez-ext-service-tests/src/main/resources
+[INFO] 
+[INFO] --- maven-compiler-plugin:3.1:compile (default-compile) @ tez-ext-service-tests ---
+[INFO] Changes detected - recompiling the module!
+[INFO] Compiling 1 source file to /home/tanle/projects/ccra/tez/tez-ext-service-tests/target/classes
+[INFO] 
+[INFO] --- maven-resources-plugin:2.6:testResources (default-testResources) @ tez-ext-service-tests ---
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] Copying 1 resource
+[INFO] 
+[INFO] --- maven-compiler-plugin:3.1:testCompile (default-testCompile) @ tez-ext-service-tests ---
+[INFO] Changes detected - recompiling the module!
+[INFO] Compiling 25 source files to /home/tanle/projects/ccra/tez/tez-ext-service-tests/target/test-classes
+[INFO] 
+[INFO] --- maven-surefire-plugin:2.14.1:test (default-test) @ tez-ext-service-tests ---
+[INFO] Tests are skipped.
+[INFO] 
+[INFO] --- maven-jar-plugin:2.4:jar (default-jar) @ tez-ext-service-tests ---
+[INFO] Building jar: /home/tanle/projects/ccra/tez/tez-ext-service-tests/target/tez-ext-service-tests-0.8.4.jar
+[INFO] 
+[INFO] --- maven-jar-plugin:2.4:test-jar (default) @ tez-ext-service-tests ---
+[INFO] Building jar: /home/tanle/projects/ccra/tez/tez-ext-service-tests/target/tez-ext-service-tests-0.8.4-tests.jar
+[INFO]                                                                         
+[INFO] ------------------------------------------------------------------------
+[INFO] Building tez-ui 0.8.4
+[INFO] ------------------------------------------------------------------------
+[INFO] 
+[INFO] --- maven-clean-plugin:3.0.0:clean (default-clean) @ tez-ui ---
+[INFO] Deleting /home/tanle/projects/ccra/tez/tez-ui/target
+[INFO] 
+[INFO] --- buildnumber-maven-plugin:1.1:create (default) @ tez-ui ---
+[INFO] Checking for local modifications: skipped.
+[INFO] Updating project files from SCM: skipped.
+[INFO] Executing: /bin/sh -c cd /home/tanle/projects/ccra/tez/tez-ui && git rev-parse --verify HEAD
+[INFO] Working directory: /home/tanle/projects/ccra/tez/tez-ui
+[INFO] Storing buildNumber: 1ba414b73fc2c968908f833e2322c8d36cb9854d at timestamp: 1480233735638
+[INFO] Executing: /bin/sh -c cd /home/tanle/projects/ccra/tez/tez-ui && git rev-parse --verify HEAD
+[INFO] Working directory: /home/tanle/projects/ccra/tez/tez-ui
+[INFO] Storing buildScmBranch: UNKNOWN
+[INFO] 
+[INFO] --- build-helper-maven-plugin:1.8:maven-version (maven-version) @ tez-ui ---
+[INFO] 
+[INFO] --- frontend-maven-plugin:0.0.22:install-node-and-npm (install node and npm) @ tez-ui ---
+[INFO] Node v0.12.2 is already installed.
+[INFO] Found NPM version 2.15.3
+[INFO] 
+[INFO] --- frontend-maven-plugin:0.0.22:npm (npm install) @ tez-ui ---
+[INFO] Running 'npm install --color=false' in /home/tanle/projects/ccra/tez/tez-ui/src/main/webapp
+[ERROR] npm WARN package.json tez-ui@0.0.1 No license field.
+[INFO] 
+[INFO] --- exec-maven-plugin:1.3.2:exec (Bower install) @ tez-ui ---
+[INFO] 
+[INFO] --- exec-maven-plugin:1.3.2:exec (grunt build) @ tez-ui ---
+[4mRunning "clean:dist" (clean) task[24m
+Cleaning .tmp...[32mOK[39m
+Cleaning dist/fonts...[32mOK[39m
+Cleaning dist/img...[32mOK[39m
+Cleaning dist/index.html...[32mOK[39m
+Cleaning dist/scripts...[32mOK[39m
+Cleaning dist/styles...[32mOK[39m
+
+[4mRunning "replace:app" (replace) task[24m
+Replace [36mapp/index.html[39m -> [36m.tmp/index.html[39m
+
+[4mRunning "useminPrepare:html" (useminPrepare) task[24m
+Going through [36m.tmp/index.html[39m to update the config
+Looking for build script HTML comment blocks
+
+[1mFound a block:[22m
+[36m    <!-- build:css styles/main.css -->[39m
+[36m    <link rel="stylesheet" href="styles/main.css">[39m
+[36m    <link rel="stylesheet" href="styles/swimlanes.css">[39m
+[36m    <link rel="stylesheet" href="bower_components/ember-table/dist/ember-table.css">[39m
+[36m    <link rel="stylesheet" href="bower_components/font-awesome/css/font-awesome.css">[39m
+[36m    <link rel="stylesheet" href="bower_components/jquery-ui/themes/smoothness/jquery-ui.css">[39m
+[36m    <link rel="stylesheet" href="bower_components/codemirror/lib/codemirror.css">[39m
+[36m    <!-- endbuild -->[39m
+Updating config with the following assets:
+    - [36m.tmp/styles/main.css[39m
+    - [36m.tmp/styles/swimlanes.css[39m
+    - [36m.tmp/bower_components/ember-table/dist/ember-table.css[39m
+    - [36m.tmp/bower_components/font-awesome/css/font-awesome.css[39m
+    - [36m.tmp/bower_components/jquery-ui/themes/smoothness/jquery-ui.css[39m
+    - [36m.tmp/bower_components/codemirror/lib/codemirror.css[39m
+
+[1mFound a block:[22m
+[36m    <!-- build:js(app) scripts/components.js -->[39m
+[36m    <script src="bower_components/jquery/jquery.js"></script>[39m
+[36m    <script src="bower_components/jquery-ui/jquery-ui.js"></script>[39m
+[36m    <script src="bower_components/bootstrap/js/dropdown.js"></script>[39m
+[36m    <script src="bower_components/bootstrap/js/button.js"></script>[39m
+[36m    <script src="bower_components/jquery-ui/ui/datepicker.js"></script>[39m
+[36m    <script src="bower_components/moment/moment.js"></script>[39m
+[36m    <script src="bower_components/moment-timezone/builds/moment-timezone-with-data-2010-2020.js"></script>[39m
+[36m    <script src="bower_components/handlebars/handlebars.js"></script>[39m
+[36m    <script src="bower_components/ember/ember.js"></script>[39m
+[36m    <script src="bower_components/ember-data/ember-data.js"></script>[39m
+[36m    <script src="bower_components/ember-json-mapper/ember-json-mapper.js"></script>[39m
+[36m    <script src="bower_components/ember-i18n/lib/i18n.js"></script>[39m
+[36m    <script src="bower_components/ember-addons.bs_for_ember/dist/js/bs-core.min.js"></script>[39m
+[36m    <script src="bower_components/ember-addons.bs_for_ember/dist/js/bs-basic.min.js"></script>[39m
+[36m    <script src="bower_components/ember-addons.bs_for_ember/dist/js/bs-button.min.js"></script>[39m
+[36m    <script src="bower_components/ember-addons.bs_for_ember/dist/js/bs-modal.min.js"></script>[39m
+[36m    <script src="bower_components/ember-addons.bs_for_ember/dist/js/bs-nav.min.js"></script>[39m
+[36m    <script src="bower_components/ember-addons.bs_for_ember/dist/js/bs-items-action-bar.min.js"></script>[39m
+[36m    <script src="bower_components/ember-addons.bs_for_ember/dist/js/bs-badge.min.js"></script>[39m
+[36m    <script src="bower_components/ember-addons.bs_for_ember/dist/js/bs-label.min.js"></script>[39m
+[36m    <script src="bower_components/ember-addons.bs_for_ember/dist/js/bs-progressbar.min.js"></script>[39m
+[36m    <script src="bower_components/antiscroll/antiscroll.js"></script>[39m
+[36m    <script src="bower_components/jquery-mousewheel/jquery.mousewheel.js"></script>[39m
+[36m    <script src="bower_components/ember-table/dist/ember-table.js"></script>[39m
+[36m    <script src="bower_components/ember-addons.bs_for_ember/dist/js/bs-nav.min.js"></script>[39m
+[36m    <script src="bower_components/d3/d3.js"></script>[39m
+[36m    <script src="bower_components/zip.js/WebContent/zip.js"></script>[39m
+[36m    <script src="bower_components/FileSaver.js/FileSaver.min.js"></script>[39m
+[36m    <script src="bower_components/codemirror/lib/codemirror.js"></script>[39m
+[36m    <script src="bower_components/codemirror/mode/sql/sql.js"></script>[39m
+[36m    <script src="bower_components/codemirror/mode/pig/pig.js"></script>[39m
+[36m    <!-- endbuild -->[39m
+Updating config with the following assets:
+    - [36mapp/bower_components/jquery/jquery.js[39m
+    - [36mapp/bower_components/jquery-ui/jquery-ui.js[39m
+    - [36mapp/bower_components/bootstrap/js/dropdown.js[39m
+    - [36mapp/bower_components/bootstrap/js/button.js[39m
+    - [36mapp/bower_components/jquery-ui/ui/datepicker.js[39m
+    - [36mapp/bower_components/moment/moment.js[39m
+    - [36mapp/bower_components/moment-timezone/builds/moment-timezone-with-data-2010-2020.js[39m
+    - [36mapp/bower_components/handlebars/handlebars.js[39m
+    - [36mapp/bower_components/ember/ember.js[39m
+    - [36mapp/bower_components/ember-data/ember-data.js[39m
+    - [36mapp/bower_components/ember-json-mapper/ember-json-mapper.js[39m
+    - [36mapp/bower_components/ember-i18n/lib/i18n.js[39m
+    - [36mapp/bower_components/ember-addons.bs_for_ember/dist/js/bs-core.min.js[39m
+    - [36mapp/bower_components/ember-addons.bs_for_ember/dist/js/bs-basic.min.js[39m
+    - [36mapp/bower_components/ember-addons.bs_for_ember/dist/js/bs-button.min.js[39m
+    - [36mapp/bower_components/ember-addons.bs_for_ember/dist/js/bs-modal.min.js[39m
+    - [36mapp/bower_components/ember-addons.bs_for_ember/dist/js/bs-nav.min.js[39m
+    - [36mapp/bower_components/ember-addons.bs_for_ember/dist/js/bs-items-action-bar.min.js[39m
+    - [36mapp/bower_components/ember-addons.bs_for_ember/dist/js/bs-badge.min.js[39m
+    - [36mapp/bower_components/ember-addons.bs_for_ember/dist/js/bs-label.min.js[39m
+    - [36mapp/bower_components/ember-addons.bs_for_ember/dist/js/bs-progressbar.min.js[39m
+    - [36mapp/bower_components/antiscroll/antiscroll.js[39m
+    - [36mapp/bower_components/jquery-mousewheel/jquery.mousewheel.js[39m
+    - [36mapp/bower_components/ember-table/dist/ember-table.js[39m
+    - [36mapp/bower_components/ember-addons.bs_for_ember/dist/js/bs-nav.min.js[39m
+    - [36mapp/bower_components/d3/d3.js[39m
+    - [36mapp/bower_components/zip.js/WebContent/zip.js[39m
+    - [36mapp/bower_components/FileSaver.js/FileSaver.min.js[39m
+    - [36mapp/bower_components/codemirror/lib/codemirror.js[39m
+    - [36mapp/bower_components/codemirror/mode/sql/sql.js[39m
+    - [36mapp/bower_components/codemirror/mode/pig/pig.js[39m
+
+[1mFound a block:[22m
+[36m    <!-- build:js(.tmp) scripts/templates.js -->[39m
+[36m    <script src="scripts/compiled-templates.js"></script>[39m
+[36m    <!-- endbuild -->[39m
+Updating config with the following assets:
+    - [36m.tmp/scripts/compiled-templates.js[39m
+
+[1mFound a block:[22m
+[36m    <!-- build:js(.tmp) scripts/main.js -->[39m
+[36m    <script src="scripts/combined-scripts.js"></script>[39m
+[36m    <!-- endbuild -->[39m
+Updating config with the following assets:
+    - [36m.tmp/scripts/combined-scripts.js[39m
+
+[1mConfiguration is now:[22m
+
+[1m  cssmin:[22m
+  { dist: 
+   { files: 
+      { [32m'<%= yeoman.dist %>/styles/main.css'[39m: 
+         [ [32m'.tmp/styles/{,*/}*.css'[39m,
+           [32m'app/styles/{,*/}*.css'[39m,
+           [32m'app/bower_components/ember-table/dist/ember-table.css'[39m,
+           [32m'app/bower_components/font-awesome/css/font-awesome.css'[39m,
+           [32m'app/bower_components/jquery-ui/themes/smoothness/jquery-ui.css'[39m,
+           [32m'app/bower_components/codemirror/lib/codemirror.css'[39m ] } },
+  [32m'dist/styles/main.css'[39m: [32m'dist/styles/main.css'[39m }
+
+[1m  concat:[22m
+  { [32m'dist/styles/main.css'[39m: 
+   [ [32m'.tmp/styles/main.css'[39m,
+     [32m'.tmp/styles/swimlanes.css'[39m,
+     [32m'.tmp/bower_components/ember-table/dist/ember-table.css'[39m,
+     [32m'.tmp/bower_components/font-awesome/css/font-awesome.css'[39m,
+     [32m'.tmp/bower_components/jquery-ui/themes/smoothness/jquery-ui.css'[39m,
+     [32m'.tmp/bower_components/codemirror/lib/codemirror.css'[39m ],
+  [32m'dist/scripts/components.js'[39m: 
+   [ [32m'app/bower_components/jquery/jquery.js'[39m,
+     [32m'app/bower_components/jquery-ui/jquery-ui.js'[39m,
+     [32m'app/bower_components/bootstrap/js/dropdown.js'[39m,
+     [32m'app/bower_components/bootstrap/js/button.js'[39m,
+     [32m'app/bower_components/jquery-ui/ui/datepicker.js'[39m,
+     [32m'app/bower_components/moment/moment.js'[39m,
+     [32m'app/bower_components/moment-timezone/builds/moment-timezone-with-data-2010-2020.js'[39m,
+     [32m'app/bower_components/handlebars/handlebars.js'[39m,
+     [32m'app/bower_components/ember/ember.js'[39m,
+     [32m'app/bower_components/ember-data/ember-data.js'[39m,
+     [32m'app/bower_components/ember-json-mapper/ember-json-mapper.js'[39m,
+     [32m'app/bower_components/ember-i18n/lib/i18n.js'[39m,
+     [32m'app/bower_components/ember-addons.bs_for_ember/dist/js/bs-core.min.js'[39m,
+     [32m'app/bower_components/ember-addons.bs_for_ember/dist/js/bs-basic.min.js'[39m,
+     [32m'app/bower_components/ember-addons.bs_for_ember/dist/js/bs-button.min.js'[39m,
+     [32m'app/bower_components/ember-addons.bs_for_ember/dist/js/bs-modal.min.js'[39m,
+     [32m'app/bower_components/ember-addons.bs_for_ember/dist/js/bs-nav.min.js'[39m,
+     [32m'app/bower_components/ember-addons.bs_for_ember/dist/js/bs-items-action-bar.min.js'[39m,
+     [32m'app/bower_components/ember-addons.bs_for_ember/dist/js/bs-badge.min.js'[39m,
+     [32m'app/bower_components/ember-addons.bs_for_ember/dist/js/bs-label.min.js'[39m,
+     [32m'app/bower_components/ember-addons.bs_for_ember/dist/js/bs-progressbar.min.js'[39m,
+     [32m'app/bower_components/antiscroll/antiscroll.js'[39m,
+     [32m'app/bower_components/jquery-mousewheel/jquery.mousewheel.js'[39m,
+     [32m'app/bower_components/ember-table/dist/ember-table.js'[39m,
+     [32m'app/bower_components/ember-addons.bs_for_ember/dist/js/bs-nav.min.js'[39m,
+     [32m'app/bower_components/d3/d3.js'[39m,
+     [32m'app/bower_components/zip.js/WebContent/zip.js'[39m,
+     [32m'app/bower_components/FileSaver.js/FileSaver.min.js'[39m,
+     [32m'app/bower_components/codemirror/lib/codemirror.js'[39m,
+     [32m'app/bower_components/codemirror/mode/sql/sql.js'[39m,
+     [32m'app/bower_components/codemirror/mode/pig/pig.js'[39m ],
+  [32m'dist/scripts/templates.js'[39m: [ [32m'.tmp/scripts/compiled-templates.js'[39m ],
+  [32m'dist/scripts/main.js'[39m: [ [32m'.tmp/scripts/combined-scripts.js'[39m ] }
+
+[1m  uglify:[22m
+  { [32m'dist/scripts/components.js'[39m: [32m'dist/scripts/components.js'[39m,
+  [32m'dist/scripts/templates.js'[39m: [32m'dist/scripts/templates.js'[39m,
+  [32m'dist/scripts/main.js'[39m: [32m'dist/scripts/main.js'[39m }
+
+[1m  requirejs:[22m
+  {}
+
+[4mRunning "concurrent:dist" (concurrent) task[24m
+    
+    [4mRunning "htmlmin:dist" (htmlmin) task[24m
+    File dist/index.html created.
+    
+    [32mDone, without errors.[39m
+        
+    [4mRunning "svgmin:dist" (svgmin) task[24m
+    
+    [32mDone, without errors.[39m
+        
+    [4mRunning "emberTemplates:dist" (emberTemplates) task[24m
+    File ".tmp/scripts/compiled-templates.js" created.
+    
+    [4mRunning "emberTemplates:development" (emberTemplates) task[24m
+    File ".tmp/scripts/compiled-templates.js" created.
+    
+    [32mDone, without errors.[39m
+    
+[4mRunning "neuter:app" (neuter) task[24m
+
+[4mRunning "less:production" (less) task[24m
+File .tmp/styles/styles.css created: 386.78 kB → 317.12 kB
+
+[4mRunning "concat:dist/styles/main.css" (concat) task[24m
+File "dist/styles/main.css" created.
+
+[4mRunning "concat:dist/scripts/components.js" (concat) task[24m
+File "dist/scripts/components.js" created.
+
+[4mRunning "concat:dist/scripts/templates.js" (concat) task[24m
+File "dist/scripts/templates.js" created.
+
+[4mRunning "concat:dist/scripts/main.js" (concat) task[24m
+File "dist/scripts/main.js" created.
+
+[4mRunning "cssmin:dist" (cssmin) task[24m
+File dist/styles/main.css created.
+
+[4mRunning "cssmin:dist/styles/main.css" (cssmin) task[24m
+File dist/styles/main.css created.
+
+[4mRunning "copy:dist" (copy) task[24m
+Copied [36m27[39m files
+
+[4mRunning "usemin:html" (usemin) task[24m
+
+[1mProcessing as HTML - dist/index.html[22m
+Update the HTML to reference our concat/min/revved script files
+Update the HTML with the new css filenames
+Update the HTML with the new img filenames
+Update the HTML with data-main tags
+Update the HTML with the data tags
+Update the HTML with background imgs, case there is some inline style
+Update the HTML with anchors images
+Update the HTML with reference in input
+
+[4mRunning "usemin:css" (usemin) task[24m
+
+[1mProcessing as CSS - dist/styles/main.css[22m
+Update the CSS with new img filenames
+
+[32mDone, without errors.[39m
+[INFO] 
+[INFO] --- maven-resources-plugin:2.6:resources (default-resources) @ tez-ui ---
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] Copying 2 resources
+[INFO] 
+[INFO] --- maven-compiler-plugin:3.1:compile (default-compile) @ tez-ui ---
+[INFO] No sources to compile
+[INFO] 
+[INFO] --- maven-resources-plugin:2.6:testResources (default-testResources) @ tez-ui ---
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] skip non existing resourceDirectory /home/tanle/projects/ccra/tez/tez-ui/src/test/resources
+[INFO] 
+[INFO] --- maven-compiler-plugin:3.1:testCompile (default-testCompile) @ tez-ui ---
+[INFO] No sources to compile
+[INFO] 
+[INFO] --- maven-surefire-plugin:2.14.1:test (default-test) @ tez-ui ---
+[INFO] Tests are skipped.
+[INFO] 
+[INFO] --- maven-war-plugin:2.5:war (default-war) @ tez-ui ---
+[INFO] Packaging webapp
+[INFO] Assembling webapp [tez-ui] in [/home/tanle/projects/ccra/tez/tez-ui/target/tez-ui-0.8.4]
+[INFO] Processing war project
+[INFO] Copying webapp webResources [/home/tanle/projects/ccra/tez/tez-ui/src/main/resources/] to [/home/tanle/projects/ccra/tez/tez-ui/target/tez-ui-0.8.4]
+[INFO] Copying webapp webResources [/home/tanle/projects/ccra/tez/tez-ui/src/main/webapp/dist] to [/home/tanle/projects/ccra/tez/tez-ui/target/tez-ui-0.8.4]
+[INFO] Copying webapp webResources [/home/tanle/projects/ccra/tez/tez-ui/src/main/webapp/dist] to [/home/tanle/projects/ccra/tez/tez-ui/target/tez-ui-0.8.4]
+[INFO] Copying webapp resources [/home/tanle/projects/ccra/tez/tez-ui/src/main/webapp/dist]
+[INFO] Webapp assembled in [67 msecs]
+[INFO] Building war: /home/tanle/projects/ccra/tez/tez-ui/target/tez-ui-0.8.4.war
+[INFO] 
+[INFO] --- maven-jar-plugin:2.4:test-jar (default) @ tez-ui ---
+[WARNING] JAR will be empty - no content was marked for inclusion!
+[INFO] Building jar: /home/tanle/projects/ccra/tez/tez-ui/target/tez-ui-0.8.4-tests.jar
+[INFO]                                                                         
+[INFO] ------------------------------------------------------------------------
+[INFO] Building tez-ui2 0.8.4
+[INFO] ------------------------------------------------------------------------
+[INFO] 
+[INFO] --- maven-clean-plugin:3.0.0:clean (default-clean) @ tez-ui2 ---
+[INFO] Deleting /home/tanle/projects/ccra/tez/tez-ui2/target
+[INFO] 
+[INFO] --- buildnumber-maven-plugin:1.1:create (default) @ tez-ui2 ---
+[INFO] Checking for local modifications: skipped.
+[INFO] Updating project files from SCM: skipped.
+[INFO] Executing: /bin/sh -c cd /home/tanle/projects/ccra/tez/tez-ui2 && git rev-parse --verify HEAD
+[INFO] Working directory: /home/tanle/projects/ccra/tez/tez-ui2
+[INFO] Storing buildNumber: 1ba414b73fc2c968908f833e2322c8d36cb9854d at timestamp: 1480233751878
+[INFO] Executing: /bin/sh -c cd /home/tanle/projects/ccra/tez/tez-ui2 && git rev-parse --verify HEAD
+[INFO] Working directory: /home/tanle/projects/ccra/tez/tez-ui2
+[INFO] Storing buildScmBranch: UNKNOWN
+[INFO] 
+[INFO] --- build-helper-maven-plugin:1.8:maven-version (maven-version) @ tez-ui2 ---
+[INFO] 
+[INFO] --- frontend-maven-plugin:0.0.22:install-node-and-npm (install node and npm) @ tez-ui2 ---
+[INFO] Node v0.12.2 is already installed.
+[INFO] Found NPM version 2.15.3
+[INFO] 
+[INFO] --- frontend-maven-plugin:0.0.22:npm (npm install) @ tez-ui2 ---
+[INFO] Running 'npm install --color=false' in /home/tanle/projects/ccra/tez/tez-ui2/src/main/webapp
+[INFO] 
+[INFO] --- frontend-maven-plugin:0.0.22:bower (bower install) @ tez-ui2 ---
+[INFO] Running 'bower install' in /home/tanle/projects/ccra/tez/tez-ui2/src/main/webapp
+[INFO] 
+[INFO] --- exec-maven-plugin:1.3.2:exec (ember build) @ tez-ui2 ---
+
+> tez-ui@0.2.0 build:mvn /home/tanle/projects/ccra/tez/tez-ui2/src/main/webapp
+> TMPDIR=tmp node/node ./node_modules/ember-cli/bin/ember build -prod
+
+version: 1.13.13
+Could not find watchman, falling back to NodeWatcher for file system events.
+Visit http://www.ember-cli.com/user-guide/#watchman for more info.
+BuildingBuilding.Building..Building...BuildingBuilding.Building..Building...BuildingBuilding.Building..Building...BuildingBuilding.Building..Building...BuildingBuilding.Building..Building...BuildingBuilding.Building..Building...BuildingBuilding.Building..Building...BuildingBuilding.Built project successfully. Stored in "dist/".
+[INFO] 
+[INFO] --- maven-resources-plugin:2.6:resources (default-resources) @ tez-ui2 ---
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] Copying 2 resources
+[INFO] 
+[INFO] --- maven-compiler-plugin:3.1:compile (default-compile) @ tez-ui2 ---
+[INFO] No sources to compile
+[INFO] 
+[INFO] --- maven-resources-plugin:2.6:testResources (default-testResources) @ tez-ui2 ---
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] skip non existing resourceDirectory /home/tanle/projects/ccra/tez/tez-ui2/src/test/resources
+[INFO] 
+[INFO] --- maven-compiler-plugin:3.1:testCompile (default-testCompile) @ tez-ui2 ---
+[INFO] No sources to compile
+[INFO] 
+[INFO] --- maven-surefire-plugin:2.14.1:test (default-test) @ tez-ui2 ---
+[INFO] Tests are skipped.
+[INFO] 
+[INFO] --- exec-maven-plugin:1.3.2:exec (ember test) @ tez-ui2 ---
+[INFO] skipping execute as per configuraion
+[INFO] 
+[INFO] --- wro4j-maven-plugin:1.7.9:run (default) @ tez-ui2 ---
+[INFO] src/main/webapp/dist/assets
+[INFO] Executing the mojo: 
+[INFO] Wro4j Model path: /home/tanle/projects/ccra/tez/tez-ui2/src/main/webapp/WEB-INF/wro.xml
+[INFO] targetGroups: tez-ui,vendor
+[INFO] minimize: true
+[INFO] ignoreMissingResources: null
+[INFO] parallelProcessing: false
+[INFO] buildDirectory: /home/tanle/projects/ccra/tez/tez-ui2/target
+[INFO] destinationFolder: /home/tanle/projects/ccra/tez/tez-ui2/target/minified-resources/assets
+[INFO] wroManagerFactory class: ro.isdc.wro.extensions.manager.standalone.ExtensionsStandaloneManagerFactory
+[INFO] The following groups will be processed: [tez-ui, vendor]
+[INFO] folder: /home/tanle/projects/ccra/tez/tez-ui2/target/minified-resources/assets
+[INFO] processing group: tez-ui.css
+[INFO] folder: /home/tanle/projects/ccra/tez/tez-ui2/target/minified-resources/assets
+[INFO] processing group: tez-ui.js
+[INFO] folder: /home/tanle/projects/ccra/tez/tez-ui2/target/minified-resources/assets
+[INFO] processing group: vendor.css
+[INFO] folder: /home/tanle/projects/ccra/tez/tez-ui2/target/minified-resources/assets
+[INFO] processing group: vendor.js
+[INFO] 
+[INFO] --- maven-war-plugin:2.5:war (default-war) @ tez-ui2 ---
+[INFO] Packaging webapp
+[INFO] Assembling webapp [tez-ui2] in [/home/tanle/projects/ccra/tez/tez-ui2/target/tez-ui2-0.8.4]
+[INFO] Processing war project
+[INFO] Copying webapp webResources [/home/tanle/projects/ccra/tez/tez-ui2/src/main/resources/] to [/home/tanle/projects/ccra/tez/tez-ui2/target/tez-ui2-0.8.4]
+[INFO] Copying webapp webResources [/home/tanle/projects/ccra/tez/tez-ui2/target/minified-resources] to [/home/tanle/projects/ccra/tez/tez-ui2/target/tez-ui2-0.8.4]
+[INFO] Copying webapp resources [/home/tanle/projects/ccra/tez/tez-ui2/src/main/webapp/dist]
+[INFO] Webapp assembled in [17 msecs]
+[INFO] Building war: /home/tanle/projects/ccra/tez/tez-ui2/target/tez-ui2-0.8.4.war
+[INFO] 
+[INFO] --- maven-jar-plugin:2.4:test-jar (default) @ tez-ui2 ---
+[WARNING] JAR will be empty - no content was marked for inclusion!
+[INFO] Building jar: /home/tanle/projects/ccra/tez/tez-ui2/target/tez-ui2-0.8.4-tests.jar
+[INFO]                                                                         
+[INFO] ------------------------------------------------------------------------
+[INFO] Building tez-plugins 0.8.4
+[INFO] ------------------------------------------------------------------------
+[INFO] 
+[INFO] --- maven-clean-plugin:3.0.0:clean (default-clean) @ tez-plugins ---
+[INFO] Deleting /home/tanle/projects/ccra/tez/tez-plugins/target
+[INFO] 
+[INFO] --- buildnumber-maven-plugin:1.1:create (default) @ tez-plugins ---
+[INFO] Checking for local modifications: skipped.
+[INFO] Updating project files from SCM: skipped.
+[INFO] Executing: /bin/sh -c cd /home/tanle/projects/ccra/tez/tez-plugins && git rev-parse --verify HEAD
+[INFO] Working directory: /home/tanle/projects/ccra/tez/tez-plugins
+[INFO] Storing buildNumber: 1ba414b73fc2c968908f833e2322c8d36cb9854d at timestamp: 1480233786700
+[INFO] Executing: /bin/sh -c cd /home/tanle/projects/ccra/tez/tez-plugins && git rev-parse --verify HEAD
+[INFO] Working directory: /home/tanle/projects/ccra/tez/tez-plugins
+[INFO] Storing buildScmBranch: UNKNOWN
+[INFO] 
+[INFO] --- build-helper-maven-plugin:1.8:maven-version (maven-version) @ tez-plugins ---
+[INFO] 
+[INFO] --- maven-jar-plugin:2.4:test-jar (default) @ tez-plugins ---
+[WARNING] JAR will be empty - no content was marked for inclusion!
+[INFO] Building jar: /home/tanle/projects/ccra/tez/tez-plugins/target/tez-plugins-0.8.4-tests.jar
+[INFO]                                                                         
+[INFO] ------------------------------------------------------------------------
+[INFO] Building tez-yarn-timeline-history 0.8.4
+[INFO] ------------------------------------------------------------------------
+[INFO] 
+[INFO] --- maven-clean-plugin:3.0.0:clean (default-clean) @ tez-yarn-timeline-history ---
+[INFO] Deleting /home/tanle/projects/ccra/tez/tez-plugins/tez-yarn-timeline-history/target
+[INFO] 
+[INFO] --- buildnumber-maven-plugin:1.1:create (default) @ tez-yarn-timeline-history ---
+[INFO] Checking for local modifications: skipped.
+[INFO] Updating project files from SCM: skipped.
+[INFO] Executing: /bin/sh -c cd /home/tanle/projects/ccra/tez/tez-plugins/tez-yarn-timeline-history && git rev-parse --verify HEAD
+[INFO] Working directory: /home/tanle/projects/ccra/tez/tez-plugins/tez-yarn-timeline-history
+[INFO] Storing buildNumber: 1ba414b73fc2c968908f833e2322c8d36cb9854d at timestamp: 1480233786765
+[INFO] Executing: /bin/sh -c cd /home/tanle/projects/ccra/tez/tez-plugins/tez-yarn-timeline-history && git rev-parse --verify HEAD
+[INFO] Working directory: /home/tanle/projects/ccra/tez/tez-plugins/tez-yarn-timeline-history
+[INFO] Storing buildScmBranch: UNKNOWN
+[INFO] 
+[INFO] --- build-helper-maven-plugin:1.8:maven-version (maven-version) @ tez-yarn-timeline-history ---
+[INFO] 
+[INFO] --- maven-resources-plugin:2.6:resources (default-resources) @ tez-yarn-timeline-history ---
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] Copying 2 resources
+[INFO] 
+[INFO] --- maven-compiler-plugin:3.1:compile (default-compile) @ tez-yarn-timeline-history ---
+[INFO] Changes detected - recompiling the module!
+[INFO] Compiling 2 source files to /home/tanle/projects/ccra/tez/tez-plugins/tez-yarn-timeline-history/target/classes
+[INFO] 
+[INFO] --- maven-resources-plugin:2.6:testResources (default-testResources) @ tez-yarn-timeline-history ---
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] Copying 3 resources
+[INFO] 
+[INFO] --- maven-compiler-plugin:3.1:testCompile (default-testCompile) @ tez-yarn-timeline-history ---
+[INFO] Changes detected - recompiling the module!
+[INFO] Compiling 4 source files to /home/tanle/projects/ccra/tez/tez-plugins/tez-yarn-timeline-history/target/test-classes
+[INFO] 
+[INFO] --- maven-surefire-plugin:2.14.1:test (default-test) @ tez-yarn-timeline-history ---
+[INFO] Tests are skipped.
+[INFO] 
+[INFO] --- maven-jar-plugin:2.4:jar (default-jar) @ tez-yarn-timeline-history ---
+[INFO] Building jar: /home/tanle/projects/ccra/tez/tez-plugins/tez-yarn-timeline-history/target/tez-yarn-timeline-history-0.8.4.jar
+[INFO] 
+[INFO] --- maven-jar-plugin:2.4:test-jar (default) @ tez-yarn-timeline-history ---
+[INFO] Building jar: /home/tanle/projects/ccra/tez/tez-plugins/tez-yarn-timeline-history/target/tez-yarn-timeline-history-0.8.4-tests.jar
+[INFO]                                                                         
+[INFO] ------------------------------------------------------------------------
+[INFO] Building tez-yarn-timeline-history-with-acls 0.8.4
+[INFO] ------------------------------------------------------------------------
+[INFO] 
+[INFO] --- maven-clean-plugin:3.0.0:clean (default-clean) @ tez-yarn-timeline-history-with-acls ---
+[INFO] Deleting /home/tanle/projects/ccra/tez/tez-plugins/tez-yarn-timeline-history-with-acls/target
+[INFO] 
+[INFO] --- buildnumber-maven-plugin:1.1:create (default) @ tez-yarn-timeline-history-with-acls ---
+[INFO] Checking for local modifications: skipped.
+[INFO] Updating project files from SCM: skipped.
+[INFO] Executing: /bin/sh -c cd /home/tanle/projects/ccra/tez/tez-plugins/tez-yarn-timeline-history-with-acls && git rev-parse --verify HEAD
+[INFO] Working directory: /home/tanle/projects/ccra/tez/tez-plugins/tez-yarn-timeline-history-with-acls
+[INFO] Storing buildNumber: 1ba414b73fc2c968908f833e2322c8d36cb9854d at timestamp: 1480233787101
+[INFO] Executing: /bin/sh -c cd /home/tanle/projects/ccra/tez/tez-plugins/tez-yarn-timeline-history-with-acls && git rev-parse --verify HEAD
+[INFO] Working directory: /home/tanle/projects/ccra/tez/tez-plugins/tez-yarn-timeline-history-with-acls
+[INFO] Storing buildScmBranch: UNKNOWN
+[INFO] 
+[INFO] --- build-helper-maven-plugin:1.8:maven-version (maven-version) @ tez-yarn-timeline-history-with-acls ---
+[INFO] 
+[INFO] --- maven-resources-plugin:2.6:resources (default-resources) @ tez-yarn-timeline-history-with-acls ---
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] skip non existing resourceDirectory /home/tanle/projects/ccra/tez/tez-plugins/tez-yarn-timeline-history-with-acls/src/main/resources
+[INFO] 
+[INFO] --- maven-compiler-plugin:3.1:compile (default-compile) @ tez-yarn-timeline-history-with-acls ---
+[INFO] Changes detected - recompiling the module!
+[INFO] Compiling 1 source file to /home/tanle/projects/ccra/tez/tez-plugins/tez-yarn-timeline-history-with-acls/target/classes
+[INFO] 
+[INFO] --- maven-resources-plugin:2.6:testResources (default-testResources) @ tez-yarn-timeline-history-with-acls ---
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] skip non existing resourceDirectory /home/tanle/projects/ccra/tez/tez-plugins/tez-yarn-timeline-history-with-acls/src/test/resources
+[INFO] 
+[INFO] --- maven-compiler-plugin:3.1:testCompile (default-testCompile) @ tez-yarn-timeline-history-with-acls ---
+[INFO] Changes detected - recompiling the module!
+[INFO] Compiling 1 source file to /home/tanle/projects/ccra/tez/tez-plugins/tez-yarn-timeline-history-with-acls/target/test-classes
+[INFO] 
+[INFO] --- maven-surefire-plugin:2.14.1:test (default-test) @ tez-yarn-timeline-history-with-acls ---
+[INFO] Tests are skipped.
+[INFO] 
+[INFO] --- maven-jar-plugin:2.4:jar (default-jar) @ tez-yarn-timeline-history-with-acls ---
+[INFO] Building jar: /home/tanle/projects/ccra/tez/tez-plugins/tez-yarn-timeline-history-with-acls/target/tez-yarn-timeline-history-with-acls-0.8.4.jar
+[INFO] 
+[INFO] --- maven-jar-plugin:2.4:test-jar (default) @ tez-yarn-timeline-history-with-acls ---
+[INFO] Building jar: /home/tanle/projects/ccra/tez/tez-plugins/tez-yarn-timeline-history-with-acls/target/tez-yarn-timeline-history-with-acls-0.8.4-tests.jar
+[INFO]                                                                         
+[INFO] ------------------------------------------------------------------------
+[INFO] Building tez-history-parser 0.8.4
+[INFO] ------------------------------------------------------------------------
+[INFO] 
+[INFO] --- maven-clean-plugin:3.0.0:clean (default-clean) @ tez-history-parser ---
+[INFO] Deleting /home/tanle/projects/ccra/tez/tez-plugins/tez-history-parser/target
+[INFO] 
+[INFO] --- buildnumber-maven-plugin:1.1:create (default) @ tez-history-parser ---
+[INFO] Checking for local modifications: skipped.
+[INFO] Updating project files from SCM: skipped.
+[INFO] Executing: /bin/sh -c cd /home/tanle/projects/ccra/tez/tez-plugins/tez-history-parser && git rev-parse --verify HEAD
+[INFO] Working directory: /home/tanle/projects/ccra/tez/tez-plugins/tez-history-parser
+[INFO] Storing buildNumber: 1ba414b73fc2c968908f833e2322c8d36cb9854d at timestamp: 1480233787332
+[INFO] Executing: /bin/sh -c cd /home/tanle/projects/ccra/tez/tez-plugins/tez-history-parser && git rev-parse --verify HEAD
+[INFO] Working directory: /home/tanle/projects/ccra/tez/tez-plugins/tez-history-parser
+[INFO] Storing buildScmBranch: UNKNOWN
+[INFO] 
+[INFO] --- build-helper-maven-plugin:1.8:maven-version (maven-version) @ tez-history-parser ---
+[INFO] 
+[INFO] --- maven-resources-plugin:2.6:resources (default-resources) @ tez-history-parser ---
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] skip non existing resourceDirectory /home/tanle/projects/ccra/tez/tez-plugins/tez-history-parser/src/main/resources
+[INFO] 
+[INFO] --- maven-compiler-plugin:3.1:compile (default-compile) @ tez-history-parser ---
+[INFO] Changes detected - recompiling the module!
+[INFO] Compiling 17 source files to /home/tanle/projects/ccra/tez/tez-plugins/tez-history-parser/target/classes
+[INFO] 
+[INFO] --- maven-resources-plugin:2.6:testResources (default-testResources) @ tez-history-parser ---
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] skip non existing resourceDirectory /home/tanle/projects/ccra/tez/tez-plugins/tez-history-parser/src/test/resources
+[INFO] 
+[INFO] --- maven-compiler-plugin:3.1:testCompile (default-testCompile) @ tez-history-parser ---
+[INFO] Changes detected - recompiling the module!
+[INFO] Compiling 1 source file to /home/tanle/projects/ccra/tez/tez-plugins/tez-history-parser/target/test-classes
+[INFO] 
+[INFO] --- maven-surefire-plugin:2.14.1:test (default-test) @ tez-history-parser ---
+[INFO] Tests are skipped.
+[INFO] 
+[INFO] --- maven-jar-plugin:2.4:jar (default-jar) @ tez-history-parser ---
+[INFO] Building jar: /home/tanle/projects/ccra/tez/tez-plugins/tez-history-parser/target/tez-history-parser-0.8.4.jar
+[INFO] 
+[INFO] --- maven-jar-plugin:2.4:test-jar (default) @ tez-history-parser ---
+[INFO] Building jar: /home/tanle/projects/ccra/tez/tez-plugins/tez-history-parser/target/tez-history-parser-0.8.4-tests.jar
+[INFO] 
+[INFO] --- maven-assembly-plugin:2.4:single (assemble-all) @ tez-history-parser ---
+[INFO] Building jar: /home/tanle/projects/ccra/tez/tez-plugins/tez-history-parser/target/tez-history-parser-0.8.4-jar-with-dependencies.jar
+[INFO]                                                                         
+[INFO] ------------------------------------------------------------------------
+[INFO] Building tez-tools 0.8.4
+[INFO] ------------------------------------------------------------------------
+[INFO] 
+[INFO] --- maven-clean-plugin:3.0.0:clean (default-clean) @ tez-tools ---
+[INFO] Deleting /home/tanle/projects/ccra/tez/tez-tools/target
+[INFO] 
+[INFO] --- buildnumber-maven-plugin:1.1:create (default) @ tez-tools ---
+[INFO] Checking for local modifications: skipped.
+[INFO] Updating project files from SCM: skipped.
+[INFO] Executing: /bin/sh -c cd /home/tanle/projects/ccra/tez/tez-tools && git rev-parse --verify HEAD
+[INFO] Working directory: /home/tanle/projects/ccra/tez/tez-tools
+[INFO] Storing buildNumber: 1ba414b73fc2c968908f833e2322c8d36cb9854d at timestamp: 1480233796465
+[INFO] Executing: /bin/sh -c cd /home/tanle/projects/ccra/tez/tez-tools && git rev-parse --verify HEAD
+[INFO] Working directory: /home/tanle/projects/ccra/tez/tez-tools
+[INFO] Storing buildScmBranch: UNKNOWN
+[INFO] 
+[INFO] --- build-helper-maven-plugin:1.8:maven-version (maven-version) @ tez-tools ---
+[INFO] 
+[INFO] --- maven-jar-plugin:2.4:test-jar (default) @ tez-tools ---
+[WARNING] JAR will be empty - no content was marked for inclusion!
+[INFO] Building jar: /home/tanle/projects/ccra/tez/tez-tools/target/tez-tools-0.8.4-tests.jar
+[INFO]                                                                         
+[INFO] ------------------------------------------------------------------------
+[INFO] Building tez-perf-analyzer 0.8.4
+[INFO] ------------------------------------------------------------------------
+[INFO] 
+[INFO] --- maven-clean-plugin:3.0.0:clean (default-clean) @ tez-perf-analyzer ---
+[INFO] Deleting /home/tanle/projects/ccra/tez/tez-tools/analyzers/target
+[INFO] 
+[INFO] --- buildnumber-maven-plugin:1.1:create (default) @ tez-perf-analyzer ---
+[INFO] Checking for local modifications: skipped.
+[INFO] Updating project files from SCM: skipped.
+[INFO] Executing: /bin/sh -c cd /home/tanle/projects/ccra/tez/tez-tools/analyzers && git rev-parse --verify HEAD
+[INFO] Working directory: /home/tanle/projects/ccra/tez/tez-tools/analyzers
+[INFO] Storing buildNumber: 1ba414b73fc2c968908f833e2322c8d36cb9854d at timestamp: 1480233796500
+[INFO] Executing: /bin/sh -c cd /home/tanle/projects/ccra/tez/tez-tools/analyzers && git rev-parse --verify HEAD
+[INFO] Working directory: /home/tanle/projects/ccra/tez/tez-tools/analyzers
+[INFO] Storing buildScmBranch: UNKNOWN
+[INFO] 
+[INFO] --- build-helper-maven-plugin:1.8:maven-version (maven-version) @ tez-perf-analyzer ---
+[INFO] 
+[INFO] --- maven-jar-plugin:2.4:test-jar (default) @ tez-perf-analyzer ---
+[WARNING] JAR will be empty - no content was marked for inclusion!
+[INFO] Building jar: /home/tanle/projects/ccra/tez/tez-tools/analyzers/target/tez-perf-analyzer-0.8.4-tests.jar
+[INFO]                                                                         
+[INFO] ------------------------------------------------------------------------
+[INFO] Building tez-job-analyzer 0.8.4
+[INFO] ------------------------------------------------------------------------
+[INFO] 
+[INFO] --- maven-clean-plugin:3.0.0:clean (default-clean) @ tez-job-analyzer ---
+[INFO] Deleting /home/tanle/projects/ccra/tez/tez-tools/analyzers/job-analyzer/target
+[INFO] 
+[INFO] --- buildnumber-maven-plugin:1.1:create (default) @ tez-job-analyzer ---
+[INFO] Checking for local modifications: skipped.
+[INFO] Updating project files from SCM: skipped.
+[INFO] Executing: /bin/sh -c cd /home/tanle/projects/ccra/tez/tez-tools/analyzers/job-analyzer && git rev-parse --verify HEAD
+[INFO] Working directory: /home/tanle/projects/ccra/tez/tez-tools/analyzers/job-analyzer
+[INFO] Storing buildNumber: 1ba414b73fc2c968908f833e2322c8d36cb9854d at timestamp: 1480233796575
+[INFO] Executing: /bin/sh -c cd /home/tanle/projects/ccra/tez/tez-tools/analyzers/job-analyzer && git rev-parse --verify HEAD
+[INFO] Working directory: /home/tanle/projects/ccra/tez/tez-tools/analyzers/job-analyzer
+[INFO] Storing buildScmBranch: UNKNOWN
+[INFO] 
+[INFO] --- build-helper-maven-plugin:1.8:maven-version (maven-version) @ tez-job-analyzer ---
+[INFO] 
+[INFO] --- maven-resources-plugin:2.6:resources (default-resources) @ tez-job-analyzer ---
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] skip non existing resourceDirectory /home/tanle/projects/ccra/tez/tez-tools/analyzers/job-analyzer/src/main/resources
+[INFO] 
+[INFO] --- maven-compiler-plugin:3.1:compile (default-compile) @ tez-job-analyzer ---
+[INFO] Changes detected - recompiling the module!
+[INFO] Compiling 18 source files to /home/tanle/projects/ccra/tez/tez-tools/analyzers/job-analyzer/target/classes
+[INFO] 
+[INFO] --- maven-resources-plugin:2.6:testResources (default-testResources) @ tez-job-analyzer ---
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] skip non existing resourceDirectory /home/tanle/projects/ccra/tez/tez-tools/analyzers/job-analyzer/src/test/resources
+[INFO] 
+[INFO] --- maven-compiler-plugin:3.1:testCompile (default-testCompile) @ tez-job-analyzer ---
+[INFO] Changes detected - recompiling the module!
+[INFO] Compiling 1 source file to /home/tanle/projects/ccra/tez/tez-tools/analyzers/job-analyzer/target/test-classes
+[INFO] 
+[INFO] --- maven-surefire-plugin:2.14.1:test (default-test) @ tez-job-analyzer ---
+[INFO] Tests are skipped.
+[INFO] 
+[INFO] --- maven-jar-plugin:2.4:jar (default-jar) @ tez-job-analyzer ---
+[INFO] Building jar: /home/tanle/projects/ccra/tez/tez-tools/analyzers/job-analyzer/target/tez-job-analyzer-0.8.4.jar
+[INFO] 
+[INFO] --- maven-jar-plugin:2.4:test-jar (default) @ tez-job-analyzer ---
+[INFO] Building jar: /home/tanle/projects/ccra/tez/tez-tools/analyzers/job-analyzer/target/tez-job-analyzer-0.8.4-tests.jar
+[INFO]                                                                         
+[INFO] ------------------------------------------------------------------------
+[INFO] Building tez-javadoc-tools 0.8.4
+[INFO] ------------------------------------------------------------------------
+[INFO] 
+[INFO] --- maven-clean-plugin:3.0.0:clean (default-clean) @ tez-javadoc-tools ---
+[INFO] Deleting /home/tanle/projects/ccra/tez/tez-tools/tez-javadoc-tools/target
+[INFO] 
+[INFO] --- buildnumber-maven-plugin:1.1:create (default) @ tez-javadoc-tools ---
+[INFO] Checking for local modifications: skipped.
+[INFO] Updating project files from SCM: skipped.
+[INFO] Executing: /bin/sh -c cd /home/tanle/projects/ccra/tez/tez-tools/tez-javadoc-tools && git rev-parse --verify HEAD
+[INFO] Working directory: /home/tanle/projects/ccra/tez/tez-tools/tez-javadoc-tools
+[INFO] Storing buildNumber: 1ba414b73fc2c968908f833e2322c8d36cb9854d at timestamp: 1480233796936
+[INFO] Executing: /bin/sh -c cd /home/tanle/projects/ccra/tez/tez-tools/tez-javadoc-tools && git rev-parse --verify HEAD
+[INFO] Working directory: /home/tanle/projects/ccra/tez/tez-tools/tez-javadoc-tools
+[INFO] Storing buildScmBranch: UNKNOWN
+[INFO] 
+[INFO] --- build-helper-maven-plugin:1.8:maven-version (maven-version) @ tez-javadoc-tools ---
+[INFO] 
+[INFO] --- maven-resources-plugin:2.6:resources (default-resources) @ tez-javadoc-tools ---
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] skip non existing resourceDirectory /home/tanle/projects/ccra/tez/tez-tools/tez-javadoc-tools/src/main/resources
+[INFO] 
+[INFO] --- maven-compiler-plugin:3.1:compile (default-compile) @ tez-javadoc-tools ---
+[INFO] Changes detected - recompiling the module!
+[INFO] Compiling 6 source files to /home/tanle/projects/ccra/tez/tez-tools/tez-javadoc-tools/target/classes
+[INFO] 
+[INFO] --- maven-resources-plugin:2.6:testResources (default-testResources) @ tez-javadoc-tools ---
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] skip non existing resourceDirectory /home/tanle/projects/ccra/tez/tez-tools/tez-javadoc-tools/src/test/resources
+[INFO] 
+[INFO] --- maven-compiler-plugin:3.1:testCompile (default-testCompile) @ tez-javadoc-tools ---
+[INFO] No sources to compile
+[INFO] 
+[INFO] --- maven-surefire-plugin:2.14.1:test (default-test) @ tez-javadoc-tools ---
+[INFO] Tests are skipped.
+[INFO] 
+[INFO] --- maven-jar-plugin:2.4:jar (default-jar) @ tez-javadoc-tools ---
+[INFO] Building jar: /home/tanle/projects/ccra/tez/tez-tools/tez-javadoc-tools/target/tez-javadoc-tools-0.8.4.jar
+[INFO] 
+[INFO] --- maven-jar-plugin:2.4:test-jar (default) @ tez-javadoc-tools ---
+[WARNING] JAR will be empty - no content was marked for inclusion!
+[INFO] Building jar: /home/tanle/projects/ccra/tez/tez-tools/tez-javadoc-tools/target/tez-javadoc-tools-0.8.4-tests.jar
+[INFO]                                                                         
+[INFO] ------------------------------------------------------------------------
+[INFO] Building hadoop-shim-impls 0.8.4
+[INFO] ------------------------------------------------------------------------
+[INFO] 
+[INFO] --- maven-clean-plugin:3.0.0:clean (default-clean) @ hadoop-shim-impls ---
+[INFO] Deleting /home/tanle/projects/ccra/tez/hadoop-shim-impls/target
+[INFO] 
+[INFO] --- buildnumber-maven-plugin:1.1:create (default) @ hadoop-shim-impls ---
+[INFO] Checking for local modifications: skipped.
+[INFO] Updating project files from SCM: skipped.
+[INFO] Executing: /bin/sh -c cd /home/tanle/projects/ccra/tez/hadoop-shim-impls && git rev-parse --verify HEAD
+[INFO] Working directory: /home/tanle/projects/ccra/tez/hadoop-shim-impls
+[INFO] Storing buildNumber: 1ba414b73fc2c968908f833e2322c8d36cb9854d at timestamp: 1480233797021
+[INFO] Executing: /bin/sh -c cd /home/tanle/projects/ccra/tez/hadoop-shim-impls && git rev-parse --verify HEAD
+[INFO] Working directory: /home/tanle/projects/ccra/tez/hadoop-shim-impls
+[INFO] Storing buildScmBranch: UNKNOWN
+[INFO] 
+[INFO] --- build-helper-maven-plugin:1.8:maven-version (maven-version) @ hadoop-shim-impls ---
+[INFO] 
+[INFO] --- maven-jar-plugin:2.4:test-jar (default) @ hadoop-shim-impls ---
+[WARNING] JAR will be empty - no content was marked for inclusion!
+[INFO] Building jar: /home/tanle/projects/ccra/tez/hadoop-shim-impls/target/hadoop-shim-impls-0.8.4-tests.jar
+[INFO]                                                                         
+[INFO] ------------------------------------------------------------------------
+[INFO] Building hadoop-shim-2.6 0.8.4
+[INFO] ------------------------------------------------------------------------
+[INFO] 
+[INFO] --- maven-clean-plugin:3.0.0:clean (default-clean) @ hadoop-shim-2.6 ---
+[INFO] Deleting /home/tanle/projects/ccra/tez/hadoop-shim-impls/hadoop-shim-2.6/target
+[INFO] 
+[INFO] --- buildnumber-maven-plugin:1.1:create (default) @ hadoop-shim-2.6 ---
+[INFO] Checking for local modifications: skipped.
+[INFO] Updating project files from SCM: skipped.
+[INFO] Executing: /bin/sh -c cd /home/tanle/projects/ccra/tez/hadoop-shim-impls/hadoop-shim-2.6 && git rev-parse --verify HEAD
+[INFO] Working directory: /home/tanle/projects/ccra/tez/hadoop-shim-impls/hadoop-shim-2.6
+[INFO] Storing buildNumber: 1ba414b73fc2c968908f833e2322c8d36cb9854d at timestamp: 1480233797049
+[INFO] Executing: /bin/sh -c cd /home/tanle/projects/ccra/tez/hadoop-shim-impls/hadoop-shim-2.6 && git rev-parse --verify HEAD
+[INFO] Working directory: /home/tanle/projects/ccra/tez/hadoop-shim-impls/hadoop-shim-2.6
+[INFO] Storing buildScmBranch: UNKNOWN
+[INFO] 
+[INFO] --- build-helper-maven-plugin:1.8:maven-version (maven-version) @ hadoop-shim-2.6 ---
+[INFO] 
+[INFO] --- maven-resources-plugin:2.6:resources (default-resources) @ hadoop-shim-2.6 ---
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] Copying 1 resource
+[INFO] 
+[INFO] --- maven-compiler-plugin:3.1:compile (default-compile) @ hadoop-shim-2.6 ---
+[INFO] Changes detected - recompiling the module!
+[INFO] Compiling 2 source files to /home/tanle/projects/ccra/tez/hadoop-shim-impls/hadoop-shim-2.6/target/classes
+[INFO] 
+[INFO] --- maven-resources-plugin:2.6:testResources (default-testResources) @ hadoop-shim-2.6 ---
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] skip non existing resourceDirectory /home/tanle/projects/ccra/tez/hadoop-shim-impls/hadoop-shim-2.6/src/test/resources
+[INFO] 
+[INFO] --- maven-compiler-plugin:3.1:testCompile (default-testCompile) @ hadoop-shim-2.6 ---
+[INFO] Changes detected - recompiling the module!
+[INFO] Compiling 1 source file to /home/tanle/projects/ccra/tez/hadoop-shim-impls/hadoop-shim-2.6/target/test-classes
+[INFO] 
+[INFO] --- maven-surefire-plugin:2.14.1:test (default-test) @ hadoop-shim-2.6 ---
+[INFO] Tests are skipped.
+[INFO] 
+[INFO] --- maven-jar-plugin:2.4:jar (default-jar) @ hadoop-shim-2.6 ---
+[INFO] Building jar: /home/tanle/projects/ccra/tez/hadoop-shim-impls/hadoop-shim-2.6/target/hadoop-shim-2.6-0.8.4.jar
+[INFO] 
+[INFO] --- maven-jar-plugin:2.4:test-jar (default) @ hadoop-shim-2.6 ---
+[INFO] Building jar: /home/tanle/projects/ccra/tez/hadoop-shim-impls/hadoop-shim-2.6/target/hadoop-shim-2.6-0.8.4-tests.jar
+[INFO]                                                                         
+[INFO] ------------------------------------------------------------------------
+[INFO] Building tez-dist 0.8.4
+[INFO] ------------------------------------------------------------------------
+[INFO] 
+[INFO] --- maven-clean-plugin:3.0.0:clean (default-clean) @ tez-dist ---
+[INFO] Deleting /home/tanle/projects/ccra/tez/tez-dist/target
+[INFO] 
+[INFO] --- buildnumber-maven-plugin:1.1:create (default) @ tez-dist ---
+[INFO] Checking for local modifications: skipped.
+[INFO] Updating project files from SCM: skipped.
+[INFO] Executing: /bin/sh -c cd /home/tanle/projects/ccra/tez/tez-dist && git rev-parse --verify HEAD
+[INFO] Working directory: /home/tanle/projects/ccra/tez/tez-dist
+[INFO] Storing buildNumber: 1ba414b73fc2c968908f833e2322c8d36cb9854d at timestamp: 1480233797199
+[INFO] Executing: /bin/sh -c cd /home/tanle/projects/ccra/tez/tez-dist && git rev-parse --verify HEAD
+[INFO] Working directory: /home/tanle/projects/ccra/tez/tez-dist
+[INFO] Storing buildScmBranch: UNKNOWN
+[INFO] 
+[INFO] --- build-helper-maven-plugin:1.8:maven-version (maven-version) @ tez-dist ---
+[INFO] 
+[INFO] --- maven-assembly-plugin:2.4:single (package-tez) @ tez-dist ---
+[INFO] Reading assembly descriptor: src/main/assembly/tez-dist.xml
+[WARNING] NOTE: Currently, inclusion of module dependencies may produce unpredictable results if a version conflict occurs.
+[WARNING] The following patterns were never triggered in this artifact exclusion filter:
+o  '*:*:test-jar'
+
+[WARNING] The following patterns were never triggered in this artifact exclusion filter:
+o  '*:*:test-jar'
+
+[WARNING] The following patterns were never triggered in this artifact exclusion filter:
+o  '*:*:test-jar'
+
+[WARNING] The following patterns were never triggered in this artifact exclusion filter:
+o  '*:*:test-jar'
+
+[WARNING] The following patterns were never triggered in this artifact exclusion filter:
+o  '*:*:test-jar'
+
+[WARNING] The following patterns were never triggered in this artifact exclusion filter:
+o  '*:*:test-jar'
+
+[WARNING] The following patterns were never triggered in this artifact exclusion filter:
+o  '*:*:test-jar'
+
+[WARNING] The following patterns were never triggered in this artifact exclusion filter:
+o  '*:*:test-jar'
+
+[WARNING] The following patterns were never triggered in this artifact exclusion filter:
+o  '*:*:test-jar'
+
+[WARNING] The following patterns were never triggered in this artifact exclusion filter:
+o  '*:*:test-jar'
+
+[WARNING] The following patterns were never triggered in this artifact exclusion filter:
+o  '*:*:test-jar'
+
+[WARNING] The following patterns were never triggered in this artifact exclusion filter:
+o  '*:*:test-jar'
+
+[WARNING] The following patterns were never triggered in this artifact exclusion filter:
+o  '*:*:test-jar'
+
+[WARNING] The following patterns were never triggered in this artifact exclusion filter:
+o  '*:*:test-jar'
+
+[WARNING] The following patterns were never triggered in this artifact exclusion filter:
+o  '*:*:test-jar'
+
+[WARNING] The following patterns were never triggered in this artifact exclusion filter:
+o  '*:*:test-jar'
+
+[WARNING] The following patterns were never triggered in this artifact exclusion filter:
+o  '*:*:test-jar'
+
+[WARNING] The following patterns were never triggered in this artifact exclusion filter:
+o  '*:*:test-jar'
+
+[INFO] Copying files to /home/tanle/projects/ccra/tez/tez-dist/target/tez-0.8.4
+[WARNING] NOTE: Currently, inclusion of module dependencies may produce unpredictable results if a version conflict occurs.
+[WARNING] The following patterns were never triggered in this artifact exclusion filter:
+o  '*:*:test-jar'
+
+[WARNING] The following patterns were never triggered in this artifact exclusion filter:
+o  '*:*:test-jar'
+
+[WARNING] The following patterns were never triggered in this artifact exclusion filter:
+o  '*:*:test-jar'
+
+[WARNING] The following patterns were never triggered in this artifact exclusion filter:
+o  '*:*:test-jar'
+
+[WARNING] The following patterns were never triggered in this artifact exclusion filter:
+o  '*:*:test-jar'
+
+[WARNING] The following patterns were never triggered in this artifact exclusion filter:
+o  '*:*:test-jar'
+
+[WARNING] The following patterns were never triggered in this artifact exclusion filter:
+o  '*:*:test-jar'
+
+[WARNING] The following patterns were never triggered in this artifact exclusion filter:
+o  '*:*:test-jar'
+
+[WARNING] The following patterns were never triggered in this artifact exclusion filter:
+o  '*:*:test-jar'
+
+[WARNING] The following patterns were never triggered in this artifact exclusion filter:
+o  '*:*:test-jar'
+
+[WARNING] The following patterns were never triggered in this artifact exclusion filter:
+o  '*:*:test-jar'
+
+[WARNING] The following patterns were never triggered in this artifact exclusion filter:
+o  '*:*:test-jar'
+
+[WARNING] The following patterns were never triggered in this artifact exclusion filter:
+o  '*:*:test-jar'
+
+[WARNING] The following patterns were never triggered in this artifact exclusion filter:
+o  '*:*:test-jar'
+
+[WARNING] The following patterns were never triggered in this artifact exclusion filter:
+o  '*:*:test-jar'
+
+[WARNING] The following patterns were never triggered in this artifact exclusion filter:
+o  '*:*:test-jar'
+
+[WARNING] The following patterns were never triggered in this artifact exclusion filter:
+o  '*:*:test-jar'
+
+[WARNING] The following patterns were never triggered in this artifact exclusion filter:
+o  '*:*:test-jar'
+
+[INFO] Building tar: /home/tanle/projects/ccra/tez/tez-dist/target/tez-0.8.4.tar.gz
+[INFO] 
+[INFO] --- maven-assembly-plugin:2.4:single (package-tez-minimal) @ tez-dist ---
+[INFO] Reading assembly descriptor: src/main/assembly/tez-dist-minimal.xml
+[WARNING] NOTE: Currently, inclusion of module dependencies may produce unpredictable results if a version conflict occurs.
+[WARNING] The following patterns were never triggered in this artifact exclusion filter:
+o  '*:*:test-jar'
+
+[WARNING] The following patterns were never triggered in this artifact exclusion filter:
+o  '*:*:test-jar'
+
+[WARNING] The following patterns were never triggered in this artifact exclusion filter:
+o  '*:*:test-jar'
+
+[WARNING] The following patterns were never triggered in this artifact exclusion filter:
+o  '*:*:test-jar'
+
+[WARNING] The following patterns were never triggered in this artifact exclusion filter:
+o  '*:*:test-jar'
+
+[WARNING] The following patterns were never triggered in this artifact exclusion filter:
+o  '*:*:test-jar'
+
+[WARNING] The following patterns were never triggered in this artifact exclusion filter:
+o  '*:*:test-jar'
+
+[WARNING] The following patterns were never triggered in this artifact exclusion filter:
+o  '*:*:test-jar'
+
+[WARNING] The following patterns were never triggered in this artifact exclusion filter:
+o  '*:*:test-jar'
+
+[WARNING] The following patterns were never triggered in this artifact exclusion filter:
+o  '*:*:test-jar'
+
+[WARNING] The following patterns were never triggered in this artifact exclusion filter:
+o  '*:*:test-jar'
+
+[WARNING] The following patterns were never triggered in this artifact exclusion filter:
+o  '*:*:test-jar'
+
+[WARNING] The following patterns were never triggered in this artifact exclusion filter:
+o  '*:*:test-jar'
+
+[WARNING] The following patterns were never triggered in this artifact exclusion filter:
+o  '*:*:test-jar'
+
+[WARNING] The following patterns were never triggered in this artifact exclusion filter:
+o  '*:*:test-jar'
+
+[WARNING] The following patterns were never triggered in this artifact exclusion filter:
+o  '*:*:test-jar'
+
+[WARNING] The following patterns were never triggered in this artifact exclusion filter:
+o  '*:*:test-jar'
+
+[WARNING] The following patterns were never triggered in this artifact exclusion filter:
+o  '*:*:test-jar'
+
+[INFO] Copying files to /home/tanle/projects/ccra/tez/tez-dist/target/tez-0.8.4-minimal
+[WARNING] NOTE: Currently, inclusion of module dependencies may produce unpredictable results if a version conflict occurs.
+[WARNING] The following patterns were never triggered in this artifact exclusion filter:
+o  '*:*:test-jar'
+
+[WARNING] The following patterns were never triggered in this artifact exclusion filter:
+o  '*:*:test-jar'
+
+[WARNING] The following patterns were never triggered in this artifact exclusion filter:
+o  '*:*:test-jar'
+
+[WARNING] The following patterns were never triggered in this artifact exclusion filter:
+o  '*:*:test-jar'
+
+[WARNING] The following patterns were never triggered in this artifact exclusion filter:
+o  '*:*:test-jar'
+
+[WARNING] The following patterns were never triggered in this artifact exclusion filter:
+o  '*:*:test-jar'
+
+[WARNING] The following patterns were never triggered in this artifact exclusion filter:
+o  '*:*:test-jar'
+
+[WARNING] The following patterns were never triggered in this artifact exclusion filter:
+o  '*:*:test-jar'
+
+[WARNING] The following patterns were never triggered in this artifact exclusion filter:
+o  '*:*:test-jar'
+
+[WARNING] The following patterns were never triggered in this artifact exclusion filter:
+o  '*:*:test-jar'
+
+[WARNING] The following patterns were never triggered in this artifact exclusion filter:
+o  '*:*:test-jar'
+
+[WARNING] The following patterns were never triggered in this artifact exclusion filter:
+o  '*:*:test-jar'
+
+[WARNING] The following patterns were never triggered in this artifact exclusion filter:
+o  '*:*:test-jar'
+
+[WARNING] The following patterns were never triggered in this artifact exclusion filter:
+o  '*:*:test-jar'
+
+[WARNING] The following patterns were never triggered in this artifact exclusion filter:
+o  '*:*:test-jar'
+
+[WARNING] The following patterns were never triggered in this artifact exclusion filter:
+o  '*:*:test-jar'
+
+[WARNING] The following patterns were never triggered in this artifact exclusion filter:
+o  '*:*:test-jar'
+
+[WARNING] The following patterns were never triggered in this artifact exclusion filter:
+o  '*:*:test-jar'
+
+[INFO] Building tar: /home/tanle/projects/ccra/tez/tez-dist/target/tez-0.8.4-minimal.tar.gz
+[INFO] 
+[INFO] --- maven-jar-plugin:2.4:test-jar (default) @ tez-dist ---
+[WARNING] JAR will be empty - no content was marked for inclusion!
+[INFO] Building jar: /home/tanle/projects/ccra/tez/tez-dist/target/tez-dist-0.8.4-tests.jar
+[INFO]                                                                         
+[INFO] ------------------------------------------------------------------------
+[INFO] Building Tez 0.8.4
+[INFO] ------------------------------------------------------------------------
+[INFO] 
+[INFO] --- maven-clean-plugin:3.0.0:clean (default-clean) @ tez-docs ---
+[INFO] Deleting /home/tanle/projects/ccra/tez/docs/target
+[INFO] 
+[INFO] --- buildnumber-maven-plugin:1.1:create (default) @ tez-docs ---
+[INFO] Checking for local modifications: skipped.
+[INFO] Updating project files from SCM: skipped.
+[INFO] Executing: /bin/sh -c cd /home/tanle/projects/ccra/tez/docs && git rev-parse --verify HEAD
+[INFO] Working directory: /home/tanle/projects/ccra/tez/docs
+[INFO] Storing buildNumber: 1ba414b73fc2c968908f833e2322c8d36cb9854d at timestamp: 1480233809252
+[INFO] Executing: /bin/sh -c cd /home/tanle/projects/ccra/tez/docs && git rev-parse --verify HEAD
+[INFO] Working directory: /home/tanle/projects/ccra/tez/docs
+[INFO] Storing buildScmBranch: UNKNOWN
+[INFO] 
+[INFO] --- build-helper-maven-plugin:1.8:maven-version (maven-version) @ tez-docs ---
+[INFO] 
+[INFO] --- maven-jar-plugin:2.4:test-jar (default) @ tez-docs ---
+[WARNING] JAR will be empty - no content was marked for inclusion!
+[INFO] Building jar: /home/tanle/projects/ccra/tez/docs/target/tez-docs-0.8.4-tests.jar
+[INFO] ------------------------------------------------------------------------
+[INFO] Reactor Summary:
+[INFO] 
+[INFO] tez ............................................... SUCCESS [0.992s]
+[INFO] hadoop-shim ....................................... SUCCESS [1.206s]
+[INFO] tez-api ........................................... SUCCESS [4.719s]
+[INFO] tez-common ........................................ SUCCESS [0.408s]
+[INFO] tez-runtime-internals ............................. SUCCESS [1.115s]
+[INFO] tez-runtime-library ............................... SUCCESS [2.139s]
+[INFO] tez-mapreduce ..................................... SUCCESS [1.033s]
+[INFO] tez-examples ...................................... SUCCESS [0.236s]
+[INFO] tez-dag ........................................... SUCCESS [4.400s]
+[INFO] tez-tests ......................................... SUCCESS [0.800s]
+[INFO] tez-ext-service-tests ............................. SUCCESS [0.680s]
+[INFO] tez-ui ............................................ SUCCESS [16.239s]
+[INFO] tez-ui2 ........................................... SUCCESS [34.840s]
+[INFO] tez-plugins ....................................... SUCCESS [0.015s]
+[INFO] tez-yarn-timeline-history ......................... SUCCESS [0.337s]
+[INFO] tez-yarn-timeline-history-with-acls ............... SUCCESS [0.227s]
+[INFO] tez-history-parser ................................ SUCCESS [9.183s]
+[INFO] tez-tools ......................................... SUCCESS [0.038s]
+[INFO] tez-perf-analyzer ................................. SUCCESS [0.019s]
+[INFO] tez-job-analyzer .................................. SUCCESS [0.401s]
+[INFO] tez-javadoc-tools ................................. SUCCESS [0.102s]
+[INFO] hadoop-shim-impls ................................. SUCCESS [0.014s]
+[INFO] hadoop-shim-2.6 ................................... SUCCESS [0.114s]
+[INFO] tez-dist .......................................... SUCCESS [12.103s]
+[INFO] Tez ............................................... SUCCESS [0.014s]
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time: 1:31.812s
+[INFO] Finished at: Sun Nov 27 17:03:29 KST 2016
+[INFO] Final Memory: 120M/2221M
+[INFO] ------------------------------------------------------------------------

@@ -27,6 +27,11 @@ import org.apache.hadoop.yarn.util.Apps;
 @InterfaceAudience.Private
 @InterfaceStability.Evolving
 public interface MRJobConfig {
+  
+  // emulation <<
+  public static final String TEZ_ENABLE_SIMULATION = "tez.simulation.enabled";
+  public static final boolean TEZ_ENABLE_SIMULATION_DEFAULT = false;
+  // emulation >>
 
   // Put all of the attribute names in here so that Job and JobContext are
   // consistent.

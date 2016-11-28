@@ -97,9 +97,7 @@ import org.apache.tez.dag.records.TezVertexID;
 
 import com.google.common.base.Preconditions;
 
-
-public class TaskSchedulerManager extends AbstractService implements
-                                               EventHandler<AMSchedulerEvent> {
+public class TaskSchedulerManager extends AbstractService implements EventHandler<AMSchedulerEvent> {
   static final Logger LOG = LoggerFactory.getLogger(TaskSchedulerManager.class);
 
   static final String APPLICATION_ID_PLACEHOLDER = "__APPLICATION_ID__";
@@ -118,30 +116,31 @@ public class TaskSchedulerManager extends AbstractService implements
   final DAGClientServer clientService;
   private final ContainerSignatureMatcher containerSignatureMatcher;
   private int cachedNodeCount = -1;
-  private AtomicBoolean shouldUnregisterFlag =
-      new AtomicBoolean(false);
+  private AtomicBoolean shouldUnregisterFlag = new AtomicBoolean(false);
   private final WebUIService webUI;
   private final NamedEntityDescriptor[] taskSchedulerDescriptors;
   protected final TaskSchedulerWrapper[] taskSchedulers;
-  protected final ServicePluginLifecycleAbstractService []taskSchedulerServiceWrappers;
+  protected final ServicePluginLifecycleAbstractService[] taskSchedulerServiceWrappers;
 
   // Single executor service shared by all Schedulers for context callbacks
   @VisibleForTesting
   final ExecutorService appCallbackExecutor;
 
   private final boolean isLocalMode;
-  // If running in non local-only mode, the YARN task scheduler will always run to take care of
+  // If running in non local-only mode, the YARN task scheduler will always run
+  // to take care of
   // registration with YARN and heartbeats to YARN.
-  // Splitting registration and heartbeats is not straight-forward due to the taskScheduler being
+  // Splitting registration and heartbeats is not straight-forward due to the
+  // taskScheduler being
   // tied to a ContainerRequestType.
   // Custom AppIds to avoid container conflicts if there's multiple sources
   private final long SCHEDULER_APP_ID_BASE = 111101111;
   private final long SCHEDULER_APP_ID_INCREMENT = 111111111;
 
-  BlockingQueue<AMSchedulerEvent> eventQueue
-                              = new LinkedBlockingQueue<AMSchedulerEvent>();
+  BlockingQueue<AMSchedulerEvent> eventQueue = new LinkedBlockingQueue<AMSchedulerEvent>();
 
-  // Not tracking container / task to schedulerId. Instead relying on everything flowing through
+  // Not tracking container / task to schedulerId. Instead relying on everything
+  // flowing through
   // the system and being propagated back via events.
 
   @VisibleForTesting
@@ -150,17 +149,17 @@ public class TaskSchedulerManager extends AbstractService implements
    * For Testing only
    */
   public TaskSchedulerManager(TaskScheduler taskScheduler, AppContext appContext,
-                              ContainerSignatureMatcher containerSignatureMatcher,
-                              DAGClientServer clientService, ExecutorService appCallbackExecutor) {
+      ContainerSignatureMatcher containerSignatureMatcher, DAGClientServer clientService,
+      ExecutorService appCallbackExecutor) {
     super(TaskSchedulerManager.class.getName());
     this.appContext = appContext;
     this.containerSignatureMatcher = containerSignatureMatcher;
     this.clientService = clientService;
     this.eventHandler = appContext.getEventHandler();
     this.appCallbackExecutor = appCallbackExecutor;
-    this.taskSchedulers = new TaskSchedulerWrapper[]{new TaskSchedulerWrapper(taskScheduler)};
-    this.taskSchedulerServiceWrappers = new ServicePluginLifecycleAbstractService[]{
-        new ServicePluginLifecycleAbstractService<>(taskScheduler)};
+    this.taskSchedulers = new TaskSchedulerWrapper[] { new TaskSchedulerWrapper(taskScheduler) };
+    this.taskSchedulerServiceWrappers = new ServicePluginLifecycleAbstractService[] {
+        new ServicePluginLifecycleAbstractService<>(taskScheduler) };
     this.taskSchedulerDescriptors = null;
     this.webUI = null;
     this.historyUrl = null;
@@ -174,17 +173,17 @@ public class TaskSchedulerManager extends AbstractService implements
    * @param eventHandler
    * @param containerSignatureMatcher
    * @param webUI
-   * @param schedulerDescriptors the list of scheduler descriptors. Tez internal classes will not have the class names populated.
-   *                         An empty list defaults to using the YarnTaskScheduler as the only source.
-   * @param isLocalMode whether the AM is running in local mode
+   * @param schedulerDescriptors
+   *          the list of scheduler descriptors. Tez internal classes will not
+   *          have the class names populated. An empty list defaults to using
+   *          the YarnTaskScheduler as the only source.
+   * @param isLocalMode
+   *          whether the AM is running in local mode
    */
   @SuppressWarnings("rawtypes")
-  public TaskSchedulerManager(AppContext appContext,
-                              DAGClientServer clientService, EventHandler eventHandler,
-                              ContainerSignatureMatcher containerSignatureMatcher,
-                              WebUIService webUI,
-                              List<NamedEntityDescriptor> schedulerDescriptors,
-                              boolean isLocalMode) {
+  public TaskSchedulerManager(AppContext appContext, DAGClientServer clientService, EventHandler eventHandler,
+      ContainerSignatureMatcher containerSignatureMatcher, WebUIService webUI,
+      List<NamedEntityDescriptor> schedulerDescriptors, boolean isLocalMode) {
     super(TaskSchedulerManager.class.getName());
     Preconditions.checkArgument(schedulerDescriptors != null && !schedulerDescriptors.isEmpty(),
         "TaskSchedulerDescriptors must be specified");
@@ -200,7 +199,8 @@ public class TaskSchedulerManager extends AbstractService implements
       this.webUI.setHistoryUrl(this.historyUrl);
     }
 
-    this.taskSchedulerDescriptors = schedulerDescriptors.toArray(new NamedEntityDescriptor[schedulerDescriptors.size()]);
+    this.taskSchedulerDescriptors = schedulerDescriptors
+        .toArray(new NamedEntityDescriptor[schedulerDescriptors.size()]);
 
     taskSchedulers = new TaskSchedulerWrapper[this.taskSchedulerDescriptors.length];
     taskSchedulerServiceWrappers = new ServicePluginLifecycleAbstractService[this.taskSchedulerDescriptors.length];
@@ -218,18 +218,16 @@ public class TaskSchedulerManager extends AbstractService implements
   public int getNumClusterNodes() {
     return cachedNodeCount;
   }
-  
+
   public Resource getAvailableResources(int schedulerId) {
     try {
       return taskSchedulers[schedulerId].getAvailableResources();
     } catch (Exception e) {
-      String msg = "Error in TaskScheduler while getting available resources"
-          + ", schedule=" + Utils.getTaskSchedulerIdentifierString(schedulerId, appContext);
+      String msg = "Error in TaskScheduler while getting available resources" + ", schedule="
+          + Utils.getTaskSchedulerIdentifierString(schedulerId, appContext);
       LOG.error(msg, e);
       sendEvent(
-          new DAGAppMasterEventUserServiceFatalError(
-              DAGAppMasterEventType.TASK_SCHEDULER_SERVICE_FATAL_ERROR,
-              msg, e));
+          new DAGAppMasterEventUserServiceFatalError(DAGAppMasterEventType.TASK_SCHEDULER_SERVICE_FATAL_ERROR, msg, e));
       throw new RuntimeException(e);
     }
   }
@@ -238,22 +236,18 @@ public class TaskSchedulerManager extends AbstractService implements
     try {
       return taskSchedulers[schedulerId].getTotalResources();
     } catch (Exception e) {
-      String msg = "Error in TaskScheduler while getting total resources"
-          + ", scheduler=" + Utils.getTaskSchedulerIdentifierString(schedulerId, appContext);
+      String msg = "Error in TaskScheduler while getting total resources" + ", scheduler="
+          + Utils.getTaskSchedulerIdentifierString(schedulerId, appContext);
       LOG.error(msg, e);
       sendEvent(
-          new DAGAppMasterEventUserServiceFatalError(
-              DAGAppMasterEventType.TASK_SCHEDULER_SERVICE_FATAL_ERROR,
-              msg, e));
+          new DAGAppMasterEventUserServiceFatalError(DAGAppMasterEventType.TASK_SCHEDULER_SERVICE_FATAL_ERROR, msg, e));
       throw new RuntimeException(e);
     }
   }
 
   private ExecutorService createAppCallbackExecutorService() {
     return Executors.newSingleThreadExecutor(
-        new ThreadFactoryBuilder().setNameFormat("TaskSchedulerAppCallbackExecutor #%d")
-            .setDaemon(true)
-            .build());
+        new ThreadFactoryBuilder().setNameFormat("TaskSchedulerAppCallbackExecutor #%d").setDaemon(true).build());
   }
 
   public synchronized void handleEvent(AMSchedulerEvent sEvent) {
@@ -265,8 +259,8 @@ public class TaskSchedulerManager extends AbstractService implements
       handleTaLaunchRequest((AMSchedulerEventTALaunchRequest) sEvent);
       break;
     case S_TA_ENDED: // TaskAttempt considered complete.
-      AMSchedulerEventTAEnded event = (AMSchedulerEventTAEnded)sEvent;
-      switch(event.getState()) {
+      AMSchedulerEventTAEnded event = (AMSchedulerEventTAEnded) sEvent;
+      switch (event.getState()) {
       case FAILED:
       case KILLED:
         handleTAUnsuccessfulEnd(event);
@@ -279,12 +273,12 @@ public class TaskSchedulerManager extends AbstractService implements
       }
       break;
     case S_CONTAINER_DEALLOCATE:
-      handleContainerDeallocate((AMSchedulerEventDeallocateContainer)sEvent);
+      handleContainerDeallocate((AMSchedulerEventDeallocateContainer) sEvent);
       break;
     case S_NODE_UNBLACKLISTED:
       // fall through
     case S_NODE_BLACKLISTED:
-      handleNodeBlacklistUpdate((AMSchedulerEventNodeBlacklistUpdate)sEvent);
+      handleNodeBlacklistUpdate((AMSchedulerEventNodeBlacklistUpdate) sEvent);
       break;
     case S_NODE_UNHEALTHY:
       break;
@@ -304,8 +298,7 @@ public class TaskSchedulerManager extends AbstractService implements
     }
     int remCapacity = eventQueue.remainingCapacity();
     if (remCapacity < 1000) {
-      LOG.warn("Very low remaining capacity in the event-queue "
-          + "of RMContainerAllocator: " + remCapacity);
+      LOG.warn("Very low remaining capacity in the event-queue " + "of RMContainerAllocator: " + remCapacity);
     }
     try {
       eventQueue.put(event);
@@ -330,14 +323,11 @@ public class TaskSchedulerManager extends AbstractService implements
         invalidEventType = true;
       }
     } catch (Exception e) {
-      String msg = "Error in TaskScheduler for handling node blacklisting"
-          + ", eventType=" + event.getType()
+      String msg = "Error in TaskScheduler for handling node blacklisting" + ", eventType=" + event.getType()
           + ", scheduler=" + Utils.getTaskSchedulerIdentifierString(event.getSchedulerId(), appContext);
       LOG.error(msg, e);
       sendEvent(
-          new DAGAppMasterEventUserServiceFatalError(
-              DAGAppMasterEventType.TASK_SCHEDULER_SERVICE_FATAL_ERROR,
-              msg, e));
+          new DAGAppMasterEventUserServiceFatalError(DAGAppMasterEventType.TASK_SCHEDULER_SERVICE_FATAL_ERROR, msg, e));
       return;
     }
     if (invalidEventType) {
@@ -345,24 +335,20 @@ public class TaskSchedulerManager extends AbstractService implements
     }
   }
 
-  private void handleContainerDeallocate(
-                                  AMSchedulerEventDeallocateContainer event) {
+  private void handleContainerDeallocate(AMSchedulerEventDeallocateContainer event) {
     ContainerId containerId = event.getContainerId();
     // TODO what happens to the task that was connected to this container?
     // current assumption is that it will eventually call handleTaStopRequest
-    //TaskAttempt taskAttempt = (TaskAttempt)
+    // TaskAttempt taskAttempt = (TaskAttempt)
     try {
       taskSchedulers[event.getSchedulerId()].deallocateContainer(containerId);
     } catch (Exception e) {
-      String msg = "Error in TaskScheduler for handling Container De-allocation"
-          + ", eventType=" + event.getType()
+      String msg = "Error in TaskScheduler for handling Container De-allocation" + ", eventType=" + event.getType()
           + ", scheduler=" + Utils.getTaskSchedulerIdentifierString(event.getSchedulerId(), appContext)
           + ", containerId=" + containerId;
       LOG.error(msg, e);
       sendEvent(
-          new DAGAppMasterEventUserServiceFatalError(
-              DAGAppMasterEventType.TASK_SCHEDULER_SERVICE_FATAL_ERROR,
-              msg, e));
+          new DAGAppMasterEventUserServiceFatalError(DAGAppMasterEventType.TASK_SCHEDULER_SERVICE_FATAL_ERROR, msg, e));
       return;
     }
     // TODO does this container need to be stopped via C_STOP_REQUEST
@@ -371,21 +357,19 @@ public class TaskSchedulerManager extends AbstractService implements
 
   private void handleTAUnsuccessfulEnd(AMSchedulerEventTAEnded event) {
     TaskAttempt attempt = event.getAttempt();
-    // Propagate state and failure cause (if any) when informing the scheduler about the de-allocation.
+    // Propagate state and failure cause (if any) when informing the scheduler
+    // about the de-allocation.
     boolean wasContainerAllocated = false;
     try {
-      wasContainerAllocated = taskSchedulers[event.getSchedulerId()]
-          .deallocateTask(attempt, false, event.getTaskAttemptEndReason(), event.getDiagnostics());
+      wasContainerAllocated = taskSchedulers[event.getSchedulerId()].deallocateTask(attempt, false,
+          event.getTaskAttemptEndReason(), event.getDiagnostics());
     } catch (Exception e) {
-      String msg = "Error in TaskScheduler for handling Task De-allocation"
-          + ", eventType=" + event.getType()
+      String msg = "Error in TaskScheduler for handling Task De-allocation" + ", eventType=" + event.getType()
           + ", scheduler=" + Utils.getTaskSchedulerIdentifierString(event.getSchedulerId(), appContext)
           + ", taskAttemptId=" + attempt.getID();
       LOG.error(msg, e);
       sendEvent(
-          new DAGAppMasterEventUserServiceFatalError(
-              DAGAppMasterEventType.TASK_SCHEDULER_SERVICE_FATAL_ERROR,
-              msg, e));
+          new DAGAppMasterEventUserServiceFatalError(DAGAppMasterEventType.TASK_SCHEDULER_SERVICE_FATAL_ERROR, msg, e));
       return;
     }
     // use stored value of container id in case the scheduler has removed this
@@ -393,13 +377,11 @@ public class TaskSchedulerManager extends AbstractService implements
     // retroactive case
     ContainerId attemptContainerId = attempt.getAssignedContainerID();
 
-    if(!wasContainerAllocated) {
-      LOG.info("Task: " + attempt.getID() +
-          " has no container assignment in the scheduler");
+    if (!wasContainerAllocated) {
+      LOG.info("Task: " + attempt.getID() + " has no container assignment in the scheduler");
       if (attemptContainerId != null) {
         LOG.error("No container allocated to task: " + attempt.getID()
-            + " according to scheduler. Task reported container id: "
-            + attemptContainerId);
+            + " according to scheduler. Task reported container id: " + attemptContainerId);
       }
     }
 
@@ -410,10 +392,9 @@ public class TaskSchedulerManager extends AbstractService implements
       // Inform the Node - the task has asked to be STOPPED / has already
       // stopped.
       // AMNodeImpl blacklisting logic does not account for KILLED attempts.
-      sendEvent(new AMNodeEventTaskAttemptEnded(appContext.getAllContainers().
-          get(attemptContainerId).getContainer().getNodeId(), event.getSchedulerId(),
-          attemptContainerId,
-          attempt.getID(), event.getState() == TaskAttemptState.FAILED));
+      sendEvent(new AMNodeEventTaskAttemptEnded(
+          appContext.getAllContainers().get(attemptContainerId).getContainer().getNodeId(), event.getSchedulerId(),
+          attemptContainerId, attempt.getID(), event.getState() == TaskAttemptState.FAILED));
     }
   }
 
@@ -424,28 +405,24 @@ public class TaskSchedulerManager extends AbstractService implements
     // This could be null if a task fails / is killed before a container is
     // assigned to it.
     if (event.getUsedContainerId() != null) {
-      sendEvent(new AMContainerEventTASucceeded(usedContainerId,
-          event.getAttemptID()));
-      sendEvent(new AMNodeEventTaskAttemptSucceeded(appContext.getAllContainers().
-          get(usedContainerId).getContainer().getNodeId(), event.getSchedulerId(), usedContainerId,
-          event.getAttemptID()));
+      sendEvent(new AMContainerEventTASucceeded(usedContainerId, event.getAttemptID()));
+      sendEvent(new AMNodeEventTaskAttemptSucceeded(
+          appContext.getAllContainers().get(usedContainerId).getContainer().getNodeId(), event.getSchedulerId(),
+          usedContainerId, event.getAttemptID()));
     }
 
     boolean wasContainerAllocated = false;
 
     try {
-      wasContainerAllocated = taskSchedulers[event.getSchedulerId()].deallocateTask(attempt,
-        true, null, event.getDiagnostics());
+      wasContainerAllocated = taskSchedulers[event.getSchedulerId()].deallocateTask(attempt, true, null,
+          event.getDiagnostics());
     } catch (Exception e) {
-      String msg = "Error in TaskScheduler for handling Task De-allocation"
-          + ", eventType=" + event.getType()
+      String msg = "Error in TaskScheduler for handling Task De-allocation" + ", eventType=" + event.getType()
           + ", scheduler=" + Utils.getTaskSchedulerIdentifierString(event.getSchedulerId(), appContext)
           + ", taskAttemptId=" + attempt.getID();
       LOG.error(msg, e);
       sendEvent(
-          new DAGAppMasterEventUserServiceFatalError(
-              DAGAppMasterEventType.TASK_SCHEDULER_SERVICE_FATAL_ERROR,
-              msg, e));
+          new DAGAppMasterEventUserServiceFatalError(DAGAppMasterEventType.TASK_SCHEDULER_SERVICE_FATAL_ERROR, msg, e));
       return;
     }
 
@@ -456,107 +433,127 @@ public class TaskSchedulerManager extends AbstractService implements
   }
 
   private void handleTaLaunchRequest(AMSchedulerEventTALaunchRequest event) {
-    LOG.info("[Tan]  handleTaLaunchRequest "+event);
-    
+    LOG.info("[Tan]  handleTaLaunchRequest " + event);
+
     TaskAttempt taskAttempt = event.getTaskAttempt();
-    
-    // SpeedFair <<
-    boolean enableSim = this.appContext.getAMConf().getBoolean(TezConfiguration.TEZ_ENABLE_SIMULATION, 
+
+    // emulation <<
+    boolean enableSim = this.appContext.getAMConf().getBoolean(TezConfiguration.TEZ_ENABLE_SIMULATION,
         TezConfiguration.TEZ_ENABLE_SIMULATION_DEFAULT);
-    
+
     if (enableSim) {
       TezVertexID vertexTezID = event.getAttemptID().getTaskID().getVertexID();
-      String vertexName = appContext.getCurrentDAG().getVertex(vertexTezID).getName();        
-      String dagName    = appContext.getCurrentDAG().getProfile().getDAGName();
-      
+      String vertexName = appContext.getCurrentDAG().getVertex(vertexTezID).getName();
+      String dagName = appContext.getCurrentDAG().getProfile().getDAGName();
+
       DAGProfiler dag_profile = appContext.getCurrentDAG().getProfile();
-          
+
       // set vertex type
-  //    if ( vertexName.contains("Map") )
-  //      event.getCapability().setTaskType(1);
-  //    else if ( vertexName.contains("Reduce") )
-  //      event.getCapability().setTaskType(2);
-          
+      // if ( vertexName.contains("Map") )
+      // event.getCapability().setTaskType(1);
+      // else if ( vertexName.contains("Reduce") )
+      // event.getCapability().setTaskType(2);
+
       // get resource requirements per task for this vertex
       ResourceProfile vertexPerTaskResourceProfile = dag_profile.getVertexTaskResourceRequirements(vertexName);
       
-      //ResourceProfile vertexResourceProfile = dag_profile.getVertexResourceProfile(vertexName);
-      
+      LOG.info("[Tan]  " + vertexPerTaskResourceProfile.toString());
+
+      // ResourceProfile vertexResourceProfile =
+      // dag_profile.getVertexResourceProfile(vertexName);
+
       // get the score SRTF which should be propagated to RM
-      double score_srtf = dag_profile.computeScoreSRTF();     
-//    event.getCapability().setScoreSRTF(score_srtf);
-    
-    //double cpu = vertexPerTaskResourceProfile.getCpuUsage();
-    //LOG.info("ROBERT: CPU_REQ: "+cpu);
-    // set resource requirement capabilities
-//    event.getCapability().setTaskDuration(vertexPerTaskResourceProfile.getDuration());
-//    event.getCapability().setCPU(Math.max(vertexPerTaskResourceProfile.getCpuUsage(), 10));
-//    event.getCapability().setMEM(vertexPerTaskResourceProfile.getMemUsage());   
-//    event.getCapability().setInNW(vertexPerTaskResourceProfile.getInNetworkUsage());
-//    event.getCapability().setOutST(vertexPerTaskResourceProfile.getOutStorageUsage());
-//    event.getCapability().setOutNW(vertexPerTaskResourceProfile.getOutNetworkUsage());
-//    event.getCapability().setInST(vertexPerTaskResourceProfile.getInStorageUsage());
-            
-    // set input and output per task
-//    event.getCapability().setInputSize(vertexPerTaskResourceProfile.getInput());
-//    event.getCapability().setOutputSize(vertexPerTaskResourceProfile.getOutput());
+      double score_srtf = dag_profile.computeScoreSRTF();
+      // event.getCapability().setScoreSRTF(score_srtf);
+
+      // double cpu = vertexPerTaskResourceProfile.getCpuUsage();
+      // LOG.info("ROBERT: CPU_REQ: "+cpu);
+      // set resource requirement capabilities
+      event.getCapability().setVirtualCores(3);
+      event.getCapability().setMemory(1024+512);
+      event.getCapability().setTaskDuration(60);
+      event.getCapability().setCpu(Math.max(vertexPerTaskResourceProfile.getCpuUsage(), 10));
+      event.getCapability().setVMem(vertexPerTaskResourceProfile.getMemUsage());
+      event.getCapability().setInNetwork(vertexPerTaskResourceProfile.getInNetworkUsage());
+      event.getCapability().setOutStorage(vertexPerTaskResourceProfile.getOutStorageUsage());
+      event.getCapability().setOutNetwork(vertexPerTaskResourceProfile.getOutNetworkUsage());
+//      event.getCapability().setInNetwork(vertexPerTaskResourceProfile.getInStorageUsage());
+      event.getCapability().setInNetwork(10000);
       
+      LOG.info("[Tan]  " + event.getCapability().toString());
+
+      // set input and output per task
+      // event.getCapability().setInputSize(vertexPerTaskResourceProfile.getInput());
+      // event.getCapability().setOutputSize(vertexPerTaskResourceProfile.getOutput());
+
       // update these values based on type of vertex
-      int vertex_num_tasks  = appContext.getCurrentDAG().getVertex(vertexName).getTotalTasks();
-          
-      if ( (vertexName == null) || (dagName == null) ) {
-        LOG.info("[Tan] Danger: - vertexName="+vertexName+" dagName="+dagName);
+      int vertex_num_tasks = appContext.getCurrentDAG().getVertex(vertexName).getTotalTasks();
+
+      if ((vertexName == null) || (dagName == null)) {
+        LOG.info("[Tan] Danger: - vertexName=" + vertexName + " dagName=" + dagName);
       }
-      
+
       // set vertexName and dagName
-  //    event.getCapability().setVertexName(vertexName);
-  //    event.getCapability().setDAGName(dagName);
-      
+      // event.getCapability().setVertexName(vertexName);
+      // event.getCapability().setDAGName(dagName);
+
       // set critical path for vertex
-  //    event.getCapability().setLongestCriticalPathVertex(dag_profile.getLongestCriticalPathVertex(vertexName));
-      
+      // event.getCapability().setLongestCriticalPathVertex(dag_profile.getLongestCriticalPathVertex(vertexName));
+
       // set max priority for vertex
-  //    event.getCapability().setMaxPriority(event.getMaxPriority().getPriority());
-      
+      // event.getCapability().setMaxPriority(event.getMaxPriority().getPriority());
+
       //// if enabled simulation DAG, update info about it ////
-      DAGSimulation dag_sim = dag_profile.simulationDAG();    
-      if (dag_sim != null) {    
+      DAGSimulation dag_sim = dag_profile.simulationDAG();
+      if (dag_sim != null) {
         LOG.info("[Tan] - update info about simulated DAG");
         dag_sim.addEntryTasksVertex(vertexName, vertex_num_tasks);
-        
+
         Random rand = new Random();
-        
-        double dur_t  = vertexPerTaskResourceProfile.getDuration();
-        dur_t += rand.nextDouble()*0.06;
-        double cpu_t  = (double)Math.max(vertexPerTaskResourceProfile.getCpuUsage(), 15)  / 100; // 0.25
-        cpu_t += rand.nextDouble()*0.06;
+
+        double dur_t = vertexPerTaskResourceProfile.getDuration();
+        dur_t += rand.nextDouble() * 0.06;
+        double cpu_t = (double) Math.max(vertexPerTaskResourceProfile.getCpuUsage(), 15) / 100; // 0.25
+        cpu_t += rand.nextDouble() * 0.06;
         cpu_t *= 1.5;
         cpu_t = (cpu_t < 0) ? -cpu_t : cpu_t;
-        double mem_t  = (double)Math.max(vertexPerTaskResourceProfile.getMemUsage(), 1500) / 32000; //13000; //11000(15) //14000(11); // 0.25;    
-        mem_t += rand.nextDouble()*0.06;
+        double mem_t = (double) Math.max(vertexPerTaskResourceProfile.getMemUsage(), 1500) / 32000; // 13000;
+                                                                                                    // //11000(15)
+                                                                                                    // //14000(11);
+                                                                                                    // //
+                                                                                                    // 0.25;
+        mem_t += rand.nextDouble() * 0.06;
         mem_t *= 1.5;
         mem_t = (mem_t < 0) ? -mem_t : mem_t;
-        double in_nw_t = (double)vertexPerTaskResourceProfile.getTaskInNwUsageSim()  / 60; // 70(15) // 60(11)
-        in_nw_t += rand.nextDouble()*0.06;
+        double in_nw_t = (double) vertexPerTaskResourceProfile.getTaskInNwUsageSim() / 60; // 70(15)
+                                                                                           // //
+                                                                                           // 60(11)
+        in_nw_t += rand.nextDouble() * 0.06;
         in_nw_t *= 1.5;
         in_nw_t = (in_nw_t < 0) ? -in_nw_t : in_nw_t;
-        double out_nw_t= (double)vertexPerTaskResourceProfile.getTaskOutNwUsageSim() / 60; // 70(15) // 50(11)
-        out_nw_t += rand.nextDouble()*0.06;
+        double out_nw_t = (double) vertexPerTaskResourceProfile.getTaskOutNwUsageSim() / 60; // 70(15)
+                                                                                             // //
+                                                                                             // 50(11)
+        out_nw_t += rand.nextDouble() * 0.06;
         out_nw_t *= 1.5;
         out_nw_t = (out_nw_t < 0) ? -out_nw_t : out_nw_t;
-        double in_st_t = (double)vertexPerTaskResourceProfile.getTaskInStUsageSim()  / 60; // 70(15) // 40(11)
-        in_st_t += rand.nextDouble()*0.06;
+        double in_st_t = (double) vertexPerTaskResourceProfile.getTaskInStUsageSim() / 60; // 70(15)
+                                                                                           // //
+                                                                                           // 40(11)
+        in_st_t += rand.nextDouble() * 0.06;
         in_st_t *= 1.5;
         in_st_t = (in_st_t < 0) ? -in_st_t : in_st_t;
-        double out_st_t= (double)vertexPerTaskResourceProfile.getTaskOutStUsageSim() / 60; // 70(15) // 50(11)
-        out_st_t += rand.nextDouble()*0.06;
+        double out_st_t = (double) vertexPerTaskResourceProfile.getTaskOutStUsageSim() / 60; // 70(15)
+                                                                                             // //
+                                                                                             // 50(11)
+        out_st_t += rand.nextDouble() * 0.06;
         out_st_t *= 1.5;
         out_st_t = (out_st_t < 0) ? -out_st_t : out_st_t;
         dag_sim.addTaskInformation(vertexName, dur_t, cpu_t, mem_t, in_nw_t, out_nw_t, in_st_t, out_st_t);
-      }   
+      }
     }
-   // SpeedFair >>
-    
+    // emulation >>
+
     TaskLocationHint locationHint = event.getLocationHint();
     String hosts[] = null;
     String racks[] = null;
@@ -564,77 +561,57 @@ public class TaskSchedulerManager extends AbstractService implements
       TaskBasedLocationAffinity taskAffinity = locationHint.getAffinitizedTask();
       if (taskAffinity != null) {
         Vertex vertex = appContext.getCurrentDAG().getVertex(taskAffinity.getVertexName());
-        Preconditions.checkNotNull(vertex, "Invalid vertex in task based affinity " + taskAffinity 
-            + " for attempt: " + taskAttempt.getID());
-        int taskIndex = taskAffinity.getTaskIndex(); 
-        Preconditions.checkState(taskIndex >=0 && taskIndex < vertex.getTotalTasks(), 
-            "Invalid taskIndex in task based affinity " + taskAffinity 
-            + " for attempt: " + taskAttempt.getID());
+        Preconditions.checkNotNull(vertex,
+            "Invalid vertex in task based affinity " + taskAffinity + " for attempt: " + taskAttempt.getID());
+        int taskIndex = taskAffinity.getTaskIndex();
+        Preconditions.checkState(taskIndex >= 0 && taskIndex < vertex.getTotalTasks(),
+            "Invalid taskIndex in task based affinity " + taskAffinity + " for attempt: " + taskAttempt.getID());
         TaskAttempt affinityAttempt = vertex.getTask(taskIndex).getSuccessfulAttempt();
         if (affinityAttempt != null) {
           Preconditions.checkNotNull(affinityAttempt.getAssignedContainerID(), affinityAttempt.getID());
           try {
-            taskSchedulers[event.getSchedulerId()].allocateTask(taskAttempt,
-                event.getCapability(),
-                affinityAttempt.getAssignedContainerID(),
-                Priority.newInstance(event.getPriority()),
-                event.getContainerContext(),
-                event);
+            taskSchedulers[event.getSchedulerId()].allocateTask(taskAttempt, event.getCapability(),
+                affinityAttempt.getAssignedContainerID(), Priority.newInstance(event.getPriority()),
+                event.getContainerContext(), event);
           } catch (Exception e) {
-            String msg = "Error in TaskScheduler for handling Task Allocation"
-                + ", eventType=" + event.getType()
+            String msg = "Error in TaskScheduler for handling Task Allocation" + ", eventType=" + event.getType()
                 + ", scheduler=" + Utils.getTaskSchedulerIdentifierString(event.getSchedulerId(), appContext)
                 + ", taskAttemptId=" + taskAttempt.getID();
             LOG.error(msg, e);
-            sendEvent(
-                new DAGAppMasterEventUserServiceFatalError(
-                    DAGAppMasterEventType.TASK_SCHEDULER_SERVICE_FATAL_ERROR,
-                    msg, e));
+            sendEvent(new DAGAppMasterEventUserServiceFatalError(
+                DAGAppMasterEventType.TASK_SCHEDULER_SERVICE_FATAL_ERROR, msg, e));
           }
           return;
         }
-        LOG.info("No attempt for task affinity to " + taskAffinity + " for attempt "
-            + taskAttempt.getID() + " Ignoring.");
+        LOG.info(
+            "No attempt for task affinity to " + taskAffinity + " for attempt " + taskAttempt.getID() + " Ignoring.");
         // fall through with null hosts/racks
       } else {
-        hosts = (locationHint.getHosts() != null) ? locationHint
-            .getHosts().toArray(
-                new String[locationHint.getHosts().size()]) : null;
-        racks = (locationHint.getRacks() != null) ? locationHint.getRacks()
-            .toArray(new String[locationHint.getRacks().size()]) : null;
+        hosts = (locationHint.getHosts() != null)
+            ? locationHint.getHosts().toArray(new String[locationHint.getHosts().size()]) : null;
+        racks = (locationHint.getRacks() != null)
+            ? locationHint.getRacks().toArray(new String[locationHint.getRacks().size()]) : null;
       }
     }
 
     try {
-      taskSchedulers[event.getSchedulerId()].allocateTask(taskAttempt,
-          event.getCapability(),
-          hosts,
-          racks,
-          Priority.newInstance(event.getPriority()),
-          event.getContainerContext(),
-          event);
+      taskSchedulers[event.getSchedulerId()].allocateTask(taskAttempt, event.getCapability(), hosts, racks,
+          Priority.newInstance(event.getPriority()), event.getContainerContext(), event);
     } catch (Exception e) {
-      String msg = "Error in TaskScheduler for handling Task Allocation"
-          + ", eventType=" + event.getType()
+      String msg = "Error in TaskScheduler for handling Task Allocation" + ", eventType=" + event.getType()
           + ", scheduler=" + Utils.getTaskSchedulerIdentifierString(event.getSchedulerId(), appContext)
           + ", taskAttemptId=" + taskAttempt.getID();
       LOG.error(msg, e);
       sendEvent(
-          new DAGAppMasterEventUserServiceFatalError(
-              DAGAppMasterEventType.TASK_SCHEDULER_SERVICE_FATAL_ERROR,
-              msg, e));
+          new DAGAppMasterEventUserServiceFatalError(DAGAppMasterEventType.TASK_SCHEDULER_SERVICE_FATAL_ERROR, msg, e));
     }
   }
 
   @VisibleForTesting
-  TaskScheduler createTaskScheduler(String host, int port, String trackingUrl,
-                                    AppContext appContext,
-                                    NamedEntityDescriptor taskSchedulerDescriptor,
-                                    long customAppIdIdentifier,
-                                    int schedulerId) throws TezException {
-    TaskSchedulerContext rawContext =
-        new TaskSchedulerContextImpl(this, appContext, schedulerId, trackingUrl,
-            customAppIdIdentifier, host, port, taskSchedulerDescriptor.getUserPayload());
+  TaskScheduler createTaskScheduler(String host, int port, String trackingUrl, AppContext appContext,
+      NamedEntityDescriptor taskSchedulerDescriptor, long customAppIdIdentifier, int schedulerId) throws TezException {
+    TaskSchedulerContext rawContext = new TaskSchedulerContextImpl(this, appContext, schedulerId, trackingUrl,
+        customAppIdIdentifier, host, port, taskSchedulerDescriptor.getUserPayload());
     TaskSchedulerContext wrappedContext = wrapTaskSchedulerContext(rawContext);
     String schedulerName = taskSchedulerDescriptor.getEntityName();
     if (schedulerName.equals(TezConstants.getTezYarnServicePluginName())) {
@@ -652,15 +629,13 @@ public class TaskSchedulerManager extends AbstractService implements
   }
 
   @VisibleForTesting
-  TaskScheduler createYarnTaskScheduler(TaskSchedulerContext taskSchedulerContext,
-                                        int schedulerId) {
+  TaskScheduler createYarnTaskScheduler(TaskSchedulerContext taskSchedulerContext, int schedulerId) {
     LOG.info("Creating TaskScheduler: YarnTaskSchedulerService");
     return new YarnTaskSchedulerService(taskSchedulerContext);
   }
 
   @VisibleForTesting
-  TaskScheduler createUberTaskScheduler(TaskSchedulerContext taskSchedulerContext,
-                                        int schedulerId) {
+  TaskScheduler createUberTaskScheduler(TaskSchedulerContext taskSchedulerContext, int schedulerId) {
     LOG.info("Creating TaskScheduler: Local TaskScheduler with clusterIdentifier={}",
         taskSchedulerContext.getCustomClusterIdentifier());
     return new LocalTaskSchedulerService(taskSchedulerContext);
@@ -668,55 +643,54 @@ public class TaskSchedulerManager extends AbstractService implements
 
   @SuppressWarnings("unchecked")
   TaskScheduler createCustomTaskScheduler(TaskSchedulerContext taskSchedulerContext,
-                                          NamedEntityDescriptor taskSchedulerDescriptor,
-                                          int schedulerId) throws TezException {
+      NamedEntityDescriptor taskSchedulerDescriptor, int schedulerId) throws TezException {
     LOG.info("Creating custom TaskScheduler {}:{} with clusterIdentifier={}", taskSchedulerDescriptor.getEntityName(),
         taskSchedulerDescriptor.getClassName(), taskSchedulerContext.getCustomClusterIdentifier());
     return ReflectionUtils.createClazzInstance(taskSchedulerDescriptor.getClassName(),
-        new Class[]{TaskSchedulerContext.class},
-        new Object[]{taskSchedulerContext});
+        new Class[] { TaskSchedulerContext.class }, new Object[] { taskSchedulerContext });
   }
 
   @VisibleForTesting
-  protected void instantiateSchedulers(String host, int port, String trackingUrl,
-                                       AppContext appContext) throws TezException {
+  protected void instantiateSchedulers(String host, int port, String trackingUrl, AppContext appContext)
+      throws TezException {
     // Iterate over the list and create all the taskSchedulers
     int j = 0;
     for (int i = 0; i < taskSchedulerDescriptors.length; i++) {
       long customAppIdIdentifier;
-      if ((isLocalMode && taskSchedulerDescriptors[i].getEntityName()
-          .equals(TezConstants.getTezUberServicePluginName()) ||
-          taskSchedulerDescriptors[i].getEntityName()
-              .equals(TezConstants.getTezYarnServicePluginName()))) {
+      if ((isLocalMode && taskSchedulerDescriptors[i].getEntityName().equals(TezConstants.getTezUberServicePluginName())
+          || taskSchedulerDescriptors[i].getEntityName().equals(TezConstants.getTezYarnServicePluginName()))) {
         // Use the provided appId instead of constructing one for containers.
         customAppIdIdentifier = appContext.getApplicationID().getClusterTimestamp();
       } else {
         customAppIdIdentifier = SCHEDULER_APP_ID_BASE + (j++ * SCHEDULER_APP_ID_INCREMENT);
       }
-      taskSchedulers[i] = new TaskSchedulerWrapper(createTaskScheduler(host, port,
-          trackingUrl, appContext, taskSchedulerDescriptors[i], customAppIdIdentifier, i));
-      taskSchedulerServiceWrappers[i] =
-          new ServicePluginLifecycleAbstractService<>(taskSchedulers[i].getTaskScheduler());
+      taskSchedulers[i] = new TaskSchedulerWrapper(createTaskScheduler(host, port, trackingUrl, appContext,
+          taskSchedulerDescriptors[i], customAppIdIdentifier, i));
+      taskSchedulerServiceWrappers[i] = new ServicePluginLifecycleAbstractService<>(
+          taskSchedulers[i].getTaskScheduler());
     }
   }
 
-  
   @Override
   public synchronized void serviceStart() throws Exception {
     InetSocketAddress serviceAddr = clientService.getBindAddress();
     dagAppMaster = appContext.getAppMaster();
-    // if web service is enabled then set tracking url. else disable it (value = "").
-    // the actual url set on the rm web ui will be the proxy url set by WebAppProxyServlet, which
-    // always try to connect to AM and proxy the response. hence it wont work if the webUIService
+    // if web service is enabled then set tracking url. else disable it (value =
+    // "").
+    // the actual url set on the rm web ui will be the proxy url set by
+    // WebAppProxyServlet, which
+    // always try to connect to AM and proxy the response. hence it wont work if
+    // the webUIService
     // is not enabled.
     String trackingUrl = (webUI != null) ? webUI.getTrackingURL() : "";
     instantiateSchedulers(serviceAddr.getHostName(), serviceAddr.getPort(), trackingUrl, appContext);
 
-    for (int i = 0 ; i < taskSchedulers.length ; i++) {
+    for (int i = 0; i < taskSchedulers.length; i++) {
       taskSchedulerServiceWrappers[i].init(getConfig());
       taskSchedulerServiceWrappers[i].start();
       if (shouldUnregisterFlag.get()) {
-        // Flag may have been set earlier when task scheduler was not initialized
+        // Flag may have been set earlier when task scheduler was not
+        // initialized
         // External services could need to talk to some other entity.
         taskSchedulers[i].setShouldUnregister();
       }
@@ -735,7 +709,7 @@ public class TaskSchedulerManager extends AbstractService implements
             }
             event = TaskSchedulerManager.this.eventQueue.take();
           } catch (InterruptedException e) {
-            if(!stopEventHandling) {
+            if (!stopEventHandling) {
               LOG.warn("Continuing after interrupt : ", e);
             }
             continue;
@@ -744,8 +718,7 @@ public class TaskSchedulerManager extends AbstractService implements
           try {
             handleEvent(event);
           } catch (Throwable t) {
-            LOG.error("Error in handling event type " + event.getType()
-                + " to the TaskScheduler", t);
+            LOG.error("Error in handling event type " + event.getType() + " to the TaskScheduler", t);
             // Kill the AM.
             sendEvent(new DAGAppMasterEvent(DAGAppMasterEventType.INTERNAL_ERROR));
             return;
@@ -757,30 +730,31 @@ public class TaskSchedulerManager extends AbstractService implements
     };
     this.eventHandlingThread.start();
   }
-  
+
   protected void notifyForTest() {
   }
 
   public void initiateStop() {
-    for (int i = 0 ; i < taskSchedulers.length ; i++) {
+    for (int i = 0; i < taskSchedulers.length; i++) {
       try {
         taskSchedulers[i].getTaskScheduler().initiateStop();
       } catch (Exception e) {
         // Ignore for now as scheduler stop invoked on shutdown
-        LOG.error("Failed to do a clean initiateStop for Scheduler: "
-            + Utils.getTaskSchedulerIdentifierString(i, appContext), e);
+        LOG.error(
+            "Failed to do a clean initiateStop for Scheduler: " + Utils.getTaskSchedulerIdentifierString(i, appContext),
+            e);
       }
     }
   }
 
   @Override
   public void serviceStop() throws InterruptedException {
-    synchronized(this) {
+    synchronized (this) {
       this.stopEventHandling = true;
       if (eventHandlingThread != null)
         eventHandlingThread.interrupt();
     }
-    for (int i = 0 ; i < taskSchedulers.length ; i++) {
+    for (int i = 0; i < taskSchedulers.length; i++) {
       if (taskSchedulers[i] != null) {
         taskSchedulerServiceWrappers[i].stop();
       }
@@ -791,34 +765,28 @@ public class TaskSchedulerManager extends AbstractService implements
   }
 
   // TaskSchedulerAppCallback methods with schedulerId, where relevant
-  public synchronized void taskAllocated(int schedulerId, Object task,
-                                           Object appCookie,
-                                           Container container) {
-    AMSchedulerEventTALaunchRequest event =
-        (AMSchedulerEventTALaunchRequest) appCookie;
+  public synchronized void taskAllocated(int schedulerId, Object task, Object appCookie, Container container) {
+    AMSchedulerEventTALaunchRequest event = (AMSchedulerEventTALaunchRequest) appCookie;
     ContainerId containerId = container.getId();
-    if (appContext.getAllContainers()
-        .addContainerIfNew(container, schedulerId, event.getLauncherId(),
-            event.getTaskCommId())) {
+    if (appContext.getAllContainers().addContainerIfNew(container, schedulerId, event.getLauncherId(),
+        event.getTaskCommId())) {
       appContext.getNodeTracker().nodeSeen(container.getNodeId(), schedulerId);
-      sendEvent(new AMNodeEventContainerAllocated(container
-          .getNodeId(), schedulerId, container.getId()));
+      sendEvent(new AMNodeEventContainerAllocated(container.getNodeId(), schedulerId, container.getId()));
     }
-
 
     TaskAttempt taskAttempt = event.getTaskAttempt();
     // TODO - perhaps check if the task still needs this container
     // because the deallocateTask downcall may have raced with the
     // taskAllocated() upcall
     assert task.equals(taskAttempt);
- 
+
     if (appContext.getAllContainers().get(containerId).getState() == AMContainerState.ALLOCATED) {
-      sendEvent(new AMContainerEventLaunchRequest(containerId, taskAttempt.getVertexID(),
-          event.getContainerContext(), event.getLauncherId(), event.getTaskCommId()));
+      sendEvent(new AMContainerEventLaunchRequest(containerId, taskAttempt.getVertexID(), event.getContainerContext(),
+          event.getLauncherId(), event.getTaskCommId()));
     }
-    sendEvent(new AMContainerEventAssignTA(containerId, taskAttempt.getID(),
-        event.getRemoteTaskSpec(), event.getContainerContext().getLocalResources(), event
-            .getContainerContext().getCredentials(), event.getPriority()));
+    sendEvent(new AMContainerEventAssignTA(containerId, taskAttempt.getID(), event.getRemoteTaskSpec(),
+        event.getContainerContext().getLocalResources(), event.getContainerContext().getCredentials(),
+        event.getPriority()));
   }
 
   public synchronized void containerCompleted(int schedulerId, Object task, ContainerStatus containerStatus) {
@@ -835,7 +803,7 @@ public class TaskSchedulerManager extends AbstractService implements
       } else if (exitStatus == ContainerExitStatus.DISKS_FAILED) {
         message = "Container disk failed. ";
         errCause = TaskAttemptTerminationCause.NODE_DISK_ERROR;
-      } else if (exitStatus != ContainerExitStatus.SUCCESS){
+      } else if (exitStatus != ContainerExitStatus.SUCCESS) {
         message = "Container failed, exitCode=" + exitStatus + ". ";
       }
       if (containerStatus.getDiagnostics() != null) {
@@ -869,13 +837,9 @@ public class TaskSchedulerManager extends AbstractService implements
     sendEvent(new DAGAppMasterEvent(DAGAppMasterEventType.AM_REBOOT));
   }
 
-  public synchronized void setApplicationRegistrationData(
-      int schedulerId,
-      Resource maxContainerCapability,
-      Map<ApplicationAccessType, String> appAcls, 
-      ByteBuffer clientAMSecretKey) {
-    this.appContext.getClusterInfo().setMaxContainerCapability(
-        maxContainerCapability);
+  public synchronized void setApplicationRegistrationData(int schedulerId, Resource maxContainerCapability,
+      Map<ApplicationAccessType, String> appAcls, ByteBuffer clientAMSecretKey) {
+    this.appContext.getClusterInfo().setMaxContainerCapability(maxContainerCapability);
     this.appAcls = appAcls;
     this.clientService.setClientAMSecretKey(clientAMSecretKey);
   }
@@ -883,7 +847,8 @@ public class TaskSchedulerManager extends AbstractService implements
   // Not synchronized to avoid deadlocks from TaskScheduler callbacks.
   // TaskScheduler uses a separate thread for it's callbacks. Since this method
   // returns a value which is required, the TaskScheduler wait for the call to
-  // complete and can hence lead to a deadlock if called from within a TSEH lock.
+  // complete and can hence lead to a deadlock if called from within a TSEH
+  // lock.
   public AppFinalStatus getFinalAppStatus() {
     FinalApplicationStatus finishState = FinalApplicationStatus.UNDEFINED;
     StringBuffer sb = new StringBuffer();
@@ -897,54 +862,55 @@ public class TaskSchedulerManager extends AbstractService implements
       } else if (appMasterState == DAGAppMasterState.KILLED
           || (appMasterState == DAGAppMasterState.RUNNING && isSignalled)) {
         finishState = FinalApplicationStatus.KILLED;
-      } else if (appMasterState == DAGAppMasterState.FAILED
-          || appMasterState == DAGAppMasterState.ERROR) {
+      } else if (appMasterState == DAGAppMasterState.FAILED || appMasterState == DAGAppMasterState.ERROR) {
         finishState = FinalApplicationStatus.FAILED;
       } else {
         finishState = FinalApplicationStatus.UNDEFINED;
       }
       List<String> diagnostics = dagAppMaster.getDiagnostics();
-      if(diagnostics != null) {
+      if (diagnostics != null) {
         for (String s : diagnostics) {
           sb.append(s).append("\n");
         }
       }
     }
-    if(LOG.isDebugEnabled()) {
+    if (LOG.isDebugEnabled()) {
       LOG.debug("Setting job diagnostics to " + sb.toString());
     }
 
-    // if history url is set use the same, if historyUrl is set to "" then rm ui disables the
+    // if history url is set use the same, if historyUrl is set to "" then rm ui
+    // disables the
     // history url
     return new AppFinalStatus(finishState, sb.toString(), historyUrl);
   }
 
-
-
   // Not synchronized to avoid deadlocks from TaskScheduler callbacks.
   // TaskScheduler uses a separate thread for it's callbacks. Since this method
   // returns a value which is required, the TaskScheduler wait for the call to
-  // complete and can hence lead to a deadlock if called from within a TSEH lock.
+  // complete and can hence lead to a deadlock if called from within a TSEH
+  // lock.
   public float getProgress(int schedulerId) {
-    // at this point allocate has been called and so node count must be available
+    // at this point allocate has been called and so node count must be
+    // available
     // may change after YARN-1722
-    // This is a heartbeat in from the scheduler into the APP, and is being used to piggy-back and
+    // This is a heartbeat in from the scheduler into the APP, and is being used
+    // to piggy-back and
     // node updates from the cluster.
 
-    // Doubles as a mechanism to update node counts periodically. Hence schedulerId required.
+    // Doubles as a mechanism to update node counts periodically. Hence
+    // schedulerId required.
 
-    // TODO Handle this in TEZ-2124. Need a way to know which scheduler is calling in.
+    // TODO Handle this in TEZ-2124. Need a way to know which scheduler is
+    // calling in.
     int nodeCount = 0;
     try {
       nodeCount = taskSchedulers[0].getClusterNodeCount();
     } catch (Exception e) {
-      String msg = "Error in TaskScheduler while getting node count"
-          + ", scheduler=" + Utils.getTaskSchedulerIdentifierString(schedulerId, appContext);
+      String msg = "Error in TaskScheduler while getting node count" + ", scheduler="
+          + Utils.getTaskSchedulerIdentifierString(schedulerId, appContext);
       LOG.error(msg, e);
       sendEvent(
-          new DAGAppMasterEventUserServiceFatalError(
-              DAGAppMasterEventType.TASK_SCHEDULER_SERVICE_FATAL_ERROR,
-              msg, e));
+          new DAGAppMasterEventUserServiceFatalError(DAGAppMasterEventType.TASK_SCHEDULER_SERVICE_FATAL_ERROR, msg, e));
       throw new RuntimeException(e);
     }
     if (nodeCount != cachedNodeCount) {
@@ -954,50 +920,40 @@ public class TaskSchedulerManager extends AbstractService implements
     return dagAppMaster.getProgress();
   }
 
-  public void reportError(int taskSchedulerIndex, ServicePluginError servicePluginError,
-                          String diagnostics,
-                          DagInfo dagInfo) {
+  public void reportError(int taskSchedulerIndex, ServicePluginError servicePluginError, String diagnostics,
+      DagInfo dagInfo) {
     if (servicePluginError == YarnTaskSchedulerServiceError.RESOURCEMANAGER_ERROR) {
       LOG.info("Error reported by scheduler {} - {}",
-          Utils.getTaskSchedulerIdentifierString(taskSchedulerIndex, appContext) + ": " +
-              diagnostics);
+          Utils.getTaskSchedulerIdentifierString(taskSchedulerIndex, appContext) + ": " + diagnostics);
       if (taskSchedulerDescriptors[taskSchedulerIndex].getClassName()
           .equals(YarnTaskSchedulerService.class.getName())) {
-        LOG.warn(
-            "Reporting a SchedulerServiceError to the DAGAppMaster since the error" +
-                " was reported by the default YARN Task Scheduler");
+        LOG.warn("Reporting a SchedulerServiceError to the DAGAppMaster since the error"
+            + " was reported by the default YARN Task Scheduler");
         sendEvent(new DAGAppMasterEventSchedulingServiceError(diagnostics));
       }
     } else if (servicePluginError.getErrorType() == ServicePluginError.ErrorType.PERMANENT) {
-      String msg = "Fatal error reported by TaskScheduler"
-          + ", scheduler=" + Utils.getTaskSchedulerIdentifierString(taskSchedulerIndex, appContext)
-          + ", servicePluginError=" + servicePluginError
-          + ", diagnostics= " + (diagnostics == null ? "" : diagnostics);
+      String msg = "Fatal error reported by TaskScheduler" + ", scheduler="
+          + Utils.getTaskSchedulerIdentifierString(taskSchedulerIndex, appContext) + ", servicePluginError="
+          + servicePluginError + ", diagnostics= " + (diagnostics == null ? "" : diagnostics);
       LOG.error(msg);
-      sendEvent(
-          new DAGAppMasterEventUserServiceFatalError(
-              DAGAppMasterEventType.TASK_SCHEDULER_SERVICE_FATAL_ERROR,
-              msg, null));
+      sendEvent(new DAGAppMasterEventUserServiceFatalError(DAGAppMasterEventType.TASK_SCHEDULER_SERVICE_FATAL_ERROR,
+          msg, null));
     } else {
-      Utils.processNonFatalServiceErrorReport(
-          Utils.getTaskSchedulerIdentifierString(taskSchedulerIndex, appContext),
-          servicePluginError, diagnostics, dagInfo,
-          appContext, "TaskScheduler");
+      Utils.processNonFatalServiceErrorReport(Utils.getTaskSchedulerIdentifierString(taskSchedulerIndex, appContext),
+          servicePluginError, diagnostics, dagInfo, appContext, "TaskScheduler");
     }
   }
 
   public void dagCompleted() {
-    for (int i = 0 ; i < taskSchedulers.length ; i++) {
+    for (int i = 0; i < taskSchedulers.length; i++) {
       try {
         taskSchedulers[i].dagComplete();
       } catch (Exception e) {
-        String msg = "Error in TaskScheduler when notified for Dag Completion"
-            + ", scheduler=" + Utils.getTaskSchedulerIdentifierString(i, appContext);
+        String msg = "Error in TaskScheduler when notified for Dag Completion" + ", scheduler="
+            + Utils.getTaskSchedulerIdentifierString(i, appContext);
         LOG.error(msg, e);
-        sendEvent(
-            new DAGAppMasterEventUserServiceFatalError(
-                DAGAppMasterEventType.TASK_SCHEDULER_SERVICE_FATAL_ERROR,
-                msg, e));
+        sendEvent(new DAGAppMasterEventUserServiceFatalError(DAGAppMasterEventType.TASK_SCHEDULER_SERVICE_FATAL_ERROR,
+            msg, e));
       }
     }
   }
@@ -1008,41 +964,39 @@ public class TaskSchedulerManager extends AbstractService implements
   }
 
   public void preemptContainer(int schedulerId, ContainerId containerId) {
-    // TODO Why is this making a call back into the scheduler, when the call is originating from there.
-    // An AMContainer instance should already exist if an attempt is being made to preempt it
+    // TODO Why is this making a call back into the scheduler, when the call is
+    // originating from there.
+    // An AMContainer instance should already exist if an attempt is being made
+    // to preempt it
     AMContainer amContainer = appContext.getAllContainers().get(containerId);
     try {
       taskSchedulers[amContainer.getTaskSchedulerIdentifier()].deallocateContainer(containerId);
     } catch (Exception e) {
-      String msg = "Error in TaskScheduler when preempting container"
-          + ", scheduler=" + Utils.getTaskSchedulerIdentifierString(amContainer.getTaskSchedulerIdentifier(), appContext)
+      String msg = "Error in TaskScheduler when preempting container" + ", scheduler="
+          + Utils.getTaskSchedulerIdentifierString(amContainer.getTaskSchedulerIdentifier(), appContext)
           + ", containerId=" + containerId;
       LOG.error(msg, e);
       sendEvent(
-          new DAGAppMasterEventUserServiceFatalError(
-              DAGAppMasterEventType.TASK_SCHEDULER_SERVICE_FATAL_ERROR,
-              msg, e));
+          new DAGAppMasterEventUserServiceFatalError(DAGAppMasterEventType.TASK_SCHEDULER_SERVICE_FATAL_ERROR, msg, e));
     }
     // Inform the Containers about completion.
-    sendEvent(new AMContainerEventCompleted(containerId, ContainerExitStatus.INVALID,
-        "Container preempted internally", TaskAttemptTerminationCause.INTERNAL_PREEMPTION));
+    sendEvent(new AMContainerEventCompleted(containerId, ContainerExitStatus.INVALID, "Container preempted internally",
+        TaskAttemptTerminationCause.INTERNAL_PREEMPTION));
   }
 
   public void setShouldUnregisterFlag() {
     LOG.info("TaskScheduler notified that it should unregister from RM");
     this.shouldUnregisterFlag.set(true);
-    for (int i = 0 ; i < taskSchedulers.length ; i++) {
+    for (int i = 0; i < taskSchedulers.length; i++) {
       if (this.taskSchedulers[i] != null) {
         try {
           this.taskSchedulers[i].setShouldUnregister();
         } catch (Exception e) {
-          String msg = "Error in TaskScheduler when setting Unregister Flag"
-              + ", scheduler=" + Utils.getTaskSchedulerIdentifierString(i, appContext);
+          String msg = "Error in TaskScheduler when setting Unregister Flag" + ", scheduler="
+              + Utils.getTaskSchedulerIdentifierString(i, appContext);
           LOG.error(msg, e);
-          sendEvent(
-              new DAGAppMasterEventUserServiceFatalError(
-                  DAGAppMasterEventType.TASK_SCHEDULER_SERVICE_FATAL_ERROR,
-                  msg, e));
+          sendEvent(new DAGAppMasterEventUserServiceFatalError(DAGAppMasterEventType.TASK_SCHEDULER_SERVICE_FATAL_ERROR,
+              msg, e));
         }
       }
     }
@@ -1054,19 +1008,17 @@ public class TaskSchedulerManager extends AbstractService implements
 
   public boolean hasUnregistered() {
     boolean result = true;
-    for (int i = 0 ; i < taskSchedulers.length ; i++) {
+    for (int i = 0; i < taskSchedulers.length; i++) {
       // Explicitly not catching any exceptions around this API
       // No clear route to recover. Better to crash.
       try {
         result = result & this.taskSchedulers[i].hasUnregistered();
       } catch (Exception e) {
-        String msg = "Error in TaskScheduler when checking if a scheduler has unregistered"
-            + ", scheduler=" + Utils.getTaskSchedulerIdentifierString(i, appContext);
+        String msg = "Error in TaskScheduler when checking if a scheduler has unregistered" + ", scheduler="
+            + Utils.getTaskSchedulerIdentifierString(i, appContext);
         LOG.error(msg, e);
-        sendEvent(
-            new DAGAppMasterEventUserServiceFatalError(
-                DAGAppMasterEventType.TASK_SCHEDULER_SERVICE_FATAL_ERROR,
-                msg, e));
+        sendEvent(new DAGAppMasterEventUserServiceFatalError(DAGAppMasterEventType.TASK_SCHEDULER_SERVICE_FATAL_ERROR,
+            msg, e));
       }
       if (result == false) {
         return result;
@@ -1081,17 +1033,16 @@ public class TaskSchedulerManager extends AbstractService implements
     String historyUrl = "";
 
     String historyUrlTemplate = config.get(TezConfiguration.TEZ_AM_TEZ_UI_HISTORY_URL_TEMPLATE,
-            TezConfiguration.TEZ_AM_TEZ_UI_HISTORY_URL_TEMPLATE_DEFAULT);
+        TezConfiguration.TEZ_AM_TEZ_UI_HISTORY_URL_TEMPLATE_DEFAULT);
     String historyUrlBase = config.get(TezConfiguration.TEZ_HISTORY_URL_BASE, "");
 
-    if (!historyUrlTemplate.isEmpty() &&
-        !historyUrlBase.isEmpty()) {
-      // replace the placeholders, while tolerating extra or missing "/" in input. replace all
-      // instances of consecutive "/" with single (except for the http(s):// case
-      historyUrl = historyUrlTemplate
-          .replaceAll(APPLICATION_ID_PLACEHOLDER, appContext.getApplicationID().toString())
-          .replaceAll(HISTORY_URL_BASE, historyUrlBase)
-          .replaceAll("([^:])/{2,}", "$1/");
+    if (!historyUrlTemplate.isEmpty() && !historyUrlBase.isEmpty()) {
+      // replace the placeholders, while tolerating extra or missing "/" in
+      // input. replace all
+      // instances of consecutive "/" with single (except for the http(s)://
+      // case
+      historyUrl = historyUrlTemplate.replaceAll(APPLICATION_ID_PLACEHOLDER, appContext.getApplicationID().toString())
+          .replaceAll(HISTORY_URL_BASE, historyUrlBase).replaceAll("([^:])/{2,}", "$1/");
 
       // make sure we have a valid scheme
       if (!historyUrl.startsWith("http")) {

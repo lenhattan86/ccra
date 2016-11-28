@@ -195,4 +195,17 @@ public class ResourceProfile {
 	public int getNumTasks() {
 		return num_tasks;
 	}
+	
+	@Override
+	public String toString() {
+	  String str = "ResourceProfile: ";
+	  str += " taskDuration="+ task_duration + " ";
+	  str += " task_cpu_usage="+ task_cpu_usage + " ";
+	  str += " task_mem_usage="+ task_mem_usage + " ";
+	  str += " task_in_nw_usage="+ task_in_nw_usage + " ";
+	  str += " task_out_nw_usage="+ task_out_nw_usage + " ";
+	  str += " task_in_st_usage="+ task_in_st_usage + " ";
+	  str += " task_out_st_usage="+ task_out_st_usage + " ";
+	  return str;
+	}
 }

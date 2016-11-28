@@ -87,6 +87,244 @@ public class ResourcePBImpl extends Resource {
     }
     return diff;
   }
+
+  // emulation <<
+  boolean isMapResource = false;
+  
+  @Override
+	public int getInNetwork() {
+	    ResourceProtoOrBuilder p = viaProto ? proto : builder;
+	    return (p.getInNetwork());
+	}
+	
+	@Override
+	public void setInNetwork(int in_network) {
+	    maybeInitBuilder();
+	    builder.setInNetwork(in_network);
+	}
+
+	@Override
+	public int getOutNetwork() {
+	    ResourceProtoOrBuilder p = viaProto ? proto : builder;
+	    return (p.getOutNetwork());
+	}
+	
+	@Override
+	public void setOutNetwork(int out_network) {
+	    maybeInitBuilder();
+	    builder.setOutNetwork(out_network);
+	}
+	
+	@Override
+	public int getInStorage() {
+	    ResourceProtoOrBuilder p = viaProto ? proto : builder;
+	    return (p.getInStorage());
+	}
+	
+	@Override
+	public void setInStorage(int in_storage) {
+	    maybeInitBuilder();
+	    builder.setInStorage(in_storage);
+	}
+	
+	@Override
+	public int getOutStorage() {	
+	    ResourceProtoOrBuilder p = viaProto ? proto : builder;
+	    return (p.getOutStorage());
+	}
+	
+	@Override
+	public void setOutStorage(int out_storage) {
+	    maybeInitBuilder();
+	    builder.setOutStorage(out_storage);
+	}
+
+	@Override
+	public int getCpu() {
+	    ResourceProtoOrBuilder p = viaProto ? proto : builder;
+	    return (p.getCpu());
+	}
+
+	@Override
+	public void setCpu(int cpu_avail) {
+	    maybeInitBuilder();
+	    builder.setCpu(cpu_avail);
+	}
+
+	@Override
+	public int getVMem() {
+	    ResourceProtoOrBuilder p = viaProto ? proto : builder;
+	    return (p.getVmem());
+	}
+
+	@Override
+	public void setVMem(int mem_avail) {
+	    maybeInitBuilder();
+	    builder.setVmem(mem_avail);
+	}
+
+	@Override
+	public boolean isAMResource() {
+		
+		if ( (getCpu() == 0)        &&
+			 (getVMem() == 0)       &&
+			 (getInNetwork() == 0)  &&
+			 (getOutNetwork() == 0) &&
+			 (getInStorage() == 0)  &&
+			 (getOutStorage() == 0)	&& 
+			 (getMemory() > 0) 
+			) {
+			return true;
+		}		
+		return false;
+	}
+
+	@Override
+	public boolean isMapResource() {
+		return isMapResource;
+	}
+
+	@Override
+	public void setMapResource() {
+		isMapResource = true;		
+	}
+
+	@Override
+	public int getRemRedTasksToSched() {
+	    ResourceProtoOrBuilder p = viaProto ? proto : builder;
+	    int rem_red_tasks = p.getRemRedTasksToSched();
+	    return rem_red_tasks;
+	}
+
+	@Override
+	public void setRemRedTasksToSched(int tasks_to_sched) {
+	    maybeInitBuilder();
+	    builder.setRemRedTasksToSched(tasks_to_sched);
+    }
+
+	@Override
+	public int getRemMapTasksToSched() {
+	    ResourceProtoOrBuilder p = viaProto ? proto : builder;
+	    int rem_map_tasks = p.getRemMapTasksToSched();
+	    return rem_map_tasks;
+	}
+
+	@Override
+	public void setRemMapTasksToSched(int tasks_to_sched) {
+	    maybeInitBuilder();
+	    builder.setRemMapTasksToSched(tasks_to_sched);
+    }
+	
+	@Override
+	public int getMapTaskDuration() {
+	    ResourceProtoOrBuilder p = viaProto ? proto : builder;
+	    int map_dur = p.getMapDuration();
+	    return map_dur;
+	}
+
+	@Override
+	public void setMapTaskDuration(int task_duration) {
+		maybeInitBuilder();
+		builder.setMapDuration(task_duration);
+	}
+
+	@Override
+	public int getRedTaskDuration() {
+	    ResourceProtoOrBuilder p = viaProto ? proto : builder;
+	    int red_dur = p.getRedDuration();
+	    return red_dur;
+	}
+
+	@Override
+	public void setRedTaskDuration(int task_duration) {
+		maybeInitBuilder();
+		builder.setRedDuration(task_duration);	
+	}
+
+	@Override
+	public int getCpuOther() {
+	    ResourceProtoOrBuilder p = viaProto ? proto : builder;
+	    return (p.getCpuOther());
+	}
+
+	@Override
+	public void setCpuOther(int cpu_avail) {
+	    maybeInitBuilder();
+	    builder.setCpuOther(cpu_avail);
+	}
+
+	@Override
+	public int getVMemOther() {
+	    ResourceProtoOrBuilder p = viaProto ? proto : builder;
+	    return (p.getVmemOther());
+	}
+
+	@Override
+	public void setVMemOther(int mem_avail) {
+	    maybeInitBuilder();
+	    builder.setVmemOther(mem_avail);
+	}
+
+	@Override
+	public int getInNetworkOther() {
+	    ResourceProtoOrBuilder p = viaProto ? proto : builder;
+	    return (p.getInNetworkOther());
+	}
+
+	@Override
+	public void setInNetworkOther(int in_network) {
+	    maybeInitBuilder();
+	    builder.setInNetworkOther(in_network);
+	}
+
+	@Override
+	public int getOutNetworkOther() {
+	    ResourceProtoOrBuilder p = viaProto ? proto : builder;
+	    return (p.getOutNetworkOther());
+	}
+
+	@Override
+	public void setOutNetworkOther(int out_network) {
+	    maybeInitBuilder();
+	    builder.setOutNetworkOther(out_network);
+	}
+
+	@Override
+	public int getInStorageOther() {
+	    ResourceProtoOrBuilder p = viaProto ? proto : builder;
+	    return (p.getInStorageOther());
+	}
+
+	@Override
+	public void setInStorageOther(int in_storage) {
+	    maybeInitBuilder();
+	    builder.setInStorageOther(in_storage);
+	}
+
+	@Override
+	public int getOutStorageOther() {
+	    ResourceProtoOrBuilder p = viaProto ? proto : builder;
+	    return (p.getOutStorageOther());
+	}
+
+	@Override
+	public void setOutStorageOther(int out_storage) {
+	    maybeInitBuilder();
+	    builder.setOutStorageOther(out_storage);
+	}
+  // emulation >>
+
+  @Override
+  public int getTaskDuration() {
+    ResourceProtoOrBuilder p = viaProto ? proto : builder;
+    return (p.getTaskDuration());
+  }
+
+  @Override
+  public void setTaskDuration(int task_duration) {
+    maybeInitBuilder();
+    builder.setTaskDuration(task_duration);
+  }
   
   
 }  

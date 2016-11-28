@@ -1,0 +1,23 @@
+RMAppAttemptImpl
+	AMContainerAllocatedTransition
+		scheduler.allocate(
+-- allocate a number of containers.
+
+RMContainerRequestor for MapReduce?
+	makeRemoteRequest
+		scheduler.allocate(
+-- allocate a number of containers.
+
+allocate() ==> create containers.
+compare ==> allocate
+
+TEZ
+
+TaskAttempt
+TaskAttemptImpl
+
+Questions: 
+- DAG structure (load or self-created)
+	is it easy to directly change the DAG structure?
+- Duration of task (where).
+

@@ -46,9 +46,9 @@ public class HistoryEventHandler extends CompositeService {
   private boolean recoveryEnabled;
   private HistoryLoggingService historyLoggingService;
 
-  // SpeedFair <<
+  // emulation <<
   HashMap<String, Integer> taskIdxPerVertex = new HashMap<String, Integer>();
-  // SpeedFair >>
+  // emulation >>
 
   public HistoryEventHandler(AppContext context) {
     super(HistoryEventHandler.class.getName());
@@ -123,7 +123,7 @@ public class HistoryEventHandler extends CompositeService {
     LOG.info("[HISTORY]" + "[DAG:" + dagIdStr + "]" + "[Event:" + event.getHistoryEvent().getEventType().name() + "]"
         + ": " + event.getHistoryEvent().toString());
 
-    // SpeedFair <<
+    // emulation <<
     /*
      * capture the execution time for tasks
      */
@@ -194,10 +194,10 @@ public class HistoryEventHandler extends CompositeService {
       file.flush();
       file.close();
     }
-    // SpeedFair >>
+    // emulation >>
   }
 
-  // SpeedFair <<
+  // emulation <<
   public void createDir(String location) {
 
     File dir = new File(location);
@@ -207,7 +207,7 @@ public class HistoryEventHandler extends CompositeService {
     }
 
   }
-  // SpeedFair >>
+  // emulation >>
   
   public void handle(DAGHistoryEvent event) {
     try {

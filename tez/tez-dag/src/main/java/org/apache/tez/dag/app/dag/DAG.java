@@ -99,9 +99,9 @@ public interface DAG extends DagInfo {
 
   org.apache.tez.dag.api.Vertex.VertexExecutionContext getDefaultExecutionContext();
   
-  // SpeedFair <<
+  // emulation <<
   // Define a DAG Profiler to be used for vertices requirements
   DAGProfiler getProfile();
-  // SpeedFair >>
+  // emulation >>
 
 }

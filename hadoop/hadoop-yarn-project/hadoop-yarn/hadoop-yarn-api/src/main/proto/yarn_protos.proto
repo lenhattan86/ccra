@@ -56,6 +56,25 @@ message ContainerIdProto {
 message ResourceProto {
   optional int32 memory = 1;
   optional int32 virtual_cores = 2;
+  // emulation <<
+  optional int32 cpu = 3;
+  optional int32 vmem = 4;
+  optional int32 in_network  = 5;
+  optional int32 out_network = 6;
+  optional int32 in_storage  = 7;
+  optional int32 out_storage = 8; 
+  optional int32 cpu_other = 9;
+  optional int32 vmem_other = 10;
+  optional int32 in_network_other  = 11;
+  optional int32 out_network_other = 12;
+  optional int32 in_storage_other  = 13;
+  optional int32 out_storage_other = 14;
+  optional int32 rem_map_tasks_to_sched = 15;
+  optional int32 rem_red_tasks_to_sched = 16;
+  optional int32 map_duration = 17;
+  optional int32 red_duration = 18;
+  optional int32 task_duration = 19;
+  // emulation >>
 }
 
 message ResourceOptionProto {

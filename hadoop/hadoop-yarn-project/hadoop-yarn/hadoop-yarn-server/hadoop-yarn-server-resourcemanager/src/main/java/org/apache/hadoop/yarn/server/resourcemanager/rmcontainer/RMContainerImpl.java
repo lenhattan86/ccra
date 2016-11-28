@@ -524,7 +524,7 @@ public class RMContainerImpl implements RMContainer {
           .getContainerId());
     }
   }
-
+  
   private static final class ContainerRescheduledTransition extends
       FinishedTransition {
 
@@ -541,7 +541,7 @@ public class RMContainerImpl implements RMContainer {
     @Override
     public void transition(RMContainerImpl container, RMContainerEvent event) {
       RMContainerFinishedEvent finishedEvent = (RMContainerFinishedEvent) event;
-
+      
       container.finishTime = System.currentTimeMillis();
       container.finishedStatus = finishedEvent.getRemoteContainerStatus();
       // Inform AppAttempt

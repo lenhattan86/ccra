@@ -179,9 +179,9 @@ public abstract class RuntimeTask {
 
   public abstract void abortTask();
   
-  // SpeedFair <<
+  // emulation <<
   public TaskCounterUpdater getCounterUpdater() {
     return counterUpdater;
   }
-  // SpeedFair >>
+  // emulation >>
 }

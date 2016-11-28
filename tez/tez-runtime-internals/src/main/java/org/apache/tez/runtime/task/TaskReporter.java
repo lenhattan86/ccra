@@ -162,10 +162,10 @@ public class TaskReporter implements TaskReporterInterface {
      */
     private int prevCounterSendHeartbeatNum = 0;
     
-    // SpeedFair <<
+    // emulation <<
     private long _last_tstamp = -1;
     private int INTERVAL_UPDATE_FS_COUNTERS = 10; // [secs]
-    // SpeedFair >>
+    // emulation >>
 
     public HeartbeatCallable(RuntimeTask task,
         TezTaskUmbilicalProtocol umbilical, long amPollInterval, long sendCounterInterval,
@@ -250,7 +250,7 @@ public class TaskReporter implements TaskReporterInterface {
          */
         // Not completely accurate, since OOB heartbeats could go out.
         if ((nonOobHeartbeatCounter.get() - prevCounterSendHeartbeatNum) * pollInterval >= sendCounterInterval) {
-          // SpeedFair <<
+          // emulation <<
           task.getCounterUpdater().updateCpuAndMem();
           
           long interval_msec = INTERVAL_UPDATE_FS_COUNTERS * 1000;
@@ -260,7 +260,7 @@ public class TaskReporter implements TaskReporterInterface {
             task.getCounterUpdater().updateCountersStats();
             _last_tstamp = curr_tstamp;
           }                   
-          // SpeedFair >>
+          // emulation >>
           sendCounters = true;
           prevCounterSendHeartbeatNum = nonOobHeartbeatCounter.get();
         }

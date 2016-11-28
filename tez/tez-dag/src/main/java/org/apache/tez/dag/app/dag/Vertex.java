@@ -201,7 +201,7 @@ public interface Vertex extends Comparable<Vertex> {
   public long getFirstTaskStartTime();
   public long getLastTaskFinishTime();
   
-  // SpeedFair <<
+  // emulation <<
   int getRemainingTasks();
   // SpeedFair >>
 }

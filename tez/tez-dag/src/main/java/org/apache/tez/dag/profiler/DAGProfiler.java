@@ -6,6 +6,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -65,7 +66,7 @@ public class DAGProfiler {
 	
 	public DAGProfiler(AppContext _appContext, DAGPlan jobPlan, String _dagName) {
 				
-		LOG.info("[Tan] create new dag context with name: "+_dagName);
+		LOG.info("[Tan] New DAGProfiler: dagName="+_dagName);
 		dagName = _dagName;
 		
 		appContext 	= _appContext;		
@@ -79,6 +80,7 @@ public class DAGProfiler {
 		
 		appContext.getAMConf().addResource("tez-site.xml");
 		
+		//TODO: load the DAG structures from files instead of using the submitted ones.
 		// populate DAG structure
 		// parents and children structures
 		// create default resource profiles
@@ -91,7 +93,7 @@ public class DAGProfiler {
 		loadDAGResourceProfile(true);
 		
 		// create a simulation dag
-		sim_dag = new DAGSimulation(this);		
+		sim_dag = new DAGSimulation(this);
 		
 		// compute critical path lengths
 		criticalPathLengths = new HashMap<String, Double>();	
@@ -125,15 +127,15 @@ public class DAGProfiler {
 	/* print DAG */
 	public void viewDAG() {
 		
-		LOG.info("[Tan] -- VIEW DAG structure --");
+		LOG.info("[Tan] -- VIEW DAG: -- num of Vertices = " + this.vertices.size());
 		for (String vertex : this.vertices.keySet()) {
 			
-			LOG.info("[Tan] node: "+vertex);
+			LOG.info("\t vertex: "+vertex);
 			for (String vertex_p : parents.get(vertex))
-				LOG.info("[Tan]  --> parent: "+vertex_p);
+				LOG.info("\t --> parent: "+vertex_p);
 			
 			for (String vertex_c : children.get(vertex))
-				LOG.info("[Tan] --> child: "+vertex_c);
+				LOG.info("\t --> child: "+vertex_c);
 		}
 	}
 	
@@ -158,8 +160,11 @@ public class DAGProfiler {
 	public void populateDAGStructure(DAGPlan jobPlan) {
 										
 		LOG.info("[Tan] - build DAG structure and initialize resource profiles");
-						
+		
+		// TODO: load our own DAG here profiles instead of using from the jobPlan
 		List<VertexPlan> vertices = jobPlan.getVertexList();
+		
+		List<VertexPlan> newVertices = new ArrayList<VertexPlan>();
 		
 		// for every vertex, for every outEdge, looks who has inEdge
 		// and update parent -> child relationship.
@@ -197,7 +202,7 @@ public class DAGProfiler {
 						}
 					}
 				}
-			}				
+			}			
 		}	
 		
 		viewDAG();
@@ -255,51 +260,50 @@ public class DAGProfiler {
 		createDir(dag_profile_location);
 		
 		if ( fr.isDirectory() || !fr.exists() ) {
-			LOG.info("[Tan] profile not found; remains with default");
+			LOG.info("[Tan] profile not found; remains with default resource profile");
 			return;
+		} else {
+  		try {
+  			BufferedReader br = new BufferedReader(new FileReader(fr));
+  			String line = null;			
+  			try {
+  				while ( (line = br.readLine()) != null ) {
+  					LOG.info("line="+line+"|done");
+  					String vertexName = line.split(":")[0];					
+  					if ( !vertices.containsKey(vertexName) )
+  						vertices.put(vertexName, new VertexProfiler(vertexName, this));
+  					
+  					String[] vertexProfile = line.split(":")[1].split(" ");															
+  					
+  					try {
+  						if ( !isResourceUpdateProfile )
+  							vertices.get(vertexName).updateTaskProfileFromResourceFile(vertexProfile);
+  						else
+  							vertices.get(vertexName).updateTaskProfileFromUpdateFile(vertexProfile);
+  					} catch (Exception e) {
+  						e.printStackTrace();
+  					}
+  				}				
+  			} catch (IOException e) {
+  				LOG.info("[Tan]: Unable to read profile for"+dagName+".profile");
+  				e.printStackTrace();
+  			}
+  		} catch (FileNotFoundException e) {
+  			LOG.info("[Tan]: Unable to read profile for"+dagName+".profile");
+  			e.printStackTrace();
+  		}	
+  		
+  		LOG.info("[Tan]: updated profile for dag "+dagName);			
+  	  
+  	  for (String vertex : vertices.keySet()) {
+  	  	LOG.info("[Tan]:: Vertex: "+vertex+" duration: "+vertices.get(vertex).vertexProfile.getDuration());
+  	  }
+  	  
+  	  for (String vertex : children.keySet()) 
+  		  LOG.info("[Tan]: vertex: "+vertex+" children="+children.get(vertex));
+  	  for (String vertex : parents.keySet()) 
+  		  LOG.info("[Tan]: vertex: "+vertex+" parents="+parents.get(vertex));
 		}
-			
-		try {
-			BufferedReader br = new BufferedReader(new FileReader(fr));
-			String line = null;			
-			try {
-				while ( (line = br.readLine()) != null ) {
-					LOG.info("line="+line+"|done");
-					String vertexName = line.split(":")[0];					
-					if ( !vertices.containsKey(vertexName) )
-						vertices.put(vertexName, new VertexProfiler(vertexName, this));
-					
-					String[] vertexProfile = line.split(":")[1].split(" ");															
-					
-					try {
-						if ( !isResourceUpdateProfile )
-							vertices.get(vertexName).updateTaskProfileFromResourceFile(vertexProfile);
-						else
-							vertices.get(vertexName).updateTaskProfileFromUpdateFile(vertexProfile);
-					} catch (Exception e) {
-						e.printStackTrace();
-					}
-				}				
-			} catch (IOException e) {
-				LOG.info("[Tan]: Unable to read profile for"+dagName+".profile");
-				e.printStackTrace();
-			}
-		} catch (FileNotFoundException e) {
-			LOG.info("[Tan]: Unable to read profile for"+dagName+".profile");
-			e.printStackTrace();
-		}	
-		
-		LOG.info("[Tan]: updated profile for dag "+dagName);			
-	  
-	  for (String vertex : vertices.keySet()) {
-	  	LOG.info("[Tan]:: Vertex: "+vertex+" duration: "+vertices.get(vertex).vertexProfile.getDuration());
-	  }
-	  
-	  for (String vertex : children.keySet()) 
-		  LOG.info("[Tan]: vertex: "+vertex+" children="+children.get(vertex));
-	  for (String vertex : parents.keySet()) 
-		  LOG.info("[Tan]: vertex: "+vertex+" parents="+parents.get(vertex));
-	  
 	}
 		
 	

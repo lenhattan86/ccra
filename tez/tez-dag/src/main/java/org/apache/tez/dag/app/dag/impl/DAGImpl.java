@@ -520,12 +520,12 @@ public class DAGImpl implements org.apache.tez.dag.app.dag.DAG,
     this.clock = clock;
     this.appContext = appContext;
     
-    // SpeedFair <<
+    // emulation <<
     enableSim = this.appContext.getAMConf().getBoolean(TezConfiguration.TEZ_ENABLE_SIMULATION, 
         TezConfiguration.TEZ_ENABLE_SIMULATION_DEFAULT);
     if(enableSim)
       this.dagProfiler = new DAGProfiler(this.appContext, jobPlan, this.dagName);
-    // SpeedFair >>
+    // emulation >>
 
     this.taskCommunicatorManagerInterface = taskCommunicatorManagerInterface;
     this.taskHeartbeatHandler = thh;
@@ -1430,10 +1430,10 @@ public class DAGImpl implements org.apache.tez.dag.app.dag.DAG,
 
     LOG.info("DAG: " + getID() + " finished with state: " + finalState);
     
-    // SpeedFair <<
+    // emulation <<
     if(enableSim)
       dagProfiler.jobFinished();
-    // SpeedFair >>
+    // emulation >>
 
     return finalState;
   }
@@ -2424,7 +2424,7 @@ public class DAGImpl implements org.apache.tez.dag.app.dag.DAG,
     }
   }
 
-  // SpeedFair <<
+  // emulation <<
   DAGProfiler dagProfiler;
   boolean enableSim = false;
   
@@ -2432,5 +2432,5 @@ public class DAGImpl implements org.apache.tez.dag.app.dag.DAG,
   public DAGProfiler getProfile() {
     return dagProfiler;
   }
-  // SpeedFair >>
+  // emulation >>
 }

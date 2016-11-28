@@ -1606,7 +1606,7 @@ public class TezConfiguration extends Configuration {
       TEZ_PREFIX + "am.ats.v15.override.summary-types";
   public static final boolean TEZ_AM_ATS_V15_OVERRIDE_SUMMARY_TYPES_DEFAULT = true;
   
-  // <<SpeedFair 
+  // <<emulation 
   /**
    * Boolean value. Configuration to specify whether GRAPHENE scheduler is enabled or not.
    * This improves performance by not incurring recurring launch overheads.
@@ -1635,5 +1635,5 @@ public class TezConfiguration extends Configuration {
   
   public static final String TEZ_ENABLE_SIMULATION = "tez.simulation.enabled";
   public static final boolean TEZ_ENABLE_SIMULATION_DEFAULT = false;
-  // SpeedFair>>
+  // emulation>>
 }

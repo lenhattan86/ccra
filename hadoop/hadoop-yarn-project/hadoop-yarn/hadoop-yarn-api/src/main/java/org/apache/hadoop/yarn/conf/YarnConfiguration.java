@@ -37,7 +37,12 @@ import org.apache.hadoop.yarn.api.ApplicationConstants;
 @Public
 @Evolving
 public class YarnConfiguration extends Configuration {
-
+  
+  // emulation <<
+  /** The number of threads used to handle applications manager requests.*/
+  public static final String TEZ_ENABLE_SIMULATION = "tez.simulation.enabled";
+  public static final boolean TEZ_ENABLE_SIMULATION_DEFAULT = false;
+  // emulation >>
   @Private
   public static final String CS_CONFIGURATION_FILE= "capacity-scheduler.xml";
 

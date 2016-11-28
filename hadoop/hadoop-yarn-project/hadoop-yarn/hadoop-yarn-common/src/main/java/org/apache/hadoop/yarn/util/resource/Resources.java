@@ -58,6 +58,195 @@ public class Resources {
       }
       return diff;
     }
+
+    // emulation <<
+    @Override
+	public int getInNetwork() {
+		return 0;
+	}
+
+	@Override
+	public void setInNetwork(int in_network) {
+		throw new RuntimeException("NONE cannot be modified!");		
+	}
+
+	@Override
+	public int getOutNetwork() {
+		return 0;
+	}
+
+	@Override
+	public void setOutNetwork(int out_network) {
+		throw new RuntimeException("NONE cannot be modified!");		
+	}
+
+	@Override
+	public int getInStorage() {
+		return 0;
+	}
+
+	@Override
+	public void setInStorage(int in_storage) {
+		throw new RuntimeException("NONE cannot be modified!");
+	}
+
+	@Override
+	public int getOutStorage() {
+		return 0;
+	}
+
+	@Override
+	public void setOutStorage(int out_storage) {
+		throw new RuntimeException("NONE cannot be modified!");
+	}
+
+	@Override
+	public int getCpu() {
+		return 0;
+	}
+
+	@Override
+	public void setCpu(int cpu_avail) {
+		throw new RuntimeException("NONE cannot be modified!");		
+	}
+
+	@Override
+	public int getVMem() {
+		return 0;
+	}
+
+	@Override
+	public void setVMem(int mem_avail) {
+		throw new RuntimeException("NONE cannot be modified!");		
+	}
+
+	@Override
+	public boolean isAMResource() {
+		return false;
+	}
+
+	@Override
+	public boolean isMapResource() {
+		return false;
+	}
+
+	@Override
+	public void setMapResource() {
+		throw new RuntimeException("NONE cannot be modified!");			
+	}
+
+	@Override
+	public int getMapTaskDuration() {
+		return 0;
+	}
+
+	@Override
+	public void setMapTaskDuration(int task_duration) {
+		throw new RuntimeException("NONE cannot be modified!");			
+	}
+
+	@Override
+	public int getRedTaskDuration() {
+		return 0;
+	}
+
+	@Override
+	public void setRedTaskDuration(int task_duration) {
+		throw new RuntimeException("NONE cannot be modified!");			
+	}
+
+	@Override
+	public int getRemMapTasksToSched() {
+		return 0;
+	}
+
+	@Override
+	public void setRemMapTasksToSched(int tasks_to_sched) {
+		throw new RuntimeException("NONE cannot be modified!");	
+	}
+
+	@Override
+	public int getRemRedTasksToSched() {
+		return 0;
+	}
+
+	@Override
+	public void setRemRedTasksToSched(int tasks_to_sched) {
+		throw new RuntimeException("NONE cannot be modified!");			
+	}
+
+	@Override
+	public int getCpuOther() {
+		return 0;
+	}
+
+	@Override
+	public void setCpuOther(int cpu_avail) {
+		throw new RuntimeException("NONE cannot be modified!");			
+	}
+
+	@Override
+	public int getVMemOther() {
+		return 0;
+	}
+
+	@Override
+	public void setVMemOther(int mem_avail) {
+		throw new RuntimeException("NONE cannot be modified!");			
+	}
+
+	@Override
+	public int getInNetworkOther() {
+		return 0;
+	}
+
+	@Override
+	public void setInNetworkOther(int in_network) {
+		throw new RuntimeException("NONE cannot be modified!");			
+	}
+
+	@Override
+	public int getOutNetworkOther() {
+		return 0;
+	}
+
+	@Override
+	public void setOutNetworkOther(int out_network) {
+		throw new RuntimeException("NONE cannot be modified!");			
+	}
+
+	@Override
+	public int getInStorageOther() {
+		return 0;
+	}
+
+	@Override
+	public void setInStorageOther(int in_storage) {
+		throw new RuntimeException("NONE cannot be modified!");			
+	}
+
+	@Override
+	public int getOutStorageOther() {
+		return 0;
+	}
+
+	@Override
+	public void setOutStorageOther(int out_storage) {
+		throw new RuntimeException("NONE cannot be modified!");			
+	}
+    // emulation >>
+
+  @Override
+  public int getTaskDuration() {
+    // TODO Auto-generated method stub
+    return 0;
+  }
+
+  @Override
+  public void setTaskDuration(int task_duration) {
+    // TODO Auto-generated method stub
+    
+  }
     
   };
   
@@ -91,6 +280,196 @@ public class Resources {
       }
       return diff;
     }
+
+    // emulation <<
+    @Override
+  	public int getInNetwork() {
+  		return 0;
+  	}
+  
+  	@Override
+  	public void setInNetwork(int in_network) {
+  		throw new RuntimeException("NONE cannot be modified!");		
+  	}
+  
+  	@Override
+  	public int getOutNetwork() {
+  		return 0;
+  	}
+  
+  	@Override
+  	public void setOutNetwork(int out_network) {
+  		throw new RuntimeException("NONE cannot be modified!");		
+  	}
+  
+  	@Override
+  	public int getInStorage() {
+  		return 0;
+  	}
+  
+  	@Override
+  	public void setInStorage(int in_storage) {
+  		throw new RuntimeException("NONE cannot be modified!");
+  	}
+  
+  	@Override
+  	public int getOutStorage() {
+  		return 0;
+  	}
+  
+  	@Override
+  	public void setOutStorage(int out_storage) {
+  		throw new RuntimeException("NONE cannot be modified!");
+  	}
+  
+  	@Override
+  	public int getCpu() {
+  		return 0;
+  	}
+  
+  	@Override
+  	public void setCpu(int cpu_avail) {
+  		throw new RuntimeException("NONE cannot be modified!");		
+  	}
+  
+  	@Override
+  	public int getVMem() {
+  		return 0;
+  	}
+  
+  	@Override
+  	public void setVMem(int mem_avail) {
+  		throw new RuntimeException("NONE cannot be modified!");		
+  	}
+  
+  	@Override
+  	public boolean isAMResource() {
+  		return false;
+  	}
+  
+  	@Override
+  	public boolean isMapResource() {
+  		return false;
+  	}
+  
+  	@Override
+  	public void setMapResource() {
+  		throw new RuntimeException("NONE cannot be modified!");			
+  	}
+  
+  	@Override
+  	public int getMapTaskDuration() {
+  		return 0;
+  	}
+  
+  	@Override
+  	public void setMapTaskDuration(int task_duration) {
+  		throw new RuntimeException("NONE cannot be modified!");			
+  	}
+  
+  	@Override
+  	public int getRedTaskDuration() {
+  		return 0;
+  	}
+  
+  	@Override
+  	public void setRedTaskDuration(int task_duration) {
+  		throw new RuntimeException("NONE cannot be modified!");			
+  	}
+  
+  	@Override
+  	public int getRemMapTasksToSched() {
+  		return 0;
+  	}
+  
+  	@Override
+  	public void setRemMapTasksToSched(int tasks_to_sched) {
+  		throw new RuntimeException("NONE cannot be modified!");	
+  	}
+  
+  	@Override
+  	public int getRemRedTasksToSched() {
+  		return 0;
+  	}
+  
+  	@Override
+  	public void setRemRedTasksToSched(int tasks_to_sched) {
+  		throw new RuntimeException("NONE cannot be modified!");			
+  	}
+  
+  	@Override
+  	public int getCpuOther() {
+  		return 0;
+  	}
+  
+  	@Override
+  	public void setCpuOther(int cpu_avail) {
+  		throw new RuntimeException("NONE cannot be modified!");			
+  	}
+  
+  	@Override
+  	public int getVMemOther() {
+  		return 0;
+  	}
+  
+  	@Override
+  	public void setVMemOther(int mem_avail) {
+  		throw new RuntimeException("NONE cannot be modified!");			
+  	}
+  
+  	@Override
+  	public int getInNetworkOther() {
+  		return 0;
+  	}
+  
+  	@Override
+  	public void setInNetworkOther(int in_network) {
+  		throw new RuntimeException("NONE cannot be modified!");			
+  	}
+  
+  	@Override
+  	public int getOutNetworkOther() {
+  		return 0;
+  	}
+  
+  	@Override
+  	public void setOutNetworkOther(int out_network) {
+  		throw new RuntimeException("NONE cannot be modified!");			
+  	}
+  
+  	@Override
+  	public int getInStorageOther() {
+  		return 0;
+  	}
+  
+  	@Override
+  	public void setInStorageOther(int in_storage) {
+  		throw new RuntimeException("NONE cannot be modified!");			
+  	}
+  
+  	@Override
+  	public int getOutStorageOther() {
+  		return 0;
+  	}
+  
+  	@Override
+  	public void setOutStorageOther(int out_storage) {
+  		throw new RuntimeException("NONE cannot be modified!");			
+  	}
+
+    @Override
+    public int getTaskDuration() {
+      // TODO Auto-generated method stub
+      return 0;
+    }
+
+    @Override
+    public void setTaskDuration(int task_duration) {
+      // TODO Auto-generated method stub
+      
+    }
+  	
+  // emulation >>
     
   };
 

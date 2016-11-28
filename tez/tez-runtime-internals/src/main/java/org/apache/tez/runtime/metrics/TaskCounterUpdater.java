@@ -67,7 +67,7 @@ public class TaskCounterUpdater {
     recordInitialCpuStats();
   }
   
-  // SpeedFair <<
+  // emulation <<
  // Refactorize updateCounters()
  public void updateCountersStats() {
     // FileSystemStatistics are reset each time a new task is seen by the
@@ -118,7 +118,7 @@ public class TaskCounterUpdater {
    tezCounters.findCounter(TaskCounter.VIRTUAL_MEMORY_BYTES).setValue(vMem);
  }
  
- // SpeedFair >>
+ // emulation >>
 
   
   public void updateCounters() {
