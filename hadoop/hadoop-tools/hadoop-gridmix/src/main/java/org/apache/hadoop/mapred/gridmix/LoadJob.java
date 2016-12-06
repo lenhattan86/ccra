@@ -279,13 +279,7 @@ class LoadJob extends GridmixJob {
     private ResourceUsageMatcherRunner matcher = null;
     private StatusReporter reporter = null;
     
-    // emulation <<
-    private boolean matcher_started = false;
-    private int num_iter = 0;
-    private float lastProgress = -1;  
-    private static long SLEEP_S = 10;
-    // emulation >>
-    
+   
     @Override
     protected void setup(Context ctxt) 
     throws IOException, InterruptedException {
@@ -374,63 +368,16 @@ class LoadJob extends GridmixJob {
                       split.getMapResourceUsageMetrics());
       matcher.setDaemon(true);
       
-      // emulation <<
-      boolean enableSim = conf.getBoolean(MRJobConfig.TEZ_ENABLE_SIMULATION, MRJobConfig.TEZ_ENABLE_SIMULATION_DEFAULT);
-      if (enableSim){
-        ResourceUsageMetrics metrics = split.getMapResourceUsageMetrics();
-        //LOG.info("metrics="+metrics);
-        //if (metrics != null) 
-      //    LOG.info("cpu_iter="+metrics.getCumulativeCpuUsage());
-        if(metrics != null && metrics.getCumulativeCpuUsage() > 0){
-            //LOG.info("RESOURCE USAGE SIM:" + metrics.getCumulativeCpuUsage());
-          SLEEP_S = metrics.getCumulativeCpuUsage();
-        //    LOG.info("RESOURCE USAGE SIM:" + metrics.getCumulativeCpuUsage()+ "num_iter:"+SLEEP_S);
-          } else {
-          //  LOG.info("NO RESOURCE USAGE SIM");
-          }
-      }
-      // emulation >>
-      
+     
       // start the status reporter thread
       reporter = new StatusReporter(ctxt, matcher);
       reporter.setDaemon(true);
       reporter.start();
     }
     
-    // emulation <<
-    private static void spin(long seconds) {
-      LOG.info("spin call");
-      long sleepTime = seconds*1000000000L; // convert to nanoseconds
-      long startTime = System.nanoTime();
-      while ((System.nanoTime() - startTime) < sleepTime) {}
-    }
-    // emulation >>
     @Override
     public void map(NullWritable ignored, GridmixRecord rec,
                     Context context) throws IOException, InterruptedException {
-      // emulation <<
-      // start the matcher thread since the map phase ends here
-      boolean enableSim = context.getConfiguration().getBoolean(MRJobConfig.TEZ_ENABLE_SIMULATION, MRJobConfig.TEZ_ENABLE_SIMULATION_DEFAULT);
-      if (enableSim){
-        if (!matcher_started)
-        {
-          matcher_started = true;
-          matcher.start();
-        }
-        
-         float currentProgress = context.getProgress();
-           //LOG.info("currentProgress="+currentProgress+" lastProgress="+lastProgress);
-         if (lastProgress < 0)
-          lastProgress = currentProgress;
-         
-         if (currentProgress - lastProgress > 0.1 ) {
-          lastProgress = currentProgress;
-          spin(SLEEP_S);
-         } 
-         num_iter++;
-      }
-      // emulation >>  
-       
       acc += ratio;
       while (acc >= 1.0 && !reduces.isEmpty()) {
         key.setSeed(r.nextLong());
@@ -504,11 +451,6 @@ class LoadJob extends GridmixJob {
     private ResourceUsageMatcherRunner matcher = null;
     private StatusReporter reporter = null;
     
-    // emulation <<
-    private float lastProgress = -1;  
-    private static long SLEEP_S = 10;
-    // emulation >>
-    
     @Override
     protected void setup(Context context)
     throws IOException, InterruptedException {
@@ -550,18 +492,6 @@ class LoadJob extends GridmixJob {
         outBytes /= compressionRatio;
       }
       
-      // emulation <<
-      boolean enableSim = conf.getBoolean(MRJobConfig.TEZ_ENABLE_SIMULATION, MRJobConfig.TEZ_ENABLE_SIMULATION_DEFAULT);
-      if (enableSim){
-        if(metrics != null && metrics.getCumulativeCpuUsage() > 0){        
-          SLEEP_S = metrics.getCumulativeCpuUsage();
-          LOG.info("RESOURCE USAGE SIM:" + metrics.getCumulativeCpuUsage()+" num_iter:"+SLEEP_S);
-        } else {
-          //LOG.info("NO RESOURCE USAGE SIM");
-        }
-      }
-      // emulation >>
-      
       factory =
         new AvgRecordFactory(outBytes, outRecords, 
                              context.getConfiguration(), 5*1024);
@@ -587,21 +517,6 @@ class LoadJob extends GridmixJob {
     protected void reduce(GridmixKey key, Iterable<GridmixRecord> values,
                           Context context) 
     throws IOException, InterruptedException {
-      
-      // emulation <<
-      boolean enableSim = context.getConfiguration().getBoolean(MRJobConfig.TEZ_ENABLE_SIMULATION, MRJobConfig.TEZ_ENABLE_SIMULATION_DEFAULT);
-      if (enableSim){
-        float currentProgress = context.getProgress();
-        //LOG.info("currentProgress="+currentProgress+" lastProgress="+lastProgress);
-        if (lastProgress < 0)
-          lastProgress = currentProgress;
-        
-        if (currentProgress - lastProgress > 0.1 ) {
-          lastProgress = currentProgress;
-          spin(SLEEP_S);
-        }
-      }
-      // emulation >>
       
       for (GridmixRecord ignored : values) {
         acc += ratio;

@@ -366,6 +366,7 @@ public class FSLeafQueue extends FSQueue {
     if (!preemptContainerPreCheck()) {
       return toBePreempted;
     }
+    
 
     if (LOG.isDebugEnabled()) {
       LOG.debug("Queue " + getName() + " is going to preempt a container " +
@@ -386,6 +387,8 @@ public class FSLeafQueue extends FSQueue {
     } finally {
       readLock.unlock();
     }
+    
+    LOG.info("[Tan] preemptContainer() candidateSched "+candidateSched); 
 
     // Preempt from the selected app
     if (candidateSched != null) {

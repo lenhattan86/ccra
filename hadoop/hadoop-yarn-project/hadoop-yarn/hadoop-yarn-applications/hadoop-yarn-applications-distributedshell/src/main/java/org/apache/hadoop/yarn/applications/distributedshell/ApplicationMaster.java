@@ -280,13 +280,6 @@ public class ApplicationMaster {
   private final String linux_bash_command = "bash";
   private final String windows_command = "cmd /c";
   
-  // emulation <<
-  private Set<String> hostsSlow = new HashSet<String>();
-  private Set<String> hostsContainersRuns= new HashSet<String>();
-  
-  private AtomicInteger allocated_success = new AtomicInteger();
-  // emulation >>
-
   /**
    * @param args Command line args
    */
@@ -376,13 +369,6 @@ public class ApplicationMaster {
     opts.addOption("help", false, "Print usage");
     CommandLine cliParser = new GnuParser().parse(opts, args);
     
-    // emulation <<
-    // add options to be able to specify hosts which runs
-    // storage or network scripts
-    opts.addOption("hosts_heavy_load", true, "hosts with storage/network bottleneck. Eg:host1:host2, " +
-               "where host1 runs as server and host2 as client. Or for storage simply host1:host2:...");
-    // emulation >>
-
     if (args.length == 0) {
       printUsage(opts);
       throw new IllegalArgumentException(
@@ -446,15 +432,6 @@ public class ApplicationMaster {
         + appAttemptID.getApplicationId().getClusterTimestamp()
         + ", attemptId=" + appAttemptID.getAttemptId());
     
-    // emulation <<
-    boolean enableSim = conf.getBoolean(YarnConfiguration.TEZ_ENABLE_SIMULATION, YarnConfiguration.TEZ_ENABLE_SIMULATION_DEFAULT);
-    if (enableSim)
-      if (cliParser.hasOption("hosts_heavy_load")) {      
-        String[] hosts_st = cliParser.getOptionValue("hosts_heavy_load").split(":");
-        Collections.addAll(hostsSlow, hosts_st);
-      }
-    // emulation >>
-
     if (!fileExist(shellCommandPath)
         && envs.get(DSConstants.DISTRIBUTEDSHELLSCRIPTLOCATION).isEmpty()) {
       throw new IllegalArgumentException(
@@ -810,23 +787,7 @@ public class ApplicationMaster {
           + allocatedContainers.size());
       numAllocatedContainers.addAndGet(allocatedContainers.size());
       for (Container allocatedContainer : allocatedContainers) {
-        // emulation <<
-        boolean enableSim = conf.getBoolean(YarnConfiguration.TEZ_ENABLE_SIMULATION, YarnConfiguration.TEZ_ENABLE_SIMULATION_DEFAULT);
-        if(enableSim){
-          String container_host = allocatedContainer.getNodeId().getHost(); 
-          if (!hostsContainersRuns.contains(container_host)) {
-            hostsContainersRuns.add(container_host);
-            allocated_success.incrementAndGet();
-          }
-          else {
-            LOG.info("Container on host: "+container_host+" ignored.");
-            // ignore container && release it
-            amRMClient.releaseAssignedContainer(allocatedContainer.getId());
-            continue;
-          }
-        }
-        // emulation >>
-        
+       
         LOG.info("Launching shell command on a new container."
             + ", containerId=" + allocatedContainer.getId()
             + ", containerNode=" + allocatedContainer.getNodeId().getHost()

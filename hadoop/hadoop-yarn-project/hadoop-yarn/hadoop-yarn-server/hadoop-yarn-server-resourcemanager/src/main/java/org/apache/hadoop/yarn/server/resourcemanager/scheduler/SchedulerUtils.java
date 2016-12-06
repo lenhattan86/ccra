@@ -73,9 +73,6 @@ public class SchedulerUtils {
   public static final String UNRESERVED_CONTAINER =
       "Container reservation no longer required.";
   
-  // emulation <<
-  static final Log LOG = LogFactory.getLog(SchedulerUtils.class);
-  // emulation >>
   /**
    * Utility to create a {@link ContainerStatus} during exceptional
    * circumstances.
@@ -137,38 +134,9 @@ public class SchedulerUtils {
     Resource minimumResource,
     Resource maximumResource) {
     for (ResourceRequest ask : asks) {
-      // emulation << - temp hack - need to remove // for FifoScheduler
-      Resource capability_bef = ask.getCapability();
-      LOG.info("ResourceRequest: "+ capability_bef.toString());
-      // emdulation >>
       normalizeRequest(
         ask, resourceCalculator, clusterResource, minimumResource,
         maximumResource, minimumResource);
-      
-      // emulation << 
-      LOG.info("ResourceRequest: "+ ask.getCapability().toString());
-      ask.getCapability().setCpu(capability_bef.getCpu());
-      ask.getCapability().setVMem(capability_bef.getVMem());
-      ask.getCapability().setInNetwork(capability_bef.getInNetwork());
-      ask.getCapability().setOutNetwork(capability_bef.getOutNetwork());
-      ask.getCapability().setInStorage(capability_bef.getInStorage());
-      ask.getCapability().setOutStorage(capability_bef.getOutStorage());
-
-      ask.getCapability().setCpuOther(capability_bef.getCpuOther());
-      ask.getCapability().setVMemOther(capability_bef.getVMemOther());
-      ask.getCapability().setInNetworkOther(capability_bef.getInNetworkOther());
-      ask.getCapability().setOutNetworkOther(capability_bef.getOutNetworkOther());
-      ask.getCapability().setInStorageOther(capability_bef.getInStorageOther());
-      ask.getCapability().setOutStorageOther(capability_bef.getOutStorageOther());
-
-      ask.getCapability().setRemRedTasksToSched(capability_bef.getRemRedTasksToSched());
-      ask.getCapability().setRemMapTasksToSched(capability_bef.getRemMapTasksToSched());
-
-      ask.getCapability().setMapTaskDuration(capability_bef.getMapTaskDuration());
-      ask.getCapability().setRedTaskDuration(capability_bef.getRedTaskDuration());
-      
-      ask.getCapability().setTaskDuration(capability_bef.getTaskDuration());
-      // emulation >>
     }
   }
 
@@ -201,37 +169,9 @@ public class SchedulerUtils {
       Resource maximumResource,
       Resource incrementResource) {
     for (ResourceRequest ask : asks) {
-      // emulation << - temp hack - need to remove // for FairScheduler
-      Resource capability_bef = ask.getCapability();
-      LOG.info("ResourceRequest: ask: "+ capability_bef.toString());
-      // emdulation >>
       normalizeRequest(
           ask, resourceCalculator, clusterResource, minimumResource,
           maximumResource, incrementResource);
-      // emulation << 
-      LOG.info("ResourceRequest: normalized ask: "+ ask.getCapability().toString());
-      ask.getCapability().setCpu(capability_bef.getCpu());
-      ask.getCapability().setVMem(capability_bef.getVMem());
-      ask.getCapability().setInNetwork(capability_bef.getInNetwork());
-      ask.getCapability().setOutNetwork(capability_bef.getOutNetwork());
-      ask.getCapability().setInStorage(capability_bef.getInStorage());
-      ask.getCapability().setOutStorage(capability_bef.getOutStorage());
-
-      ask.getCapability().setCpuOther(capability_bef.getCpuOther());
-      ask.getCapability().setVMemOther(capability_bef.getVMemOther());
-      ask.getCapability().setInNetworkOther(capability_bef.getInNetworkOther());
-      ask.getCapability().setOutNetworkOther(capability_bef.getOutNetworkOther());
-      ask.getCapability().setInStorageOther(capability_bef.getInStorageOther());
-      ask.getCapability().setOutStorageOther(capability_bef.getOutStorageOther());
-
-      ask.getCapability().setRemRedTasksToSched(capability_bef.getRemRedTasksToSched());
-      ask.getCapability().setRemMapTasksToSched(capability_bef.getRemMapTasksToSched());
-
-      ask.getCapability().setMapTaskDuration(capability_bef.getMapTaskDuration());
-      ask.getCapability().setRedTaskDuration(capability_bef.getRedTaskDuration());
-      
-      ask.getCapability().setTaskDuration(capability_bef.getTaskDuration());
-      // emulation >>
     }
   }
 

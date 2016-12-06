@@ -749,27 +749,7 @@ public class RMContainerAllocator extends RMContainerRequestor
       if (attemptID == null) {
         LOG.error("Container complete event for unknown container id "
             + cont.getContainerId());
-      } else {
-        // emulation <<
-        // update task profile for completed task
-        boolean enableSim = getConfig().getBoolean(
-            MRJobConfig.TEZ_ENABLE_SIMULATION,
-            MRJobConfig.TEZ_ENABLE_SIMULATION_DEFAULT);
-        if (enableSim) {
-          Task t = getJob().getTasks().get(attemptID.getTaskId());
-
-          if (t.getState().equals(TaskState.SUCCEEDED)) {
-            double duration_sec = t.getReport().getFinishTime()
-                - t.getReport().getStartTime();
-            duration_sec = (double) (duration_sec / 1000);
-
-            if (t.getType().equals(TaskType.MAP))
-              mapTaskProfile.updateMapDuration((int) Math.ceil(duration_sec));
-            else if (t.getType().equals(TaskType.REDUCE))
-              redTaskProfile.updateRedDuration((int) Math.ceil(duration_sec));
-          }
-        }
-        // emulation >>
+      } else {       
         pendingRelease.remove(cont.getContainerId());
         assignedRequests.remove(attemptID);
 
@@ -971,48 +951,6 @@ public class RMContainerAllocator extends RMContainerRequestor
         request = new ContainerRequest(event, PRIORITY_MAP);
       }
 
-      // emulation <<
-      // add capability based on mapTaskProfile
-      boolean enableSim = getConfig().getBoolean(
-          MRJobConfig.TEZ_ENABLE_SIMULATION,
-          MRJobConfig.TEZ_ENABLE_SIMULATION_DEFAULT);
-      if (enableSim) {
-        request.capability.setMapResource();
-        request.capability.setCpu(mapTaskProfile.getTaskCpuUsage());
-        request.capability.setVMem(mapTaskProfile.getTaskMemUsage());
-        request.capability.setInNetwork(mapTaskProfile.getTaskInNetworkUsage());
-        request.capability
-            .setOutNetwork(mapTaskProfile.getTaskOutNetworkUsage());
-        request.capability.setInStorage(mapTaskProfile.getTaskInStorageUsage());
-        request.capability
-            .setOutStorage(mapTaskProfile.getTaskOutStorageUsage());
-
-        request.capability.setCpuOther(redTaskProfile.getTaskCpuUsage());
-        request.capability.setVMemOther(redTaskProfile.getTaskMemUsage());
-        request.capability
-            .setInNetworkOther(redTaskProfile.getTaskInNetworkUsage());
-        request.capability
-            .setOutNetworkOther(redTaskProfile.getTaskOutNetworkUsage());
-        request.capability
-            .setInStorageOther(redTaskProfile.getTaskInStorageUsage());
-        request.capability
-            .setOutStorageOther(redTaskProfile.getTaskOutStorageUsage());
-
-        request.capability.setMapTaskDuration(mapTaskProfile.getMapDuration());
-        request.capability.setRedTaskDuration(redTaskProfile.getRedDuration());
-
-        // synchronized (requested_maps) {
-        if (requested_maps == -1)
-          requested_maps = getJob().getTotalMaps();
-        request.capability.setRemMapTasksToSched(requested_maps);
-        // }
-        // synchronized (requested_reds) {
-        if (requested_reds == -1)
-          requested_reds = getJob().getTotalReduces();
-        request.capability.setRemRedTasksToSched(requested_reds);
-        // }
-      }
-      // emulation >>
       maps.put(event.getAttemptID(), request);
       addContainerReq(request);
     }

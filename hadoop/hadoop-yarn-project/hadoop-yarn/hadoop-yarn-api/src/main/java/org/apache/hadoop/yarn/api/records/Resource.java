@@ -134,10 +134,10 @@ public abstract class Resource implements Comparable<Resource> {
   public String toString() {
     String str = "<memory:" + getMemory() + ", vCores:" + getVirtualCores() + ">";
     // emulation <<
-    str+= " <cpu:" + this.getCpu()+",vmem:" +getVMem()+ " > " ;
-    str+= " <network-in:" + this.getInNetwork()+",network-out:" +getOutNetwork()+ " > " ;
-    str+= " <storage-in:" + this.getInStorage()+",storage-out:" +getOutStorage()+ " > " ;
-    str+= " <duration:" + this.getTaskDuration()+">" ;
+//    str+= " <cpu:" + this.getCpu()+",vmem:" +getVMem()+ " > " ;
+  //  str+= " <network-in:" + this.getInNetwork()+",network-out:" +getOutNetwork()+ " > " ;
+  //  str+= " <storage-in:" + this.getInStorage()+",storage-out:" +getOutStorage()+ " > " ;
+  //str+= " <duration:" + this.getTaskDuration()+">" ;
     // emulation >>
     return str;
   }

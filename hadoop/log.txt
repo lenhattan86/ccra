@@ -121,7 +121,8 @@ main:
 [INFO] skip non existing resourceDirectory /home/tanle/projects/ccra/hadoop/hadoop-common-project/hadoop-annotations/src/main/resources
 [INFO] 
 [INFO] --- maven-compiler-plugin:3.1:compile (default-compile) @ hadoop-annotations ---
-[INFO] Nothing to compile - all classes are up to date
+[INFO] Changes detected - recompiling the module!
+[INFO] Compiling 8 source files to /home/tanle/projects/ccra/hadoop/hadoop-common-project/hadoop-annotations/target/classes
 [INFO] 
 [INFO] --- maven-resources-plugin:2.6:testResources (default-testResources) @ hadoop-annotations ---
 [INFO] Using 'UTF-8' encoding to copy filtered resources.
@@ -134,8 +135,10 @@ main:
 [INFO] Tests are skipped.
 [INFO] 
 [INFO] --- maven-jar-plugin:2.5:jar (default-jar) @ hadoop-annotations ---
+[INFO] Building jar: /home/tanle/projects/ccra/hadoop/hadoop-common-project/hadoop-annotations/target/hadoop-annotations-2.7.2.1.jar
 [INFO] 
 [INFO] --- maven-source-plugin:2.3:jar-no-fork (hadoop-java-sources) @ hadoop-annotations ---
+[INFO] Building jar: /home/tanle/projects/ccra/hadoop/hadoop-common-project/hadoop-annotations/target/hadoop-annotations-2.7.2.1-sources.jar
 [INFO] 
 [INFO] --- maven-source-plugin:2.3:test-jar-no-fork (hadoop-java-sources) @ hadoop-annotations ---
 [INFO] No sources in project. Archive not created.
@@ -225,8 +228,10 @@ main:
 [INFO] Tests are skipped.
 [INFO] 
 [INFO] --- maven-jar-plugin:2.5:jar (default-jar) @ hadoop-assemblies ---
+[INFO] Building jar: /home/tanle/projects/ccra/hadoop/hadoop-assemblies/target/hadoop-assemblies-2.7.2.1.jar
 [INFO] 
 [INFO] --- maven-source-plugin:2.3:jar-no-fork (hadoop-java-sources) @ hadoop-assemblies ---
+[INFO] Building jar: /home/tanle/projects/ccra/hadoop/hadoop-assemblies/target/hadoop-assemblies-2.7.2.1-sources.jar
 [INFO] 
 [INFO] --- maven-source-plugin:2.3:test-jar-no-fork (hadoop-java-sources) @ hadoop-assemblies ---
 [INFO] No sources in project. Archive not created.
@@ -250,9 +255,11 @@ main:
 [INFO] 
 [INFO] --- maven-jar-plugin:2.5:jar (prepare-jar) @ hadoop-project-dist ---
 [WARNING] JAR will be empty - no content was marked for inclusion!
+[INFO] Building jar: /home/tanle/projects/ccra/hadoop/hadoop-project-dist/target/hadoop-project-dist-2.7.2.1.jar
 [INFO] 
 [INFO] --- maven-jar-plugin:2.5:test-jar (prepare-test-jar) @ hadoop-project-dist ---
 [WARNING] JAR will be empty - no content was marked for inclusion!
+[INFO] Building jar: /home/tanle/projects/ccra/hadoop/hadoop-project-dist/target/hadoop-project-dist-2.7.2.1-tests.jar
 [INFO] 
 [INFO] >>> maven-source-plugin:2.3:jar (default) @ hadoop-project-dist >>>
 [INFO] 
@@ -323,7 +330,8 @@ main:
 [INFO] skip non existing resourceDirectory /home/tanle/projects/ccra/hadoop/hadoop-maven-plugins/src/main/resources
 [INFO] 
 [INFO] --- maven-compiler-plugin:3.1:compile (default-compile) @ hadoop-maven-plugins ---
-[INFO] Nothing to compile - all classes are up to date
+[INFO] Changes detected - recompiling the module!
+[INFO] Compiling 4 source files to /home/tanle/projects/ccra/hadoop/hadoop-maven-plugins/target/classes
 [INFO] 
 [INFO] --- maven-plugin-plugin:3.4:descriptor (default-descriptor) @ hadoop-maven-plugins ---
 [INFO] Using 'UTF-8' encoding to read mojo metadata.
@@ -346,6 +354,7 @@ main:
 [INFO] --- maven-plugin-plugin:3.4:addPluginArtifactMetadata (default-addPluginArtifactMetadata) @ hadoop-maven-plugins ---
 [INFO] 
 [INFO] --- maven-source-plugin:2.3:jar-no-fork (hadoop-java-sources) @ hadoop-maven-plugins ---
+[INFO] Building jar: /home/tanle/projects/ccra/hadoop/hadoop-maven-plugins/target/hadoop-maven-plugins-2.7.2.1-sources.jar
 [INFO] 
 [INFO] --- maven-source-plugin:2.3:test-jar-no-fork (hadoop-java-sources) @ hadoop-maven-plugins ---
 [INFO] No sources in project. Archive not created.
@@ -411,23 +420,28 @@ main:
 [INFO] Copying 3 resources
 [INFO] 
 [INFO] --- maven-compiler-plugin:3.1:compile (default-compile) @ hadoop-minikdc ---
-[INFO] Nothing to compile - all classes are up to date
+[INFO] Changes detected - recompiling the module!
+[INFO] Compiling 2 source files to /home/tanle/projects/ccra/hadoop/hadoop-common-project/hadoop-minikdc/target/classes
 [INFO] 
 [INFO] --- maven-resources-plugin:2.6:testResources (default-testResources) @ hadoop-minikdc ---
 [INFO] Using 'UTF-8' encoding to copy filtered resources.
 [INFO] skip non existing resourceDirectory /home/tanle/projects/ccra/hadoop/hadoop-common-project/hadoop-minikdc/src/test/resources
 [INFO] 
 [INFO] --- maven-compiler-plugin:3.1:testCompile (default-testCompile) @ hadoop-minikdc ---
-[INFO] Nothing to compile - all classes are up to date
+[INFO] Changes detected - recompiling the module!
+[INFO] Compiling 2 source files to /home/tanle/projects/ccra/hadoop/hadoop-common-project/hadoop-minikdc/target/test-classes
 [INFO] 
 [INFO] --- maven-surefire-plugin:2.17:test (default-test) @ hadoop-minikdc ---
 [INFO] Tests are skipped.
 [INFO] 
 [INFO] --- maven-jar-plugin:2.5:jar (default-jar) @ hadoop-minikdc ---
+[INFO] Building jar: /home/tanle/projects/ccra/hadoop/hadoop-common-project/hadoop-minikdc/target/hadoop-minikdc-2.7.2.1.jar
 [INFO] 
 [INFO] --- maven-source-plugin:2.3:jar-no-fork (hadoop-java-sources) @ hadoop-minikdc ---
+[INFO] Building jar: /home/tanle/projects/ccra/hadoop/hadoop-common-project/hadoop-minikdc/target/hadoop-minikdc-2.7.2.1-sources.jar
 [INFO] 
 [INFO] --- maven-source-plugin:2.3:test-jar-no-fork (hadoop-java-sources) @ hadoop-minikdc ---
+[INFO] Building jar: /home/tanle/projects/ccra/hadoop/hadoop-common-project/hadoop-minikdc/target/hadoop-minikdc-2.7.2.1-test-sources.jar
 [INFO] 
 [INFO] --- maven-enforcer-plugin:1.3.1:enforce (dist-enforce) @ hadoop-minikdc ---
 [INFO] 
@@ -474,14 +488,16 @@ main:
 [INFO] skip non existing resourceDirectory /home/tanle/projects/ccra/hadoop/hadoop-common-project/hadoop-auth/src/main/resources
 [INFO] 
 [INFO] --- maven-compiler-plugin:3.1:compile (default-compile) @ hadoop-auth ---
-[INFO] Nothing to compile - all classes are up to date
+[INFO] Changes detected - recompiling the module!
+[INFO] Compiling 23 source files to /home/tanle/projects/ccra/hadoop/hadoop-common-project/hadoop-auth/target/classes
 [INFO] 
 [INFO] --- maven-resources-plugin:2.6:testResources (default-testResources) @ hadoop-auth ---
 [INFO] Using 'UTF-8' encoding to copy filtered resources.
 [INFO] skip non existing resourceDirectory /home/tanle/projects/ccra/hadoop/hadoop-common-project/hadoop-auth/src/test/resources
 [INFO] 
 [INFO] --- maven-compiler-plugin:3.1:testCompile (default-testCompile) @ hadoop-auth ---
-[INFO] Nothing to compile - all classes are up to date
+[INFO] Changes detected - recompiling the module!
+[INFO] Compiling 22 source files to /home/tanle/projects/ccra/hadoop/hadoop-common-project/hadoop-auth/target/test-classes
 [INFO] 
 [INFO] --- maven-surefire-plugin:2.17:test (default-test) @ hadoop-auth ---
 [INFO] Tests are skipped.
@@ -497,10 +513,13 @@ main:
 [INFO] <<< maven-source-plugin:2.3:jar (default) @ hadoop-auth <<<
 [INFO] 
 [INFO] --- maven-source-plugin:2.3:jar (default) @ hadoop-auth ---
+[INFO] Building jar: /home/tanle/projects/ccra/hadoop/hadoop-common-project/hadoop-auth/target/hadoop-auth-2.7.2.1-sources.jar
 [INFO] 
 [INFO] --- maven-jar-plugin:2.5:jar (prepare-jar) @ hadoop-auth ---
+[INFO] Building jar: /home/tanle/projects/ccra/hadoop/hadoop-common-project/hadoop-auth/target/hadoop-auth-2.7.2.1.jar
 [INFO] 
 [INFO] --- maven-jar-plugin:2.5:test-jar (prepare-test-jar) @ hadoop-auth ---
+[INFO] Building jar: /home/tanle/projects/ccra/hadoop/hadoop-common-project/hadoop-auth/target/hadoop-auth-2.7.2.1-tests.jar
 [INFO] 
 [INFO] --- maven-jar-plugin:2.5:jar (default-jar) @ hadoop-auth ---
 [INFO] 
@@ -508,6 +527,7 @@ main:
 [WARNING] Artifact org.apache.hadoop:hadoop-auth:java-source:sources:2.7.2.1 already attached to project, ignoring duplicate
 [INFO] 
 [INFO] --- maven-source-plugin:2.3:test-jar-no-fork (hadoop-java-sources) @ hadoop-auth ---
+[INFO] Building jar: /home/tanle/projects/ccra/hadoop/hadoop-common-project/hadoop-auth/target/hadoop-auth-2.7.2.1-test-sources.jar
 [INFO] 
 [INFO] --- maven-enforcer-plugin:1.3.1:enforce (dist-enforce) @ hadoop-auth ---
 [INFO] 
@@ -660,7 +680,8 @@ main:
 [INFO] Copying 1 resource
 [INFO] 
 [INFO] --- maven-compiler-plugin:3.1:compile (default-compile) @ hadoop-auth-examples ---
-[INFO] Nothing to compile - all classes are up to date
+[INFO] Changes detected - recompiling the module!
+[INFO] Compiling 3 source files to /home/tanle/projects/ccra/hadoop/hadoop-common-project/hadoop-auth-examples/target/classes
 [INFO] 
 [INFO] --- maven-resources-plugin:2.6:testResources (default-testResources) @ hadoop-auth-examples ---
 [INFO] Using 'UTF-8' encoding to copy filtered resources.
@@ -677,10 +698,11 @@ main:
 [INFO] Assembling webapp [hadoop-auth-examples] in [/home/tanle/projects/ccra/hadoop/hadoop-common-project/hadoop-auth-examples/target/hadoop-auth-examples-2.7.2.1]
 [INFO] Processing war project
 [INFO] Copying webapp resources [/home/tanle/projects/ccra/hadoop/hadoop-common-project/hadoop-auth-examples/src/main/webapp]
-[INFO] Webapp assembled in [55 msecs]
+[INFO] Webapp assembled in [44 msecs]
 [INFO] Building war: /home/tanle/projects/ccra/hadoop/hadoop-common-project/hadoop-auth-examples/target/hadoop-auth-examples.war
 [INFO] 
 [INFO] --- maven-source-plugin:2.3:jar-no-fork (hadoop-java-sources) @ hadoop-auth-examples ---
+[INFO] Building jar: /home/tanle/projects/ccra/hadoop/hadoop-common-project/hadoop-auth-examples/target/hadoop-auth-examples-2.7.2.1-sources.jar
 [INFO] 
 [INFO] --- maven-source-plugin:2.3:test-jar-no-fork (hadoop-java-sources) @ hadoop-auth-examples ---
 [INFO] No sources in project. Archive not created.
@@ -791,12 +813,15 @@ main:
 main:
    [delete] Deleting directory /home/tanle/projects/ccra/hadoop/hadoop-common-project/hadoop-common/target/test/data
     [mkdir] Created dir: /home/tanle/projects/ccra/hadoop/hadoop-common-project/hadoop-common/target/test/data
+    [mkdir] Created dir: /home/tanle/projects/ccra/hadoop/hadoop-common-project/hadoop-common/target/log
+     [copy] Copying 6 files to /home/tanle/projects/ccra/hadoop/hadoop-common-project/hadoop-common/target/test-classes
 [INFO] Executed tasks
 [INFO] 
 [INFO] --- maven-antrun-plugin:1.7:run (copy-test-tarballs) @ hadoop-common ---
 [INFO] Executing tasks
 
 main:
+     [copy] Copying 2 files to /home/tanle/projects/ccra/hadoop/hadoop-common-project/hadoop-common/target/test-classes
 [INFO] Executed tasks
 [INFO] 
 [INFO] --- maven-compiler-plugin:3.1:testCompile (default-testCompile) @ hadoop-common ---
@@ -906,23 +931,28 @@ main:
 [INFO] skip non existing resourceDirectory /home/tanle/projects/ccra/hadoop/hadoop-common-project/hadoop-nfs/src/main/resources
 [INFO] 
 [INFO] --- maven-compiler-plugin:3.1:compile (default-compile) @ hadoop-nfs ---
-[INFO] Nothing to compile - all classes are up to date
+[INFO] Changes detected - recompiling the module!
+[INFO] Compiling 94 source files to /home/tanle/projects/ccra/hadoop/hadoop-common-project/hadoop-nfs/target/classes
 [INFO] 
 [INFO] --- maven-resources-plugin:2.6:testResources (default-testResources) @ hadoop-nfs ---
 [INFO] Using 'UTF-8' encoding to copy filtered resources.
 [INFO] Copying 1 resource
 [INFO] 
 [INFO] --- maven-compiler-plugin:3.1:testCompile (default-testCompile) @ hadoop-nfs ---
-[INFO] Nothing to compile - all classes are up to date
+[INFO] Changes detected - recompiling the module!
+[INFO] Compiling 14 source files to /home/tanle/projects/ccra/hadoop/hadoop-common-project/hadoop-nfs/target/test-classes
 [INFO] 
 [INFO] --- maven-surefire-plugin:2.17:test (default-test) @ hadoop-nfs ---
 [INFO] Tests are skipped.
 [INFO] 
 [INFO] --- maven-jar-plugin:2.5:jar (default-jar) @ hadoop-nfs ---
+[INFO] Building jar: /home/tanle/projects/ccra/hadoop/hadoop-common-project/hadoop-nfs/target/hadoop-nfs-2.7.2.1.jar
 [INFO] 
 [INFO] --- maven-source-plugin:2.3:jar-no-fork (hadoop-java-sources) @ hadoop-nfs ---
+[INFO] Building jar: /home/tanle/projects/ccra/hadoop/hadoop-common-project/hadoop-nfs/target/hadoop-nfs-2.7.2.1-sources.jar
 [INFO] 
 [INFO] --- maven-source-plugin:2.3:test-jar-no-fork (hadoop-java-sources) @ hadoop-nfs ---
+[INFO] Building jar: /home/tanle/projects/ccra/hadoop/hadoop-common-project/hadoop-nfs/target/hadoop-nfs-2.7.2.1-test-sources.jar
 [INFO] 
 [INFO] --- maven-enforcer-plugin:1.3.1:enforce (dist-enforce) @ hadoop-nfs ---
 [INFO] 
@@ -1531,12 +1561,15 @@ main:
 [INFO] skip non existing resourceDirectory /home/tanle/projects/ccra/hadoop/hadoop-common-project/hadoop-kms/src/main/resources
 [INFO] 
 [INFO] --- maven-compiler-plugin:3.1:compile (default-compile) @ hadoop-kms ---
-[INFO] Nothing to compile - all classes are up to date
+[INFO] Changes detected - recompiling the module!
+[INFO] Compiling 14 source files to /home/tanle/projects/ccra/hadoop/hadoop-common-project/hadoop-kms/target/classes
 [INFO] 
 [INFO] --- maven-antrun-plugin:1.7:run (create-web-xmls) @ hadoop-kms ---
 [INFO] Executing tasks
 
 main:
+    [mkdir] Created dir: /home/tanle/projects/ccra/hadoop/hadoop-common-project/hadoop-kms/target/test-classes/kms-webapp
+     [copy] Copying 1 file to /home/tanle/projects/ccra/hadoop/hadoop-common-project/hadoop-kms/target/test-classes/kms-webapp
 [INFO] Executed tasks
 [INFO] 
 [INFO] --- maven-resources-plugin:2.6:testResources (default-testResources) @ hadoop-kms ---
@@ -1544,7 +1577,8 @@ main:
 [INFO] Copying 3 resources
 [INFO] 
 [INFO] --- maven-compiler-plugin:3.1:testCompile (default-testCompile) @ hadoop-kms ---
-[INFO] Nothing to compile - all classes are up to date
+[INFO] Changes detected - recompiling the module!
+[INFO] Compiling 6 source files to /home/tanle/projects/ccra/hadoop/hadoop-common-project/hadoop-kms/target/test-classes
 [INFO] 
 [INFO] --- maven-surefire-plugin:2.17:test (default-test) @ hadoop-kms ---
 [INFO] Tests are skipped.
@@ -1555,7 +1589,7 @@ main:
 [INFO] Processing war project
 [INFO] Copying webapp resources [/home/tanle/projects/ccra/hadoop/hadoop-common-project/hadoop-kms/src/main/webapp]
 [INFO] Building jar: /home/tanle/projects/ccra/hadoop/hadoop-common-project/hadoop-kms/target/kms/WEB-INF/lib/hadoop-kms-2.7.2.1.jar
-[INFO] Webapp assembled in [65 msecs]
+[INFO] Webapp assembled in [56 msecs]
 [INFO] Building war: /home/tanle/projects/ccra/hadoop/hadoop-common-project/hadoop-kms/target/kms.war
 [INFO] 
 [INFO] --- maven-jar-plugin:2.5:jar (prepare-jar) @ hadoop-kms ---
@@ -1565,8 +1599,10 @@ main:
 [INFO] Building jar: /home/tanle/projects/ccra/hadoop/hadoop-common-project/hadoop-kms/target/hadoop-kms-2.7.2.1-tests.jar
 [INFO] 
 [INFO] --- maven-source-plugin:2.3:jar-no-fork (hadoop-java-sources) @ hadoop-kms ---
+[INFO] Building jar: /home/tanle/projects/ccra/hadoop/hadoop-common-project/hadoop-kms/target/hadoop-kms-2.7.2.1-sources.jar
 [INFO] 
 [INFO] --- maven-source-plugin:2.3:test-jar-no-fork (hadoop-java-sources) @ hadoop-kms ---
+[INFO] Building jar: /home/tanle/projects/ccra/hadoop/hadoop-common-project/hadoop-kms/target/hadoop-kms-2.7.2.1-test-sources.jar
 [INFO] 
 [INFO] --- maven-enforcer-plugin:1.3.1:enforce (dist-enforce) @ hadoop-kms ---
 [INFO] 
@@ -1581,13 +1617,11 @@ main:
 main:
       [get] Destination already exists (skipping): /home/tanle/projects/ccra/hadoop/hadoop-common-project/hadoop-kms/downloads/apache-tomcat-6.0.44.tar.gz
     [mkdir] Created dir: /home/tanle/projects/ccra/hadoop/hadoop-common-project/hadoop-kms/target/tomcat.exp
-     [move] Moving 492 files to /home/tanle/projects/ccra/hadoop/hadoop-common-project/hadoop-kms/target/hadoop-kms-2.7.2.1/share/hadoop/kms
    [delete] Deleting directory /home/tanle/projects/ccra/hadoop/hadoop-common-project/hadoop-kms/target/tomcat.exp
    [delete] Deleting directory /home/tanle/projects/ccra/hadoop/hadoop-common-project/hadoop-kms/target/hadoop-kms-2.7.2.1/share/hadoop/kms/tomcat/webapps
     [mkdir] Created dir: /home/tanle/projects/ccra/hadoop/hadoop-common-project/hadoop-kms/target/hadoop-kms-2.7.2.1/share/hadoop/kms/tomcat/webapps
    [delete] Deleting: /home/tanle/projects/ccra/hadoop/hadoop-common-project/hadoop-kms/target/hadoop-kms-2.7.2.1/share/hadoop/kms/tomcat/conf/server.xml
      [copy] Copying 1 file to /home/tanle/projects/ccra/hadoop/hadoop-common-project/hadoop-kms/target/hadoop-kms-2.7.2.1/share/hadoop/kms/tomcat/conf
-   [delete] Deleting: /home/tanle/projects/ccra/hadoop/hadoop-common-project/hadoop-kms/target/hadoop-kms-2.7.2.1/share/hadoop/kms/tomcat/conf/ssl-server.xml.conf
      [copy] Copying 1 file to /home/tanle/projects/ccra/hadoop/hadoop-common-project/hadoop-kms/target/hadoop-kms-2.7.2.1/share/hadoop/kms/tomcat/conf
    [delete] Deleting: /home/tanle/projects/ccra/hadoop/hadoop-common-project/hadoop-kms/target/hadoop-kms-2.7.2.1/share/hadoop/kms/tomcat/conf/logging.properties
      [copy] Copying 1 file to /home/tanle/projects/ccra/hadoop/hadoop-common-project/hadoop-kms/target/hadoop-kms-2.7.2.1/share/hadoop/kms/tomcat/conf
@@ -1725,6 +1759,12 @@ main:
 [INFO] Executing tasks
 
 main:
+     [copy] Copying 1 file to /home/tanle/projects/ccra/hadoop/hadoop-hdfs-project/hadoop-hdfs/target/webapps/hdfs/WEB-INF
+     [copy] Copying 1 file to /home/tanle/projects/ccra/hadoop/hadoop-hdfs-project/hadoop-hdfs/target/webapps/secondary/WEB-INF
+     [copy] Copying 1 file to /home/tanle/projects/ccra/hadoop/hadoop-hdfs-project/hadoop-hdfs/target/webapps/datanode/WEB-INF
+     [copy] Copying 1 file to /home/tanle/projects/ccra/hadoop/hadoop-hdfs-project/hadoop-hdfs/target/webapps/journal/WEB-INF
+     [copy] Copying 1 file to /home/tanle/projects/ccra/hadoop/hadoop-hdfs-project/hadoop-hdfs/target/webapps/nfs3/WEB-INF
+     [copy] Copying 22 files to /home/tanle/projects/ccra/hadoop/hadoop-hdfs-project/hadoop-hdfs/target/webapps
 [INFO] Executed tasks
 [INFO] 
 [INFO] --- maven-resources-plugin:2.6:testResources (default-testResources) @ hadoop-hdfs ---
@@ -1737,10 +1777,23 @@ main:
 main:
    [delete] Deleting directory /home/tanle/projects/ccra/hadoop/hadoop-hdfs-project/hadoop-hdfs/target/test/data
     [mkdir] Created dir: /home/tanle/projects/ccra/hadoop/hadoop-hdfs-project/hadoop-hdfs/target/test/data
+    [mkdir] Created dir: /home/tanle/projects/ccra/hadoop/hadoop-hdfs-project/hadoop-hdfs/target/log
+     [copy] Copying 27 files to /home/tanle/projects/ccra/hadoop/hadoop-hdfs-project/hadoop-hdfs/target/test-classes/webapps
 [INFO] Executed tasks
 [INFO] 
 [INFO] --- maven-compiler-plugin:3.1:testCompile (default-testCompile) @ hadoop-hdfs ---
-[INFO] Nothing to compile - all classes are up to date
+[INFO] Changes detected - recompiling the module!
+[INFO] Compiling 561 source files to /home/tanle/projects/ccra/hadoop/hadoop-hdfs-project/hadoop-hdfs/target/test-classes
+[WARNING] /home/tanle/projects/ccra/hadoop/hadoop-hdfs-project/hadoop-hdfs/src/test/java/org/apache/hadoop/hdfs/TestDFSClientFailover.java:[67,31] sun.net.spi.nameservice.NameService is internal proprietary API and may be removed in a future release
+[WARNING] /home/tanle/projects/ccra/hadoop/hadoop-hdfs-project/hadoop-hdfs/src/test/java/org/apache/hadoop/hdfs/TestDFSClientFailover.java:[230,11] sun.net.spi.nameservice.NameService is internal proprietary API and may be removed in a future release
+[WARNING] /home/tanle/projects/ccra/hadoop/hadoop-hdfs-project/hadoop-hdfs/src/test/java/org/apache/hadoop/hdfs/TestDFSClientFailover.java:[236,12] sun.net.spi.nameservice.NameService is internal proprietary API and may be removed in a future release
+[WARNING] /home/tanle/projects/ccra/hadoop/hadoop-hdfs-project/hadoop-hdfs/src/test/java/org/apache/hadoop/hdfs/TestDFSClientFailover.java:[236,40] sun.net.spi.nameservice.NameService is internal proprietary API and may be removed in a future release
+[WARNING] /home/tanle/projects/ccra/hadoop/hadoop-hdfs-project/hadoop-hdfs/src/test/java/org/apache/hadoop/hdfs/TestDFSClientFailover.java:[238,7] sun.net.spi.nameservice.NameService is internal proprietary API and may be removed in a future release
+[WARNING] /home/tanle/projects/ccra/hadoop/hadoop-hdfs-project/hadoop-hdfs/src/test/java/org/apache/hadoop/hdfs/TestDFSClientFailover.java:[241,25] sun.net.spi.nameservice.NameService is internal proprietary API and may be removed in a future release
+[WARNING] /home/tanle/projects/ccra/hadoop/hadoop-hdfs-project/hadoop-hdfs/src/test/java/org/apache/hadoop/hdfs/TestDFSClientFailover.java:[261,5] sun.net.spi.nameservice.NameService is internal proprietary API and may be removed in a future release
+[WARNING] /home/tanle/projects/ccra/hadoop/hadoop-hdfs-project/hadoop-hdfs/src/test/java/org/apache/hadoop/hdfs/TestDFSClientFailover.java:[279,5] sun.net.spi.nameservice.NameService is internal proprietary API and may be removed in a future release
+[WARNING] /home/tanle/projects/ccra/hadoop/hadoop-hdfs-project/hadoop-hdfs/src/test/java/org/apache/hadoop/hdfs/server/namenode/TestDeadDatanode.java: Some input files use or override a deprecated API.
+[WARNING] /home/tanle/projects/ccra/hadoop/hadoop-hdfs-project/hadoop-hdfs/src/test/java/org/apache/hadoop/hdfs/server/namenode/TestDeadDatanode.java: Recompile with -Xlint:deprecation for details.
 [INFO] 
 [INFO] --- maven-surefire-plugin:2.17:test (default-test) @ hadoop-hdfs ---
 [INFO] Tests are skipped.
@@ -1749,6 +1802,7 @@ main:
 [INFO] Building jar: /home/tanle/projects/ccra/hadoop/hadoop-hdfs-project/hadoop-hdfs/target/hadoop-hdfs-2.7.2.1.jar
 [INFO] 
 [INFO] --- maven-jar-plugin:2.5:test-jar (prepare-test-jar) @ hadoop-hdfs ---
+[INFO] Building jar: /home/tanle/projects/ccra/hadoop/hadoop-hdfs-project/hadoop-hdfs/target/hadoop-hdfs-2.7.2.1-tests.jar
 [INFO] 
 [INFO] >>> maven-source-plugin:2.3:jar (default) @ hadoop-hdfs >>>
 [INFO] 
@@ -1778,6 +1832,7 @@ main:
 [INFO] <<< maven-source-plugin:2.3:test-jar (default) @ hadoop-hdfs <<<
 [INFO] 
 [INFO] --- maven-source-plugin:2.3:test-jar (default) @ hadoop-hdfs ---
+[INFO] Building jar: /home/tanle/projects/ccra/hadoop/hadoop-hdfs-project/hadoop-hdfs/target/hadoop-hdfs-2.7.2.1-test-sources.jar
 [INFO] 
 [INFO] --- maven-antrun-plugin:1.7:run (pre-dist) @ hadoop-hdfs ---
 [INFO] Executing tasks
@@ -1795,7 +1850,6 @@ o  'jdiff:jdiff:jar'
 [INFO] --- maven-jar-plugin:2.5:jar (default-jar) @ hadoop-hdfs ---
 [INFO] 
 [INFO] --- maven-source-plugin:2.3:jar-no-fork (hadoop-java-sources) @ hadoop-hdfs ---
-[INFO] Building jar: /home/tanle/projects/ccra/hadoop/hadoop-hdfs-project/hadoop-hdfs/target/hadoop-hdfs-2.7.2.1-sources.jar
 [WARNING] Artifact org.apache.hadoop:hadoop-hdfs:java-source:sources:2.7.2.1 already attached to project, ignoring duplicate
 [INFO] 
 [INFO] --- maven-source-plugin:2.3:test-jar-no-fork (hadoop-java-sources) @ hadoop-hdfs ---
@@ -1841,12 +1895,17 @@ main:
 [INFO] Copying 2 resources
 [INFO] 
 [INFO] --- maven-compiler-plugin:3.1:compile (default-compile) @ hadoop-hdfs-httpfs ---
-[INFO] Nothing to compile - all classes are up to date
+[INFO] Changes detected - recompiling the module!
+[INFO] Compiling 48 source files to /home/tanle/projects/ccra/hadoop/hadoop-hdfs-project/hadoop-hdfs-httpfs/target/classes
+[WARNING] /home/tanle/projects/ccra/hadoop/hadoop-hdfs-project/hadoop-hdfs-httpfs/src/main/java/org/apache/hadoop/lib/service/instrumentation/InstrumentationService.java: /home/tanle/projects/ccra/hadoop/hadoop-hdfs-project/hadoop-hdfs-httpfs/src/main/java/org/apache/hadoop/lib/service/instrumentation/InstrumentationService.java uses unchecked or unsafe operations.
+[WARNING] /home/tanle/projects/ccra/hadoop/hadoop-hdfs-project/hadoop-hdfs-httpfs/src/main/java/org/apache/hadoop/lib/service/instrumentation/InstrumentationService.java: Recompile with -Xlint:unchecked for details.
 [INFO] 
 [INFO] --- maven-antrun-plugin:1.7:run (create-web-xmls) @ hadoop-hdfs-httpfs ---
 [INFO] Executing tasks
 
 main:
+    [mkdir] Created dir: /home/tanle/projects/ccra/hadoop/hadoop-hdfs-project/hadoop-hdfs-httpfs/target/test-classes/webapp
+     [copy] Copying 1 file to /home/tanle/projects/ccra/hadoop/hadoop-hdfs-project/hadoop-hdfs-httpfs/target/test-classes/webapp
 [INFO] Executed tasks
 [INFO] 
 [INFO] --- maven-resources-plugin:2.6:testResources (default-testResources) @ hadoop-hdfs-httpfs ---
@@ -1855,7 +1914,8 @@ main:
 [INFO] Copying 1 resource
 [INFO] 
 [INFO] --- maven-compiler-plugin:3.1:testCompile (default-testCompile) @ hadoop-hdfs-httpfs ---
-[INFO] Nothing to compile - all classes are up to date
+[INFO] Changes detected - recompiling the module!
+[INFO] Compiling 45 source files to /home/tanle/projects/ccra/hadoop/hadoop-hdfs-project/hadoop-hdfs-httpfs/target/test-classes
 [INFO] 
 [INFO] --- maven-surefire-plugin:2.17:test (default-test) @ hadoop-hdfs-httpfs ---
 [INFO] Tests are skipped.
@@ -1865,12 +1925,14 @@ main:
 [INFO] Assembling webapp [hadoop-hdfs-httpfs] in [/home/tanle/projects/ccra/hadoop/hadoop-hdfs-project/hadoop-hdfs-httpfs/target/webhdfs]
 [INFO] Processing war project
 [INFO] Copying webapp resources [/home/tanle/projects/ccra/hadoop/hadoop-hdfs-project/hadoop-hdfs-httpfs/src/main/webapp]
-[INFO] Webapp assembled in [122 msecs]
+[INFO] Webapp assembled in [75 msecs]
 [INFO] Building war: /home/tanle/projects/ccra/hadoop/hadoop-hdfs-project/hadoop-hdfs-httpfs/target/webhdfs.war
 [INFO] 
 [INFO] --- maven-source-plugin:2.3:jar-no-fork (hadoop-java-sources) @ hadoop-hdfs-httpfs ---
+[INFO] Building jar: /home/tanle/projects/ccra/hadoop/hadoop-hdfs-project/hadoop-hdfs-httpfs/target/hadoop-hdfs-httpfs-2.7.2.1-sources.jar
 [INFO] 
 [INFO] --- maven-source-plugin:2.3:test-jar-no-fork (hadoop-java-sources) @ hadoop-hdfs-httpfs ---
+[INFO] Building jar: /home/tanle/projects/ccra/hadoop/hadoop-hdfs-project/hadoop-hdfs-httpfs/target/hadoop-hdfs-httpfs-2.7.2.1-test-sources.jar
 [INFO] 
 [INFO] --- maven-enforcer-plugin:1.3.1:enforce (dist-enforce) @ hadoop-hdfs-httpfs ---
 [INFO] 
@@ -1885,13 +1947,11 @@ main:
 main:
       [get] Destination already exists (skipping): /home/tanle/projects/ccra/hadoop/hadoop-hdfs-project/hadoop-hdfs-httpfs/downloads/apache-tomcat-6.0.44.tar.gz
     [mkdir] Created dir: /home/tanle/projects/ccra/hadoop/hadoop-hdfs-project/hadoop-hdfs-httpfs/target/tomcat.exp
-     [move] Moving 492 files to /home/tanle/projects/ccra/hadoop/hadoop-hdfs-project/hadoop-hdfs-httpfs/target/hadoop-hdfs-httpfs-2.7.2.1/share/hadoop/httpfs
    [delete] Deleting directory /home/tanle/projects/ccra/hadoop/hadoop-hdfs-project/hadoop-hdfs-httpfs/target/tomcat.exp
    [delete] Deleting directory /home/tanle/projects/ccra/hadoop/hadoop-hdfs-project/hadoop-hdfs-httpfs/target/hadoop-hdfs-httpfs-2.7.2.1/share/hadoop/httpfs/tomcat/webapps
     [mkdir] Created dir: /home/tanle/projects/ccra/hadoop/hadoop-hdfs-project/hadoop-hdfs-httpfs/target/hadoop-hdfs-httpfs-2.7.2.1/share/hadoop/httpfs/tomcat/webapps
    [delete] Deleting: /home/tanle/projects/ccra/hadoop/hadoop-hdfs-project/hadoop-hdfs-httpfs/target/hadoop-hdfs-httpfs-2.7.2.1/share/hadoop/httpfs/tomcat/conf/server.xml
      [copy] Copying 1 file to /home/tanle/projects/ccra/hadoop/hadoop-hdfs-project/hadoop-hdfs-httpfs/target/hadoop-hdfs-httpfs-2.7.2.1/share/hadoop/httpfs/tomcat/conf
-   [delete] Deleting: /home/tanle/projects/ccra/hadoop/hadoop-hdfs-project/hadoop-hdfs-httpfs/target/hadoop-hdfs-httpfs-2.7.2.1/share/hadoop/httpfs/tomcat/conf/ssl-server.xml
      [copy] Copying 1 file to /home/tanle/projects/ccra/hadoop/hadoop-hdfs-project/hadoop-hdfs-httpfs/target/hadoop-hdfs-httpfs-2.7.2.1/share/hadoop/httpfs/tomcat/conf
    [delete] Deleting: /home/tanle/projects/ccra/hadoop/hadoop-hdfs-project/hadoop-hdfs-httpfs/target/hadoop-hdfs-httpfs-2.7.2.1/share/hadoop/httpfs/tomcat/conf/logging.properties
      [copy] Copying 1 file to /home/tanle/projects/ccra/hadoop/hadoop-hdfs-project/hadoop-hdfs-httpfs/target/hadoop-hdfs-httpfs-2.7.2.1/share/hadoop/httpfs/tomcat/conf
@@ -2383,7 +2443,8 @@ main:
 [INFO] Copying 1 resource
 [INFO] 
 [INFO] --- maven-compiler-plugin:3.1:testCompile (default-testCompile) @ hadoop-hdfs-bkjournal ---
-[INFO] Nothing to compile - all classes are up to date
+[INFO] Changes detected - recompiling the module!
+[INFO] Compiling 10 source files to /home/tanle/projects/ccra/hadoop/hadoop-hdfs-project/hadoop-hdfs/src/contrib/bkjournal/target/test-classes
 [INFO] 
 [INFO] --- maven-surefire-plugin:2.17:test (default-test) @ hadoop-hdfs-bkjournal ---
 [INFO] Tests are skipped.
@@ -2395,6 +2456,7 @@ main:
 [INFO] Building jar: /home/tanle/projects/ccra/hadoop/hadoop-hdfs-project/hadoop-hdfs/src/contrib/bkjournal/target/hadoop-hdfs-bkjournal-2.7.2.1-sources.jar
 [INFO] 
 [INFO] --- maven-source-plugin:2.3:test-jar-no-fork (hadoop-java-sources) @ hadoop-hdfs-bkjournal ---
+[INFO] Building jar: /home/tanle/projects/ccra/hadoop/hadoop-hdfs-project/hadoop-hdfs/src/contrib/bkjournal/target/hadoop-hdfs-bkjournal-2.7.2.1-test-sources.jar
 [INFO] 
 [INFO] --- maven-enforcer-plugin:1.3.1:enforce (dist-enforce) @ hadoop-hdfs-bkjournal ---
 [INFO] 
@@ -2640,7 +2702,7 @@ Generating /home/tanle/projects/ccra/hadoop/hadoop-hdfs-project/hadoop-hdfs/src/
 [INFO] 
 [INFO] --- maven-dependency-plugin:2.8:copy (dist) @ hadoop-hdfs-bkjournal ---
 [INFO] Configured Artifact: org.apache.bookkeeper:bookkeeper-server:?:jar
-[INFO] org.apache.bookkeeper:bookkeeper-server:4.2.3:jar already exists in /home/tanle/projects/ccra/hadoop/hadoop-hdfs-project/hadoop-hdfs/src/contrib/bkjournal/target/lib
+[INFO] Copying bookkeeper-server-4.2.3.jar to /home/tanle/projects/ccra/hadoop/hadoop-hdfs-project/hadoop-hdfs/src/contrib/bkjournal/target/lib/bookkeeper-server-4.2.3.jar
 [INFO]                                                                         
 [INFO] ------------------------------------------------------------------------
 [INFO] Building Apache Hadoop HDFS-NFS 2.7.2.1
@@ -2657,23 +2719,28 @@ main:
 [INFO] skip non existing resourceDirectory /home/tanle/projects/ccra/hadoop/hadoop-hdfs-project/hadoop-hdfs-nfs/src/main/resources
 [INFO] 
 [INFO] --- maven-compiler-plugin:3.1:compile (default-compile) @ hadoop-hdfs-nfs ---
-[INFO] Nothing to compile - all classes are up to date
+[INFO] Changes detected - recompiling the module!
+[INFO] Compiling 17 source files to /home/tanle/projects/ccra/hadoop/hadoop-hdfs-project/hadoop-hdfs-nfs/target/classes
 [INFO] 
 [INFO] --- maven-resources-plugin:2.6:testResources (default-testResources) @ hadoop-hdfs-nfs ---
 [INFO] Using 'UTF-8' encoding to copy filtered resources.
 [INFO] Copying 1 resource
 [INFO] 
 [INFO] --- maven-compiler-plugin:3.1:testCompile (default-testCompile) @ hadoop-hdfs-nfs ---
-[INFO] Nothing to compile - all classes are up to date
+[INFO] Changes detected - recompiling the module!
+[INFO] Compiling 13 source files to /home/tanle/projects/ccra/hadoop/hadoop-hdfs-project/hadoop-hdfs-nfs/target/test-classes
 [INFO] 
 [INFO] --- maven-surefire-plugin:2.17:test (default-test) @ hadoop-hdfs-nfs ---
 [INFO] Tests are skipped.
 [INFO] 
 [INFO] --- maven-jar-plugin:2.5:jar (default-jar) @ hadoop-hdfs-nfs ---
+[INFO] Building jar: /home/tanle/projects/ccra/hadoop/hadoop-hdfs-project/hadoop-hdfs-nfs/target/hadoop-hdfs-nfs-2.7.2.1.jar
 [INFO] 
 [INFO] --- maven-source-plugin:2.3:jar-no-fork (hadoop-java-sources) @ hadoop-hdfs-nfs ---
+[INFO] Building jar: /home/tanle/projects/ccra/hadoop/hadoop-hdfs-project/hadoop-hdfs-nfs/target/hadoop-hdfs-nfs-2.7.2.1-sources.jar
 [INFO] 
 [INFO] --- maven-source-plugin:2.3:test-jar-no-fork (hadoop-java-sources) @ hadoop-hdfs-nfs ---
+[INFO] Building jar: /home/tanle/projects/ccra/hadoop/hadoop-hdfs-project/hadoop-hdfs-nfs/target/hadoop-hdfs-nfs-2.7.2.1-test-sources.jar
 [INFO] 
 [INFO] --- maven-enforcer-plugin:1.3.1:enforce (dist-enforce) @ hadoop-hdfs-nfs ---
 [INFO] 
@@ -4603,9 +4670,13 @@ main:
 [INFO] Copying 2 resources
 [INFO] 
 [INFO] --- maven-compiler-plugin:3.1:testCompile (default-testCompile) @ hadoop-yarn-common ---
-[INFO] Nothing to compile - all classes are up to date
+[INFO] Changes detected - recompiling the module!
+[INFO] Compiling 76 source files to /home/tanle/projects/ccra/hadoop/hadoop-yarn-project/hadoop-yarn/hadoop-yarn-common/target/test-classes
+[WARNING] /home/tanle/projects/ccra/hadoop/hadoop-yarn-project/hadoop-yarn/hadoop-yarn-common/src/test/java/org/apache/hadoop/yarn/nodelabels/NodeLabelTestBase.java: /home/tanle/projects/ccra/hadoop/hadoop-yarn-project/hadoop-yarn/hadoop-yarn-common/src/test/java/org/apache/hadoop/yarn/nodelabels/NodeLabelTestBase.java uses unchecked or unsafe operations.
+[WARNING] /home/tanle/projects/ccra/hadoop/hadoop-yarn-project/hadoop-yarn/hadoop-yarn-common/src/test/java/org/apache/hadoop/yarn/nodelabels/NodeLabelTestBase.java: Recompile with -Xlint:unchecked for details.
 [INFO] 
 [INFO] --- maven-jar-plugin:2.5:test-jar (default) @ hadoop-yarn-common ---
+[INFO] Building jar: /home/tanle/projects/ccra/hadoop/hadoop-yarn-project/hadoop-yarn/hadoop-yarn-common/target/hadoop-yarn-common-2.7.2.1-tests.jar
 [INFO] 
 [INFO] --- maven-surefire-plugin:2.17:test (default-test) @ hadoop-yarn-common ---
 [INFO] Tests are skipped.
@@ -4617,6 +4688,7 @@ main:
 [INFO] Building jar: /home/tanle/projects/ccra/hadoop/hadoop-yarn-project/hadoop-yarn/hadoop-yarn-common/target/hadoop-yarn-common-2.7.2.1-sources.jar
 [INFO] 
 [INFO] --- maven-source-plugin:2.3:test-jar-no-fork (hadoop-java-sources) @ hadoop-yarn-common ---
+[INFO] Building jar: /home/tanle/projects/ccra/hadoop/hadoop-yarn-project/hadoop-yarn/hadoop-yarn-common/target/hadoop-yarn-common-2.7.2.1-test-sources.jar
 [INFO] 
 [INFO] --- maven-enforcer-plugin:1.3.1:enforce (dist-enforce) @ hadoop-yarn-common ---
 [INFO] 
@@ -6369,7 +6441,8 @@ main:
 [INFO] Copying 1 resource
 [INFO] 
 [INFO] --- maven-compiler-plugin:3.1:testCompile (default-testCompile) @ hadoop-yarn-server-common ---
-[INFO] Nothing to compile - all classes are up to date
+[INFO] Changes detected - recompiling the module!
+[INFO] Compiling 9 source files to /home/tanle/projects/ccra/hadoop/hadoop-yarn-project/hadoop-yarn/hadoop-yarn-server/hadoop-yarn-server-common/target/test-classes
 [INFO] 
 [INFO] --- maven-surefire-plugin:2.17:test (default-test) @ hadoop-yarn-server-common ---
 [INFO] Tests are skipped.
@@ -6381,6 +6454,7 @@ main:
 [INFO] Building jar: /home/tanle/projects/ccra/hadoop/hadoop-yarn-project/hadoop-yarn/hadoop-yarn-server/hadoop-yarn-server-common/target/hadoop-yarn-server-common-2.7.2.1-sources.jar
 [INFO] 
 [INFO] --- maven-source-plugin:2.3:test-jar-no-fork (hadoop-java-sources) @ hadoop-yarn-server-common ---
+[INFO] Building jar: /home/tanle/projects/ccra/hadoop/hadoop-yarn-project/hadoop-yarn/hadoop-yarn-server/hadoop-yarn-server-common/target/hadoop-yarn-server-common-2.7.2.1-test-sources.jar
 [INFO] 
 [INFO] --- maven-enforcer-plugin:1.3.1:enforce (dist-enforce) @ hadoop-yarn-server-common ---
 [INFO] 
@@ -7137,7 +7211,12 @@ main:
 [INFO] Copying 5 resources
 [INFO] 
 [INFO] --- maven-compiler-plugin:3.1:testCompile (default-testCompile) @ hadoop-yarn-server-nodemanager ---
-[INFO] Nothing to compile - all classes are up to date
+[INFO] Changes detected - recompiling the module!
+[INFO] Compiling 66 source files to /home/tanle/projects/ccra/hadoop/hadoop-yarn-project/hadoop-yarn/hadoop-yarn-server/hadoop-yarn-server-nodemanager/target/test-classes
+[WARNING] /home/tanle/projects/ccra/hadoop/hadoop-yarn-project/hadoop-yarn/hadoop-yarn-server/hadoop-yarn-server-nodemanager/src/test/java/org/apache/hadoop/yarn/server/nodemanager/containermanager/launcher/TestContainerLaunch.java: /home/tanle/projects/ccra/hadoop/hadoop-yarn-project/hadoop-yarn/hadoop-yarn-server/hadoop-yarn-server-nodemanager/src/test/java/org/apache/hadoop/yarn/server/nodemanager/containermanager/launcher/TestContainerLaunch.java uses or overrides a deprecated API.
+[WARNING] /home/tanle/projects/ccra/hadoop/hadoop-yarn-project/hadoop-yarn/hadoop-yarn-server/hadoop-yarn-server-nodemanager/src/test/java/org/apache/hadoop/yarn/server/nodemanager/containermanager/launcher/TestContainerLaunch.java: Recompile with -Xlint:deprecation for details.
+[WARNING] /home/tanle/projects/ccra/hadoop/hadoop-yarn-project/hadoop-yarn/hadoop-yarn-server/hadoop-yarn-server-nodemanager/src/test/java/org/apache/hadoop/yarn/server/nodemanager/containermanager/TestAuxServices.java: /home/tanle/projects/ccra/hadoop/hadoop-yarn-project/hadoop-yarn/hadoop-yarn-server/hadoop-yarn-server-nodemanager/src/test/java/org/apache/hadoop/yarn/server/nodemanager/containermanager/TestAuxServices.java uses unchecked or unsafe operations.
+[WARNING] /home/tanle/projects/ccra/hadoop/hadoop-yarn-project/hadoop-yarn/hadoop-yarn-server/hadoop-yarn-server-nodemanager/src/test/java/org/apache/hadoop/yarn/server/nodemanager/containermanager/TestAuxServices.java: Recompile with -Xlint:unchecked for details.
 [INFO] 
 [INFO] --- maven-surefire-plugin:2.17:test (default-test) @ hadoop-yarn-server-nodemanager ---
 [INFO] Tests are skipped.
@@ -7149,6 +7228,7 @@ main:
 [INFO] Building jar: /home/tanle/projects/ccra/hadoop/hadoop-yarn-project/hadoop-yarn/hadoop-yarn-server/hadoop-yarn-server-nodemanager/target/hadoop-yarn-server-nodemanager-2.7.2.1-sources.jar
 [INFO] 
 [INFO] --- maven-source-plugin:2.3:test-jar-no-fork (hadoop-java-sources) @ hadoop-yarn-server-nodemanager ---
+[INFO] Building jar: /home/tanle/projects/ccra/hadoop/hadoop-yarn-project/hadoop-yarn/hadoop-yarn-server/hadoop-yarn-server-nodemanager/target/hadoop-yarn-server-nodemanager-2.7.2.1-test-sources.jar
 [INFO] 
 [INFO] --- maven-enforcer-plugin:1.3.1:enforce (dist-enforce) @ hadoop-yarn-server-nodemanager ---
 [INFO] 
@@ -8131,25 +8211,31 @@ main:
 [INFO] skip non existing resourceDirectory /home/tanle/projects/ccra/hadoop/hadoop-yarn-project/hadoop-yarn/hadoop-yarn-server/hadoop-yarn-server-web-proxy/src/main/resources
 [INFO] 
 [INFO] --- maven-compiler-plugin:3.1:compile (default-compile) @ hadoop-yarn-server-web-proxy ---
-[INFO] Nothing to compile - all classes are up to date
+[INFO] Changes detected - recompiling the module!
+[INFO] Compiling 10 source files to /home/tanle/projects/ccra/hadoop/hadoop-yarn-project/hadoop-yarn/hadoop-yarn-server/hadoop-yarn-server-web-proxy/target/classes
 [INFO] 
 [INFO] --- maven-resources-plugin:2.6:testResources (default-testResources) @ hadoop-yarn-server-web-proxy ---
 [INFO] Using 'UTF-8' encoding to copy filtered resources.
 [INFO] skip non existing resourceDirectory /home/tanle/projects/ccra/hadoop/hadoop-yarn-project/hadoop-yarn/hadoop-yarn-server/hadoop-yarn-server-web-proxy/src/test/resources
 [INFO] 
 [INFO] --- maven-compiler-plugin:3.1:testCompile (default-testCompile) @ hadoop-yarn-server-web-proxy ---
-[INFO] Nothing to compile - all classes are up to date
+[INFO] Changes detected - recompiling the module!
+[INFO] Compiling 6 source files to /home/tanle/projects/ccra/hadoop/hadoop-yarn-project/hadoop-yarn/hadoop-yarn-server/hadoop-yarn-server-web-proxy/target/test-classes
 [INFO] 
 [INFO] --- maven-jar-plugin:2.5:test-jar (default) @ hadoop-yarn-server-web-proxy ---
+[INFO] Building jar: /home/tanle/projects/ccra/hadoop/hadoop-yarn-project/hadoop-yarn/hadoop-yarn-server/hadoop-yarn-server-web-proxy/target/hadoop-yarn-server-web-proxy-2.7.2.1-tests.jar
 [INFO] 
 [INFO] --- maven-surefire-plugin:2.17:test (default-test) @ hadoop-yarn-server-web-proxy ---
 [INFO] Tests are skipped.
 [INFO] 
 [INFO] --- maven-jar-plugin:2.5:jar (default-jar) @ hadoop-yarn-server-web-proxy ---
+[INFO] Building jar: /home/tanle/projects/ccra/hadoop/hadoop-yarn-project/hadoop-yarn/hadoop-yarn-server/hadoop-yarn-server-web-proxy/target/hadoop-yarn-server-web-proxy-2.7.2.1.jar
 [INFO] 
 [INFO] --- maven-source-plugin:2.3:jar-no-fork (hadoop-java-sources) @ hadoop-yarn-server-web-proxy ---
+[INFO] Building jar: /home/tanle/projects/ccra/hadoop/hadoop-yarn-project/hadoop-yarn/hadoop-yarn-server/hadoop-yarn-server-web-proxy/target/hadoop-yarn-server-web-proxy-2.7.2.1-sources.jar
 [INFO] 
 [INFO] --- maven-source-plugin:2.3:test-jar-no-fork (hadoop-java-sources) @ hadoop-yarn-server-web-proxy ---
+[INFO] Building jar: /home/tanle/projects/ccra/hadoop/hadoop-yarn-project/hadoop-yarn/hadoop-yarn-server/hadoop-yarn-server-web-proxy/target/hadoop-yarn-server-web-proxy-2.7.2.1-test-sources.jar
 [INFO] 
 [INFO] --- maven-enforcer-plugin:1.3.1:enforce (dist-enforce) @ hadoop-yarn-server-web-proxy ---
 [INFO] 
@@ -8327,7 +8413,8 @@ main:
 [INFO] skip non existing resourceDirectory /home/tanle/projects/ccra/hadoop/hadoop-yarn-project/hadoop-yarn/hadoop-yarn-server/hadoop-yarn-server-applicationhistoryservice/src/test/resources
 [INFO] 
 [INFO] --- maven-compiler-plugin:3.1:testCompile (default-testCompile) @ hadoop-yarn-server-applicationhistoryservice ---
-[INFO] Nothing to compile - all classes are up to date
+[INFO] Changes detected - recompiling the module!
+[INFO] Compiling 20 source files to /home/tanle/projects/ccra/hadoop/hadoop-yarn-project/hadoop-yarn/hadoop-yarn-server/hadoop-yarn-server-applicationhistoryservice/target/test-classes
 [INFO] 
 [INFO] --- maven-surefire-plugin:2.17:test (default-test) @ hadoop-yarn-server-applicationhistoryservice ---
 [INFO] Tests are skipped.
@@ -8339,6 +8426,7 @@ main:
 [INFO] Building jar: /home/tanle/projects/ccra/hadoop/hadoop-yarn-project/hadoop-yarn/hadoop-yarn-server/hadoop-yarn-server-applicationhistoryservice/target/hadoop-yarn-server-applicationhistoryservice-2.7.2.1-sources.jar
 [INFO] 
 [INFO] --- maven-source-plugin:2.3:test-jar-no-fork (hadoop-java-sources) @ hadoop-yarn-server-applicationhistoryservice ---
+[INFO] Building jar: /home/tanle/projects/ccra/hadoop/hadoop-yarn-project/hadoop-yarn/hadoop-yarn-server/hadoop-yarn-server-applicationhistoryservice/target/hadoop-yarn-server-applicationhistoryservice-2.7.2.1-test-sources.jar
 [INFO] 
 [INFO] --- maven-enforcer-plugin:1.3.1:enforce (dist-enforce) @ hadoop-yarn-server-applicationhistoryservice ---
 [INFO] 
@@ -8907,9 +8995,13 @@ main:
 [INFO] Copying 1 resource
 [INFO] 
 [INFO] --- maven-compiler-plugin:3.1:testCompile (default-testCompile) @ hadoop-yarn-server-resourcemanager ---
-[INFO] Nothing to compile - all classes are up to date
+[INFO] Changes detected - recompiling the module!
+[INFO] Compiling 150 source files to /home/tanle/projects/ccra/hadoop/hadoop-yarn-project/hadoop-yarn/hadoop-yarn-server/hadoop-yarn-server-resourcemanager/target/test-classes
+[WARNING] /home/tanle/projects/ccra/hadoop/hadoop-yarn-project/hadoop-yarn/hadoop-yarn-server/hadoop-yarn-server-resourcemanager/src/test/java/org/apache/hadoop/yarn/server/resourcemanager/TestRMRestart.java: /home/tanle/projects/ccra/hadoop/hadoop-yarn-project/hadoop-yarn/hadoop-yarn-server/hadoop-yarn-server-resourcemanager/src/test/java/org/apache/hadoop/yarn/server/resourcemanager/TestRMRestart.java uses unchecked or unsafe operations.
+[WARNING] /home/tanle/projects/ccra/hadoop/hadoop-yarn-project/hadoop-yarn/hadoop-yarn-server/hadoop-yarn-server-resourcemanager/src/test/java/org/apache/hadoop/yarn/server/resourcemanager/TestRMRestart.java: Recompile with -Xlint:unchecked for details.
 [INFO] 
 [INFO] --- maven-jar-plugin:2.5:test-jar (default) @ hadoop-yarn-server-resourcemanager ---
+[INFO] Building jar: /home/tanle/projects/ccra/hadoop/hadoop-yarn-project/hadoop-yarn/hadoop-yarn-server/hadoop-yarn-server-resourcemanager/target/hadoop-yarn-server-resourcemanager-2.7.2.1-tests.jar
 [INFO] 
 [INFO] --- maven-surefire-plugin:2.17:test (default-test) @ hadoop-yarn-server-resourcemanager ---
 [INFO] Tests are skipped.
@@ -8921,6 +9013,7 @@ main:
 [INFO] Building jar: /home/tanle/projects/ccra/hadoop/hadoop-yarn-project/hadoop-yarn/hadoop-yarn-server/hadoop-yarn-server-resourcemanager/target/hadoop-yarn-server-resourcemanager-2.7.2.1-sources.jar
 [INFO] 
 [INFO] --- maven-source-plugin:2.3:test-jar-no-fork (hadoop-java-sources) @ hadoop-yarn-server-resourcemanager ---
+[INFO] Building jar: /home/tanle/projects/ccra/hadoop/hadoop-yarn-project/hadoop-yarn/hadoop-yarn-server/hadoop-yarn-server-resourcemanager/target/hadoop-yarn-server-resourcemanager-2.7.2.1-test-sources.jar
 [INFO] 
 [INFO] --- maven-enforcer-plugin:1.3.1:enforce (dist-enforce) @ hadoop-yarn-server-resourcemanager ---
 [INFO] 
@@ -10270,9 +10363,11 @@ main:
 [INFO] Copying 4 resources
 [INFO] 
 [INFO] --- maven-compiler-plugin:3.1:testCompile (default-testCompile) @ hadoop-yarn-server-tests ---
-[INFO] Nothing to compile - all classes are up to date
+[INFO] Changes detected - recompiling the module!
+[INFO] Compiling 8 source files to /home/tanle/projects/ccra/hadoop/hadoop-yarn-project/hadoop-yarn/hadoop-yarn-server/hadoop-yarn-server-tests/target/test-classes
 [INFO] 
 [INFO] --- maven-jar-plugin:2.5:test-jar (default) @ hadoop-yarn-server-tests ---
+[INFO] Building jar: /home/tanle/projects/ccra/hadoop/hadoop-yarn-project/hadoop-yarn/hadoop-yarn-server/hadoop-yarn-server-tests/target/hadoop-yarn-server-tests-2.7.2.1-tests.jar
 [INFO] 
 [INFO] --- maven-surefire-plugin:2.17:test (default-test) @ hadoop-yarn-server-tests ---
 [INFO] Tests are skipped.
@@ -10284,6 +10379,7 @@ main:
 [INFO] Building jar: /home/tanle/projects/ccra/hadoop/hadoop-yarn-project/hadoop-yarn/hadoop-yarn-server/hadoop-yarn-server-tests/target/hadoop-yarn-server-tests-2.7.2.1-sources.jar
 [INFO] 
 [INFO] --- maven-source-plugin:2.3:test-jar-no-fork (hadoop-java-sources) @ hadoop-yarn-server-tests ---
+[INFO] Building jar: /home/tanle/projects/ccra/hadoop/hadoop-yarn-project/hadoop-yarn/hadoop-yarn-server/hadoop-yarn-server-tests/target/hadoop-yarn-server-tests-2.7.2.1-test-sources.jar
 [INFO] 
 [INFO] --- maven-enforcer-plugin:1.3.1:enforce (dist-enforce) @ hadoop-yarn-server-tests ---
 [INFO] 
@@ -10653,7 +10749,8 @@ main:
 [INFO] Copying 2 resources
 [INFO] 
 [INFO] --- maven-compiler-plugin:3.1:testCompile (default-testCompile) @ hadoop-yarn-client ---
-[INFO] Nothing to compile - all classes are up to date
+[INFO] Changes detected - recompiling the module!
+[INFO] Compiling 23 source files to /home/tanle/projects/ccra/hadoop/hadoop-yarn-project/hadoop-yarn/hadoop-yarn-client/target/test-classes
 [INFO] 
 [INFO] --- maven-surefire-plugin:2.17:test (default-test) @ hadoop-yarn-client ---
 [INFO] Tests are skipped.
@@ -10665,6 +10762,7 @@ main:
 [INFO] Building jar: /home/tanle/projects/ccra/hadoop/hadoop-yarn-project/hadoop-yarn/hadoop-yarn-client/target/hadoop-yarn-client-2.7.2.1-sources.jar
 [INFO] 
 [INFO] --- maven-source-plugin:2.3:test-jar-no-fork (hadoop-java-sources) @ hadoop-yarn-client ---
+[INFO] Building jar: /home/tanle/projects/ccra/hadoop/hadoop-yarn-project/hadoop-yarn/hadoop-yarn-client/target/hadoop-yarn-client-2.7.2.1-test-sources.jar
 [INFO] 
 [INFO] --- maven-enforcer-plugin:1.3.1:enforce (dist-enforce) @ hadoop-yarn-client ---
 [INFO] 
@@ -11130,25 +11228,31 @@ main:
 [INFO] skip non existing resourceDirectory /home/tanle/projects/ccra/hadoop/hadoop-yarn-project/hadoop-yarn/hadoop-yarn-server/hadoop-yarn-server-sharedcachemanager/src/main/resources
 [INFO] 
 [INFO] --- maven-compiler-plugin:3.1:compile (default-compile) @ hadoop-yarn-server-sharedcachemanager ---
-[INFO] Nothing to compile - all classes are up to date
+[INFO] Changes detected - recompiling the module!
+[INFO] Compiling 19 source files to /home/tanle/projects/ccra/hadoop/hadoop-yarn-project/hadoop-yarn/hadoop-yarn-server/hadoop-yarn-server-sharedcachemanager/target/classes
 [INFO] 
 [INFO] --- maven-resources-plugin:2.6:testResources (default-testResources) @ hadoop-yarn-server-sharedcachemanager ---
 [INFO] Using 'UTF-8' encoding to copy filtered resources.
 [INFO] skip non existing resourceDirectory /home/tanle/projects/ccra/hadoop/hadoop-yarn-project/hadoop-yarn/hadoop-yarn-server/hadoop-yarn-server-sharedcachemanager/src/test/resources
 [INFO] 
 [INFO] --- maven-compiler-plugin:3.1:testCompile (default-testCompile) @ hadoop-yarn-server-sharedcachemanager ---
-[INFO] Nothing to compile - all classes are up to date
+[INFO] Changes detected - recompiling the module!
+[INFO] Compiling 9 source files to /home/tanle/projects/ccra/hadoop/hadoop-yarn-project/hadoop-yarn/hadoop-yarn-server/hadoop-yarn-server-sharedcachemanager/target/test-classes
 [INFO] 
 [INFO] --- maven-jar-plugin:2.5:test-jar (default) @ hadoop-yarn-server-sharedcachemanager ---
+[INFO] Building jar: /home/tanle/projects/ccra/hadoop/hadoop-yarn-project/hadoop-yarn/hadoop-yarn-server/hadoop-yarn-server-sharedcachemanager/target/hadoop-yarn-server-sharedcachemanager-2.7.2.1-tests.jar
 [INFO] 
 [INFO] --- maven-surefire-plugin:2.17:test (default-test) @ hadoop-yarn-server-sharedcachemanager ---
 [INFO] Tests are skipped.
 [INFO] 
 [INFO] --- maven-jar-plugin:2.5:jar (default-jar) @ hadoop-yarn-server-sharedcachemanager ---
+[INFO] Building jar: /home/tanle/projects/ccra/hadoop/hadoop-yarn-project/hadoop-yarn/hadoop-yarn-server/hadoop-yarn-server-sharedcachemanager/target/hadoop-yarn-server-sharedcachemanager-2.7.2.1.jar
 [INFO] 
 [INFO] --- maven-source-plugin:2.3:jar-no-fork (hadoop-java-sources) @ hadoop-yarn-server-sharedcachemanager ---
+[INFO] Building jar: /home/tanle/projects/ccra/hadoop/hadoop-yarn-project/hadoop-yarn/hadoop-yarn-server/hadoop-yarn-server-sharedcachemanager/target/hadoop-yarn-server-sharedcachemanager-2.7.2.1-sources.jar
 [INFO] 
 [INFO] --- maven-source-plugin:2.3:test-jar-no-fork (hadoop-java-sources) @ hadoop-yarn-server-sharedcachemanager ---
+[INFO] Building jar: /home/tanle/projects/ccra/hadoop/hadoop-yarn-project/hadoop-yarn/hadoop-yarn-server/hadoop-yarn-server-sharedcachemanager/target/hadoop-yarn-server-sharedcachemanager-2.7.2.1-test-sources.jar
 [INFO] 
 [INFO] --- maven-enforcer-plugin:1.3.1:enforce (dist-enforce) @ hadoop-yarn-server-sharedcachemanager ---
 [INFO] 
@@ -11338,16 +11442,19 @@ main:
 [INFO] skip non existing resourceDirectory /home/tanle/projects/ccra/hadoop/hadoop-yarn-project/hadoop-yarn/hadoop-yarn-applications/hadoop-yarn-applications-distributedshell/src/main/resources
 [INFO] 
 [INFO] --- maven-compiler-plugin:3.1:compile (default-compile) @ hadoop-yarn-applications-distributedshell ---
-[INFO] Nothing to compile - all classes are up to date
+[INFO] Changes detected - recompiling the module!
+[INFO] Compiling 4 source files to /home/tanle/projects/ccra/hadoop/hadoop-yarn-project/hadoop-yarn/hadoop-yarn-applications/hadoop-yarn-applications-distributedshell/target/classes
 [INFO] 
 [INFO] --- maven-resources-plugin:2.6:testResources (default-testResources) @ hadoop-yarn-applications-distributedshell ---
 [INFO] Using 'UTF-8' encoding to copy filtered resources.
 [INFO] Copying 2 resources
 [INFO] 
 [INFO] --- maven-compiler-plugin:3.1:testCompile (default-testCompile) @ hadoop-yarn-applications-distributedshell ---
-[INFO] Nothing to compile - all classes are up to date
+[INFO] Changes detected - recompiling the module!
+[INFO] Compiling 6 source files to /home/tanle/projects/ccra/hadoop/hadoop-yarn-project/hadoop-yarn/hadoop-yarn-applications/hadoop-yarn-applications-distributedshell/target/test-classes
 [INFO] 
 [INFO] --- maven-jar-plugin:2.5:jar (default) @ hadoop-yarn-applications-distributedshell ---
+[INFO] Building jar: /home/tanle/projects/ccra/hadoop/hadoop-yarn-project/hadoop-yarn/hadoop-yarn-applications/hadoop-yarn-applications-distributedshell/target/hadoop-yarn-applications-distributedshell-2.7.2.1.jar
 [INFO] 
 [INFO] --- maven-surefire-plugin:2.17:test (default-test) @ hadoop-yarn-applications-distributedshell ---
 [INFO] Tests are skipped.
@@ -11355,8 +11462,10 @@ main:
 [INFO] --- maven-jar-plugin:2.5:jar (default-jar) @ hadoop-yarn-applications-distributedshell ---
 [INFO] 
 [INFO] --- maven-source-plugin:2.3:jar-no-fork (hadoop-java-sources) @ hadoop-yarn-applications-distributedshell ---
+[INFO] Building jar: /home/tanle/projects/ccra/hadoop/hadoop-yarn-project/hadoop-yarn/hadoop-yarn-applications/hadoop-yarn-applications-distributedshell/target/hadoop-yarn-applications-distributedshell-2.7.2.1-sources.jar
 [INFO] 
 [INFO] --- maven-source-plugin:2.3:test-jar-no-fork (hadoop-java-sources) @ hadoop-yarn-applications-distributedshell ---
+[INFO] Building jar: /home/tanle/projects/ccra/hadoop/hadoop-yarn-project/hadoop-yarn/hadoop-yarn-applications/hadoop-yarn-applications-distributedshell/target/hadoop-yarn-applications-distributedshell-2.7.2.1-test-sources.jar
 [INFO] 
 [INFO] --- maven-enforcer-plugin:1.3.1:enforce (dist-enforce) @ hadoop-yarn-applications-distributedshell ---
 [INFO] 
@@ -11452,23 +11561,28 @@ main:
 [INFO] skip non existing resourceDirectory /home/tanle/projects/ccra/hadoop/hadoop-yarn-project/hadoop-yarn/hadoop-yarn-applications/hadoop-yarn-applications-unmanaged-am-launcher/src/main/resources
 [INFO] 
 [INFO] --- maven-compiler-plugin:3.1:compile (default-compile) @ hadoop-yarn-applications-unmanaged-am-launcher ---
-[INFO] Nothing to compile - all classes are up to date
+[INFO] Changes detected - recompiling the module!
+[INFO] Compiling 1 source file to /home/tanle/projects/ccra/hadoop/hadoop-yarn-project/hadoop-yarn/hadoop-yarn-applications/hadoop-yarn-applications-unmanaged-am-launcher/target/classes
 [INFO] 
 [INFO] --- maven-resources-plugin:2.6:testResources (default-testResources) @ hadoop-yarn-applications-unmanaged-am-launcher ---
 [INFO] Using 'UTF-8' encoding to copy filtered resources.
 [INFO] Copying 2 resources
 [INFO] 
 [INFO] --- maven-compiler-plugin:3.1:testCompile (default-testCompile) @ hadoop-yarn-applications-unmanaged-am-launcher ---
-[INFO] Nothing to compile - all classes are up to date
+[INFO] Changes detected - recompiling the module!
+[INFO] Compiling 1 source file to /home/tanle/projects/ccra/hadoop/hadoop-yarn-project/hadoop-yarn/hadoop-yarn-applications/hadoop-yarn-applications-unmanaged-am-launcher/target/test-classes
 [INFO] 
 [INFO] --- maven-surefire-plugin:2.17:test (default-test) @ hadoop-yarn-applications-unmanaged-am-launcher ---
 [INFO] Tests are skipped.
 [INFO] 
 [INFO] --- maven-jar-plugin:2.5:jar (default-jar) @ hadoop-yarn-applications-unmanaged-am-launcher ---
+[INFO] Building jar: /home/tanle/projects/ccra/hadoop/hadoop-yarn-project/hadoop-yarn/hadoop-yarn-applications/hadoop-yarn-applications-unmanaged-am-launcher/target/hadoop-yarn-applications-unmanaged-am-launcher-2.7.2.1.jar
 [INFO] 
 [INFO] --- maven-source-plugin:2.3:jar-no-fork (hadoop-java-sources) @ hadoop-yarn-applications-unmanaged-am-launcher ---
+[INFO] Building jar: /home/tanle/projects/ccra/hadoop/hadoop-yarn-project/hadoop-yarn/hadoop-yarn-applications/hadoop-yarn-applications-unmanaged-am-launcher/target/hadoop-yarn-applications-unmanaged-am-launcher-2.7.2.1-sources.jar
 [INFO] 
 [INFO] --- maven-source-plugin:2.3:test-jar-no-fork (hadoop-java-sources) @ hadoop-yarn-applications-unmanaged-am-launcher ---
+[INFO] Building jar: /home/tanle/projects/ccra/hadoop/hadoop-yarn-project/hadoop-yarn/hadoop-yarn-applications/hadoop-yarn-applications-unmanaged-am-launcher/target/hadoop-yarn-applications-unmanaged-am-launcher-2.7.2.1-test-sources.jar
 [INFO] 
 [INFO] --- maven-enforcer-plugin:1.3.1:enforce (dist-enforce) @ hadoop-yarn-applications-unmanaged-am-launcher ---
 [INFO] 
@@ -11548,26 +11662,33 @@ main:
 [INFO] Copying 0 resource
 [INFO] 
 [INFO] --- maven-compiler-plugin:3.1:compile (default-compile) @ hadoop-yarn-registry ---
-[INFO] Nothing to compile - all classes are up to date
+[INFO] Changes detected - recompiling the module!
+[INFO] Compiling 48 source files to /home/tanle/projects/ccra/hadoop/hadoop-yarn-project/hadoop-yarn/hadoop-yarn-registry/target/classes
+[WARNING] /home/tanle/projects/ccra/hadoop/hadoop-yarn-project/hadoop-yarn/hadoop-yarn-registry/src/main/java/org/apache/hadoop/registry/client/types/Endpoint.java: /home/tanle/projects/ccra/hadoop/hadoop-yarn-project/hadoop-yarn/hadoop-yarn-registry/src/main/java/org/apache/hadoop/registry/client/types/Endpoint.java uses unchecked or unsafe operations.
+[WARNING] /home/tanle/projects/ccra/hadoop/hadoop-yarn-project/hadoop-yarn/hadoop-yarn-registry/src/main/java/org/apache/hadoop/registry/client/types/Endpoint.java: Recompile with -Xlint:unchecked for details.
 [INFO] 
 [INFO] --- maven-resources-plugin:2.6:testResources (default-testResources) @ hadoop-yarn-registry ---
 [INFO] Using 'UTF-8' encoding to copy filtered resources.
 [INFO] Copying 1 resource
 [INFO] 
 [INFO] --- maven-compiler-plugin:3.1:testCompile (default-testCompile) @ hadoop-yarn-registry ---
-[INFO] Nothing to compile - all classes are up to date
+[INFO] Changes detected - recompiling the module!
+[INFO] Compiling 19 source files to /home/tanle/projects/ccra/hadoop/hadoop-yarn-project/hadoop-yarn/hadoop-yarn-registry/target/test-classes
 [INFO] 
 [INFO] --- maven-jar-plugin:2.5:test-jar (default) @ hadoop-yarn-registry ---
+[INFO] Building jar: /home/tanle/projects/ccra/hadoop/hadoop-yarn-project/hadoop-yarn/hadoop-yarn-registry/target/hadoop-yarn-registry-2.7.2.1-tests.jar
 [INFO] 
 [INFO] --- maven-surefire-plugin:2.17:test (default-test) @ hadoop-yarn-registry ---
 [INFO] Tests are skipped.
 [INFO] 
 [INFO] --- maven-jar-plugin:2.5:jar (default-jar) @ hadoop-yarn-registry ---
+[INFO] Building jar: /home/tanle/projects/ccra/hadoop/hadoop-yarn-project/hadoop-yarn/hadoop-yarn-registry/target/hadoop-yarn-registry-2.7.2.1.jar
 [INFO] 
 [INFO] --- maven-source-plugin:2.3:jar-no-fork (hadoop-java-sources) @ hadoop-yarn-registry ---
 [INFO] Building jar: /home/tanle/projects/ccra/hadoop/hadoop-yarn-project/hadoop-yarn/hadoop-yarn-registry/target/hadoop-yarn-registry-2.7.2.1-sources.jar
 [INFO] 
 [INFO] --- maven-source-plugin:2.3:test-jar-no-fork (hadoop-java-sources) @ hadoop-yarn-registry ---
+[INFO] Building jar: /home/tanle/projects/ccra/hadoop/hadoop-yarn-project/hadoop-yarn/hadoop-yarn-registry/target/hadoop-yarn-registry-2.7.2.1-test-sources.jar
 [INFO] 
 [INFO] --- maven-enforcer-plugin:1.3.1:enforce (dist-enforce) @ hadoop-yarn-registry ---
 [INFO] 
@@ -11907,14 +12028,14 @@ main:
 [INFO] Executed tasks
 [INFO] 
 [INFO] --- maven-assembly-plugin:2.4:single (package-yarn) @ hadoop-yarn-project ---
-[WARNING] NOTE: Currently, inclusion of module dependencies may produce unpredictable results if a version conflict occurs.
-[WARNING] NOTE: Currently, inclusion of module dependencies may produce unpredictable results if a version conflict occurs.
 [WARNING] The following patterns were never triggered in this artifact exclusion filter:
 o  'org.hsqldb:hsqldb'
 
 [WARNING] The following patterns were never triggered in this artifact inclusion filter:
 o  'org.hsqldb:hsqldb'
 
+[WARNING] NOTE: Currently, inclusion of module dependencies may produce unpredictable results if a version conflict occurs.
+[WARNING] NOTE: Currently, inclusion of module dependencies may produce unpredictable results if a version conflict occurs.
 [INFO] Copying files to /home/tanle/projects/ccra/hadoop/hadoop-yarn-project/target/hadoop-yarn-project-2.7.2.1
 [INFO] 
 [INFO] --- maven-source-plugin:2.3:jar-no-fork (hadoop-java-sources) @ hadoop-yarn-project ---
@@ -11974,23 +12095,34 @@ main:
 [INFO] Copying 8 resources
 [INFO] 
 [INFO] --- maven-compiler-plugin:3.1:compile (default-compile) @ hadoop-mapreduce-client-core ---
-[INFO] Nothing to compile - all classes are up to date
+[INFO] Changes detected - recompiling the module!
+[INFO] Compiling 495 source files to /home/tanle/projects/ccra/hadoop/hadoop-mapreduce-project/hadoop-mapreduce-client/hadoop-mapreduce-client-core/target/classes
+[WARNING] /home/tanle/projects/ccra/hadoop/hadoop-mapreduce-project/hadoop-mapreduce-client/hadoop-mapreduce-client-core/src/main/java/org/apache/hadoop/mapred/Mapper.java: Some input files use or override a deprecated API.
+[WARNING] /home/tanle/projects/ccra/hadoop/hadoop-mapreduce-project/hadoop-mapreduce-client/hadoop-mapreduce-client-core/src/main/java/org/apache/hadoop/mapred/Mapper.java: Recompile with -Xlint:deprecation for details.
+[WARNING] /home/tanle/projects/ccra/hadoop/hadoop-mapreduce-project/hadoop-mapreduce-client/hadoop-mapreduce-client-core/src/main/java/org/apache/hadoop/mapred/MapTask.java: Some input files use unchecked or unsafe operations.
+[WARNING] /home/tanle/projects/ccra/hadoop/hadoop-mapreduce-project/hadoop-mapreduce-client/hadoop-mapreduce-client-core/src/main/java/org/apache/hadoop/mapred/MapTask.java: Recompile with -Xlint:unchecked for details.
 [INFO] 
 [INFO] --- maven-resources-plugin:2.6:testResources (default-testResources) @ hadoop-mapreduce-client-core ---
 [INFO] Using 'UTF-8' encoding to copy filtered resources.
 [INFO] Copying 7 resources
 [INFO] 
 [INFO] --- maven-compiler-plugin:3.1:testCompile (default-testCompile) @ hadoop-mapreduce-client-core ---
-[INFO] Nothing to compile - all classes are up to date
+[INFO] Changes detected - recompiling the module!
+[INFO] Compiling 42 source files to /home/tanle/projects/ccra/hadoop/hadoop-mapreduce-project/hadoop-mapreduce-client/hadoop-mapreduce-client-core/target/test-classes
+[WARNING] /home/tanle/projects/ccra/hadoop/hadoop-mapreduce-project/hadoop-mapreduce-client/hadoop-mapreduce-client-core/src/test/java/org/apache/hadoop/mapred/TestQueue.java: /home/tanle/projects/ccra/hadoop/hadoop-mapreduce-project/hadoop-mapreduce-client/hadoop-mapreduce-client-core/src/test/java/org/apache/hadoop/mapred/TestQueue.java uses or overrides a deprecated API.
+[WARNING] /home/tanle/projects/ccra/hadoop/hadoop-mapreduce-project/hadoop-mapreduce-client/hadoop-mapreduce-client-core/src/test/java/org/apache/hadoop/mapred/TestQueue.java: Recompile with -Xlint:deprecation for details.
 [INFO] 
 [INFO] --- maven-surefire-plugin:2.17:test (default-test) @ hadoop-mapreduce-client-core ---
 [INFO] Tests are skipped.
 [INFO] 
 [INFO] --- maven-jar-plugin:2.5:jar (default-jar) @ hadoop-mapreduce-client-core ---
+[INFO] Building jar: /home/tanle/projects/ccra/hadoop/hadoop-mapreduce-project/hadoop-mapreduce-client/hadoop-mapreduce-client-core/target/hadoop-mapreduce-client-core-2.7.2.1.jar
 [INFO] 
 [INFO] --- maven-source-plugin:2.3:jar-no-fork (hadoop-java-sources) @ hadoop-mapreduce-client-core ---
+[INFO] Building jar: /home/tanle/projects/ccra/hadoop/hadoop-mapreduce-project/hadoop-mapreduce-client/hadoop-mapreduce-client-core/target/hadoop-mapreduce-client-core-2.7.2.1-sources.jar
 [INFO] 
 [INFO] --- maven-source-plugin:2.3:test-jar-no-fork (hadoop-java-sources) @ hadoop-mapreduce-client-core ---
+[INFO] Building jar: /home/tanle/projects/ccra/hadoop/hadoop-mapreduce-project/hadoop-mapreduce-client/hadoop-mapreduce-client-core/target/hadoop-mapreduce-client-core-2.7.2.1-test-sources.jar
 [INFO] 
 [INFO] --- maven-enforcer-plugin:1.3.1:enforce (dist-enforce) @ hadoop-mapreduce-client-core ---
 [INFO] 
@@ -13691,7 +13823,10 @@ main:
 [INFO] Copying 1 resource
 [INFO] 
 [INFO] --- maven-compiler-plugin:3.1:testCompile (default-testCompile) @ hadoop-mapreduce-client-common ---
-[INFO] Nothing to compile - all classes are up to date
+[INFO] Changes detected - recompiling the module!
+[INFO] Compiling 12 source files to /home/tanle/projects/ccra/hadoop/hadoop-mapreduce-project/hadoop-mapreduce-client/hadoop-mapreduce-client-common/target/test-classes
+[WARNING] /home/tanle/projects/ccra/hadoop/hadoop-mapreduce-project/hadoop-mapreduce-client/hadoop-mapreduce-client-common/src/test/java/org/apache/hadoop/mapred/TestLocalDistributedCacheManager.java: Some input files use or override a deprecated API.
+[WARNING] /home/tanle/projects/ccra/hadoop/hadoop-mapreduce-project/hadoop-mapreduce-client/hadoop-mapreduce-client-common/src/test/java/org/apache/hadoop/mapred/TestLocalDistributedCacheManager.java: Recompile with -Xlint:deprecation for details.
 [INFO] 
 [INFO] --- maven-surefire-plugin:2.17:test (default-test) @ hadoop-mapreduce-client-common ---
 [INFO] Tests are skipped.
@@ -13703,6 +13838,7 @@ main:
 [INFO] Building jar: /home/tanle/projects/ccra/hadoop/hadoop-mapreduce-project/hadoop-mapreduce-client/hadoop-mapreduce-client-common/target/hadoop-mapreduce-client-common-2.7.2.1-sources.jar
 [INFO] 
 [INFO] --- maven-source-plugin:2.3:test-jar-no-fork (hadoop-java-sources) @ hadoop-mapreduce-client-common ---
+[INFO] Building jar: /home/tanle/projects/ccra/hadoop/hadoop-mapreduce-project/hadoop-mapreduce-client/hadoop-mapreduce-client-common/target/hadoop-mapreduce-client-common-2.7.2.1-test-sources.jar
 [INFO] 
 [INFO] --- maven-enforcer-plugin:1.3.1:enforce (dist-enforce) @ hadoop-mapreduce-client-common ---
 [INFO] 
@@ -14665,7 +14801,8 @@ main:
 [INFO] Copying 2 resources
 [INFO] 
 [INFO] --- maven-compiler-plugin:3.1:testCompile (default-testCompile) @ hadoop-mapreduce-client-shuffle ---
-[INFO] Nothing to compile - all classes are up to date
+[INFO] Changes detected - recompiling the module!
+[INFO] Compiling 2 source files to /home/tanle/projects/ccra/hadoop/hadoop-mapreduce-project/hadoop-mapreduce-client/hadoop-mapreduce-client-shuffle/target/test-classes
 [INFO] 
 [INFO] --- maven-surefire-plugin:2.17:test (default-test) @ hadoop-mapreduce-client-shuffle ---
 [INFO] Tests are skipped.
@@ -14677,6 +14814,7 @@ main:
 [INFO] Building jar: /home/tanle/projects/ccra/hadoop/hadoop-mapreduce-project/hadoop-mapreduce-client/hadoop-mapreduce-client-shuffle/target/hadoop-mapreduce-client-shuffle-2.7.2.1-sources.jar
 [INFO] 
 [INFO] --- maven-source-plugin:2.3:test-jar-no-fork (hadoop-java-sources) @ hadoop-mapreduce-client-shuffle ---
+[INFO] Building jar: /home/tanle/projects/ccra/hadoop/hadoop-mapreduce-project/hadoop-mapreduce-client/hadoop-mapreduce-client-shuffle/target/hadoop-mapreduce-client-shuffle-2.7.2.1-test-sources.jar
 [INFO] 
 [INFO] --- maven-enforcer-plugin:1.3.1:enforce (dist-enforce) @ hadoop-mapreduce-client-shuffle ---
 [INFO] 
@@ -14809,25 +14947,39 @@ main:
 [INFO] Copying 1 resource
 [INFO] 
 [INFO] --- maven-compiler-plugin:3.1:compile (default-compile) @ hadoop-mapreduce-client-app ---
-[INFO] Nothing to compile - all classes are up to date
+[INFO] Changes detected - recompiling the module!
+[INFO] Compiling 154 source files to /home/tanle/projects/ccra/hadoop/hadoop-mapreduce-project/hadoop-mapreduce-client/hadoop-mapreduce-client-app/target/classes
+[WARNING] /home/tanle/projects/ccra/hadoop/hadoop-mapreduce-project/hadoop-mapreduce-client/hadoop-mapreduce-client-app/src/main/java/org/apache/hadoop/mapreduce/v2/app/job/impl/TaskAttemptImpl.java: Some input files use or override a deprecated API.
+[WARNING] /home/tanle/projects/ccra/hadoop/hadoop-mapreduce-project/hadoop-mapreduce-client/hadoop-mapreduce-client-app/src/main/java/org/apache/hadoop/mapreduce/v2/app/job/impl/TaskAttemptImpl.java: Recompile with -Xlint:deprecation for details.
+[WARNING] /home/tanle/projects/ccra/hadoop/hadoop-mapreduce-project/hadoop-mapreduce-client/hadoop-mapreduce-client-app/src/main/java/org/apache/hadoop/mapreduce/v2/app/speculate/DefaultSpeculator.java: Some input files use unchecked or unsafe operations.
+[WARNING] /home/tanle/projects/ccra/hadoop/hadoop-mapreduce-project/hadoop-mapreduce-client/hadoop-mapreduce-client-app/src/main/java/org/apache/hadoop/mapreduce/v2/app/speculate/DefaultSpeculator.java: Recompile with -Xlint:unchecked for details.
 [INFO] 
 [INFO] --- maven-resources-plugin:2.6:testResources (default-testResources) @ hadoop-mapreduce-client-app ---
 [INFO] Using 'UTF-8' encoding to copy filtered resources.
 [INFO] Copying 2 resources
 [INFO] 
 [INFO] --- maven-compiler-plugin:3.1:testCompile (default-testCompile) @ hadoop-mapreduce-client-app ---
-[INFO] Nothing to compile - all classes are up to date
+[INFO] Changes detected - recompiling the module!
+[INFO] Compiling 49 source files to /home/tanle/projects/ccra/hadoop/hadoop-mapreduce-project/hadoop-mapreduce-client/hadoop-mapreduce-client-app/target/test-classes
+[WARNING] /home/tanle/projects/ccra/hadoop/hadoop-mapreduce-project/hadoop-mapreduce-client/hadoop-mapreduce-client-app/src/test/java/org/apache/hadoop/mapred/TestTaskAttemptListenerImpl.java: Some input files use or override a deprecated API.
+[WARNING] /home/tanle/projects/ccra/hadoop/hadoop-mapreduce-project/hadoop-mapreduce-client/hadoop-mapreduce-client-app/src/test/java/org/apache/hadoop/mapred/TestTaskAttemptListenerImpl.java: Recompile with -Xlint:deprecation for details.
+[WARNING] /home/tanle/projects/ccra/hadoop/hadoop-mapreduce-project/hadoop-mapreduce-client/hadoop-mapreduce-client-app/src/test/java/org/apache/hadoop/mapreduce/v2/app/TestMRClientService.java: Some input files use unchecked or unsafe operations.
+[WARNING] /home/tanle/projects/ccra/hadoop/hadoop-mapreduce-project/hadoop-mapreduce-client/hadoop-mapreduce-client-app/src/test/java/org/apache/hadoop/mapreduce/v2/app/TestMRClientService.java: Recompile with -Xlint:unchecked for details.
 [INFO] 
 [INFO] --- maven-jar-plugin:2.5:test-jar (default) @ hadoop-mapreduce-client-app ---
+[INFO] Building jar: /home/tanle/projects/ccra/hadoop/hadoop-mapreduce-project/hadoop-mapreduce-client/hadoop-mapreduce-client-app/target/hadoop-mapreduce-client-app-2.7.2.1-tests.jar
 [INFO] 
 [INFO] --- maven-surefire-plugin:2.17:test (default-test) @ hadoop-mapreduce-client-app ---
 [INFO] Tests are skipped.
 [INFO] 
 [INFO] --- maven-jar-plugin:2.5:jar (default-jar) @ hadoop-mapreduce-client-app ---
+[INFO] Building jar: /home/tanle/projects/ccra/hadoop/hadoop-mapreduce-project/hadoop-mapreduce-client/hadoop-mapreduce-client-app/target/hadoop-mapreduce-client-app-2.7.2.1.jar
 [INFO] 
 [INFO] --- maven-source-plugin:2.3:jar-no-fork (hadoop-java-sources) @ hadoop-mapreduce-client-app ---
+[INFO] Building jar: /home/tanle/projects/ccra/hadoop/hadoop-mapreduce-project/hadoop-mapreduce-client/hadoop-mapreduce-client-app/target/hadoop-mapreduce-client-app-2.7.2.1-sources.jar
 [INFO] 
 [INFO] --- maven-source-plugin:2.3:test-jar-no-fork (hadoop-java-sources) @ hadoop-mapreduce-client-app ---
+[INFO] Building jar: /home/tanle/projects/ccra/hadoop/hadoop-mapreduce-project/hadoop-mapreduce-client/hadoop-mapreduce-client-app/target/hadoop-mapreduce-client-app-2.7.2.1-test-sources.jar
 [INFO] 
 [INFO] --- maven-enforcer-plugin:1.3.1:enforce (dist-enforce) @ hadoop-mapreduce-client-app ---
 [INFO] 
@@ -15657,23 +15809,28 @@ main:
 [INFO] skip non existing resourceDirectory /home/tanle/projects/ccra/hadoop/hadoop-mapreduce-project/hadoop-mapreduce-client/hadoop-mapreduce-client-hs/src/main/resources
 [INFO] 
 [INFO] --- maven-compiler-plugin:3.1:compile (default-compile) @ hadoop-mapreduce-client-hs ---
-[INFO] Nothing to compile - all classes are up to date
+[INFO] Changes detected - recompiling the module!
+[INFO] Compiling 48 source files to /home/tanle/projects/ccra/hadoop/hadoop-mapreduce-project/hadoop-mapreduce-client/hadoop-mapreduce-client-hs/target/classes
 [INFO] 
 [INFO] --- maven-resources-plugin:2.6:testResources (default-testResources) @ hadoop-mapreduce-client-hs ---
 [INFO] Using 'UTF-8' encoding to copy filtered resources.
 [INFO] Copying 8 resources
 [INFO] 
 [INFO] --- maven-compiler-plugin:3.1:testCompile (default-testCompile) @ hadoop-mapreduce-client-hs ---
-[INFO] Nothing to compile - all classes are up to date
+[INFO] Changes detected - recompiling the module!
+[INFO] Compiling 27 source files to /home/tanle/projects/ccra/hadoop/hadoop-mapreduce-project/hadoop-mapreduce-client/hadoop-mapreduce-client-hs/target/test-classes
 [INFO] 
 [INFO] --- maven-surefire-plugin:2.17:test (default-test) @ hadoop-mapreduce-client-hs ---
 [INFO] Tests are skipped.
 [INFO] 
 [INFO] --- maven-jar-plugin:2.5:jar (default-jar) @ hadoop-mapreduce-client-hs ---
+[INFO] Building jar: /home/tanle/projects/ccra/hadoop/hadoop-mapreduce-project/hadoop-mapreduce-client/hadoop-mapreduce-client-hs/target/hadoop-mapreduce-client-hs-2.7.2.1.jar
 [INFO] 
 [INFO] --- maven-source-plugin:2.3:jar-no-fork (hadoop-java-sources) @ hadoop-mapreduce-client-hs ---
+[INFO] Building jar: /home/tanle/projects/ccra/hadoop/hadoop-mapreduce-project/hadoop-mapreduce-client/hadoop-mapreduce-client-hs/target/hadoop-mapreduce-client-hs-2.7.2.1-sources.jar
 [INFO] 
 [INFO] --- maven-source-plugin:2.3:test-jar-no-fork (hadoop-java-sources) @ hadoop-mapreduce-client-hs ---
+[INFO] Building jar: /home/tanle/projects/ccra/hadoop/hadoop-mapreduce-project/hadoop-mapreduce-client/hadoop-mapreduce-client-hs/target/hadoop-mapreduce-client-hs-2.7.2.1-test-sources.jar
 [INFO] 
 [INFO] --- maven-enforcer-plugin:1.3.1:enforce (dist-enforce) @ hadoop-mapreduce-client-hs ---
 [INFO] 
@@ -16243,25 +16400,33 @@ main:
 [INFO] Copying 2 resources
 [INFO] 
 [INFO] --- maven-compiler-plugin:3.1:compile (default-compile) @ hadoop-mapreduce-client-jobclient ---
-[INFO] Nothing to compile - all classes are up to date
+[INFO] Changes detected - recompiling the module!
+[INFO] Compiling 6 source files to /home/tanle/projects/ccra/hadoop/hadoop-mapreduce-project/hadoop-mapreduce-client/hadoop-mapreduce-client-jobclient/target/classes
 [INFO] 
 [INFO] --- maven-resources-plugin:2.6:testResources (default-testResources) @ hadoop-mapreduce-client-jobclient ---
 [INFO] Using 'UTF-8' encoding to copy filtered resources.
 [INFO] Copying 4 resources
 [INFO] 
 [INFO] --- maven-compiler-plugin:3.1:testCompile (default-testCompile) @ hadoop-mapreduce-client-jobclient ---
-[INFO] Nothing to compile - all classes are up to date
+[INFO] Changes detected - recompiling the module!
+[INFO] Compiling 285 source files to /home/tanle/projects/ccra/hadoop/hadoop-mapreduce-project/hadoop-mapreduce-client/hadoop-mapreduce-client-jobclient/target/test-classes
+[WARNING] /home/tanle/projects/ccra/hadoop/hadoop-mapreduce-project/hadoop-mapreduce-client/hadoop-mapreduce-client-jobclient/src/test/java/org/apache/hadoop/mapred/MRCaching.java: Some input files use or override a deprecated API.
+[WARNING] /home/tanle/projects/ccra/hadoop/hadoop-mapreduce-project/hadoop-mapreduce-client/hadoop-mapreduce-client-jobclient/src/test/java/org/apache/hadoop/mapred/MRCaching.java: Recompile with -Xlint:deprecation for details.
 [INFO] 
 [INFO] --- maven-jar-plugin:2.5:test-jar (default) @ hadoop-mapreduce-client-jobclient ---
+[INFO] Building jar: /home/tanle/projects/ccra/hadoop/hadoop-mapreduce-project/hadoop-mapreduce-client/hadoop-mapreduce-client-jobclient/target/hadoop-mapreduce-client-jobclient-2.7.2.1-tests.jar
 [INFO] 
 [INFO] --- maven-surefire-plugin:2.17:test (default-test) @ hadoop-mapreduce-client-jobclient ---
 [INFO] Tests are skipped.
 [INFO] 
 [INFO] --- maven-jar-plugin:2.5:jar (default-jar) @ hadoop-mapreduce-client-jobclient ---
+[INFO] Building jar: /home/tanle/projects/ccra/hadoop/hadoop-mapreduce-project/hadoop-mapreduce-client/hadoop-mapreduce-client-jobclient/target/hadoop-mapreduce-client-jobclient-2.7.2.1.jar
 [INFO] 
 [INFO] --- maven-source-plugin:2.3:jar-no-fork (hadoop-java-sources) @ hadoop-mapreduce-client-jobclient ---
+[INFO] Building jar: /home/tanle/projects/ccra/hadoop/hadoop-mapreduce-project/hadoop-mapreduce-client/hadoop-mapreduce-client-jobclient/target/hadoop-mapreduce-client-jobclient-2.7.2.1-sources.jar
 [INFO] 
 [INFO] --- maven-source-plugin:2.3:test-jar-no-fork (hadoop-java-sources) @ hadoop-mapreduce-client-jobclient ---
+[INFO] Building jar: /home/tanle/projects/ccra/hadoop/hadoop-mapreduce-project/hadoop-mapreduce-client/hadoop-mapreduce-client-jobclient/target/hadoop-mapreduce-client-jobclient-2.7.2.1-test-sources.jar
 [INFO] 
 [INFO] --- maven-enforcer-plugin:1.3.1:enforce (dist-enforce) @ hadoop-mapreduce-client-jobclient ---
 [INFO] 
@@ -16316,23 +16481,28 @@ main:
 [INFO] skip non existing resourceDirectory /home/tanle/projects/ccra/hadoop/hadoop-mapreduce-project/hadoop-mapreduce-client/hadoop-mapreduce-client-hs-plugins/src/main/resources
 [INFO] 
 [INFO] --- maven-compiler-plugin:3.1:compile (default-compile) @ hadoop-mapreduce-client-hs-plugins ---
-[INFO] Nothing to compile - all classes are up to date
+[INFO] Changes detected - recompiling the module!
+[INFO] Compiling 1 source file to /home/tanle/projects/ccra/hadoop/hadoop-mapreduce-project/hadoop-mapreduce-client/hadoop-mapreduce-client-hs-plugins/target/classes
 [INFO] 
 [INFO] --- maven-resources-plugin:2.6:testResources (default-testResources) @ hadoop-mapreduce-client-hs-plugins ---
 [INFO] Using 'UTF-8' encoding to copy filtered resources.
 [INFO] skip non existing resourceDirectory /home/tanle/projects/ccra/hadoop/hadoop-mapreduce-project/hadoop-mapreduce-client/hadoop-mapreduce-client-hs-plugins/src/test/resources
 [INFO] 
 [INFO] --- maven-compiler-plugin:3.1:testCompile (default-testCompile) @ hadoop-mapreduce-client-hs-plugins ---
-[INFO] Nothing to compile - all classes are up to date
+[INFO] Changes detected - recompiling the module!
+[INFO] Compiling 1 source file to /home/tanle/projects/ccra/hadoop/hadoop-mapreduce-project/hadoop-mapreduce-client/hadoop-mapreduce-client-hs-plugins/target/test-classes
 [INFO] 
 [INFO] --- maven-surefire-plugin:2.17:test (default-test) @ hadoop-mapreduce-client-hs-plugins ---
 [INFO] Tests are skipped.
 [INFO] 
 [INFO] --- maven-jar-plugin:2.5:jar (default-jar) @ hadoop-mapreduce-client-hs-plugins ---
+[INFO] Building jar: /home/tanle/projects/ccra/hadoop/hadoop-mapreduce-project/hadoop-mapreduce-client/hadoop-mapreduce-client-hs-plugins/target/hadoop-mapreduce-client-hs-plugins-2.7.2.1.jar
 [INFO] 
 [INFO] --- maven-source-plugin:2.3:jar-no-fork (hadoop-java-sources) @ hadoop-mapreduce-client-hs-plugins ---
+[INFO] Building jar: /home/tanle/projects/ccra/hadoop/hadoop-mapreduce-project/hadoop-mapreduce-client/hadoop-mapreduce-client-hs-plugins/target/hadoop-mapreduce-client-hs-plugins-2.7.2.1-sources.jar
 [INFO] 
 [INFO] --- maven-source-plugin:2.3:test-jar-no-fork (hadoop-java-sources) @ hadoop-mapreduce-client-hs-plugins ---
+[INFO] Building jar: /home/tanle/projects/ccra/hadoop/hadoop-mapreduce-project/hadoop-mapreduce-client/hadoop-mapreduce-client-hs-plugins/target/hadoop-mapreduce-client-hs-plugins-2.7.2.1-test-sources.jar
 [INFO] 
 [INFO] --- maven-enforcer-plugin:1.3.1:enforce (dist-enforce) @ hadoop-mapreduce-client-hs-plugins ---
 [INFO] 
@@ -16382,23 +16552,30 @@ main:
 [INFO] skip non existing resourceDirectory /home/tanle/projects/ccra/hadoop/hadoop-mapreduce-project/hadoop-mapreduce-examples/src/main/resources
 [INFO] 
 [INFO] --- maven-compiler-plugin:3.1:compile (default-compile) @ hadoop-mapreduce-examples ---
-[INFO] Nothing to compile - all classes are up to date
+[INFO] Changes detected - recompiling the module!
+[INFO] Compiling 46 source files to /home/tanle/projects/ccra/hadoop/hadoop-mapreduce-project/hadoop-mapreduce-examples/target/classes
+[WARNING] /home/tanle/projects/ccra/hadoop/hadoop-mapreduce-project/hadoop-mapreduce-examples/src/main/java/org/apache/hadoop/examples/Sort.java: Some input files use or override a deprecated API.
+[WARNING] /home/tanle/projects/ccra/hadoop/hadoop-mapreduce-project/hadoop-mapreduce-examples/src/main/java/org/apache/hadoop/examples/Sort.java: Recompile with -Xlint:deprecation for details.
 [INFO] 
 [INFO] --- maven-resources-plugin:2.6:testResources (default-testResources) @ hadoop-mapreduce-examples ---
 [INFO] Using 'UTF-8' encoding to copy filtered resources.
 [INFO] skip non existing resourceDirectory /home/tanle/projects/ccra/hadoop/hadoop-mapreduce-project/hadoop-mapreduce-examples/src/test/resources
 [INFO] 
 [INFO] --- maven-compiler-plugin:3.1:testCompile (default-testCompile) @ hadoop-mapreduce-examples ---
-[INFO] Nothing to compile - all classes are up to date
+[INFO] Changes detected - recompiling the module!
+[INFO] Compiling 7 source files to /home/tanle/projects/ccra/hadoop/hadoop-mapreduce-project/hadoop-mapreduce-examples/target/test-classes
 [INFO] 
 [INFO] --- maven-surefire-plugin:2.17:test (default-test) @ hadoop-mapreduce-examples ---
 [INFO] Tests are skipped.
 [INFO] 
 [INFO] --- maven-jar-plugin:2.5:jar (default-jar) @ hadoop-mapreduce-examples ---
+[INFO] Building jar: /home/tanle/projects/ccra/hadoop/hadoop-mapreduce-project/hadoop-mapreduce-examples/target/hadoop-mapreduce-examples-2.7.2.1.jar
 [INFO] 
 [INFO] --- maven-source-plugin:2.3:jar-no-fork (hadoop-java-sources) @ hadoop-mapreduce-examples ---
+[INFO] Building jar: /home/tanle/projects/ccra/hadoop/hadoop-mapreduce-project/hadoop-mapreduce-examples/target/hadoop-mapreduce-examples-2.7.2.1-sources.jar
 [INFO] 
 [INFO] --- maven-source-plugin:2.3:test-jar-no-fork (hadoop-java-sources) @ hadoop-mapreduce-examples ---
+[INFO] Building jar: /home/tanle/projects/ccra/hadoop/hadoop-mapreduce-project/hadoop-mapreduce-examples/target/hadoop-mapreduce-examples-2.7.2.1-test-sources.jar
 [INFO] 
 [INFO] --- maven-enforcer-plugin:1.3.1:enforce (dist-enforce) @ hadoop-mapreduce-examples ---
 [INFO] 
@@ -16946,15 +17123,15 @@ main:
 [WARNING] The following patterns were never triggered in this artifact inclusion filter:
 o  'org.apache.hadoop:hadoop-yarn-server-tests'
 
+[WARNING] The following patterns were never triggered in this artifact exclusion filter:
+o  'org.apache.hadoop:hadoop-common'
+o  'org.apache.hadoop:hadoop-hdfs'
+
 [WARNING] NOTE: Currently, inclusion of module dependencies may produce unpredictable results if a version conflict occurs.
 [WARNING] The following patterns were never triggered in this artifact inclusion filter:
 o  'org.apache.hadoop:hadoop-yarn-server-tests'
 
 [WARNING] NOTE: Currently, inclusion of module dependencies may produce unpredictable results if a version conflict occurs.
-[WARNING] The following patterns were never triggered in this artifact exclusion filter:
-o  'org.apache.hadoop:hadoop-common'
-o  'org.apache.hadoop:hadoop-hdfs'
-
 [INFO] Copying files to /home/tanle/projects/ccra/hadoop/hadoop-mapreduce-project/target/hadoop-mapreduce-2.7.2.1
 [INFO] 
 [INFO] --- maven-source-plugin:2.3:jar-no-fork (hadoop-java-sources) @ hadoop-mapreduce ---
@@ -16991,7 +17168,12 @@ main:
 [INFO] skip non existing resourceDirectory /home/tanle/projects/ccra/hadoop/hadoop-tools/hadoop-streaming/src/main/resources
 [INFO] 
 [INFO] --- maven-compiler-plugin:3.1:compile (default-compile) @ hadoop-streaming ---
-[INFO] Nothing to compile - all classes are up to date
+[INFO] Changes detected - recompiling the module!
+[INFO] Compiling 37 source files to /home/tanle/projects/ccra/hadoop/hadoop-tools/hadoop-streaming/target/classes
+[WARNING] /home/tanle/projects/ccra/hadoop/hadoop-tools/hadoop-streaming/src/main/java/org/apache/hadoop/typedbytes/TypedBytesInput.java: Some input files use or override a deprecated API.
+[WARNING] /home/tanle/projects/ccra/hadoop/hadoop-tools/hadoop-streaming/src/main/java/org/apache/hadoop/typedbytes/TypedBytesInput.java: Recompile with -Xlint:deprecation for details.
+[WARNING] /home/tanle/projects/ccra/hadoop/hadoop-tools/hadoop-streaming/src/main/java/org/apache/hadoop/streaming/PipeMapRed.java: Some input files use unchecked or unsafe operations.
+[WARNING] /home/tanle/projects/ccra/hadoop/hadoop-tools/hadoop-streaming/src/main/java/org/apache/hadoop/streaming/PipeMapRed.java: Recompile with -Xlint:unchecked for details.
 [INFO] 
 [INFO] --- maven-resources-plugin:2.6:testResources (default-testResources) @ hadoop-streaming ---
 [INFO] Using 'UTF-8' encoding to copy filtered resources.
@@ -17003,25 +17185,35 @@ main:
 main:
    [delete] Deleting directory /home/tanle/projects/ccra/hadoop/hadoop-tools/hadoop-streaming/target/test-dir
     [mkdir] Created dir: /home/tanle/projects/ccra/hadoop/hadoop-tools/hadoop-streaming/target/test-dir
+    [mkdir] Created dir: /home/tanle/projects/ccra/hadoop/hadoop-tools/hadoop-streaming/target/log
 [INFO] Executed tasks
 [INFO] 
 [INFO] --- maven-antrun-plugin:1.7:run (copy-test-bin) @ hadoop-streaming ---
 [INFO] Executing tasks
 
 main:
+     [copy] Copying 2 files to /home/tanle/projects/ccra/hadoop/hadoop-tools/hadoop-streaming/target/bin
 [INFO] Executed tasks
 [INFO] 
 [INFO] --- maven-compiler-plugin:3.1:testCompile (default-testCompile) @ hadoop-streaming ---
-[INFO] Nothing to compile - all classes are up to date
+[INFO] Changes detected - recompiling the module!
+[INFO] Compiling 49 source files to /home/tanle/projects/ccra/hadoop/hadoop-tools/hadoop-streaming/target/test-classes
+[WARNING] /home/tanle/projects/ccra/hadoop/hadoop-tools/hadoop-streaming/src/test/java/org/apache/hadoop/streaming/TestFileArgs.java: Some input files use or override a deprecated API.
+[WARNING] /home/tanle/projects/ccra/hadoop/hadoop-tools/hadoop-streaming/src/test/java/org/apache/hadoop/streaming/TestFileArgs.java: Recompile with -Xlint:deprecation for details.
+[WARNING] /home/tanle/projects/ccra/hadoop/hadoop-tools/hadoop-streaming/src/test/java/org/apache/hadoop/streaming/ValueCountReduce.java: /home/tanle/projects/ccra/hadoop/hadoop-tools/hadoop-streaming/src/test/java/org/apache/hadoop/streaming/ValueCountReduce.java uses unchecked or unsafe operations.
+[WARNING] /home/tanle/projects/ccra/hadoop/hadoop-tools/hadoop-streaming/src/test/java/org/apache/hadoop/streaming/ValueCountReduce.java: Recompile with -Xlint:unchecked for details.
 [INFO] 
 [INFO] --- maven-surefire-plugin:2.17:test (default-test) @ hadoop-streaming ---
 [INFO] Tests are skipped.
 [INFO] 
 [INFO] --- maven-jar-plugin:2.5:jar (default-jar) @ hadoop-streaming ---
+[INFO] Building jar: /home/tanle/projects/ccra/hadoop/hadoop-tools/hadoop-streaming/target/hadoop-streaming-2.7.2.1.jar
 [INFO] 
 [INFO] --- maven-source-plugin:2.3:jar-no-fork (hadoop-java-sources) @ hadoop-streaming ---
+[INFO] Building jar: /home/tanle/projects/ccra/hadoop/hadoop-tools/hadoop-streaming/target/hadoop-streaming-2.7.2.1-sources.jar
 [INFO] 
 [INFO] --- maven-source-plugin:2.3:test-jar-no-fork (hadoop-java-sources) @ hadoop-streaming ---
+[INFO] Building jar: /home/tanle/projects/ccra/hadoop/hadoop-tools/hadoop-streaming/target/hadoop-streaming-2.7.2.1-test-sources.jar
 [INFO] 
 [INFO] --- maven-enforcer-plugin:1.3.1:enforce (dist-enforce) @ hadoop-streaming ---
 [INFO] 
@@ -17453,14 +17645,22 @@ main:
 [INFO] Copying 1 resource
 [INFO] 
 [INFO] --- maven-compiler-plugin:3.1:compile (default-compile) @ hadoop-distcp ---
-[INFO] Nothing to compile - all classes are up to date
+[INFO] Changes detected - recompiling the module!
+[INFO] Compiling 25 source files to /home/tanle/projects/ccra/hadoop/hadoop-tools/hadoop-distcp/target/classes
+[WARNING] /home/tanle/projects/ccra/hadoop/hadoop-tools/hadoop-distcp/src/main/java/org/apache/hadoop/tools/mapred/lib/DynamicInputChunk.java: Some input files use or override a deprecated API.
+[WARNING] /home/tanle/projects/ccra/hadoop/hadoop-tools/hadoop-distcp/src/main/java/org/apache/hadoop/tools/mapred/lib/DynamicInputChunk.java: Recompile with -Xlint:deprecation for details.
+[WARNING] /home/tanle/projects/ccra/hadoop/hadoop-tools/hadoop-distcp/src/main/java/org/apache/hadoop/tools/mapred/lib/DynamicRecordReader.java: /home/tanle/projects/ccra/hadoop/hadoop-tools/hadoop-distcp/src/main/java/org/apache/hadoop/tools/mapred/lib/DynamicRecordReader.java uses unchecked or unsafe operations.
+[WARNING] /home/tanle/projects/ccra/hadoop/hadoop-tools/hadoop-distcp/src/main/java/org/apache/hadoop/tools/mapred/lib/DynamicRecordReader.java: Recompile with -Xlint:unchecked for details.
 [INFO] 
 [INFO] --- maven-resources-plugin:2.6:testResources (default-testResources) @ hadoop-distcp ---
 [INFO] Using 'UTF-8' encoding to copy filtered resources.
 [INFO] Copying 1 resource
 [INFO] 
 [INFO] --- maven-compiler-plugin:3.1:testCompile (default-testCompile) @ hadoop-distcp ---
-[INFO] Nothing to compile - all classes are up to date
+[INFO] Changes detected - recompiling the module!
+[INFO] Compiling 23 source files to /home/tanle/projects/ccra/hadoop/hadoop-tools/hadoop-distcp/target/test-classes
+[WARNING] /home/tanle/projects/ccra/hadoop/hadoop-tools/hadoop-distcp/src/test/java/org/apache/hadoop/tools/TestGlobbedCopyListing.java: /home/tanle/projects/ccra/hadoop/hadoop-tools/hadoop-distcp/src/test/java/org/apache/hadoop/tools/TestGlobbedCopyListing.java uses or overrides a deprecated API.
+[WARNING] /home/tanle/projects/ccra/hadoop/hadoop-tools/hadoop-distcp/src/test/java/org/apache/hadoop/tools/TestGlobbedCopyListing.java: Recompile with -Xlint:deprecation for details.
 [INFO] 
 [INFO] --- maven-surefire-plugin:2.17:test (default-test) @ hadoop-distcp ---
 [INFO] Tests are skipped.
@@ -17469,102 +17669,104 @@ main:
 [INFO] Building jar: /home/tanle/projects/ccra/hadoop/hadoop-tools/hadoop-distcp/target/hadoop-distcp-2.7.2.1.jar
 [INFO] 
 [INFO] --- maven-dependency-plugin:2.2:copy-dependencies (default) @ hadoop-distcp ---
-[INFO] Copying hadoop-yarn-server-nodemanager-2.7.2.1.jar to /home/tanle/projects/ccra/hadoop/hadoop-tools/hadoop-distcp/target/lib/hadoop-yarn-server-nodemanager-2.7.2.1.jar
 [INFO] Copying hadoop-yarn-common-2.7.2.1.jar to /home/tanle/projects/ccra/hadoop/hadoop-tools/hadoop-distcp/target/lib/hadoop-yarn-common-2.7.2.1.jar
-[INFO] Copying hadoop-yarn-client-2.7.2.1.jar to /home/tanle/projects/ccra/hadoop/hadoop-tools/hadoop-distcp/target/lib/hadoop-yarn-client-2.7.2.1.jar
-[INFO] Copying hadoop-common-2.7.2.1.jar to /home/tanle/projects/ccra/hadoop/hadoop-tools/hadoop-distcp/target/lib/hadoop-common-2.7.2.1.jar
-[INFO] Copying hadoop-mapreduce-client-shuffle-2.7.2.1.jar to /home/tanle/projects/ccra/hadoop/hadoop-tools/hadoop-distcp/target/lib/hadoop-mapreduce-client-shuffle-2.7.2.1.jar
-[INFO] Copying hadoop-mapreduce-client-common-2.7.2.1.jar to /home/tanle/projects/ccra/hadoop/hadoop-tools/hadoop-distcp/target/lib/hadoop-mapreduce-client-common-2.7.2.1.jar
-[INFO] Copying hadoop-common-2.7.2.1-tests.jar to /home/tanle/projects/ccra/hadoop/hadoop-tools/hadoop-distcp/target/lib/hadoop-common-2.7.2.1-tests.jar
+[INFO] Copying hadoop-mapreduce-client-jobclient-2.7.2.1-tests.jar to /home/tanle/projects/ccra/hadoop/hadoop-tools/hadoop-distcp/target/lib/hadoop-mapreduce-client-jobclient-2.7.2.1-tests.jar
+[INFO] Copying log4j-1.2.17.jar to /home/tanle/projects/ccra/hadoop/hadoop-tools/hadoop-distcp/target/lib/log4j-1.2.17.jar
+[INFO] Copying slf4j-log4j12-1.7.10.jar to /home/tanle/projects/ccra/hadoop/hadoop-tools/hadoop-distcp/target/lib/slf4j-log4j12-1.7.10.jar
+[INFO] Copying htrace-core-3.1.0-incubating.jar to /home/tanle/projects/ccra/hadoop/hadoop-tools/hadoop-distcp/target/lib/htrace-core-3.1.0-incubating.jar
+[INFO] Copying commons-daemon-1.0.13.jar to /home/tanle/projects/ccra/hadoop/hadoop-tools/hadoop-distcp/target/lib/commons-daemon-1.0.13.jar
+[INFO] Copying protobuf-java-2.5.0.jar to /home/tanle/projects/ccra/hadoop/hadoop-tools/hadoop-distcp/target/lib/protobuf-java-2.5.0.jar
+[INFO] Copying aopalliance-1.0.jar to /home/tanle/projects/ccra/hadoop/hadoop-tools/hadoop-distcp/target/lib/aopalliance-1.0.jar
+[INFO] Copying curator-framework-2.7.1.jar to /home/tanle/projects/ccra/hadoop/hadoop-tools/hadoop-distcp/target/lib/curator-framework-2.7.1.jar
 [INFO] Copying hadoop-hdfs-2.7.2.1.jar to /home/tanle/projects/ccra/hadoop/hadoop-tools/hadoop-distcp/target/lib/hadoop-hdfs-2.7.2.1.jar
+[INFO] Copying curator-recipes-2.7.1.jar to /home/tanle/projects/ccra/hadoop/hadoop-tools/hadoop-distcp/target/lib/curator-recipes-2.7.1.jar
 [INFO] Copying hadoop-yarn-api-2.7.2.1.jar to /home/tanle/projects/ccra/hadoop/hadoop-tools/hadoop-distcp/target/lib/hadoop-yarn-api-2.7.2.1.jar
+[INFO] Copying jersey-json-1.9.jar to /home/tanle/projects/ccra/hadoop/hadoop-tools/hadoop-distcp/target/lib/jersey-json-1.9.jar
+[INFO] Copying commons-compress-1.4.1.jar to /home/tanle/projects/ccra/hadoop/hadoop-tools/hadoop-distcp/target/lib/commons-compress-1.4.1.jar
+[INFO] Copying apacheds-kerberos-codec-2.0.0-M15.jar to /home/tanle/projects/ccra/hadoop/hadoop-tools/hadoop-distcp/target/lib/apacheds-kerberos-codec-2.0.0-M15.jar
+[INFO] Copying jaxb-impl-2.2.3-1.jar to /home/tanle/projects/ccra/hadoop/hadoop-tools/hadoop-distcp/target/lib/jaxb-impl-2.2.3-1.jar
+[INFO] Copying jsr305-3.0.0.jar to /home/tanle/projects/ccra/hadoop/hadoop-tools/hadoop-distcp/target/lib/jsr305-3.0.0.jar
+[INFO] Copying commons-math3-3.1.1.jar to /home/tanle/projects/ccra/hadoop/hadoop-tools/hadoop-distcp/target/lib/commons-math3-3.1.1.jar
+[INFO] Copying hadoop-mapreduce-client-app-2.7.2.1.jar to /home/tanle/projects/ccra/hadoop/hadoop-tools/hadoop-distcp/target/lib/hadoop-mapreduce-client-app-2.7.2.1.jar
+[INFO] Copying hadoop-mapreduce-client-hs-2.7.2.1.jar to /home/tanle/projects/ccra/hadoop/hadoop-tools/hadoop-distcp/target/lib/hadoop-mapreduce-client-hs-2.7.2.1.jar
+[INFO] Copying leveldbjni-all-1.8.jar to /home/tanle/projects/ccra/hadoop/hadoop-tools/hadoop-distcp/target/lib/leveldbjni-all-1.8.jar
+[INFO] Copying jetty-util-6.1.26.jar to /home/tanle/projects/ccra/hadoop/hadoop-tools/hadoop-distcp/target/lib/jetty-util-6.1.26.jar
+[INFO] Copying guice-3.0.jar to /home/tanle/projects/ccra/hadoop/hadoop-tools/hadoop-distcp/target/lib/guice-3.0.jar
+[INFO] Copying commons-io-2.4.jar to /home/tanle/projects/ccra/hadoop/hadoop-tools/hadoop-distcp/target/lib/commons-io-2.4.jar
+[INFO] Copying hamcrest-core-1.3.jar to /home/tanle/projects/ccra/hadoop/hadoop-tools/hadoop-distcp/target/lib/hamcrest-core-1.3.jar
+[INFO] Copying jackson-mapper-asl-1.9.13.jar to /home/tanle/projects/ccra/hadoop/hadoop-tools/hadoop-distcp/target/lib/jackson-mapper-asl-1.9.13.jar
+[INFO] Copying jsp-api-2.1.jar to /home/tanle/projects/ccra/hadoop/hadoop-tools/hadoop-distcp/target/lib/jsp-api-2.1.jar
+[INFO] Copying jersey-core-1.9.jar to /home/tanle/projects/ccra/hadoop/hadoop-tools/hadoop-distcp/target/lib/jersey-core-1.9.jar
+[INFO] Copying jackson-jaxrs-1.9.13.jar to /home/tanle/projects/ccra/hadoop/hadoop-tools/hadoop-distcp/target/lib/jackson-jaxrs-1.9.13.jar
+[INFO] Copying hadoop-annotations-2.7.2.1.jar to /home/tanle/projects/ccra/hadoop/hadoop-tools/hadoop-distcp/target/lib/hadoop-annotations-2.7.2.1.jar
+[INFO] Copying jersey-server-1.9.jar to /home/tanle/projects/ccra/hadoop/hadoop-tools/hadoop-distcp/target/lib/jersey-server-1.9.jar
+[INFO] Copying hadoop-yarn-client-2.7.2.1.jar to /home/tanle/projects/ccra/hadoop/hadoop-tools/hadoop-distcp/target/lib/hadoop-yarn-client-2.7.2.1.jar
+[INFO] Copying xml-apis-1.3.04.jar to /home/tanle/projects/ccra/hadoop/hadoop-tools/hadoop-distcp/target/lib/xml-apis-1.3.04.jar
+[INFO] Copying xmlenc-0.52.jar to /home/tanle/projects/ccra/hadoop/hadoop-tools/hadoop-distcp/target/lib/xmlenc-0.52.jar
+[INFO] Copying hadoop-mapreduce-client-shuffle-2.7.2.1.jar to /home/tanle/projects/ccra/hadoop/hadoop-tools/hadoop-distcp/target/lib/hadoop-mapreduce-client-shuffle-2.7.2.1.jar
+[INFO] Copying hadoop-auth-2.7.2.1.jar to /home/tanle/projects/ccra/hadoop/hadoop-tools/hadoop-distcp/target/lib/hadoop-auth-2.7.2.1.jar
+[INFO] Copying paranamer-2.3.jar to /home/tanle/projects/ccra/hadoop/hadoop-tools/hadoop-distcp/target/lib/paranamer-2.3.jar
+[INFO] Copying jackson-core-asl-1.9.13.jar to /home/tanle/projects/ccra/hadoop/hadoop-tools/hadoop-distcp/target/lib/jackson-core-asl-1.9.13.jar
+[INFO] Copying api-util-1.0.0-M20.jar to /home/tanle/projects/ccra/hadoop/hadoop-tools/hadoop-distcp/target/lib/api-util-1.0.0-M20.jar
+[INFO] Copying gson-2.2.4.jar to /home/tanle/projects/ccra/hadoop/hadoop-tools/hadoop-distcp/target/lib/gson-2.2.4.jar
+[INFO] Copying jersey-guice-1.9.jar to /home/tanle/projects/ccra/hadoop/hadoop-tools/hadoop-distcp/target/lib/jersey-guice-1.9.jar
+[INFO] Copying api-asn1-api-1.0.0-M20.jar to /home/tanle/projects/ccra/hadoop/hadoop-tools/hadoop-distcp/target/lib/api-asn1-api-1.0.0-M20.jar
 [INFO] Copying hadoop-yarn-server-common-2.7.2.1.jar to /home/tanle/projects/ccra/hadoop/hadoop-tools/hadoop-distcp/target/lib/hadoop-yarn-server-common-2.7.2.1.jar
-[INFO] hadoop-mapreduce-client-jobclient-2.7.2.1-tests.jar already exists in destination.
-[INFO] log4j-1.2.17.jar already exists in destination.
-[INFO] slf4j-log4j12-1.7.10.jar already exists in destination.
-[INFO] htrace-core-3.1.0-incubating.jar already exists in destination.
-[INFO] commons-daemon-1.0.13.jar already exists in destination.
-[INFO] protobuf-java-2.5.0.jar already exists in destination.
-[INFO] aopalliance-1.0.jar already exists in destination.
-[INFO] curator-framework-2.7.1.jar already exists in destination.
-[INFO] curator-recipes-2.7.1.jar already exists in destination.
-[INFO] jersey-json-1.9.jar already exists in destination.
-[INFO] commons-compress-1.4.1.jar already exists in destination.
-[INFO] apacheds-kerberos-codec-2.0.0-M15.jar already exists in destination.
-[INFO] jaxb-impl-2.2.3-1.jar already exists in destination.
-[INFO] jsr305-3.0.0.jar already exists in destination.
-[INFO] commons-math3-3.1.1.jar already exists in destination.
-[INFO] hadoop-mapreduce-client-app-2.7.2.1.jar already exists in destination.
-[INFO] hadoop-mapreduce-client-hs-2.7.2.1.jar already exists in destination.
-[INFO] leveldbjni-all-1.8.jar already exists in destination.
-[INFO] jetty-util-6.1.26.jar already exists in destination.
-[INFO] guice-3.0.jar already exists in destination.
-[INFO] commons-io-2.4.jar already exists in destination.
-[INFO] hamcrest-core-1.3.jar already exists in destination.
-[INFO] jackson-mapper-asl-1.9.13.jar already exists in destination.
-[INFO] jsp-api-2.1.jar already exists in destination.
-[INFO] jersey-core-1.9.jar already exists in destination.
-[INFO] jackson-jaxrs-1.9.13.jar already exists in destination.
-[INFO] hadoop-annotations-2.7.2.1.jar already exists in destination.
-[INFO] jersey-server-1.9.jar already exists in destination.
-[INFO] xml-apis-1.3.04.jar already exists in destination.
-[INFO] xmlenc-0.52.jar already exists in destination.
-[INFO] hadoop-auth-2.7.2.1.jar already exists in destination.
-[INFO] paranamer-2.3.jar already exists in destination.
-[INFO] jackson-core-asl-1.9.13.jar already exists in destination.
-[INFO] api-util-1.0.0-M20.jar already exists in destination.
-[INFO] gson-2.2.4.jar already exists in destination.
-[INFO] jersey-guice-1.9.jar already exists in destination.
-[INFO] api-asn1-api-1.0.0-M20.jar already exists in destination.
-[INFO] tools.jar already exists in destination.
-[INFO] jersey-client-1.9.jar already exists in destination.
-[INFO] hadoop-yarn-server-web-proxy-2.7.2.1.jar already exists in destination.
-[INFO] slf4j-api-1.7.10.jar already exists in destination.
-[INFO] hadoop-mapreduce-client-core-2.7.2.1.jar already exists in destination.
-[INFO] commons-net-3.1.jar already exists in destination.
-[INFO] commons-configuration-1.6.jar already exists in destination.
-[INFO] commons-digester-1.8.jar already exists in destination.
-[INFO] apacheds-i18n-2.0.0-M15.jar already exists in destination.
-[INFO] commons-beanutils-1.7.0.jar already exists in destination.
-[INFO] jaxb-api-2.2.2.jar already exists in destination.
-[INFO] junit-4.11.jar already exists in destination.
-[INFO] commons-lang-2.6.jar already exists in destination.
-[INFO] activation-1.1.jar already exists in destination.
-[INFO] curator-client-2.7.1.jar already exists in destination.
-[INFO] zookeeper-3.4.6.jar already exists in destination.
-[INFO] xz-1.0.jar already exists in destination.
-[INFO] httpcore-4.2.5.jar already exists in destination.
-[INFO] commons-cli-1.2.jar already exists in destination.
-[INFO] xercesImpl-2.9.1.jar already exists in destination.
-[INFO] httpclient-4.2.5.jar already exists in destination.
-[INFO] hadoop-mapreduce-client-jobclient-2.7.2.1.jar already exists in destination.
-[INFO] commons-codec-1.4.jar already exists in destination.
-[INFO] javax.inject-1.jar already exists in destination.
-[INFO] java-xmlbuilder-0.4.jar already exists in destination.
-[INFO] commons-beanutils-core-1.8.0.jar already exists in destination.
-[INFO] hadoop-hdfs-2.7.2.1-tests.jar already exists in destination.
-[INFO] mockito-all-1.8.5.jar already exists in destination.
-[INFO] commons-collections-3.2.2.jar already exists in destination.
-[INFO] jettison-1.1.jar already exists in destination.
-[INFO] stax-api-1.0-2.jar already exists in destination.
-[INFO] jetty-6.1.26.jar already exists in destination.
-[INFO] jackson-xc-1.9.13.jar already exists in destination.
-[INFO] commons-logging-1.1.3.jar already exists in destination.
-[INFO] guice-servlet-3.0.jar already exists in destination.
-[INFO] servlet-api-2.5.jar already exists in destination.
-[INFO] jsch-0.1.42.jar already exists in destination.
-[INFO] netty-all-4.0.23.Final.jar already exists in destination.
-[INFO] guava-11.0.2.jar already exists in destination.
-[INFO] jets3t-0.9.0.jar already exists in destination.
-[INFO] snappy-java-1.0.4.1.jar already exists in destination.
-[INFO] avro-1.7.4.jar already exists in destination.
-[INFO] netty-3.6.2.Final.jar already exists in destination.
-[INFO] commons-httpclient-3.1.jar already exists in destination.
-[INFO] asm-3.2.jar already exists in destination.
+[INFO] Copying tools.jar to /home/tanle/projects/ccra/hadoop/hadoop-tools/hadoop-distcp/target/lib/jdk.tools-1.8.jar
+[INFO] Copying jersey-client-1.9.jar to /home/tanle/projects/ccra/hadoop/hadoop-tools/hadoop-distcp/target/lib/jersey-client-1.9.jar
+[INFO] Copying hadoop-common-2.7.2.1.jar to /home/tanle/projects/ccra/hadoop/hadoop-tools/hadoop-distcp/target/lib/hadoop-common-2.7.2.1.jar
+[INFO] Copying hadoop-yarn-server-web-proxy-2.7.2.1.jar to /home/tanle/projects/ccra/hadoop/hadoop-tools/hadoop-distcp/target/lib/hadoop-yarn-server-web-proxy-2.7.2.1.jar
+[INFO] Copying slf4j-api-1.7.10.jar to /home/tanle/projects/ccra/hadoop/hadoop-tools/hadoop-distcp/target/lib/slf4j-api-1.7.10.jar
+[INFO] Copying hadoop-mapreduce-client-core-2.7.2.1.jar to /home/tanle/projects/ccra/hadoop/hadoop-tools/hadoop-distcp/target/lib/hadoop-mapreduce-client-core-2.7.2.1.jar
+[INFO] Copying commons-net-3.1.jar to /home/tanle/projects/ccra/hadoop/hadoop-tools/hadoop-distcp/target/lib/commons-net-3.1.jar
+[INFO] Copying commons-configuration-1.6.jar to /home/tanle/projects/ccra/hadoop/hadoop-tools/hadoop-distcp/target/lib/commons-configuration-1.6.jar
+[INFO] Copying commons-digester-1.8.jar to /home/tanle/projects/ccra/hadoop/hadoop-tools/hadoop-distcp/target/lib/commons-digester-1.8.jar
+[INFO] Copying apacheds-i18n-2.0.0-M15.jar to /home/tanle/projects/ccra/hadoop/hadoop-tools/hadoop-distcp/target/lib/apacheds-i18n-2.0.0-M15.jar
+[INFO] Copying commons-beanutils-1.7.0.jar to /home/tanle/projects/ccra/hadoop/hadoop-tools/hadoop-distcp/target/lib/commons-beanutils-1.7.0.jar
+[INFO] Copying jaxb-api-2.2.2.jar to /home/tanle/projects/ccra/hadoop/hadoop-tools/hadoop-distcp/target/lib/jaxb-api-2.2.2.jar
+[INFO] Copying junit-4.11.jar to /home/tanle/projects/ccra/hadoop/hadoop-tools/hadoop-distcp/target/lib/junit-4.11.jar
+[INFO] Copying commons-lang-2.6.jar to /home/tanle/projects/ccra/hadoop/hadoop-tools/hadoop-distcp/target/lib/commons-lang-2.6.jar
+[INFO] Copying activation-1.1.jar to /home/tanle/projects/ccra/hadoop/hadoop-tools/hadoop-distcp/target/lib/activation-1.1.jar
+[INFO] Copying curator-client-2.7.1.jar to /home/tanle/projects/ccra/hadoop/hadoop-tools/hadoop-distcp/target/lib/curator-client-2.7.1.jar
+[INFO] Copying zookeeper-3.4.6.jar to /home/tanle/projects/ccra/hadoop/hadoop-tools/hadoop-distcp/target/lib/zookeeper-3.4.6.jar
+[INFO] Copying xz-1.0.jar to /home/tanle/projects/ccra/hadoop/hadoop-tools/hadoop-distcp/target/lib/xz-1.0.jar
+[INFO] Copying httpcore-4.2.5.jar to /home/tanle/projects/ccra/hadoop/hadoop-tools/hadoop-distcp/target/lib/httpcore-4.2.5.jar
+[INFO] Copying commons-cli-1.2.jar to /home/tanle/projects/ccra/hadoop/hadoop-tools/hadoop-distcp/target/lib/commons-cli-1.2.jar
+[INFO] Copying xercesImpl-2.9.1.jar to /home/tanle/projects/ccra/hadoop/hadoop-tools/hadoop-distcp/target/lib/xercesImpl-2.9.1.jar
+[INFO] Copying httpclient-4.2.5.jar to /home/tanle/projects/ccra/hadoop/hadoop-tools/hadoop-distcp/target/lib/httpclient-4.2.5.jar
+[INFO] Copying hadoop-yarn-server-nodemanager-2.7.2.1.jar to /home/tanle/projects/ccra/hadoop/hadoop-tools/hadoop-distcp/target/lib/hadoop-yarn-server-nodemanager-2.7.2.1.jar
+[INFO] Copying hadoop-mapreduce-client-jobclient-2.7.2.1.jar to /home/tanle/projects/ccra/hadoop/hadoop-tools/hadoop-distcp/target/lib/hadoop-mapreduce-client-jobclient-2.7.2.1.jar
+[INFO] Copying commons-codec-1.4.jar to /home/tanle/projects/ccra/hadoop/hadoop-tools/hadoop-distcp/target/lib/commons-codec-1.4.jar
+[INFO] Copying javax.inject-1.jar to /home/tanle/projects/ccra/hadoop/hadoop-tools/hadoop-distcp/target/lib/javax.inject-1.jar
+[INFO] Copying hadoop-common-2.7.2.1-tests.jar to /home/tanle/projects/ccra/hadoop/hadoop-tools/hadoop-distcp/target/lib/hadoop-common-2.7.2.1-tests.jar
+[INFO] Copying java-xmlbuilder-0.4.jar to /home/tanle/projects/ccra/hadoop/hadoop-tools/hadoop-distcp/target/lib/java-xmlbuilder-0.4.jar
+[INFO] Copying commons-beanutils-core-1.8.0.jar to /home/tanle/projects/ccra/hadoop/hadoop-tools/hadoop-distcp/target/lib/commons-beanutils-core-1.8.0.jar
+[INFO] Copying hadoop-hdfs-2.7.2.1-tests.jar to /home/tanle/projects/ccra/hadoop/hadoop-tools/hadoop-distcp/target/lib/hadoop-hdfs-2.7.2.1-tests.jar
+[INFO] Copying mockito-all-1.8.5.jar to /home/tanle/projects/ccra/hadoop/hadoop-tools/hadoop-distcp/target/lib/mockito-all-1.8.5.jar
+[INFO] Copying commons-collections-3.2.2.jar to /home/tanle/projects/ccra/hadoop/hadoop-tools/hadoop-distcp/target/lib/commons-collections-3.2.2.jar
+[INFO] Copying jettison-1.1.jar to /home/tanle/projects/ccra/hadoop/hadoop-tools/hadoop-distcp/target/lib/jettison-1.1.jar
+[INFO] Copying stax-api-1.0-2.jar to /home/tanle/projects/ccra/hadoop/hadoop-tools/hadoop-distcp/target/lib/stax-api-1.0-2.jar
+[INFO] Copying jetty-6.1.26.jar to /home/tanle/projects/ccra/hadoop/hadoop-tools/hadoop-distcp/target/lib/jetty-6.1.26.jar
+[INFO] Copying jackson-xc-1.9.13.jar to /home/tanle/projects/ccra/hadoop/hadoop-tools/hadoop-distcp/target/lib/jackson-xc-1.9.13.jar
+[INFO] Copying commons-logging-1.1.3.jar to /home/tanle/projects/ccra/hadoop/hadoop-tools/hadoop-distcp/target/lib/commons-logging-1.1.3.jar
+[INFO] Copying guice-servlet-3.0.jar to /home/tanle/projects/ccra/hadoop/hadoop-tools/hadoop-distcp/target/lib/guice-servlet-3.0.jar
+[INFO] Copying servlet-api-2.5.jar to /home/tanle/projects/ccra/hadoop/hadoop-tools/hadoop-distcp/target/lib/servlet-api-2.5.jar
+[INFO] Copying jsch-0.1.42.jar to /home/tanle/projects/ccra/hadoop/hadoop-tools/hadoop-distcp/target/lib/jsch-0.1.42.jar
+[INFO] Copying netty-all-4.0.23.Final.jar to /home/tanle/projects/ccra/hadoop/hadoop-tools/hadoop-distcp/target/lib/netty-all-4.0.23.Final.jar
+[INFO] Copying guava-11.0.2.jar to /home/tanle/projects/ccra/hadoop/hadoop-tools/hadoop-distcp/target/lib/guava-11.0.2.jar
+[INFO] Copying hadoop-mapreduce-client-common-2.7.2.1.jar to /home/tanle/projects/ccra/hadoop/hadoop-tools/hadoop-distcp/target/lib/hadoop-mapreduce-client-common-2.7.2.1.jar
+[INFO] Copying jets3t-0.9.0.jar to /home/tanle/projects/ccra/hadoop/hadoop-tools/hadoop-distcp/target/lib/jets3t-0.9.0.jar
+[INFO] Copying snappy-java-1.0.4.1.jar to /home/tanle/projects/ccra/hadoop/hadoop-tools/hadoop-distcp/target/lib/snappy-java-1.0.4.1.jar
+[INFO] Copying avro-1.7.4.jar to /home/tanle/projects/ccra/hadoop/hadoop-tools/hadoop-distcp/target/lib/avro-1.7.4.jar
+[INFO] Copying netty-3.6.2.Final.jar to /home/tanle/projects/ccra/hadoop/hadoop-tools/hadoop-distcp/target/lib/netty-3.6.2.Final.jar
+[INFO] Copying commons-httpclient-3.1.jar to /home/tanle/projects/ccra/hadoop/hadoop-tools/hadoop-distcp/target/lib/commons-httpclient-3.1.jar
+[INFO] Copying asm-3.2.jar to /home/tanle/projects/ccra/hadoop/hadoop-tools/hadoop-distcp/target/lib/asm-3.2.jar
 [INFO] 
 [INFO] --- maven-source-plugin:2.3:jar-no-fork (hadoop-java-sources) @ hadoop-distcp ---
+[INFO] Building jar: /home/tanle/projects/ccra/hadoop/hadoop-tools/hadoop-distcp/target/hadoop-distcp-2.7.2.1-sources.jar
 [INFO] 
 [INFO] --- maven-source-plugin:2.3:test-jar-no-fork (hadoop-java-sources) @ hadoop-distcp ---
+[INFO] Building jar: /home/tanle/projects/ccra/hadoop/hadoop-tools/hadoop-distcp/target/hadoop-distcp-2.7.2.1-test-sources.jar
 [INFO] 
 [INFO] >>> maven-source-plugin:2.3:jar (default) @ hadoop-distcp >>>
 [INFO] 
@@ -17830,7 +18032,10 @@ main:
 [INFO] skip non existing resourceDirectory /home/tanle/projects/ccra/hadoop/hadoop-tools/hadoop-archives/src/main/resources
 [INFO] 
 [INFO] --- maven-compiler-plugin:3.1:compile (default-compile) @ hadoop-archives ---
-[INFO] Nothing to compile - all classes are up to date
+[INFO] Changes detected - recompiling the module!
+[INFO] Compiling 1 source file to /home/tanle/projects/ccra/hadoop/hadoop-tools/hadoop-archives/target/classes
+[WARNING] /home/tanle/projects/ccra/hadoop/hadoop-tools/hadoop-archives/src/main/java/org/apache/hadoop/tools/HadoopArchives.java: /home/tanle/projects/ccra/hadoop/hadoop-tools/hadoop-archives/src/main/java/org/apache/hadoop/tools/HadoopArchives.java uses or overrides a deprecated API.
+[WARNING] /home/tanle/projects/ccra/hadoop/hadoop-tools/hadoop-archives/src/main/java/org/apache/hadoop/tools/HadoopArchives.java: Recompile with -Xlint:deprecation for details.
 [INFO] 
 [INFO] --- maven-resources-plugin:2.6:testResources (default-testResources) @ hadoop-archives ---
 [INFO] Using 'UTF-8' encoding to copy filtered resources.
@@ -17842,19 +18047,24 @@ main:
 main:
    [delete] Deleting directory /home/tanle/projects/ccra/hadoop/hadoop-tools/hadoop-archives/target/test-dir
     [mkdir] Created dir: /home/tanle/projects/ccra/hadoop/hadoop-tools/hadoop-archives/target/test-dir
+    [mkdir] Created dir: /home/tanle/projects/ccra/hadoop/hadoop-tools/hadoop-archives/target/log
 [INFO] Executed tasks
 [INFO] 
 [INFO] --- maven-compiler-plugin:3.1:testCompile (default-testCompile) @ hadoop-archives ---
-[INFO] Nothing to compile - all classes are up to date
+[INFO] Changes detected - recompiling the module!
+[INFO] Compiling 1 source file to /home/tanle/projects/ccra/hadoop/hadoop-tools/hadoop-archives/target/test-classes
 [INFO] 
 [INFO] --- maven-surefire-plugin:2.17:test (default-test) @ hadoop-archives ---
 [INFO] Tests are skipped.
 [INFO] 
 [INFO] --- maven-jar-plugin:2.5:jar (default-jar) @ hadoop-archives ---
+[INFO] Building jar: /home/tanle/projects/ccra/hadoop/hadoop-tools/hadoop-archives/target/hadoop-archives-2.7.2.1.jar
 [INFO] 
 [INFO] --- maven-source-plugin:2.3:jar-no-fork (hadoop-java-sources) @ hadoop-archives ---
+[INFO] Building jar: /home/tanle/projects/ccra/hadoop/hadoop-tools/hadoop-archives/target/hadoop-archives-2.7.2.1-sources.jar
 [INFO] 
 [INFO] --- maven-source-plugin:2.3:test-jar-no-fork (hadoop-java-sources) @ hadoop-archives ---
+[INFO] Building jar: /home/tanle/projects/ccra/hadoop/hadoop-tools/hadoop-archives/target/hadoop-archives-2.7.2.1-test-sources.jar
 [INFO] 
 [INFO] --- maven-enforcer-plugin:1.3.1:enforce (dist-enforce) @ hadoop-archives ---
 [INFO] 
@@ -17904,7 +18114,10 @@ main:
 [INFO] skip non existing resourceDirectory /home/tanle/projects/ccra/hadoop/hadoop-tools/hadoop-rumen/src/main/resources
 [INFO] 
 [INFO] --- maven-compiler-plugin:3.1:compile (default-compile) @ hadoop-rumen ---
-[INFO] Nothing to compile - all classes are up to date
+[INFO] Changes detected - recompiling the module!
+[INFO] Compiling 95 source files to /home/tanle/projects/ccra/hadoop/hadoop-tools/hadoop-rumen/target/classes
+[WARNING] /home/tanle/projects/ccra/hadoop/hadoop-tools/hadoop-rumen/src/main/java/org/apache/hadoop/tools/rumen/LoggedTask.java: Some input files use or override a deprecated API.
+[WARNING] /home/tanle/projects/ccra/hadoop/hadoop-tools/hadoop-rumen/src/main/java/org/apache/hadoop/tools/rumen/LoggedTask.java: Recompile with -Xlint:deprecation for details.
 [INFO] 
 [INFO] --- maven-resources-plugin:2.6:testResources (default-testResources) @ hadoop-rumen ---
 [INFO] Using 'UTF-8' encoding to copy filtered resources.
@@ -17916,19 +18129,26 @@ main:
 main:
    [delete] Deleting directory /home/tanle/projects/ccra/hadoop/hadoop-tools/hadoop-rumen/target/test-dir
     [mkdir] Created dir: /home/tanle/projects/ccra/hadoop/hadoop-tools/hadoop-rumen/target/test-dir
+    [mkdir] Created dir: /home/tanle/projects/ccra/hadoop/hadoop-tools/hadoop-rumen/target/log
 [INFO] Executed tasks
 [INFO] 
 [INFO] --- maven-compiler-plugin:3.1:testCompile (default-testCompile) @ hadoop-rumen ---
-[INFO] Nothing to compile - all classes are up to date
+[INFO] Changes detected - recompiling the module!
+[INFO] Compiling 5 source files to /home/tanle/projects/ccra/hadoop/hadoop-tools/hadoop-rumen/target/test-classes
+[WARNING] /home/tanle/projects/ccra/hadoop/hadoop-tools/hadoop-rumen/src/test/java/org/apache/hadoop/tools/rumen/TestHistograms.java: /home/tanle/projects/ccra/hadoop/hadoop-tools/hadoop-rumen/src/test/java/org/apache/hadoop/tools/rumen/TestHistograms.java uses or overrides a deprecated API.
+[WARNING] /home/tanle/projects/ccra/hadoop/hadoop-tools/hadoop-rumen/src/test/java/org/apache/hadoop/tools/rumen/TestHistograms.java: Recompile with -Xlint:deprecation for details.
 [INFO] 
 [INFO] --- maven-surefire-plugin:2.17:test (default-test) @ hadoop-rumen ---
 [INFO] Tests are skipped.
 [INFO] 
 [INFO] --- maven-jar-plugin:2.5:jar (default-jar) @ hadoop-rumen ---
+[INFO] Building jar: /home/tanle/projects/ccra/hadoop/hadoop-tools/hadoop-rumen/target/hadoop-rumen-2.7.2.1.jar
 [INFO] 
 [INFO] --- maven-source-plugin:2.3:jar-no-fork (hadoop-java-sources) @ hadoop-rumen ---
+[INFO] Building jar: /home/tanle/projects/ccra/hadoop/hadoop-tools/hadoop-rumen/target/hadoop-rumen-2.7.2.1-sources.jar
 [INFO] 
 [INFO] --- maven-source-plugin:2.3:test-jar-no-fork (hadoop-java-sources) @ hadoop-rumen ---
+[INFO] Building jar: /home/tanle/projects/ccra/hadoop/hadoop-tools/hadoop-rumen/target/hadoop-rumen-2.7.2.1-test-sources.jar
 [INFO] 
 [INFO] --- maven-enforcer-plugin:1.3.1:enforce (dist-enforce) @ hadoop-rumen ---
 [INFO] 
@@ -18487,7 +18707,12 @@ main:
 [INFO] skip non existing resourceDirectory /home/tanle/projects/ccra/hadoop/hadoop-tools/hadoop-gridmix/src/main/resources
 [INFO] 
 [INFO] --- maven-compiler-plugin:3.1:compile (default-compile) @ hadoop-gridmix ---
-[INFO] Nothing to compile - all classes are up to date
+[INFO] Changes detected - recompiling the module!
+[INFO] Compiling 44 source files to /home/tanle/projects/ccra/hadoop/hadoop-tools/hadoop-gridmix/target/classes
+[WARNING] /home/tanle/projects/ccra/hadoop/hadoop-tools/hadoop-gridmix/src/main/java/org/apache/hadoop/mapred/gridmix/GenerateData.java: Some input files use or override a deprecated API.
+[WARNING] /home/tanle/projects/ccra/hadoop/hadoop-tools/hadoop-gridmix/src/main/java/org/apache/hadoop/mapred/gridmix/GenerateData.java: Recompile with -Xlint:deprecation for details.
+[WARNING] /home/tanle/projects/ccra/hadoop/hadoop-tools/hadoop-gridmix/src/main/java/org/apache/hadoop/mapred/gridmix/DistributedCacheEmulator.java: /home/tanle/projects/ccra/hadoop/hadoop-tools/hadoop-gridmix/src/main/java/org/apache/hadoop/mapred/gridmix/DistributedCacheEmulator.java uses unchecked or unsafe operations.
+[WARNING] /home/tanle/projects/ccra/hadoop/hadoop-tools/hadoop-gridmix/src/main/java/org/apache/hadoop/mapred/gridmix/DistributedCacheEmulator.java: Recompile with -Xlint:unchecked for details.
 [INFO] 
 [INFO] --- maven-resources-plugin:2.6:testResources (default-testResources) @ hadoop-gridmix ---
 [INFO] Using 'UTF-8' encoding to copy filtered resources.
@@ -18499,19 +18724,28 @@ main:
 main:
    [delete] Deleting directory /home/tanle/projects/ccra/hadoop/hadoop-tools/hadoop-gridmix/target/test-dir
     [mkdir] Created dir: /home/tanle/projects/ccra/hadoop/hadoop-tools/hadoop-gridmix/target/test-dir
+    [mkdir] Created dir: /home/tanle/projects/ccra/hadoop/hadoop-tools/hadoop-gridmix/target/log
 [INFO] Executed tasks
 [INFO] 
 [INFO] --- maven-compiler-plugin:3.1:testCompile (default-testCompile) @ hadoop-gridmix ---
-[INFO] Nothing to compile - all classes are up to date
+[INFO] Changes detected - recompiling the module!
+[INFO] Compiling 24 source files to /home/tanle/projects/ccra/hadoop/hadoop-tools/hadoop-gridmix/target/test-classes
+[WARNING] /home/tanle/projects/ccra/hadoop/hadoop-tools/hadoop-gridmix/src/test/java/org/apache/hadoop/mapred/gridmix/TestFilePool.java: Some input files use or override a deprecated API.
+[WARNING] /home/tanle/projects/ccra/hadoop/hadoop-tools/hadoop-gridmix/src/test/java/org/apache/hadoop/mapred/gridmix/TestFilePool.java: Recompile with -Xlint:deprecation for details.
+[WARNING] /home/tanle/projects/ccra/hadoop/hadoop-tools/hadoop-gridmix/src/test/java/org/apache/hadoop/mapred/gridmix/TestRandomTextDataGenerator.java: /home/tanle/projects/ccra/hadoop/hadoop-tools/hadoop-gridmix/src/test/java/org/apache/hadoop/mapred/gridmix/TestRandomTextDataGenerator.java uses unchecked or unsafe operations.
+[WARNING] /home/tanle/projects/ccra/hadoop/hadoop-tools/hadoop-gridmix/src/test/java/org/apache/hadoop/mapred/gridmix/TestRandomTextDataGenerator.java: Recompile with -Xlint:unchecked for details.
 [INFO] 
 [INFO] --- maven-surefire-plugin:2.17:test (default-test) @ hadoop-gridmix ---
 [INFO] Tests are skipped.
 [INFO] 
 [INFO] --- maven-jar-plugin:2.5:jar (default-jar) @ hadoop-gridmix ---
+[INFO] Building jar: /home/tanle/projects/ccra/hadoop/hadoop-tools/hadoop-gridmix/target/hadoop-gridmix-2.7.2.1.jar
 [INFO] 
 [INFO] --- maven-source-plugin:2.3:jar-no-fork (hadoop-java-sources) @ hadoop-gridmix ---
+[INFO] Building jar: /home/tanle/projects/ccra/hadoop/hadoop-tools/hadoop-gridmix/target/hadoop-gridmix-2.7.2.1-sources.jar
 [INFO] 
 [INFO] --- maven-source-plugin:2.3:test-jar-no-fork (hadoop-java-sources) @ hadoop-gridmix ---
+[INFO] Building jar: /home/tanle/projects/ccra/hadoop/hadoop-tools/hadoop-gridmix/target/hadoop-gridmix-2.7.2.1-test-sources.jar
 [INFO] 
 [INFO] --- maven-enforcer-plugin:1.3.1:enforce (dist-enforce) @ hadoop-gridmix ---
 [INFO] 
@@ -18766,7 +19000,10 @@ main:
 [INFO] skip non existing resourceDirectory /home/tanle/projects/ccra/hadoop/hadoop-tools/hadoop-datajoin/src/main/resources
 [INFO] 
 [INFO] --- maven-compiler-plugin:3.1:compile (default-compile) @ hadoop-datajoin ---
-[INFO] Nothing to compile - all classes are up to date
+[INFO] Changes detected - recompiling the module!
+[INFO] Compiling 7 source files to /home/tanle/projects/ccra/hadoop/hadoop-tools/hadoop-datajoin/target/classes
+[WARNING] /home/tanle/projects/ccra/hadoop/hadoop-tools/hadoop-datajoin/src/main/java/org/apache/hadoop/contrib/utils/join/DataJoinMapperBase.java: Some input files use unchecked or unsafe operations.
+[WARNING] /home/tanle/projects/ccra/hadoop/hadoop-tools/hadoop-datajoin/src/main/java/org/apache/hadoop/contrib/utils/join/DataJoinMapperBase.java: Recompile with -Xlint:unchecked for details.
 [INFO] 
 [INFO] --- maven-resources-plugin:2.6:testResources (default-testResources) @ hadoop-datajoin ---
 [INFO] Using 'UTF-8' encoding to copy filtered resources.
@@ -18778,19 +19015,26 @@ main:
 main:
    [delete] Deleting directory /home/tanle/projects/ccra/hadoop/hadoop-tools/hadoop-datajoin/target/test-dir
     [mkdir] Created dir: /home/tanle/projects/ccra/hadoop/hadoop-tools/hadoop-datajoin/target/test-dir
+    [mkdir] Created dir: /home/tanle/projects/ccra/hadoop/hadoop-tools/hadoop-datajoin/target/log
 [INFO] Executed tasks
 [INFO] 
 [INFO] --- maven-compiler-plugin:3.1:testCompile (default-testCompile) @ hadoop-datajoin ---
-[INFO] Nothing to compile - all classes are up to date
+[INFO] Changes detected - recompiling the module!
+[INFO] Compiling 4 source files to /home/tanle/projects/ccra/hadoop/hadoop-tools/hadoop-datajoin/target/test-classes
+[WARNING] /home/tanle/projects/ccra/hadoop/hadoop-tools/hadoop-datajoin/src/test/java/org/apache/hadoop/contrib/utils/join/TestDataJoin.java: /home/tanle/projects/ccra/hadoop/hadoop-tools/hadoop-datajoin/src/test/java/org/apache/hadoop/contrib/utils/join/TestDataJoin.java uses or overrides a deprecated API.
+[WARNING] /home/tanle/projects/ccra/hadoop/hadoop-tools/hadoop-datajoin/src/test/java/org/apache/hadoop/contrib/utils/join/TestDataJoin.java: Recompile with -Xlint:deprecation for details.
 [INFO] 
 [INFO] --- maven-surefire-plugin:2.17:test (default-test) @ hadoop-datajoin ---
 [INFO] Tests are skipped.
 [INFO] 
 [INFO] --- maven-jar-plugin:2.5:jar (default-jar) @ hadoop-datajoin ---
+[INFO] Building jar: /home/tanle/projects/ccra/hadoop/hadoop-tools/hadoop-datajoin/target/hadoop-datajoin-2.7.2.1.jar
 [INFO] 
 [INFO] --- maven-source-plugin:2.3:jar-no-fork (hadoop-java-sources) @ hadoop-datajoin ---
+[INFO] Building jar: /home/tanle/projects/ccra/hadoop/hadoop-tools/hadoop-datajoin/target/hadoop-datajoin-2.7.2.1-sources.jar
 [INFO] 
 [INFO] --- maven-source-plugin:2.3:test-jar-no-fork (hadoop-java-sources) @ hadoop-datajoin ---
+[INFO] Building jar: /home/tanle/projects/ccra/hadoop/hadoop-tools/hadoop-datajoin/target/hadoop-datajoin-2.7.2.1-test-sources.jar
 [INFO] 
 [INFO] --- maven-enforcer-plugin:1.3.1:enforce (dist-enforce) @ hadoop-datajoin ---
 [INFO] 
@@ -18885,7 +19129,8 @@ main:
 [INFO] Copying 1 resource
 [INFO] 
 [INFO] --- maven-compiler-plugin:3.1:compile (default-compile) @ hadoop-ant ---
-[INFO] Nothing to compile - all classes are up to date
+[INFO] Changes detected - recompiling the module!
+[INFO] Compiling 5 source files to /home/tanle/projects/ccra/hadoop/hadoop-tools/hadoop-ant/target/classes
 [INFO] 
 [INFO] --- maven-resources-plugin:2.6:testResources (default-testResources) @ hadoop-ant ---
 [INFO] Using 'UTF-8' encoding to copy filtered resources.
@@ -18898,8 +19143,10 @@ main:
 [INFO] Tests are skipped.
 [INFO] 
 [INFO] --- maven-jar-plugin:2.5:jar (default-jar) @ hadoop-ant ---
+[INFO] Building jar: /home/tanle/projects/ccra/hadoop/hadoop-tools/hadoop-ant/target/hadoop-ant-2.7.2.1.jar
 [INFO] 
 [INFO] --- maven-source-plugin:2.3:jar-no-fork (hadoop-java-sources) @ hadoop-ant ---
+[INFO] Building jar: /home/tanle/projects/ccra/hadoop/hadoop-tools/hadoop-ant/target/hadoop-ant-2.7.2.1-sources.jar
 [INFO] 
 [INFO] --- maven-source-plugin:2.3:test-jar-no-fork (hadoop-java-sources) @ hadoop-ant ---
 [INFO] No sources in project. Archive not created.
@@ -18977,10 +19224,14 @@ main:
 main:
    [delete] Deleting directory /home/tanle/projects/ccra/hadoop/hadoop-tools/hadoop-extras/target/test-dir
     [mkdir] Created dir: /home/tanle/projects/ccra/hadoop/hadoop-tools/hadoop-extras/target/test-dir
+    [mkdir] Created dir: /home/tanle/projects/ccra/hadoop/hadoop-tools/hadoop-extras/target/log
 [INFO] Executed tasks
 [INFO] 
 [INFO] --- maven-compiler-plugin:3.1:testCompile (default-testCompile) @ hadoop-extras ---
-[INFO] Nothing to compile - all classes are up to date
+[INFO] Changes detected - recompiling the module!
+[INFO] Compiling 4 source files to /home/tanle/projects/ccra/hadoop/hadoop-tools/hadoop-extras/target/test-classes
+[WARNING] /home/tanle/projects/ccra/hadoop/hadoop-tools/hadoop-extras/src/test/java/org/apache/hadoop/mapred/tools/TestGetGroups.java: /home/tanle/projects/ccra/hadoop/hadoop-tools/hadoop-extras/src/test/java/org/apache/hadoop/mapred/tools/TestGetGroups.java uses or overrides a deprecated API.
+[WARNING] /home/tanle/projects/ccra/hadoop/hadoop-tools/hadoop-extras/src/test/java/org/apache/hadoop/mapred/tools/TestGetGroups.java: Recompile with -Xlint:deprecation for details.
 [INFO] 
 [INFO] --- maven-surefire-plugin:2.17:test (default-test) @ hadoop-extras ---
 [INFO] Tests are skipped.
@@ -18989,8 +19240,10 @@ main:
 [INFO] Building jar: /home/tanle/projects/ccra/hadoop/hadoop-tools/hadoop-extras/target/hadoop-extras-2.7.2.1.jar
 [INFO] 
 [INFO] --- maven-source-plugin:2.3:jar-no-fork (hadoop-java-sources) @ hadoop-extras ---
+[INFO] Building jar: /home/tanle/projects/ccra/hadoop/hadoop-tools/hadoop-extras/target/hadoop-extras-2.7.2.1-sources.jar
 [INFO] 
 [INFO] --- maven-source-plugin:2.3:test-jar-no-fork (hadoop-java-sources) @ hadoop-extras ---
+[INFO] Building jar: /home/tanle/projects/ccra/hadoop/hadoop-tools/hadoop-extras/target/hadoop-extras-2.7.2.1-test-sources.jar
 [INFO] 
 [INFO] --- maven-enforcer-plugin:1.3.1:enforce (dist-enforce) @ hadoop-extras ---
 [INFO] 
@@ -19096,7 +19349,10 @@ main:
 [INFO] skip non existing resourceDirectory /home/tanle/projects/ccra/hadoop/hadoop-tools/hadoop-openstack/src/main/resources
 [INFO] 
 [INFO] --- maven-compiler-plugin:3.1:compile (default-compile) @ hadoop-openstack ---
-[INFO] Nothing to compile - all classes are up to date
+[INFO] Changes detected - recompiling the module!
+[INFO] Compiling 49 source files to /home/tanle/projects/ccra/hadoop/hadoop-tools/hadoop-openstack/target/classes
+[WARNING] /home/tanle/projects/ccra/hadoop/hadoop-tools/hadoop-openstack/src/main/java/org/apache/hadoop/fs/swift/snative/SwiftFileStatus.java: Some input files use or override a deprecated API.
+[WARNING] /home/tanle/projects/ccra/hadoop/hadoop-tools/hadoop-openstack/src/main/java/org/apache/hadoop/fs/swift/snative/SwiftFileStatus.java: Recompile with -Xlint:deprecation for details.
 [INFO] 
 [INFO] --- maven-resources-plugin:2.6:testResources (default-testResources) @ hadoop-openstack ---
 [INFO] Not copying test resources
@@ -19108,10 +19364,13 @@ main:
 [INFO] Tests are skipped.
 [INFO] 
 [INFO] --- maven-jar-plugin:2.5:jar (default-jar) @ hadoop-openstack ---
+[INFO] Building jar: /home/tanle/projects/ccra/hadoop/hadoop-tools/hadoop-openstack/target/hadoop-openstack-2.7.2.1.jar
 [INFO] 
 [INFO] --- maven-source-plugin:2.3:jar-no-fork (hadoop-java-sources) @ hadoop-openstack ---
+[INFO] Building jar: /home/tanle/projects/ccra/hadoop/hadoop-tools/hadoop-openstack/target/hadoop-openstack-2.7.2.1-sources.jar
 [INFO] 
 [INFO] --- maven-source-plugin:2.3:test-jar-no-fork (hadoop-java-sources) @ hadoop-openstack ---
+[INFO] Building jar: /home/tanle/projects/ccra/hadoop/hadoop-tools/hadoop-openstack/target/hadoop-openstack-2.7.2.1-test-sources.jar
 [INFO] 
 [INFO] --- maven-enforcer-plugin:1.3.1:enforce (dist-enforce) @ hadoop-openstack ---
 [INFO] 
@@ -19340,7 +19599,10 @@ main:
 [INFO] Copying 1 resource
 [INFO] 
 [INFO] --- maven-compiler-plugin:3.1:compile (default-compile) @ hadoop-aws ---
-[INFO] Nothing to compile - all classes are up to date
+[INFO] Changes detected - recompiling the module!
+[INFO] Compiling 27 source files to /home/tanle/projects/ccra/hadoop/hadoop-tools/hadoop-aws/target/classes
+[WARNING] /home/tanle/projects/ccra/hadoop/hadoop-tools/hadoop-aws/src/main/java/org/apache/hadoop/fs/s3/S3FileSystem.java: Some input files use or override a deprecated API.
+[WARNING] /home/tanle/projects/ccra/hadoop/hadoop-tools/hadoop-aws/src/main/java/org/apache/hadoop/fs/s3/S3FileSystem.java: Recompile with -Xlint:deprecation for details.
 [INFO] 
 [INFO] --- maven-resources-plugin:2.6:testResources (default-testResources) @ hadoop-aws ---
 [INFO] Not copying test resources
@@ -19352,10 +19614,13 @@ main:
 [INFO] Tests are skipped.
 [INFO] 
 [INFO] --- maven-jar-plugin:2.5:jar (default-jar) @ hadoop-aws ---
+[INFO] Building jar: /home/tanle/projects/ccra/hadoop/hadoop-tools/hadoop-aws/target/hadoop-aws-2.7.2.1.jar
 [INFO] 
 [INFO] --- maven-source-plugin:2.3:jar-no-fork (hadoop-java-sources) @ hadoop-aws ---
+[INFO] Building jar: /home/tanle/projects/ccra/hadoop/hadoop-tools/hadoop-aws/target/hadoop-aws-2.7.2.1-sources.jar
 [INFO] 
 [INFO] --- maven-source-plugin:2.3:test-jar-no-fork (hadoop-java-sources) @ hadoop-aws ---
+[INFO] Building jar: /home/tanle/projects/ccra/hadoop/hadoop-tools/hadoop-aws/target/hadoop-aws-2.7.2.1-test-sources.jar
 [INFO] 
 [INFO] --- maven-enforcer-plugin:1.3.1:enforce (dist-enforce) @ hadoop-aws ---
 [INFO] 
@@ -19500,23 +19765,28 @@ main:
 [INFO] Copying 1 resource
 [INFO] 
 [INFO] --- maven-compiler-plugin:3.1:compile (default-compile) @ hadoop-azure ---
-[INFO] Nothing to compile - all classes are up to date
+[INFO] Changes detected - recompiling the module!
+[INFO] Compiling 29 source files to /home/tanle/projects/ccra/hadoop/hadoop-tools/hadoop-azure/target/classes
 [INFO] 
 [INFO] --- maven-resources-plugin:2.6:testResources (default-testResources) @ hadoop-azure ---
 [INFO] Using 'UTF-8' encoding to copy filtered resources.
 [INFO] Copying 3 resources
 [INFO] 
 [INFO] --- maven-compiler-plugin:3.1:testCompile (default-testCompile) @ hadoop-azure ---
-[INFO] Nothing to compile - all classes are up to date
+[INFO] Changes detected - recompiling the module!
+[INFO] Compiling 32 source files to /home/tanle/projects/ccra/hadoop/hadoop-tools/hadoop-azure/target/test-classes
 [INFO] 
 [INFO] --- maven-surefire-plugin:2.17:test (default-test) @ hadoop-azure ---
 [INFO] Tests are skipped.
 [INFO] 
 [INFO] --- maven-jar-plugin:2.5:jar (default-jar) @ hadoop-azure ---
+[INFO] Building jar: /home/tanle/projects/ccra/hadoop/hadoop-tools/hadoop-azure/target/hadoop-azure-2.7.2.1.jar
 [INFO] 
 [INFO] --- maven-source-plugin:2.3:jar-no-fork (hadoop-java-sources) @ hadoop-azure ---
+[INFO] Building jar: /home/tanle/projects/ccra/hadoop/hadoop-tools/hadoop-azure/target/hadoop-azure-2.7.2.1-sources.jar
 [INFO] 
 [INFO] --- maven-source-plugin:2.3:test-jar-no-fork (hadoop-java-sources) @ hadoop-azure ---
+[INFO] Building jar: /home/tanle/projects/ccra/hadoop/hadoop-tools/hadoop-azure/target/hadoop-azure-2.7.2.1-test-sources.jar
 [INFO] 
 [INFO] --- maven-enforcer-plugin:1.3.1:enforce (dist-enforce) @ hadoop-azure ---
 [INFO] 
@@ -19675,6 +19945,7 @@ Generating /home/tanle/projects/ccra/hadoop/hadoop-tools/hadoop-azure/target/hel
 [INFO] Building jar: /home/tanle/projects/ccra/hadoop/hadoop-tools/hadoop-azure/target/hadoop-azure-2.7.2.1-javadoc.jar
 [INFO] 
 [INFO] --- maven-jar-plugin:2.5:test-jar (default) @ hadoop-azure ---
+[INFO] Building jar: /home/tanle/projects/ccra/hadoop/hadoop-tools/hadoop-azure/target/hadoop-azure-2.7.2.1-tests.jar
 [INFO]                                                                         
 [INFO] ------------------------------------------------------------------------
 [INFO] Building Apache Hadoop Client 2.7.2.1
@@ -19705,9 +19976,11 @@ main:
 [INFO] 
 [INFO] --- maven-jar-plugin:2.5:jar (prepare-jar) @ hadoop-client ---
 [WARNING] JAR will be empty - no content was marked for inclusion!
+[INFO] Building jar: /home/tanle/projects/ccra/hadoop/hadoop-client/target/hadoop-client-2.7.2.1.jar
 [INFO] 
 [INFO] --- maven-jar-plugin:2.5:test-jar (prepare-test-jar) @ hadoop-client ---
 [WARNING] JAR will be empty - no content was marked for inclusion!
+[INFO] Building jar: /home/tanle/projects/ccra/hadoop/hadoop-client/target/hadoop-client-2.7.2.1-tests.jar
 [INFO] 
 [INFO] >>> maven-source-plugin:2.3:jar (default) @ hadoop-client >>>
 [INFO] 
@@ -19799,6 +20072,7 @@ main:
 [INFO] 
 [INFO] --- maven-jar-plugin:2.5:jar (default-jar) @ hadoop-minicluster ---
 [WARNING] JAR will be empty - no content was marked for inclusion!
+[INFO] Building jar: /home/tanle/projects/ccra/hadoop/hadoop-minicluster/target/hadoop-minicluster-2.7.2.1.jar
 [INFO] 
 [INFO] --- maven-source-plugin:2.3:jar-no-fork (hadoop-java-sources) @ hadoop-minicluster ---
 [INFO] No sources in project. Archive not created.
@@ -19828,14 +20102,16 @@ main:
 [INFO] skip non existing resourceDirectory /home/tanle/projects/ccra/hadoop/hadoop-tools/hadoop-sls/src/main/resources
 [INFO] 
 [INFO] --- maven-compiler-plugin:3.1:compile (default-compile) @ hadoop-sls ---
-[INFO] Nothing to compile - all classes are up to date
+[INFO] Changes detected - recompiling the module!
+[INFO] Compiling 18 source files to /home/tanle/projects/ccra/hadoop/hadoop-tools/hadoop-sls/target/classes
 [INFO] 
 [INFO] --- maven-resources-plugin:2.6:testResources (default-testResources) @ hadoop-sls ---
 [INFO] Using 'UTF-8' encoding to copy filtered resources.
 [INFO] Copying 6 resources
 [INFO] 
 [INFO] --- maven-compiler-plugin:3.1:testCompile (default-testCompile) @ hadoop-sls ---
-[INFO] Nothing to compile - all classes are up to date
+[INFO] Changes detected - recompiling the module!
+[INFO] Compiling 6 source files to /home/tanle/projects/ccra/hadoop/hadoop-tools/hadoop-sls/target/test-classes
 [INFO] 
 [INFO] --- maven-surefire-plugin:2.17:test (default-test) @ hadoop-sls ---
 [INFO] Tests are skipped.
@@ -19844,10 +20120,13 @@ main:
 [INFO] Copying files to /home/tanle/projects/ccra/hadoop/hadoop-tools/hadoop-sls/target/hadoop-sls-2.7.2.1
 [INFO] 
 [INFO] --- maven-jar-plugin:2.5:jar (default-jar) @ hadoop-sls ---
+[INFO] Building jar: /home/tanle/projects/ccra/hadoop/hadoop-tools/hadoop-sls/target/hadoop-sls-2.7.2.1.jar
 [INFO] 
 [INFO] --- maven-source-plugin:2.3:jar-no-fork (hadoop-java-sources) @ hadoop-sls ---
+[INFO] Building jar: /home/tanle/projects/ccra/hadoop/hadoop-tools/hadoop-sls/target/hadoop-sls-2.7.2.1-sources.jar
 [INFO] 
 [INFO] --- maven-source-plugin:2.3:test-jar-no-fork (hadoop-java-sources) @ hadoop-sls ---
+[INFO] Building jar: /home/tanle/projects/ccra/hadoop/hadoop-tools/hadoop-sls/target/hadoop-sls-2.7.2.1-test-sources.jar
 [INFO] 
 [INFO] >>> maven-source-plugin:2.3:jar (default) @ hadoop-sls >>>
 [INFO] 
@@ -20059,9 +20338,11 @@ main:
 [INFO] 
 [INFO] --- maven-jar-plugin:2.5:jar (prepare-jar) @ hadoop-tools-dist ---
 [WARNING] JAR will be empty - no content was marked for inclusion!
+[INFO] Building jar: /home/tanle/projects/ccra/hadoop/hadoop-tools/hadoop-tools-dist/target/hadoop-tools-dist-2.7.2.1.jar
 [INFO] 
 [INFO] --- maven-jar-plugin:2.5:test-jar (prepare-test-jar) @ hadoop-tools-dist ---
 [WARNING] JAR will be empty - no content was marked for inclusion!
+[INFO] Building jar: /home/tanle/projects/ccra/hadoop/hadoop-tools/hadoop-tools-dist/target/hadoop-tools-dist-2.7.2.1-tests.jar
 [INFO] 
 [INFO] >>> maven-source-plugin:2.3:jar (default) @ hadoop-tools-dist >>>
 [INFO] 
@@ -20201,6 +20482,7 @@ main:
 [INFO] 
 [INFO] --- maven-jar-plugin:2.5:jar (default-jar) @ hadoop-dist ---
 [WARNING] JAR will be empty - no content was marked for inclusion!
+[INFO] Building jar: /home/tanle/projects/ccra/hadoop/hadoop-dist/target/hadoop-dist-2.7.2.1.jar
 [INFO] 
 [INFO] --- maven-source-plugin:2.3:jar-no-fork (hadoop-java-sources) @ hadoop-dist ---
 [INFO] No sources in project. Archive not created.
@@ -20228,74 +20510,74 @@ main:
 [INFO] ------------------------------------------------------------------------
 [INFO] Reactor Summary:
 [INFO] 
-[INFO] Apache Hadoop Main ................................ SUCCESS [0.522s]
-[INFO] Apache Hadoop Project POM ......................... SUCCESS [0.525s]
-[INFO] Apache Hadoop Annotations ......................... SUCCESS [2.080s]
-[INFO] Apache Hadoop Assemblies .......................... SUCCESS [0.081s]
-[INFO] Apache Hadoop Project Dist POM .................... SUCCESS [1.270s]
-[INFO] Apache Hadoop Maven Plugins ....................... SUCCESS [1.723s]
-[INFO] Apache Hadoop MiniKDC ............................. SUCCESS [1.486s]
-[INFO] Apache Hadoop Auth ................................ SUCCESS [2.210s]
-[INFO] Apache Hadoop Auth Examples ....................... SUCCESS [2.411s]
-[INFO] Apache Hadoop Common .............................. SUCCESS [1:08.046s]
-[INFO] Apache Hadoop NFS ................................. SUCCESS [3.562s]
-[INFO] Apache Hadoop KMS ................................. SUCCESS [11.612s]
-[INFO] Apache Hadoop Common Project ...................... SUCCESS [0.044s]
-[INFO] Apache Hadoop HDFS ................................ SUCCESS [1:38.954s]
-[INFO] Apache Hadoop HttpFS .............................. SUCCESS [17.449s]
-[INFO] Apache Hadoop HDFS BookKeeper Journal ............. SUCCESS [3.188s]
-[INFO] Apache Hadoop HDFS-NFS ............................ SUCCESS [2.677s]
-[INFO] Apache Hadoop HDFS Project ........................ SUCCESS [0.020s]
-[INFO] hadoop-yarn ....................................... SUCCESS [0.019s]
-[INFO] hadoop-yarn-api ................................... SUCCESS [25.813s]
-[INFO] hadoop-yarn-common ................................ SUCCESS [19.999s]
-[INFO] hadoop-yarn-server ................................ SUCCESS [0.023s]
-[INFO] hadoop-yarn-server-common ......................... SUCCESS [7.117s]
-[INFO] hadoop-yarn-server-nodemanager .................... SUCCESS [7.076s]
-[INFO] hadoop-yarn-server-web-proxy ...................... SUCCESS [1.952s]
-[INFO] hadoop-yarn-server-applicationhistoryservice ...... SUCCESS [3.951s]
-[INFO] hadoop-yarn-server-resourcemanager ................ SUCCESS [9.967s]
-[INFO] hadoop-yarn-server-tests .......................... SUCCESS [2.591s]
-[INFO] hadoop-yarn-client ................................ SUCCESS [3.637s]
-[INFO] hadoop-yarn-server-sharedcachemanager ............. SUCCESS [1.789s]
-[INFO] hadoop-yarn-applications .......................... SUCCESS [0.015s]
-[INFO] hadoop-yarn-applications-distributedshell ......... SUCCESS [1.316s]
-[INFO] hadoop-yarn-applications-unmanaged-am-launcher .... SUCCESS [1.114s]
+[INFO] Apache Hadoop Main ................................ SUCCESS [0.579s]
+[INFO] Apache Hadoop Project POM ......................... SUCCESS [0.519s]
+[INFO] Apache Hadoop Annotations ......................... SUCCESS [2.591s]
+[INFO] Apache Hadoop Assemblies .......................... SUCCESS [0.194s]
+[INFO] Apache Hadoop Project Dist POM .................... SUCCESS [1.335s]
+[INFO] Apache Hadoop Maven Plugins ....................... SUCCESS [1.959s]
+[INFO] Apache Hadoop MiniKDC ............................. SUCCESS [1.885s]
+[INFO] Apache Hadoop Auth ................................ SUCCESS [3.473s]
+[INFO] Apache Hadoop Auth Examples ....................... SUCCESS [2.604s]
+[INFO] Apache Hadoop Common .............................. SUCCESS [1:05.329s]
+[INFO] Apache Hadoop NFS ................................. SUCCESS [3.771s]
+[INFO] Apache Hadoop KMS ................................. SUCCESS [12.907s]
+[INFO] Apache Hadoop Common Project ...................... SUCCESS [0.028s]
+[INFO] Apache Hadoop HDFS ................................ SUCCESS [1:45.707s]
+[INFO] Apache Hadoop HttpFS .............................. SUCCESS [19.113s]
+[INFO] Apache Hadoop HDFS BookKeeper Journal ............. SUCCESS [3.444s]
+[INFO] Apache Hadoop HDFS-NFS ............................ SUCCESS [2.533s]
+[INFO] Apache Hadoop HDFS Project ........................ SUCCESS [0.022s]
+[INFO] hadoop-yarn ....................................... SUCCESS [0.021s]
+[INFO] hadoop-yarn-api ................................... SUCCESS [25.681s]
+[INFO] hadoop-yarn-common ................................ SUCCESS [19.073s]
+[INFO] hadoop-yarn-server ................................ SUCCESS [0.020s]
+[INFO] hadoop-yarn-server-common ......................... SUCCESS [5.957s]
+[INFO] hadoop-yarn-server-nodemanager .................... SUCCESS [8.683s]
+[INFO] hadoop-yarn-server-web-proxy ...................... SUCCESS [2.073s]
+[INFO] hadoop-yarn-server-applicationhistoryservice ...... SUCCESS [4.323s]
+[INFO] hadoop-yarn-server-resourcemanager ................ SUCCESS [12.753s]
+[INFO] hadoop-yarn-server-tests .......................... SUCCESS [3.023s]
+[INFO] hadoop-yarn-client ................................ SUCCESS [4.146s]
+[INFO] hadoop-yarn-server-sharedcachemanager ............. SUCCESS [1.862s]
+[INFO] hadoop-yarn-applications .......................... SUCCESS [0.019s]
+[INFO] hadoop-yarn-applications-distributedshell ......... SUCCESS [1.853s]
+[INFO] hadoop-yarn-applications-unmanaged-am-launcher .... SUCCESS [1.505s]
 [INFO] hadoop-yarn-site .................................. SUCCESS [0.026s]
-[INFO] hadoop-yarn-registry .............................. SUCCESS [2.642s]
-[INFO] hadoop-yarn-project ............................... SUCCESS [3.253s]
-[INFO] hadoop-mapreduce-client ........................... SUCCESS [0.031s]
-[INFO] hadoop-mapreduce-client-core ...................... SUCCESS [9.884s]
-[INFO] hadoop-mapreduce-client-common .................... SUCCESS [10.641s]
-[INFO] hadoop-mapreduce-client-shuffle ................... SUCCESS [2.481s]
-[INFO] hadoop-mapreduce-client-app ....................... SUCCESS [4.039s]
-[INFO] hadoop-mapreduce-client-hs ........................ SUCCESS [2.601s]
-[INFO] hadoop-mapreduce-client-jobclient ................. SUCCESS [2.154s]
-[INFO] hadoop-mapreduce-client-hs-plugins ................ SUCCESS [1.153s]
-[INFO] Apache Hadoop MapReduce Examples .................. SUCCESS [2.887s]
-[INFO] hadoop-mapreduce .................................. SUCCESS [2.079s]
-[INFO] Apache Hadoop MapReduce Streaming ................. SUCCESS [2.476s]
-[INFO] Apache Hadoop Distributed Copy .................... SUCCESS [6.107s]
-[INFO] Apache Hadoop Archives ............................ SUCCESS [1.501s]
-[INFO] Apache Hadoop Rumen ............................... SUCCESS [3.100s]
-[INFO] Apache Hadoop Gridmix ............................. SUCCESS [2.268s]
-[INFO] Apache Hadoop Data Join ........................... SUCCESS [1.441s]
-[INFO] Apache Hadoop Ant Tasks ........................... SUCCESS [1.247s]
-[INFO] Apache Hadoop Extras .............................. SUCCESS [1.707s]
-[INFO] Apache Hadoop Pipes ............................... SUCCESS [0.015s]
-[INFO] Apache Hadoop OpenStack support ................... SUCCESS [2.597s]
-[INFO] Apache Hadoop Amazon Web Services support ......... SUCCESS [2.131s]
-[INFO] Apache Hadoop Azure support ....................... SUCCESS [2.192s]
-[INFO] Apache Hadoop Client .............................. SUCCESS [7.394s]
-[INFO] Apache Hadoop Mini-Cluster ........................ SUCCESS [0.072s]
-[INFO] Apache Hadoop Scheduler Load Simulator ............ SUCCESS [2.286s]
-[INFO] Apache Hadoop Tools Dist .......................... SUCCESS [7.779s]
-[INFO] Apache Hadoop Tools ............................... SUCCESS [0.026s]
-[INFO] Apache Hadoop Distribution ........................ SUCCESS [38.224s]
+[INFO] hadoop-yarn-registry .............................. SUCCESS [3.964s]
+[INFO] hadoop-yarn-project ............................... SUCCESS [3.541s]
+[INFO] hadoop-mapreduce-client ........................... SUCCESS [0.034s]
+[INFO] hadoop-mapreduce-client-core ...................... SUCCESS [16.846s]
+[INFO] hadoop-mapreduce-client-common .................... SUCCESS [16.493s]
+[INFO] hadoop-mapreduce-client-shuffle ................... SUCCESS [4.023s]
+[INFO] hadoop-mapreduce-client-app ....................... SUCCESS [8.413s]
+[INFO] hadoop-mapreduce-client-hs ........................ SUCCESS [5.335s]
+[INFO] hadoop-mapreduce-client-jobclient ................. SUCCESS [5.296s]
+[INFO] hadoop-mapreduce-client-hs-plugins ................ SUCCESS [1.781s]
+[INFO] Apache Hadoop MapReduce Examples .................. SUCCESS [3.916s]
+[INFO] hadoop-mapreduce .................................. SUCCESS [2.259s]
+[INFO] Apache Hadoop MapReduce Streaming ................. SUCCESS [3.045s]
+[INFO] Apache Hadoop Distributed Copy .................... SUCCESS [7.610s]
+[INFO] Apache Hadoop Archives ............................ SUCCESS [1.855s]
+[INFO] Apache Hadoop Rumen ............................... SUCCESS [4.050s]
+[INFO] Apache Hadoop Gridmix ............................. SUCCESS [2.919s]
+[INFO] Apache Hadoop Data Join ........................... SUCCESS [1.860s]
+[INFO] Apache Hadoop Ant Tasks ........................... SUCCESS [2.003s]
+[INFO] Apache Hadoop Extras .............................. SUCCESS [3.174s]
+[INFO] Apache Hadoop Pipes ............................... SUCCESS [0.016s]
+[INFO] Apache Hadoop OpenStack support ................... SUCCESS [3.636s]
+[INFO] Apache Hadoop Amazon Web Services support ......... SUCCESS [3.054s]
+[INFO] Apache Hadoop Azure support ....................... SUCCESS [3.213s]
+[INFO] Apache Hadoop Client .............................. SUCCESS [7.084s]
+[INFO] Apache Hadoop Mini-Cluster ........................ SUCCESS [0.056s]
+[INFO] Apache Hadoop Scheduler Load Simulator ............ SUCCESS [2.818s]
+[INFO] Apache Hadoop Tools Dist .......................... SUCCESS [7.944s]
+[INFO] Apache Hadoop Tools ............................... SUCCESS [0.025s]
+[INFO] Apache Hadoop Distribution ........................ SUCCESS [38.173s]
 [INFO] ------------------------------------------------------------------------
 [INFO] BUILD SUCCESS
 [INFO] ------------------------------------------------------------------------
-[INFO] Total time: 7:11.710s
-[INFO] Finished at: Mon Nov 28 22:13:52 KST 2016
-[INFO] Final Memory: 145M/2407M
+[INFO] Total time: 8:04.625s
+[INFO] Finished at: Tue Nov 29 14:45:42 KST 2016
+[INFO] Final Memory: 228M/2341M
 [INFO] ------------------------------------------------------------------------

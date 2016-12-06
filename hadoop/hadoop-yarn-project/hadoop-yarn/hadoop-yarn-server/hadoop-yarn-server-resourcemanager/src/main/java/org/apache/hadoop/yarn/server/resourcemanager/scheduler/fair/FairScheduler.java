@@ -433,7 +433,7 @@ public class FairScheduler
       for (FSLeafQueue queue : getQueueManager().getLeafQueues()) {
         queue.resetPreemptedResources();
       }
-
+      
       while (Resources.greaterThan(RESOURCE_CALCULATOR, clusterResource,
           toPreempt, Resources.none())) {
         RMContainer container = getQueueManager().getRootQueue()
@@ -449,8 +449,8 @@ public class FairScheduler
       }
     } finally {
       // Clear preemptedResources for each app
-      for (FSLeafQueue queue : getQueueManager().getLeafQueues()) {
-        queue.clearPreemptedResources();
+        for (FSLeafQueue queue : getQueueManager().getLeafQueues()) {
+          queue.clearPreemptedResources();
       }
     }
 
@@ -463,7 +463,7 @@ public class FairScheduler
     FSAppAttempt app = getSchedulerApp(appAttemptId);
     FSLeafQueue queue = app.getQueue();
     LOG.info(
-        "Preempting container (prio=" + container.getContainer().getPriority()
+        "Preempting container "+ container+" (prio=" + container.getContainer().getPriority()
             + "res=" + container.getContainer().getResource() + ") from queue "
             + queue.getName());
 
@@ -473,15 +473,21 @@ public class FairScheduler
       // if we asked for preemption more than maxWaitTimeBeforeKill ms ago,
       // proceed with kill
       if (time + waitTimeBeforeKill < getClock().getTime()) {
+        LOG.info("[Tan] BEFORE preemption: available resource: " + Resource.newInstance(rootMetrics.getAvailableMB(),
+            rootMetrics.getAvailableVirtualCores()));
+        
         ContainerStatus status = SchedulerUtils.createPreemptedContainerStatus(
             container.getContainerId(), SchedulerUtils.PREEMPTED_CONTAINER);
 
         // TODO: Not sure if this ever actually adds this to the list of cleanup
         // containers on the RMNode (see SchedulerNode.releaseContainer()).
         completedContainer(container, status, RMContainerEventType.KILL);
-        LOG.info("Killing container" + container
+        LOG.info("Killing container " + container
             + " (after waiting for premption for "
             + (getClock().getTime() - time) + "ms)");
+        
+        LOG.info("[Tan] AFTER preemption: available resource: " + Resource.newInstance(rootMetrics.getAvailableMB(),
+            rootMetrics.getAvailableVirtualCores()));
       }
     } else {
       // track the request in the FSAppAttempt itself
