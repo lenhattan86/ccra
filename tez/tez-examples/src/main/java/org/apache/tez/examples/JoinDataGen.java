@@ -66,14 +66,14 @@ public class JoinDataGen extends TezExampleBase {
   protected void printUsage() {
     System.err
         .println("Usage: "
-            + "joindatagen <outPath1> <path1Size> <outPath2> <path2Size> <expectedResultPath> <numTasks>");
+            + "joindatagen <outPath1> <path1Size> <outPath2> <path2Size> <expectedResultPath> <numTasks> <dagId>");
     ToolRunner.printGenericCommandUsage(System.err);
   }
 
   @Override
   protected int runJob(String[] args, TezConfiguration tezConf,
       TezClient tezClient) throws Exception {
-    LOG.info("Running JoinDataGen");
+    
 
     String outDir1 = args[0];
     long outDir1Size = Long.parseLong(args[1]);
@@ -81,6 +81,7 @@ public class JoinDataGen extends TezExampleBase {
     long outDir2Size = Long.parseLong(args[3]);
     String expectedOutputDir = args[4];
     int numTasks = Integer.parseInt(args[5]);
+    String dagId = args[6];
 
     Path largeOutPath = null;
     Path smallOutPath = null;
@@ -114,29 +115,30 @@ public class JoinDataGen extends TezExampleBase {
       System.err.println("NumTasks must be > 0");
       return 4;
     }
-
+    LOG.info("\t +++ Running ==== "+dagId +" ====");
+    
     DAG dag = createDag(tezConf, largeOutPath, smallOutPath, expectedOutputPath, numTasks,
-        largeOutSize, smallOutSize);
+        largeOutSize, smallOutSize, dagId);
 
     return runDag(dag, isCountersLog(), LOG);
   }
 
   @Override
   protected int validateArgs(String[] otherArgs) {
-    if (otherArgs.length != 6) {
+    if (otherArgs.length != 7) {
       return 2;
     }
     return 0;
   }
 
   private DAG createDag(TezConfiguration tezConf, Path largeOutPath, Path smallOutPath,
-      Path expectedOutputPath, int numTasks, long largeOutSize, long smallOutSize)
+      Path expectedOutputPath, int numTasks, long largeOutSize, long smallOutSize, String dagId)
       throws IOException {
 
     long largeOutSizePerTask = largeOutSize / numTasks;
     long smallOutSizePerTask = smallOutSize / numTasks;
 
-    DAG dag = DAG.create("JoinDataGen");
+    DAG dag = DAG.create(dagId);
 
     Vertex genDataVertex = Vertex.create("datagen", ProcessorDescriptor.create(
         GenDataProcessor.class.getName()).setUserPayload(
@@ -191,6 +193,7 @@ public class JoinDataGen extends TezExampleBase {
           + ", smallFileTragetSize=" + hashOutputFileSize);
       dis.close();
       bis.close();
+      LOG.info(getContext().getDAGName()+"."+getContext().getTaskVertexName());
     }
 
     @Override

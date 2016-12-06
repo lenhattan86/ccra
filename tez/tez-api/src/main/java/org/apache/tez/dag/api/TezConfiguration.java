@@ -1635,5 +1635,23 @@ public class TezConfiguration extends Configuration {
   
   public static final String TEZ_ENABLE_SIMULATION = "tez.simulation.enabled";
   public static final boolean TEZ_ENABLE_SIMULATION_DEFAULT = false;
+  
+  public static final String TEZ_WORKLOAD_TRACE_PATH = "tez.workload.trace";
+  public static final String TEZ_WORKLOAD_TRACE_PATH_DEFAULT = "/home/tanle/projects/SpeedFairSim/workload/simple.txt";
+  
+  public static final String TEZ_RESOURCE_DIMESION = "tez.resource.dimension";
+  public static final int TEZ_RESOURCE_DIMESION_DEFAULT = 2;
+  
+  public static final String TEZ_NODE_CAPACITY_VCORES = "tez.node.capacity.vcores";
+  public static final int TEZ_NODE_CAPACITY_VCORES_DEFAULT = 12;
+  
+  public static final String TEZ_NODE_CAPACITY_MEM = "tez.node.capacity.mem";
+  public static final int TEZ_NODE_CAPACITY_MEM_DEFAULT = 12*1024;
+  
+  public static final String TEZ_RESOURCE_SCALE_DOWN = "tez.resource.scaledown";
+  public static final double TEZ_RESOURCE_SCALE_DOWN_DEFAULT = 1.0;
+  
+  public static final String TEZ_RESOURCE_SINGLE_NODE = "tez.resource.singlenode";
+  public static final boolean TEZ_RESOURCE_SINGLE_NODE_DEFAULT = false;
   // emulation>>
 }

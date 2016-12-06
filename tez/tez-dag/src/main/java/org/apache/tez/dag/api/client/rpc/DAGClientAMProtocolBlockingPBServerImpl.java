@@ -51,12 +51,17 @@ import org.apache.tez.dag.api.client.rpc.DAGClientAMProtocolRPC.SubmitDAGRespons
 import org.apache.tez.dag.api.client.rpc.DAGClientAMProtocolRPC.TryKillDAGRequestProto;
 import org.apache.tez.dag.api.client.rpc.DAGClientAMProtocolRPC.TryKillDAGResponseProto;
 import org.apache.tez.dag.api.records.DAGProtos.DAGPlan;
+import org.apache.tez.dag.app.DAGAppMaster;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.google.protobuf.RpcController;
 import com.google.protobuf.ServiceException;
 
 public class DAGClientAMProtocolBlockingPBServerImpl implements DAGClientAMProtocolBlockingPB {
-
+  
+  private static final Logger LOG = LoggerFactory.getLogger(DAGClientAMProtocolBlockingPBServerImpl.class);
+  
   DAGClientHandler real;
   final FileSystem stagingFs;
 
@@ -172,6 +177,7 @@ public class DAGClientAMProtocolBlockingPBServerImpl implements DAGClientAMProto
         additionalResources = DagTypeConverters.convertFromPlanLocalResources(request
             .getAdditionalAmResources());
       }
+      LOG.info("submitDAG "+ dagPlan.getName());
       String dagId = real.submitDAG(dagPlan, additionalResources);
       return SubmitDAGResponseProto.newBuilder().setDagId(dagId).build();
     } catch(TezException e) {

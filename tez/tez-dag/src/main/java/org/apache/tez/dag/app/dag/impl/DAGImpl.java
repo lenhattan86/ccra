@@ -80,9 +80,15 @@ import org.apache.tez.dag.api.client.VertexStatus;
 import org.apache.tez.dag.api.client.VertexStatusBuilder;
 import org.apache.tez.dag.api.records.DAGProtos.DAGPlan;
 import org.apache.tez.dag.api.records.DAGProtos.EdgePlan;
+import org.apache.tez.dag.api.records.DAGProtos.PlanEdgeDataMovementType;
+import org.apache.tez.dag.api.records.DAGProtos.PlanEdgeDataSourceType;
+import org.apache.tez.dag.api.records.DAGProtos.PlanEdgeSchedulingType;
 import org.apache.tez.dag.api.records.DAGProtos.PlanGroupInputEdgeInfo;
 import org.apache.tez.dag.api.records.DAGProtos.PlanKeyValuePair;
+import org.apache.tez.dag.api.records.DAGProtos.PlanTaskConfiguration;
 import org.apache.tez.dag.api.records.DAGProtos.PlanVertexGroupInfo;
+import org.apache.tez.dag.api.records.DAGProtos.PlanVertexType;
+import org.apache.tez.dag.api.records.DAGProtos.TezEntityDescriptorProto;
 import org.apache.tez.dag.api.records.DAGProtos.VertexPlan;
 import org.apache.tez.dag.app.AppContext;
 import org.apache.tez.dag.app.RecoveryParser.VertexRecoveryData;
@@ -523,8 +529,9 @@ public class DAGImpl implements org.apache.tez.dag.app.dag.DAG,
     // emulation <<
     enableSim = this.appContext.getAMConf().getBoolean(TezConfiguration.TEZ_ENABLE_SIMULATION, 
         TezConfiguration.TEZ_ENABLE_SIMULATION_DEFAULT);
-    if(enableSim)
+    if(enableSim){
       this.dagProfiler = new DAGProfiler(this.appContext, jobPlan, this.dagName);
+    }
     // emulation >>
 
     this.taskCommunicatorManagerInterface = taskCommunicatorManagerInterface;

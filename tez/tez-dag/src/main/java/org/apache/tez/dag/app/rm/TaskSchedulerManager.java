@@ -438,16 +438,21 @@ public class TaskSchedulerManager extends AbstractService implements EventHandle
     TaskAttempt taskAttempt = event.getTaskAttempt();
 
     // emulation <<
+    /*
     boolean enableSim = this.appContext.getAMConf().getBoolean(TezConfiguration.TEZ_ENABLE_SIMULATION,
-        TezConfiguration.TEZ_ENABLE_SIMULATION_DEFAULT);
+       TezConfiguration.TEZ_ENABLE_SIMULATION_DEFAULT);
 
-    if (enableSim) {
+    if (false) {
       TezVertexID vertexTezID = event.getAttemptID().getTaskID().getVertexID();
       String vertexName = appContext.getCurrentDAG().getVertex(vertexTezID).getName();
       String dagName = appContext.getCurrentDAG().getProfile().getDAGName();
+      
+      LOG.info("[Tan] DAG: "+dagName+" vertexName:" + vertexName + "" +" vertexTezID:"+vertexTezID);
 
       DAGProfiler dag_profile = appContext.getCurrentDAG().getProfile();
-
+      
+      dag_profile.viewDAG();
+      
       // set vertex type
       // if ( vertexName.contains("Map") )
       // event.getCapability().setTaskType(1);
@@ -456,6 +461,11 @@ public class TaskSchedulerManager extends AbstractService implements EventHandle
 
       // get resource requirements per task for this vertex
       ResourceProfile vertexPerTaskResourceProfile = dag_profile.getVertexTaskResourceRequirements(vertexName);
+      
+      if(vertexPerTaskResourceProfile==null){
+        LOG.error("[Tan] DAG "+vertexName+" is not available vertexPerTaskResourceProfile = " + vertexPerTaskResourceProfile);
+        return;
+      }
       
       LOG.info("[Tan]  " + vertexPerTaskResourceProfile.toString());
 
@@ -505,8 +515,10 @@ public class TaskSchedulerManager extends AbstractService implements EventHandle
 
       //// if enabled simulation DAG, update info about it ////
       DAGSimulation dag_sim = dag_profile.simulationDAG();
-      if (dag_sim != null) {
+      if (dag_sim != null) { // enable logging DAG info
+//      if(false){
         LOG.info("[Tan] - update info about simulated DAG");
+        
         dag_sim.addEntryTasksVertex(vertexName, vertex_num_tasks);
 
         Random rand = new Random();
@@ -549,9 +561,10 @@ public class TaskSchedulerManager extends AbstractService implements EventHandle
         out_st_t += rand.nextDouble() * 0.06;
         out_st_t *= 1.5;
         out_st_t = (out_st_t < 0) ? -out_st_t : out_st_t;
+        
         dag_sim.addTaskInformation(vertexName, dur_t, cpu_t, mem_t, in_nw_t, out_nw_t, in_st_t, out_st_t);
       }
-    }
+    } */
     // emulation >>
 
     TaskLocationHint locationHint = event.getLocationHint();

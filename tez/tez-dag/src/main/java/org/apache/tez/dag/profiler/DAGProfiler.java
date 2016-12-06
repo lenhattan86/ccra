@@ -17,9 +17,25 @@ import java.util.TreeMap;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.yarn.api.records.Resource;
+import org.apache.tez.dag.api.EdgeProperty;
+import org.apache.tez.dag.api.InputDescriptor;
+import org.apache.tez.dag.api.OutputDescriptor;
+import org.apache.tez.dag.api.ProcessorDescriptor;
 import org.apache.tez.dag.api.TezConfiguration;
+import org.apache.tez.dag.api.EdgeProperty.DataMovementType;
+import org.apache.tez.dag.api.EdgeProperty.DataSourceType;
+import org.apache.tez.dag.api.EdgeProperty.SchedulingType;
 import org.apache.tez.dag.api.records.DAGProtos.DAGPlan;
+import org.apache.tez.dag.api.records.DAGProtos.EdgePlan;
+import org.apache.tez.dag.api.records.DAGProtos.PlanEdgeDataMovementType;
+import org.apache.tez.dag.api.records.DAGProtos.PlanEdgeDataSourceType;
+import org.apache.tez.dag.api.records.DAGProtos.PlanEdgeSchedulingType;
+import org.apache.tez.dag.api.records.DAGProtos.PlanTaskConfiguration;
+import org.apache.tez.dag.api.records.DAGProtos.PlanTaskLocationHint;
+import org.apache.tez.dag.api.records.DAGProtos.PlanVertexType;
+import org.apache.tez.dag.api.records.DAGProtos.TezEntityDescriptorProto;
 import org.apache.tez.dag.api.records.DAGProtos.VertexPlan;
 import org.apache.tez.dag.app.AppContext;
 import org.apache.tez.dag.app.dag.Task;
@@ -90,7 +106,7 @@ public class DAGProfiler {
 //		loadDAGResourceProfile(false);
 		
 		// load DAG profiler
-		loadDAGResourceProfile(true);
+		//loadDAGResourceProfile(true);
 		
 		// create a simulation dag
 		sim_dag = new DAGSimulation(this);
@@ -130,7 +146,7 @@ public class DAGProfiler {
 		LOG.info("[Tan] -- VIEW DAG: -- num of Vertices = " + this.vertices.size());
 		for (String vertex : this.vertices.keySet()) {
 			
-			LOG.info("\t vertex: "+vertex);
+			LOG.info("\t vertex: "+vertex + " num of tasks: ");
 			for (String vertex_p : parents.get(vertex))
 				LOG.info("\t --> parent: "+vertex_p);
 			
@@ -148,28 +164,25 @@ public class DAGProfiler {
 									 .getBoolean(TezConfiguration.TEZ_GRAPHENE_SIM_LOGGING_INFO_ENABLED, 
 											     TezConfiguration.TEZ_GRAPHENE_SIM_LOGGING_INFO_ENABLED_DEFAULT);
 		
-		enabled_sim = true;
-		
 		if (!enabled_sim)
 			return null;
 		
 		return sim_dag;
 	}
 	
+	
 	/* populate with parents and children for every vertex */
 	public void populateDAGStructure(DAGPlan jobPlan) {
-										
-		LOG.info("[Tan] - build DAG structure and initialize resource profiles");
+	  LOG.info("[Tan] - populate DAG structure");
+	  
 		
-		// TODO: load our own DAG here profiles instead of using from the jobPlan
 		List<VertexPlan> vertices = jobPlan.getVertexList();
 		
-		List<VertexPlan> newVertices = new ArrayList<VertexPlan>();
-		
+				
 		// for every vertex, for every outEdge, looks who has inEdge
 		// and update parent -> child relationship.
 		for (VertexPlan vertex1 : vertices) {
-					
+		  
 			String vertex1Name = vertex1.getName();
 			
 			if (children.get(vertex1Name) == null)
@@ -208,6 +221,7 @@ public class DAGProfiler {
 		viewDAG();
 	}	
 	
+		
 	
 	/* compute score of the DAG jobs*/
 	public double computeScoreSRTF() {
@@ -314,7 +328,10 @@ public class DAGProfiler {
 	
 	/* return the vertex profiler for actual resource demands used by vertex */
 	public ResourceProfile getVertexTaskResourceRequirements(String vertexName) {
-		return vertices.get(vertexName).vertexProfileReal;
+	  VertexProfiler vp = vertices.get(vertexName);
+	  if (vp==null)
+	    return null;
+		return vp.vertexProfileReal;
 	}	
 	
 	/* return the update vertex profiler for a vertex */

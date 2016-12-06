@@ -18,13 +18,19 @@
 
 package org.apache.tez.client;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.text.NumberFormat;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.TimeUnit;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.Map;
 
 import javax.annotation.Nullable;
@@ -36,6 +42,7 @@ import org.apache.hadoop.fs.Path;
 import org.apache.tez.common.JavaOptsChecker;
 import org.apache.tez.common.RPCUtil;
 import org.apache.tez.common.TezCommonUtils;
+import org.apache.tez.common.TezUtils;
 import org.apache.tez.common.counters.Limits;
 import org.apache.tez.dag.api.TezConfigurationConstants;
 import org.apache.tez.serviceplugins.api.ServicePluginsDescriptor;
@@ -45,12 +52,14 @@ import org.apache.hadoop.classification.InterfaceAudience.Private;
 import org.apache.hadoop.classification.InterfaceAudience.Public;
 import org.apache.hadoop.classification.InterfaceStability.Evolving;
 import org.apache.hadoop.classification.InterfaceStability.Unstable;
+import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.security.Credentials;
 import org.apache.hadoop.yarn.api.records.ApplicationId;
 import org.apache.hadoop.yarn.api.records.ApplicationReport;
 import org.apache.hadoop.yarn.api.records.ApplicationSubmissionContext;
 import org.apache.hadoop.yarn.api.records.LocalResource;
 import org.apache.hadoop.yarn.api.records.LocalResourceType;
+import org.apache.hadoop.yarn.api.records.Resource;
 import org.apache.hadoop.yarn.api.records.YarnApplicationState;
 import org.apache.hadoop.yarn.conf.YarnConfiguration;
 import org.apache.hadoop.yarn.exceptions.ApplicationNotFoundException;
@@ -62,6 +71,8 @@ import org.apache.tez.common.security.JobTokenSecretManager;
 import org.apache.tez.dag.api.DAG;
 import org.apache.tez.dag.api.DAGSubmissionTimedOut;
 import org.apache.tez.dag.api.DagTypeConverters;
+import org.apache.tez.dag.api.Edge;
+import org.apache.tez.dag.api.EdgeProperty;
 import org.apache.tez.dag.api.PreWarmVertex;
 import org.apache.tez.dag.api.SessionNotReady;
 import org.apache.tez.dag.api.SessionNotRunning;
@@ -69,6 +80,11 @@ import org.apache.tez.dag.api.TezConfiguration;
 import org.apache.tez.dag.api.TezConstants;
 import org.apache.tez.dag.api.TezException;
 import org.apache.tez.dag.api.TezReflectionException;
+import org.apache.tez.dag.api.UserPayload;
+import org.apache.tez.dag.api.Vertex;
+import org.apache.tez.dag.api.EdgeProperty.DataMovementType;
+import org.apache.tez.dag.api.EdgeProperty.DataSourceType;
+import org.apache.tez.dag.api.EdgeProperty.SchedulingType;
 import org.apache.tez.dag.api.client.DAGClient;
 import org.apache.tez.dag.api.client.rpc.DAGClientAMProtocolBlockingPB;
 import org.apache.tez.dag.api.client.rpc.DAGClientAMProtocolRPC.GetAMStatusRequestProto;
@@ -78,6 +94,13 @@ import org.apache.tez.dag.api.client.rpc.DAGClientAMProtocolRPC.SubmitDAGRequest
 import org.apache.tez.dag.api.client.rpc.DAGClientAMProtocolRPC.SubmitDAGResponseProto;
 import org.apache.tez.dag.api.client.DAGClientImpl;
 import org.apache.tez.dag.api.records.DAGProtos.DAGPlan;
+import org.apache.tez.emulation.DumpInput;
+import org.apache.tez.emulation.DumpOutput;
+import org.apache.tez.emulation.DumpProcessor;
+import org.apache.tez.emulation.Emulation;
+import org.apache.tez.emulation.SimpleInput;
+import org.apache.tez.emulation.SimpleOutput;
+import org.apache.tez.emulation.SimpleProcessor;
 import org.apache.tez.common.security.HistoryACLPolicyException;
 
 import com.google.common.annotations.VisibleForTesting;
@@ -500,12 +523,30 @@ public class TezClient {
    */  
   public synchronized DAGClient submitDAG(DAG dag) throws TezException, IOException {
     ++dagCounter;
+    // emulation <<
+    boolean enableSim = amConfig.getTezConfiguration().getBoolean(TezConfiguration.TEZ_ENABLE_SIMULATION, 
+        TezConfiguration.TEZ_ENABLE_SIMULATION_DEFAULT);
+    if(enableSim) {
+      try {
+        LOG.info("createDAGFromTrace loaded:"+Emulation.loaded);
+        Emulation emulation = new Emulation(amConfig.getTezConfiguration());
+//        DAG encodedDag = encodeSimpleDag(dag);
+//        DAG encodedDag = emulation.creatSimpleDAG(dag, amConfig.getTezConfiguration());
+        DAG encodedDag = emulation.createDAGFromTrace(dag.getName());
+        dag = encodedDag;
+      } catch (Exception ex){
+        ex.printStackTrace();
+      }
+    }
+    // emulation >>
     if (isSession) {
       return submitDAGSession(dag);
     } else {
       return submitDAGApplication(dag);
     }
   }
+  
+  
 
   private DAGClient submitDAGSession(DAG dag) throws TezException, IOException {
     Preconditions.checkState(isSession == true, 

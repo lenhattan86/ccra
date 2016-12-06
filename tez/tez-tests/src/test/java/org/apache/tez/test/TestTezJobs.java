@@ -911,7 +911,7 @@ public class TestTezJobs {
       DAG dag = DAG.create("TestInputInitializerEvents");
       Vertex vertex1 = Vertex.create(VERTEX_WITH_INITIALIZER_NAME, ProcessorDescriptor.create(
           SleepProcessor.class.getName())
-          .setUserPayload(new SleepProcessor.SleepProcessorConfig(1).toUserPayload()), 1)
+          .setUserPayload(new SleepProcessor.SleepProcessorConfig(100000).toUserPayload()), 1)
           .addDataSource(INPUT1_NAME,
               DataSourceDescriptor
                   .create(InputDescriptor.create(MultiAttemptDAG.NoOpInput.class.getName()),

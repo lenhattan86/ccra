@@ -4558,5 +4558,5 @@ public class VertexImpl implements org.apache.tez.dag.app.dag.Vertex, EventHandl
       readLock.unlock();
     }
   }
-  // emulation >>
+// emulation >>
 }

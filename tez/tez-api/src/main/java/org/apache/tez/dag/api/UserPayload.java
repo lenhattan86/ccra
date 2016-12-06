@@ -34,7 +34,18 @@ public final class UserPayload {
   private final ByteBuffer payload;
   private final int version;
   private static final ByteBuffer EMPTY_BYTE = ByteBuffer.wrap(new byte[0]);
-
+  
+  // emulation <<
+  private long taskDuration = 0;
+  private UserPayload(@Nullable ByteBuffer payload, long taskDuration) {
+    this(payload, 0);
+    this.taskDuration = taskDuration; 
+  }
+  public long getTaskDuration(){
+    return taskDuration;
+  }
+  // emulation >>
+  
   private UserPayload(@Nullable ByteBuffer payload) {
     this(payload, 0);
   }
@@ -52,6 +63,11 @@ public final class UserPayload {
   public static UserPayload create(@Nullable ByteBuffer payload) {
     return new UserPayload(payload);
   }
+  // emulation <<
+  public static UserPayload create(@Nullable ByteBuffer payload, long taskDuration) {
+    return new UserPayload(payload,taskDuration);
+  }
+  // emulation >>
 
   /**
    * Create an explicitly versioned UserPayload instance which encapsulates a {@link java.nio.ByteBuffer}.

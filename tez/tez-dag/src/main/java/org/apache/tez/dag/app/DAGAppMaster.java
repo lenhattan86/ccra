@@ -69,6 +69,8 @@ import org.apache.tez.common.TezUtils;
 import org.apache.tez.dag.api.NamedEntityDescriptor;
 import org.apache.tez.dag.api.SessionNotRunning;
 import org.apache.tez.dag.api.UserPayload;
+import org.apache.tez.dag.api.VertexManagerPlugin;
+import org.apache.tez.dag.api.VertexManagerPluginContext;
 import org.apache.tez.dag.api.records.DAGProtos.AMPluginDescriptorProto;
 import org.apache.tez.dag.api.records.DAGProtos.ConfigurationProto;
 import org.apache.tez.dag.api.records.DAGProtos.TezNamedEntityDescriptorProto;
@@ -122,6 +124,7 @@ import org.apache.tez.common.security.JobTokenIdentifier;
 import org.apache.tez.common.security.JobTokenSecretManager;
 import org.apache.tez.common.security.TokenCache;
 import org.apache.tez.dag.api.DagTypeConverters;
+import org.apache.tez.dag.api.InputDescriptor;
 import org.apache.tez.dag.api.TezConfiguration;
 import org.apache.tez.dag.api.TezConstants;
 import org.apache.tez.dag.api.TezException;
@@ -130,7 +133,16 @@ import org.apache.tez.dag.api.client.DAGClientHandler;
 import org.apache.tez.dag.api.client.DAGClientServer;
 import org.apache.tez.dag.api.records.DAGProtos;
 import org.apache.tez.dag.api.records.DAGProtos.DAGPlan;
+import org.apache.tez.dag.api.records.DAGProtos.EdgePlan;
+import org.apache.tez.dag.api.records.DAGProtos.PlanEdgeDataMovementType;
+import org.apache.tez.dag.api.records.DAGProtos.PlanEdgeDataSourceType;
+import org.apache.tez.dag.api.records.DAGProtos.PlanEdgeSchedulingType;
+import org.apache.tez.dag.api.records.DAGProtos.PlanKeyValuePair;
 import org.apache.tez.dag.api.records.DAGProtos.PlanLocalResourcesProto;
+import org.apache.tez.dag.api.records.DAGProtos.PlanTaskConfiguration;
+import org.apache.tez.dag.api.records.DAGProtos.PlanTaskLocationHint;
+import org.apache.tez.dag.api.records.DAGProtos.PlanVertexType;
+import org.apache.tez.dag.api.records.DAGProtos.TezEntityDescriptorProto;
 import org.apache.tez.dag.api.records.DAGProtos.VertexPlan;
 import org.apache.tez.dag.app.RecoveryParser.DAGRecoveryData;
 import org.apache.tez.dag.app.dag.DAG;
@@ -181,6 +193,7 @@ import org.apache.tez.dag.utils.RelocalizationUtils;
 import org.apache.tez.dag.utils.Simple2LevelVersionComparator;
 import org.apache.tez.hadoop.shim.HadoopShim;
 import org.apache.tez.hadoop.shim.HadoopShimsLoader;
+import org.apache.tez.runtime.api.events.VertexManagerEvent;
 import org.apache.tez.util.TezMxBeanResourceCalculator;
 import org.codehaus.jettison.json.JSONException;
 import org.slf4j.Logger;
@@ -969,7 +982,7 @@ public class DAGAppMaster extends AbstractService {
   protected DAG createDAG(DAGPlan dagPB) {
     return createDAG(dagPB, null);
   }
-
+  
   /** Create and initialize (but don't start) a single dag. */
   DAGImpl createDAG(DAGPlan dagPB, TezDAGID dagId) {
     if (dagId == null) {
@@ -1336,6 +1349,7 @@ public class DAGAppMaster extends AbstractService {
 
   public String submitDAGToAppMaster(DAGPlan dagPlan,
       Map<String, LocalResource> additionalResources) throws TezException {
+    LOG.info("submitDAGToAppMaster "+ dagPlan.getName());
     if (sessionStopped.get()) {
       throw new SessionNotRunning("AM unable to accept new DAG submissions."
           + " In the process of shutting down");
@@ -1969,7 +1983,7 @@ public class DAGAppMaster extends AbstractService {
   
   @Override
   public synchronized void serviceStart() throws Exception {
-
+    
     //start all the components
     startServices();
     super.serviceStart();
@@ -2083,6 +2097,7 @@ public class DAGAppMaster extends AbstractService {
       if (!isSession) {
         // No dag recovered - in non-session, just restart the original DAG
         dagCounter.set(0);
+        LOG.info("serviceStart restart the original DAG");
         startDAG();
       }
     }
@@ -2697,3 +2712,5 @@ public class DAGAppMaster extends AbstractService {
   }
 
 }
+
+
