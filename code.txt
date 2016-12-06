@@ -1,23 +1,21 @@
-RMAppAttemptImpl
-	AMContainerAllocatedTransition
-		scheduler.allocate(
--- allocate a number of containers.
+17:17:55,178 RMContainerImpl: container_1480839411988_0001_01_000001 Container Transitioned from NEW to ALLOCATED
+17:17:55,209 RMContainerImpl: container_1480839411988_0001_01_000001 Container Transitioned from ALLOCATED to ACQUIRED
+17:17:56,208 RMContainerImpl: container_1480839411988_0001_01_000001 Container Transitioned from ACQUIRED to RUNNING
 
-RMContainerRequestor for MapReduce?
-	makeRemoteRequest
-		scheduler.allocate(
--- allocate a number of containers.
+17:18:01,220 RMContainerImpl: container_1480839411988_0001_01_000002 Container Transitioned from NEW to ALLOCATED
+17:18:01,781 RMContainerImpl: container_1480839411988_0001_01_000002 Container Transitioned from ALLOCATED to ACQUIRED
+17:18:02,222 RMContainerImpl: container_1480839411988_0001_01_000002 Container Transitioned from ACQUIRED to RUNNING
 
-allocate() ==> create containers.
-compare ==> allocate
+17:18:02,223 RMContainerImpl: container_1480839411988_0001_01_000003 Container Transitioned from NEW to ALLOCATED
+17:18:02,797 RMContainerImpl: container_1480839411988_0001_01_000003 Container Transitioned from ALLOCATED to ACQUIRED
+17:18:03,224 RMContainerImpl: container_1480839411988_0001_01_000003 Container Transitioned from ACQUIRED to RUNNING
 
-TEZ
+17:18:03,225 RMContainerImpl: container_1480839411988_0001_01_000004 Container Transitioned from NEW to ALLOCATED
+17:18:03,803 RMContainerImpl: container_1480839411988_0001_01_000004 Container Transitioned from ALLOCATED to ACQUIRED
+17:18:04,226 RMContainerImpl: container_1480839411988_0001_01_000004 Container Transitioned from ACQUIRED to RUNNING
 
-TaskAttempt
-TaskAttemptImpl
+container allocation: 1/10 to 1 sec
+preemption: = interval (100 ms)
 
-Questions: 
-- DAG structure (load or self-created)
-	is it easy to directly change the DAG structure?
-- Duration of task (where).
+they allocate containers in sequences?
 

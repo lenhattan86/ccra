@@ -1,17 +1,17 @@
-cp-6	c220g1-030825	c220g1	ssh -p 22 tanle@c220g1-030825.wisc.cloudlab.us		
+cp-6	c220g1-030806	c220g1	ssh -p 22 tanle@c220g1-030806.wisc.cloudlab.us		
 
-cp-7	c220g1-030828	c220g1	ssh -p 22 tanle@c220g1-030828.wisc.cloudlab.us		
+cp-7	c220g1-030804	c220g1	ssh -p 22 tanle@c220g1-030804.wisc.cloudlab.us		
 
-cp-4	c220g1-030826	c220g1	ssh -p 22 tanle@c220g1-030826.wisc.cloudlab.us		
+cp-4	c220g1-030801	c220g1	ssh -p 22 tanle@c220g1-030801.wisc.cloudlab.us		
 
-cp-5	c220g1-030830	c220g1	ssh -p 22 tanle@c220g1-030830.wisc.cloudlab.us		
+cp-5	c220g1-030818	c220g1	ssh -p 22 tanle@c220g1-030818.wisc.cloudlab.us		
 
-cp-2	c220g1-030824	c220g1	ssh -p 22 tanle@c220g1-030824.wisc.cloudlab.us		
+cp-2	c220g1-030803	c220g1	ssh -p 22 tanle@c220g1-030803.wisc.cloudlab.us		
 
-cp-3	c220g1-030823	c220g1	ssh -p 22 tanle@c220g1-030823.wisc.cloudlab.us		
+cp-3	c220g1-030815	c220g1	ssh -p 22 tanle@c220g1-030815.wisc.cloudlab.us		
 
-cp-1	c220g1-030821	c220g1	ssh -p 22 tanle@c220g1-030821.wisc.cloudlab.us		
+cp-1	c220g1-030812	c220g1	ssh -p 22 tanle@c220g1-030812.wisc.cloudlab.us		
 
-cp-8	c220g1-030829	c220g1	ssh -p 22 tanle@c220g1-030829.wisc.cloudlab.us		
+cp-8	c220g1-030807	c220g1	ssh -p 22 tanle@c220g1-030807.wisc.cloudlab.us		
 
-ctl	c220g1-030827	c220g1	ssh -p 22 tanle@c220g1-030827.wisc.cloudlab.us
+ctl	c220g1-030802	c220g1	ssh -p 22 tanle@c220g1-030802.wisc.cloudlab.us

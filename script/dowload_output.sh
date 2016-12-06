@@ -4,11 +4,12 @@ if [ -z "$1" ]
 then
 	hostname=$defaulHostname
 else
-	hostname="nm.$1.yarnrm-pg0.wisc.cloudlab.us"
+	hostname="ctl.$1.yarnrm-pg0.wisc.cloudlab.us"
 fi
 
 resultPath="../results"
-newFolder="/runb3i1"
+newFolder="runb3i1"
+method=""
 echo "download the files from $hostname"
 
 prompt () {
@@ -29,8 +30,8 @@ downloadOuput () {
 	mkdir $resultPath/$hostname/
 	ssh tanle@$hostname "tar zcvf $1.tar $2"
 	mkdir $resultPath/$hostname/$newFolder	
-	scp $hostname:~/$1.tar $resultPath/$hostname$newFolder 
-	tar -xvzf $resultPath/$hostname/$newFolder/$1.tar -C $resultPath/$hostname$newFolder
+	scp $hostname:~/$1.tar $resultPath/$hostname/$newFolder 
+	tar -xvzf $resultPath/$hostname/$newFolder/$1.tar -C $resultPath/$hostname/$newFolder
 	ssh tanle@$hostname "rm -rf $1.tar"
 	rm -rf $resultPath/$method$newFolder/$1.tar;
 }
@@ -38,4 +39,6 @@ downloadOuput () {
 #prompt
 
 tarFile="scriptTest"; folder="~/SWIM/scriptsTest"; downloadOuput $tarFile $folder
+
+#tarFile="logs"; folder="~/hadoop/logs"; downloadOuput $tarFile $folder
 

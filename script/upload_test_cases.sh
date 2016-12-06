@@ -4,6 +4,11 @@ defaulHostname="ctl.yarn-perf.yarnrm-pg0.wisc.cloudlab.us"
 
 defaultDomain="yarnrm-pg0.wisc.cloudlab.us"
 
+workloadSrcFile="/home/tanle/projects/SpeedFairSim/input_gen/jobs_input_1_3.txt"
+#workloadSrcFile="/home/tanle/projects/SpeedFairSim/input_gen/jobs_input_1_3_short.txt"
+workloadFile="/users/tanle/hadoop/conf/simple.txt"
+#workloadFile="/users/tanle/conf/simple.txt"
+
 echo "upload the files to $hostname"
 
 if [ -z "$1" ]
@@ -39,7 +44,9 @@ uploadTestCases () {
 
 tarFile="SWIM"; testCase="../SWIM"; rm -rf .$testCase/*.class; uploadTestCases $tarFile $testCase &
 
-tarFile="spark-test-cases"; testCase="../spark-test-cases"; uploadTestCases $tarFile $testCase &
+scp $workloadSrcFile  $hostname:$workloadFile
+
+#tarFile="spark-test-cases"; testCase="../spark-test-cases"; uploadTestCases $tarFile $testCase &
 
 #tarFile="wordcount"; testCase="../flink-test-cases/wordcount"; uploadTestCases $tarFile $testCase &
 

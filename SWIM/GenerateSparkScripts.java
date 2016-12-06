@@ -149,9 +149,17 @@ public class GenerateSparkScripts {
       } else {
         System.out.println("Do NOT use Spark jobs");
       }
+      String localhost="tan-ubuntu";
+      
+      toWrite = "server=\"$(hostname)\" \n"
+          + "if [ \"$server\" == \""+localhost+"\" ]; then\n"
+              + "\t server=\"localhost\" \n"
+              + "fi \n";
+      run.write(toWrite.toCharArray(), 0, toWrite.length());
 
-      toWrite = "\npython ../get_yarn_queue_info.py --master $(hostname) --interval 1 --file " + workloadOutputDir
+      toWrite = "\npython ../get_yarn_queue_info.py --master $server --interval 1 --file " + workloadOutputDir
           + "/yarnUsedResources.csv & pythonScript=$! \n";
+      
       run.write(toWrite.toCharArray(), 0, toWrite.length());
 
       toWrite = "./batches-all.sh & runBatches=$! \n";
@@ -168,7 +176,7 @@ public class GenerateSparkScripts {
         run.write(toWrite.toCharArray(), 0, toWrite.length());
       }
 
-      toWrite  = "wait $runBatches ; ";
+      toWrite  = "wait $runBatches ; \n";
       toWrite += "wait $runInteractives; \n";
       run.write(toWrite.toCharArray(), 0, toWrite.length());
 
@@ -177,6 +185,9 @@ public class GenerateSparkScripts {
       // run.write(toWrite.toCharArray(), 0, toWrite.length());
 
       toWrite = "\nsleep 100; kill $pythonScript";
+      run.write(toWrite.toCharArray(), 0, toWrite.length());
+      
+      toWrite = "\necho \"[INFO] Finished at: $(date)\" ";
       run.write(toWrite.toCharArray(), 0, toWrite.length());
 
       // toWrite = "\n kill $runInteractives";
