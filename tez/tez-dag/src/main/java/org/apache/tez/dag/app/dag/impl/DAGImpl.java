@@ -460,6 +460,23 @@ public class DAGImpl implements org.apache.tez.dag.app.dag.DAG,
   long startTime;
   @VisibleForTesting
   long finishTime;
+  
+  // emulation <<
+  long runningTime;
+  public long getInitTime(){
+    return initTime;
+  }
+  public long getFinishTime(){
+    return finishTime;
+  }
+  public long getRunningTime(){
+    return this.runningTime;
+  }
+  public void setRunningTime(long time){
+    this.runningTime = time;
+  }
+  
+  // emulation >>
 
   Map<String, VertexGroupInfo> vertexGroups = Maps.newHashMap();
   Map<String, List<VertexGroupInfo>> vertexGroupInfo = Maps.newHashMap();
@@ -527,11 +544,12 @@ public class DAGImpl implements org.apache.tez.dag.app.dag.DAG,
     this.appContext = appContext;
     
     // emulation <<
-    enableSim = this.appContext.getAMConf().getBoolean(TezConfiguration.TEZ_ENABLE_SIMULATION, 
-        TezConfiguration.TEZ_ENABLE_SIMULATION_DEFAULT);
-    if(enableSim){
-      this.dagProfiler = new DAGProfiler(this.appContext, jobPlan, this.dagName);
-    }
+//    enableSim = this.appContext.getAMConf().getBoolean(TezConfiguration.TEZ_ENABLE_SIMULATION, 
+//        TezConfiguration.TEZ_ENABLE_SIMULATION_DEFAULT);
+//    if(enableSim){
+//      LOG.info("new DAGProfiler -- start");
+//      this.dagProfiler = new DAGProfiler(this.appContext, jobPlan, this.dagName);
+//    }
     // emulation >>
 
     this.taskCommunicatorManagerInterface = taskCommunicatorManagerInterface;
@@ -1438,8 +1456,8 @@ public class DAGImpl implements org.apache.tez.dag.app.dag.DAG,
     LOG.info("DAG: " + getID() + " finished with state: " + finalState);
     
     // emulation <<
-    if(enableSim)
-      dagProfiler.jobFinished();
+//    if(enableSim && dagProfiler!=null )
+//      dagProfiler.jobFinished();
     // emulation >>
 
     return finalState;

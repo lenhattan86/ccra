@@ -29,6 +29,7 @@ import java.text.NumberFormat;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.TimeUnit;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
@@ -528,16 +529,14 @@ public class TezClient {
         TezConfiguration.TEZ_ENABLE_SIMULATION_DEFAULT);
     if(enableSim) {
       try {
-        LOG.info("createDAGFromTrace loaded:"+Emulation.loaded);
         Emulation emulation = new Emulation(amConfig.getTezConfiguration());
-//        DAG encodedDag = encodeSimpleDag(dag);
-//        DAG encodedDag = emulation.creatSimpleDAG(dag, amConfig.getTezConfiguration());
-        DAG encodedDag = emulation.createDAGFromTrace(dag.getName());
+        DAG encodedDag = emulation.createDAGFromTrace(dag.getName());        
         dag = encodedDag;
       } catch (Exception ex){
         ex.printStackTrace();
       }
     }
+    dag.setStartTime(System.currentTimeMillis());
     // emulation >>
     if (isSession) {
       return submitDAGSession(dag);

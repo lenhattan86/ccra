@@ -1623,7 +1623,7 @@ public class TezConfiguration extends Configuration {
   public static final boolean TEZ_ENABLE_VERTEX_PROFILE_SET_DEFAULT = false;
   
   public static final String TEZ_DIR_GRAPHENE_LOGGING_INFO = "tez.graphene.log.dir";
-  public static final String TEZ_DIR_GRAPHENE_LOGGING_INFO_DEFAULT = "/home/hadoop/graphene_log_dir";
+  public static final String TEZ_DIR_GRAPHENE_LOGGING_INFO_DEFAULT = "/home/tanle/hadoop/graphene_log_dir";
 
   // if enable to log tasks execution -> to plot dags
   public static final String TEZ_GRAPHENE_EXEC_LOGGING_INFO_ENABLED = "tez.graphene.log.exec.enabled";
@@ -1638,6 +1638,18 @@ public class TezConfiguration extends Configuration {
   
   public static final String TEZ_WORKLOAD_TRACE_PATH = "tez.workload.trace";
   public static final String TEZ_WORKLOAD_TRACE_PATH_DEFAULT = "/home/tanle/projects/SpeedFairSim/workload/simple.txt";
+  
+  public static final String TEZ_DAG_PROFILE_ENABLE = "tez.dag.profile.enable";
+  public static final boolean TEZ_DAG_PROFILE_ENABLE_DEFAULT = false;
+  
+  public static final String TEZ_DAG_PROFILE_PATH = "tez.dag.profile.path";
+  public static final String TEZ_DAG_PROFILE_PATH_DEFAULT = "/users/tanle/hadoop/config/";
+  
+  public static final String TEZ_SIMULATION_LOG_ENABLE = "tez.simulation.log.enable";
+  public static final boolean TEZ_SIMULATION_LOG_ENABLE_DEFAULT = false;
+  
+  public static final String TEZ_SIMULATION_LOG_PATH = "tez.simulation.log.path";
+  public static final String TEZ_SIMULATION_LOG_PATH_DEFAULT = "/users/tanle/SWIM/scriptsTest/workGenLogs/";
   
   public static final String TEZ_RESOURCE_DIMESION = "tez.resource.dimension";
   public static final int TEZ_RESOURCE_DIMESION_DEFAULT = 2;

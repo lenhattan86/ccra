@@ -14,6 +14,10 @@ import java.util.Date;
 import java.text.SimpleDateFormat;
 
 public class GenerateReplayScript {
+  
+  static int SLEEP_TO_REDUCE_LOAD=60;
+  static int NUM_JOB_SUBMIT = 8;
+  static boolean isCleanLogFile = true;
 
   static final int[] MAP_VCORES = { 4, 5, 1, 4, 5, 6, 3, 2, 6, 2, 7, 3, 5, 6, 6,
       4, 4, 5, 6, 1, 6, 2, 3, 4, 5, 4, 3, 6, 6, 6, 6, 7, 4, 6, 4, 5, 4, 4, 6, 4,
@@ -76,7 +80,7 @@ public class GenerateReplayScript {
   static final int SHUFFLE_DATA_SIZE = 4;
   static final int OUTPUT_DATA_SIZE = 5;
 
-  static final int NUM_CP_NODES = 8;
+  static final int NUM_CP_NODES = 40;
   static final int[] failedNodes = {};
   private static final boolean ENABLE_ARRIVAL_TRACES = false;
 
@@ -178,40 +182,51 @@ public class GenerateReplayScript {
 
       if (numBatchJob < 0)
         numBatchJob = dagIds.size();
+      if (NUM_QUEUES > 0)
+        for (int i = 0; i < numBatchJob; i++) {
+          FileWriter runFile = new FileWriter(
+              scriptDirPath + "/run-batch-" + i + ".sh");
 
-      for (int i = 0; i < numBatchJob; i++) {
-        FileWriter runFile = new FileWriter(
-            scriptDirPath + "/run-batch-" + i + ".sh");
+          int queueIdx = i % NUM_QUEUES;
+          toWrite = "cd ~/ \n";
+          runFile.write(toWrite.toCharArray(), 0, toWrite.length());
 
-        int queueIdx = i % NUM_QUEUES;
-        toWrite = "cd ~/ \n";
-        runFile.write(toWrite.toCharArray(), 0, toWrite.length());
-        
-        toWrite = "" + hadoopCommand + " jar " + pathToWorkGenJar + " "
-            + dagIds.get(i) + " batch" + queueIdx + " >> " + workloadOutputDir
-            + "/batch-" + i + ".txt 2>> " + workloadOutputDir + "/batch-" + i
-            + ".txt ";
+          toWrite = "" + hadoopCommand + " jar " + pathToWorkGenJar + " "
+              + dagIds.get(i) + " batch" + queueIdx + " >> " + workloadOutputDir
+              + "/batch-" + i + ".txt 2>> " + workloadOutputDir + "/batch-" + i
+              + ".txt ";
 
-        toWrite += " & " + " batch" + i + "=$!  \n";
-        runFile.write(toWrite.toCharArray(), 0, toWrite.length());
+          toWrite += " & " + " batch" + i + "=$!  \n";
+          runFile.write(toWrite.toCharArray(), 0, toWrite.length());
 
-        toWrite = "wait $batch" + i + " \n";
-        runFile.write(toWrite.toCharArray(), 0, toWrite.length());
+          toWrite = "wait $batch" + i + " \n";
+          runFile.write(toWrite.toCharArray(), 0, toWrite.length());
 
-        runFile.close();
+          runFile.close();
 
-        // works for linux type systems only
-        Runtime.getRuntime()
-            .exec("chmod +x " + scriptDirPath + "/run-batch-" + i + ".sh");
+          // works for linux type systems only
+          Runtime.getRuntime()
+              .exec("chmod +x " + scriptDirPath + "/run-batch-" + i + ".sh");
 
-        toWrite = "./run-batch-" + i + ".sh &\n";
-        runAllJobs.write(toWrite.toCharArray(), 0, toWrite.length());
+          toWrite = "./run-batch-" + i + ".sh &\n";
+          runAllJobs.write(toWrite.toCharArray(), 0, toWrite.length());
 
-        written++;
-      }
+          written++;
+          
+          if (i % NUM_JOB_SUBMIT == (NUM_JOB_SUBMIT-1)){
+            if (SLEEP_TO_REDUCE_LOAD>0){
+              toWrite = "sleep "+ SLEEP_TO_REDUCE_LOAD +" \n";
+              runAllJobs.write(toWrite.toCharArray(), 0, toWrite.length());
+            }
+          }
+        }
 
       System.out.println(written + " jobs written ... done.");
       System.out.println();
+      
+      toWrite = "\n wait";
+      runAllJobs.write(toWrite.toCharArray(), 0, toWrite.length());
+
 
       runAllJobs.close();
 
@@ -253,13 +268,13 @@ public class GenerateReplayScript {
 
         FileWriter runFile = new FileWriter(
             scriptDirPath + "/run-interactive-" + i + ".sh");
-        
+
         toWrite = "cd ~/ \n";
         runFile.write(toWrite.toCharArray(), 0, toWrite.length());
 
         for (int k = 0; k < NUM_QUEUES; k++) {
           int idx = i * NUM_QUEUES;
-          toWrite = "" + hadoopCommand + " jar " +pathToWorkGenJar+  " "
+          toWrite = "" + hadoopCommand + " jar " + pathToWorkGenJar + " "
               + dagIds.get(idx + k) + " bursty" + k + " >> " + workloadOutputDir
               + "/interactive-" + i + "_" + k + ".txt 2>> " + workloadOutputDir
               + "/interactive-" + i + "_" + k + ".txt ";
@@ -284,11 +299,17 @@ public class GenerateReplayScript {
         if (i < numInteractiveJobs - 1) {
           toWrite = "sleep " + arrivalPeriod + "\n";
           runAllJobs.write(toWrite.toCharArray(), 0, toWrite.length());
+          
+          if (isCleanLogFile){
+            toWrite = cleanYarnLogFiles(NUM_CP_NODES);
+            runAllJobs.write(toWrite.toCharArray(), 0, toWrite.length());
+          }
         }
         written++;
       }
-      
-      toWrite = "lastInteractive=$! ; \n wait $lastInteractive " + arrivalPeriod + "\n";
+
+      toWrite = "lastInteractive=$! ; \n wait $lastInteractive " + arrivalPeriod
+          + "\n";
       runAllJobs.write(toWrite.toCharArray(), 0, toWrite.length());
 
       System.out.println(written + " jobs written ... done.");
@@ -447,7 +468,7 @@ public class GenerateReplayScript {
           toWrite = "" + hadoopCommand + " jar " + pathToWorkGenJar
               + " org.apache.hadoop.examples.WorkGen -conf " + pathToWorkGenConf
               + " " + "-m " + numMaps + " " + "-r " + numReduces + " "
-              + inputPath + " " + outputPath + " -queue " + "batch" + queueIdx
+              + inputPath + " " + outputPath + " -queue " + "root.batch" + queueIdx
               + " -map.vcores " + MAP_VCORES[i] + " -red.vcores "
               + RED_VCORES[i] + " -map.memory " + MAP_MEM[i] + " -red.memory "
               + RED_MEM[i] + " " + SIRatio + " " + OSRatio + " >> "
@@ -457,7 +478,7 @@ public class GenerateReplayScript {
           toWrite = "" + hadoopCommand + " jar " + pathToWorkGenJar
               + " org.apache.hadoop.examples.WorkGen -conf " + pathToWorkGenConf
               + " " + "-m " + numMaps + " " + inputPath + " " + outputPath
-              + " -queue " + "batch" + queueIdx + " -map.vcores "
+              + " -queue " + "root.batch" + queueIdx + " -map.vcores "
               + MAP_VCORES[i] + " -red.vcores " + RED_VCORES[i]
               + " -map.memory " + MAP_MEM[i] + " -red.memory "
               + RED_MEM[queueIdx] + " " + SIRatio + " " + OSRatio + " >> "
@@ -934,8 +955,8 @@ public class GenerateReplayScript {
         hdfsInputDir = "workGenInput";
         hdfsOutputPrefix = "workGenOutputTest";
         totalDataPerReduce = 67108864;
-        String outputPrefix="~/SWIM/scriptsTest/";
-        workloadOutputDir = outputPrefix+"workGenLogs";
+        String outputPrefix = "~/SWIM/scriptsTest/";
+        workloadOutputDir = outputPrefix + "workGenLogs";
         hadoopCommand = "~/hadoop/bin/hadoop";
         pathToWorkGenJar = "~/hadoop/tez_jars/tez-examples-0.8.4.jar dumpjob ";
         pathToWorkGenConf = "users/tanle/hadoop/conf/workGenKeyValue_conf.xsl";
@@ -1036,13 +1057,14 @@ public class GenerateReplayScript {
           hadoopCommand, pathToWorkGenJar, pathToWorkGenConf, 100, burstyAppNum,
           1, (int) (256 * 0.9));
     } else {
-      int numOfBatchQueues = 3;
-      int burstyAppNum = 2;
-      int batchAppNum = burstyAppNum * numOfBatchQueues * 2;
+      int numOfBatchQueues = 8; isCleanLogFile = true;
+      SLEEP_TO_REDUCE_LOAD = 20*NUM_JOB_SUBMIT;
+      int burstyAppNum = 50;
+      int batchAppNum = 100; // 80, we just measure 80 batch jobs 
       int batchAppStartId = 100000;
       ArrayList<String> batchIds = new ArrayList<String>();
       ArrayList<String> burstyIds = new ArrayList<String>();
-      
+
       for (int i = 0; i < batchAppNum; i++)
         batchIds.add(String.valueOf(i + batchAppStartId));
 
@@ -1053,7 +1075,7 @@ public class GenerateReplayScript {
           hadoopCommand, pathToWorkGenJar, batchAppNum, numOfBatchQueues);
 
       printTezBurstyJobs(burstyIds, scriptDirPath, workloadOutputDir,
-          hadoopCommand, pathToWorkGenJar, 500, burstyAppNum, 1);
+          hadoopCommand, pathToWorkGenJar, 200, burstyAppNum, 1);
     }
 
     System.out.println("Parameter values for randomwriter_conf.xsl:");

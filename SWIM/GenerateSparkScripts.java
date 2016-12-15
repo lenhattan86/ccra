@@ -105,7 +105,7 @@ public class GenerateSparkScripts {
         int written = 0;
         for (int i = 0; i < numOfJobs; i++) {
           // long sleep = Long.parseLong(workloadData.get(i).get(INTER_JOB_SLEEP_TIME));
-          long sleep = 240;
+          long sleep = 200;
 
           // write inputPath to separate file to get around ARG_MAX limit
           // for large clusters
@@ -165,7 +165,7 @@ public class GenerateSparkScripts {
       toWrite = "./batches-all.sh & runBatches=$! \n";
       run.write(toWrite.toCharArray(), 0, toWrite.length());
 
-       toWrite = "sleep 100 \n";
+       toWrite = "sleep 200 \n";
        run.write(toWrite.toCharArray(), 0, toWrite.length());
 
       if (enable_spark) {
@@ -177,14 +177,17 @@ public class GenerateSparkScripts {
       }
 
       toWrite  = "wait $runBatches ; \n";
-      toWrite += "wait $runInteractives; \n";
+      //toWrite += "wait $runInteractives; \n";
       run.write(toWrite.toCharArray(), 0, toWrite.length());
 
       // toWrite = "cat " + workloadOutputDir + "/interactive-*.time > " + workloadOutputDir +
       // "/allJobs.time";
       // run.write(toWrite.toCharArray(), 0, toWrite.length());
-
-      toWrite = "\nsleep 100; kill $pythonScript";
+      toWrite = "\nkill $runInteractives";
+      run.write(toWrite.toCharArray(), 0, toWrite.length());
+      toWrite = "\nsleep 200; kill $pythonScript";
+      run.write(toWrite.toCharArray(), 0, toWrite.length());
+      toWrite = "\n ~/hadoop/bin/yarn application -kill all";
       run.write(toWrite.toCharArray(), 0, toWrite.length());
       
       toWrite = "\necho \"[INFO] Finished at: $(date)\" ";

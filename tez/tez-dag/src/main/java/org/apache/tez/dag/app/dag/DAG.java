@@ -102,6 +102,10 @@ public interface DAG extends DagInfo {
   // emulation <<
   // Define a DAG Profiler to be used for vertices requirements
   DAGProfiler getProfile();
+  long getInitTime();
+  long getFinishTime();
+  long getRunningTime();
+  void setRunningTime(long time);
   // emulation >>
 
 }

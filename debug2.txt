@@ -1,0 +1,76 @@
+ 2016-12-06 21:35:48,619 INFO org.apache.hadoop.yarn.server.resourcemanager.scheduler.fair.FairScheduler: allocate(appattempt_1481027653848_0001_000001 [] [] [] [] (no container request?)
+ 2016-12-06 21:35:49,645 INFO org.apache.hadoop.yarn.server.resourcemanager.scheduler.fair.FairScheduler: allocate(appattempt_1481027653848_0001_000001 [{Priority: 5, Capability: <memory:1536, vCores:1>, # Containers: 10, Location: *, Relax Locality: true}] [] [] [] 
+
+ 2016-12-06 21:35:50,029 INFO org.apache.hadoop.yarn.server.resourcemanager.scheduler.fair.FSAppAttempt: allocate container: container_1481027653848_0001_01_000002 priority 5
+ 2016-12-06 21:35:50,029 INFO org.apache.hadoop.yarn.server.resourcemanager.rmcontainer.RMContainerImpl: container_1481027653848_0001_01_000002 Container Transitioned from NEW to ALLOCATED
+
+This is IMPORTANT: We can speed up from here?
+ 2016-12-06 21:35:50,030 INFO org.apache.hadoop.yarn.server.resourcemanager.scheduler.SchedulerNode: Assigned container container_1481027653848_0001_01_000002 of capacity <memory:2048, vCores:1> on host tan-ubuntu:38595, which has 2 containers, <memory:3072, vCores:2> used and <memory:13312, vCores:14> available after allocation
+ 
+ 2016-12-06 21:35:50,649 INFO org.apache.hadoop.yarn.server.resourcemanager.scheduler.fair.FairScheduler: allocate(appattempt_1481027653848_0001_000001 [] [] [] [](no container request?)
+
+# Broadcast the tokens to acquire the resources. Which one receives it?
+ 2016-12-06 21:35:50,652 INFO org.apache.hadoop.yarn.server.resourcemanager.security.NMTokenSecretManagerInRM: Sending NMToken for nodeId : tan-ubuntu:38595 for container : container_1481027653848_0001_01_000002
+ 2016-12-06 21:35:50,654 INFO org.apache.hadoop.yarn.server.resourcemanager.rmcontainer.RMContainerImpl: container_1481027653848_0001_01_000002 Container Transitioned from ALLOCATED to ACQUIRED
+
+# Localize and launch the containter.
+ 2016-12-06 21:35:50,808 INFO org.apache.hadoop.yarn.server.nodemanager.containermanager.ContainerManagerImpl: Start request for container_1481027653848_0001_01_000002 by user tanle
+ 2016-12-06 21:35:50,808 INFO org.apache.hadoop.yarn.server.nodemanager.NMAuditLogger: USER=tanle	IP=127.0.0.1	OPERATION=Start Container Request	TARGET=ContainerManageImpl	RESULT=SUCCESS	APPID=application_1481027653848_0001	CONTAINERID=container_1481027653848_0001_01_000002
+ 2016-12-06 21:35:50,809 INFO org.apache.hadoop.yarn.server.nodemanager.containermanager.application.ApplicationImpl: Adding container_1481027653848_0001_01_000002 to application application_1481027653848_0001
+ 2016-12-06 21:35:50,810 INFO org.apache.hadoop.yarn.server.nodemanager.containermanager.container.ContainerImpl: Container container_1481027653848_0001_01_000002 transitioned from NEW to LOCALIZING
+ 2016-12-06 21:35:50,811 INFO org.apache.hadoop.yarn.server.nodemanager.containermanager.container.ContainerImpl: Container container_1481027653848_0001_01_000002 transitioned from LOCALIZING to LOCALIZED
+ 2016-12-06 21:35:50,839 INFO org.apache.hadoop.yarn.server.nodemanager.containermanager.container.ContainerImpl: Container container_1481027653848_0001_01_000002 transitioned from LOCALIZED to RUNNING
+ 2016-12-06 21:35:50,859 INFO org.apache.hadoop.yarn.server.nodemanager.DefaultContainerExecutor: launchContainer: [bash, /dev/hdfs/nm-local-dir/usercache/tanle/appcache/application_1481027653848_0001/container_1481027653848_0001_01_000002/default_container_executor.sh]
+ 2016-12-06 21:35:51,000 INFO org.apache.hadoop.yarn.server.nodemanager.containermanager.monitor.ContainersMonitorImpl: Starting resource-monitoring for container_1481027653848_0001_01_000002
+
+ 2016-12-06 21:35:51,031 INFO org.apache.hadoop.yarn.server.resourcemanager.rmcontainer.RMContainerImpl: container_1481027653848_0001_01_000002 Container Transitioned from ACQUIRED to RUNNING
+
+# Start allocating the next container
+
+2016-12-06 21:35:51,032 INFO org.apache.hadoop.yarn.server.resourcemanager.scheduler.fair.FSAppAttempt: allocate container: container_1481027653848_0001_01_000003 priority 5
+2016-12-06 21:35:51,032 INFO org.apache.hadoop.yarn.server.resourcemanager.rmcontainer.RMContainerImpl: container_1481027653848_0001_01_000003 Container Transitioned from NEW to ALLOCATED
+2016-12-06 21:35:51,032 INFO org.apache.hadoop.yarn.server.resourcemanager.scheduler.SchedulerNode: Assigned container container_1481027653848_0001_01_000003 of capacity <memory:2048, vCores:1> on host tan-ubuntu:38595, which has 3 containers, <memory:5120, vCores:3> used and <memory:11264, vCores:13> available after allocation
+
+2016-12-06 21:35:51,033 INFO org.apache.hadoop.yarn.server.nodemanager.containermanager.monitor.ContainersMonitorImpl: Memory usage of ProcessTree 24723 for container-id container_1481027653848_0001_01_000002: 41.0 MB of 2 GB physical memory used; 3.2 GB of 4.2 GB virtual memory used
+
+2016-12-06 21:35:51,669 INFO org.apache.hadoop.yarn.server.resourcemanager.scheduler.fair.FairScheduler: allocate(appattempt_1481027653848_0001_000001 [{Priority: 5, Capability: <memory:1536, vCores:1>, # Containers: 9, Location: *, Relax Locality: true}] [] [] []
+
+2016-12-06 21:35:51,671 INFO org.apache.hadoop.yarn.server.resourcemanager.rmcontainer.RMContainerImpl: container_1481027653848_0001_01_000003 Container Transitioned from ALLOCATED to ACQUIRED
+
+ 2016-12-06 21:35:51,686 INFO org.apache.hadoop.yarn.server.nodemanager.containermanager.ContainerManagerImpl: Start request for container_1481027653848_0001_01_000003 by user tanle
+ 2016-12-06 21:35:51,687 INFO org.apache.hadoop.yarn.server.nodemanager.NMAuditLogger: USER=tanle	IP=127.0.0.1	OPERATION=Start Container Request	TARGET=ContainerManageImpl	RESULT=SUCCESS	APPID=application_1481027653848_0001	CONTAINERID=container_1481027653848_0001_01_000003
+ 2016-12-06 21:35:51,687 INFO org.apache.hadoop.yarn.server.nodemanager.containermanager.application.ApplicationImpl: Adding container_1481027653848_0001_01_000003 to application application_1481027653848_0001
+ 2016-12-06 21:35:51,687 INFO org.apache.hadoop.yarn.server.nodemanager.containermanager.container.ContainerImpl: Container container_1481027653848_0001_01_000003 transitioned from NEW to LOCALIZING
+ 2016-12-06 21:35:51,687 INFO org.apache.hadoop.yarn.server.nodemanager.containermanager.AuxServices: Got event CONTAINER_INIT for appId application_1481027653848_0001
+ 2016-12-06 21:35:51,688 INFO org.apache.hadoop.yarn.server.nodemanager.containermanager.AuxServices: Got event APPLICATION_INIT for appId application_1481027653848_0001
+ 2016-12-06 21:35:51,688 INFO org.apache.hadoop.mapred.ShuffleHandler: Added token for job_1481027653848_0001
+
+
+2016-12-06 21:35:52,033 INFO org.apache.hadoop.yarn.server.resourcemanager.rmcontainer.RMContainerImpl: container_1481027653848_0001_01_000003 Container Transitioned from ACQUIRED to RUNNING
+
+2016-12-06 21:35:52,674 INFO org.apache.hadoop.yarn.server.resourcemanager.scheduler.fair.FairScheduler: allocate(appattempt_1481027653848_0001_000001 [{Priority: 5, Capability: <memory:1536, vCores:1>, # Containers: 8, Location: *, Relax Locality: true}] [] [] []
+
+======================= Here is the process ====================
+
+RM FairScheduler.allocate allocates the logical resources "Allocation" having the container list.
+RM ApplicationMasterService.allocate(AllocateRequest) return allocateResponse => send back to AM??
+
+ApplicationMasterProtocolPBServiceImpl.allocate( AllocateRequestProto) ==> AllocateRequest --> AllocateResponse from AM to RM or RM to AM. It should happens in AM
+AllocateRequest.java
+
+AMRMClient.java allocate(
+AMRMClientImpl.java 
+
+RM Application.java:
+		 Allocation allocation = resourceManager.getResourceScheduler().allocate(
+
+FSAppAttempt.allocate allocates the new container ()
+	who calls FSAppAttempt.allocate?
+
+SchedulerNode.allocateContainer assigns a container, add a container to launchedContainers
+
+ResourceRequest.java 
+
+RMContainerRequestor.java 
+
+

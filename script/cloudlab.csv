@@ -1,17 +1,81 @@
-cp-6	c220g1-030806	c220g1	ssh -p 22 tanle@c220g1-030806.wisc.cloudlab.us		
+cp-33	ms0104	m400	ssh -p 22 tanle@ms0104.utah.cloudlab.us		
 
-cp-7	c220g1-030804	c220g1	ssh -p 22 tanle@c220g1-030804.wisc.cloudlab.us		
+cp-32	ms0241	m400	ssh -p 22 tanle@ms0241.utah.cloudlab.us		
 
-cp-4	c220g1-030801	c220g1	ssh -p 22 tanle@c220g1-030801.wisc.cloudlab.us		
+cp-38	ms0745	m400	ssh -p 22 tanle@ms0745.utah.cloudlab.us		
 
-cp-5	c220g1-030818	c220g1	ssh -p 22 tanle@c220g1-030818.wisc.cloudlab.us		
+cp-36	ms0724	m400	ssh -p 22 tanle@ms0724.utah.cloudlab.us		
 
-cp-2	c220g1-030803	c220g1	ssh -p 22 tanle@c220g1-030803.wisc.cloudlab.us		
+cp-37	ms0736	m400	ssh -p 22 tanle@ms0736.utah.cloudlab.us		
 
-cp-3	c220g1-030815	c220g1	ssh -p 22 tanle@c220g1-030815.wisc.cloudlab.us		
+cp-34	ms0234	m400	ssh -p 22 tanle@ms0234.utah.cloudlab.us		
 
-cp-1	c220g1-030812	c220g1	ssh -p 22 tanle@c220g1-030812.wisc.cloudlab.us		
+cp-35	ms0344	m400	ssh -p 22 tanle@ms0344.utah.cloudlab.us		
 
-cp-8	c220g1-030807	c220g1	ssh -p 22 tanle@c220g1-030807.wisc.cloudlab.us		
+cp-18	ms0133	m400	ssh -p 22 tanle@ms0133.utah.cloudlab.us		
 
-ctl	c220g1-030802	c220g1	ssh -p 22 tanle@c220g1-030802.wisc.cloudlab.us
+cp-19	ms0726	m400	ssh -p 22 tanle@ms0726.utah.cloudlab.us		
+
+cp-30	ms0236	m400	ssh -p 22 tanle@ms0236.utah.cloudlab.us		
+
+cp-31	ms0730	m400	ssh -p 22 tanle@ms0730.utah.cloudlab.us		
+
+cp-14	ms0204	m400	ssh -p 22 tanle@ms0204.utah.cloudlab.us		
+
+cp-15	ms0106	m400	ssh -p 22 tanle@ms0106.utah.cloudlab.us		
+
+cp-16	ms0415	m400	ssh -p 22 tanle@ms0415.utah.cloudlab.us		
+
+cp-17	ms0310	m400	ssh -p 22 tanle@ms0310.utah.cloudlab.us		
+
+cp-10	ms0328	m400	ssh -p 22 tanle@ms0328.utah.cloudlab.us		
+
+cp-11	ms0405	m400	ssh -p 22 tanle@ms0405.utah.cloudlab.us		
+
+cp-12	ms0143	m400	ssh -p 22 tanle@ms0143.utah.cloudlab.us		
+
+cp-13	ms0120	m400	ssh -p 22 tanle@ms0120.utah.cloudlab.us		
+
+cp-6	ms0729	m400	ssh -p 22 tanle@ms0729.utah.cloudlab.us		
+
+cp-7	ms0208	m400	ssh -p 22 tanle@ms0208.utah.cloudlab.us		
+
+cp-4	ms0309	m400	ssh -p 22 tanle@ms0309.utah.cloudlab.us		
+
+cp-5	ms0325	m400	ssh -p 22 tanle@ms0325.utah.cloudlab.us		
+
+cp-2	ms0425	m400	ssh -p 22 tanle@ms0425.utah.cloudlab.us		
+
+cp-3	ms0111	m400	ssh -p 22 tanle@ms0111.utah.cloudlab.us		
+
+cp-1	ms0445	m400	ssh -p 22 tanle@ms0445.utah.cloudlab.us		
+
+cp-8	ms0136	m400	ssh -p 22 tanle@ms0136.utah.cloudlab.us		
+
+cp-9	ms0227	m400	ssh -p 22 tanle@ms0227.utah.cloudlab.us		
+
+cp-40	ms0229	m400	ssh -p 22 tanle@ms0229.utah.cloudlab.us		
+
+cp-25	ms0215	m400	ssh -p 22 tanle@ms0215.utah.cloudlab.us		
+
+cp-24	ms0316	m400	ssh -p 22 tanle@ms0316.utah.cloudlab.us		
+
+cp-27	ms0711	m400	ssh -p 22 tanle@ms0711.utah.cloudlab.us		
+
+cp-26	ms0402	m400	ssh -p 22 tanle@ms0402.utah.cloudlab.us		
+
+cp-21	ms0210	m400	ssh -p 22 tanle@ms0210.utah.cloudlab.us		
+
+cp-20	ms0126	m400	ssh -p 22 tanle@ms0126.utah.cloudlab.us		
+
+cp-23	ms0116	m400	ssh -p 22 tanle@ms0116.utah.cloudlab.us		
+
+cp-22	ms0340	m400	ssh -p 22 tanle@ms0340.utah.cloudlab.us		
+
+ctl	ms0727	m400	ssh -p 22 tanle@ms0727.utah.cloudlab.us		
+
+cp-39	ms0307	m400	ssh -p 22 tanle@ms0307.utah.cloudlab.us		
+
+cp-29	ms0217	m400	ssh -p 22 tanle@ms0217.utah.cloudlab.us		
+
+cp-28	ms0413	m400	ssh -p 22 tanle@ms0413.utah.cloudlab.us

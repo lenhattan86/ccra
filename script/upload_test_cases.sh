@@ -1,15 +1,9 @@
 defaulHostname="ctl.yarn-perf.yarnrm-pg0.wisc.cloudlab.us"
-#defaulHostname="nm.yarn-drf.yarnrm-pg0.wisc.cloudlab.us"
-#defaulHostname="c220g1-030826.wisc.cloudlab.us" #drf
+#defaulHostname="ctl.yarn-large.yarnrm-pg0.utah.cloudlab.us"
 
-defaultDomain="yarnrm-pg0.wisc.cloudlab.us"
+defaultDomain="yarnrm-pg0.utah.cloudlab.us"
 
-workloadSrcFile="/home/tanle/projects/SpeedFairSim/input_gen/jobs_input_1_3.txt"
-#workloadSrcFile="/home/tanle/projects/SpeedFairSim/input_gen/jobs_input_1_3_short.txt"
-workloadFile="/users/tanle/hadoop/conf/simple.txt"
-#workloadFile="/users/tanle/conf/simple.txt"
 
-echo "upload the files to $hostname"
 
 if [ -z "$1" ]
 then
@@ -17,6 +11,18 @@ then
 else
 	hostname="ctl.$1.$defaultDomain"
 fi
+
+if [ -z "$2" ]
+then
+	batchNum=4
+else
+	batchNum=$2
+fi
+
+workloadSrcFile="/home/tanle/projects/SpeedFairSim/input_gen/jobs_input_1_$batchNum.txt"
+workloadFile="/users/tanle/hadoop/conf/simple.txt"
+
+echo "upload the files to $hostname"
 
 prompt () {
 	while true; do
@@ -44,7 +50,9 @@ uploadTestCases () {
 
 tarFile="SWIM"; testCase="../SWIM"; rm -rf .$testCase/*.class; uploadTestCases $tarFile $testCase &
 
+ssh tanle@$hostname "hadoop/bin/hadoop fs -rm -skipTrash /user/tanle/completion_time.csv;"
 scp $workloadSrcFile  $hostname:$workloadFile
+ssh tanle@$hostname "cd hadoop/conf; rm -rf *.profile; javac GenerateProfile.java; java GenerateProfile $workloadFile"
 
 #tarFile="spark-test-cases"; testCase="../spark-test-cases"; uploadTestCases $tarFile $testCase &
 
@@ -52,3 +60,5 @@ scp $workloadSrcFile  $hostname:$workloadFile
 
 wait
 
+echo "[INFO] $hostname "
+echo "[INFO] Finished at: $(date) "

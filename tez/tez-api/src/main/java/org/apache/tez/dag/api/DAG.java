@@ -21,6 +21,7 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Date;
 import java.util.Deque;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -90,6 +91,10 @@ public class DAG {
 //  final String name;
   // emulation <<
   private String name;
+  private long startTime = System.currentTimeMillis();
+  public void setStartTime(long startTime){
+    this.startTime = startTime;
+  }
   // emulation >>
   final Collection<URI> urisForCredentials = new HashSet<URI>();
   Credentials credentials = new Credentials();
@@ -103,11 +108,10 @@ public class DAG {
   CallerContext callerContext;
   private Map<String,String> dagConf = new HashMap<String, String>();
   private VertexExecutionContext defaultExecutionContext;
-
+  
   private DAG(String name) {
     this.name = name;
   }
-
   /**
    * Create a DAG with the specified name.
    * @param name the name of the DAG

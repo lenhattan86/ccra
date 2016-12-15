@@ -27,7 +27,8 @@ dataSize = size(data);
 for i=1:dataSize(1)
     hostname = data{i,4};
     if length(data{i,1})<10
-        fprintf(fileID,fmt, data{i,1}, hostname(17:length(hostname)));
+        ipadress = resolveip(hostname(17:length(hostname)));
+        fprintf(fileID,fmt, data{i,1}, ipadress);
     else        
         disp(data{i,1})
     end

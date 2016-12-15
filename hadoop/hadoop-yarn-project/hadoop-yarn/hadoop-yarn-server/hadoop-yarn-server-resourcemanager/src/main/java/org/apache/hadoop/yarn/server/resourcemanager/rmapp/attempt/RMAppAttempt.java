@@ -239,4 +239,8 @@ public interface RMAppAttempt extends EventHandler<RMAppAttemptEvent> {
    * @return the finish time of the application attempt.
    */
   long getFinishTime();
+  
+  // emulation <<
+  void setAppName(String appName);
+  // emulation >>
 }

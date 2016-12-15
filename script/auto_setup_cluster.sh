@@ -7,6 +7,20 @@ Strict="Strict"
 DRFW="drf-w"
 METHOD=$SPEEDFAIR
 
+if [ -z "$2" ]
+then
+	METHOD=$SPEEDFAIR
+else
+	METHOD="$2"
+fi
+
+if [ -z "$3" ]
+then
+	batchNum=4
+else
+	batchNum=$3
+fi
+
 ## author: Tan N. Le ~ CS department Stony Brook University
 
 ### DO this command first at master node #####
@@ -23,15 +37,21 @@ AUTOSSH_PORT=20000
 
 isCloudLab=true
 isAmazonEC=false
-isLocalhost=true
+isLocalhost=false
 IS_INIT=false
-isOfficial=false
+isOfficial=true
 TEST=false
 SSH_CMD="autossh"
+#SSH_CMD="ssh -v "
 yarnFramework="yarn"
 enableSim="true"
-enablePreemption="true"
-scaleDown=4.0 # DEFAULT 1.0, use 4.0 to increase the number of tasks -> 4 times.
+enablePreemption="false"
+if $isOfficial
+then
+	scaleDown=1.0 # DEFAULT 1.0, use 4.0 to increase the number of tasks -> 4 times.
+else
+	scaleDown=4.0 # DEFAULT 1.0, use 4.0 to increase the number of tasks -> 4 times.
+fi
 
 if $isLocalhost
 then
@@ -43,11 +63,12 @@ fi
 username="tanle"
 groupname="yarnrm-PG0"
 
-workloadSrcFile="/home/tanle/projects/SpeedFairSim/input_gen/jobs_input_1_3.txt"
+workloadSrcFile="/home/tanle/projects/SpeedFairSim/input_gen/jobs_input_1_$batchNum.txt"
+genJavaFile="/home/tanle/projects/ccra/SWIM/GenerateProfile.java"
 
 java_home='/usr/lib/jvm/java-8-oracle'
 
-echo "=====set up $hostname====="
+
 
 ######################### Hadoop  #####################
 hadoopFolder="hadoop"
@@ -62,10 +83,16 @@ hadoopTgz="hadoop-$hadoopVersion.tar.gz"
 
 if $isLocalhost
 then
-	#workloadSrcFile="/home/tanle/projects/SpeedFairSim/workload/simple.txt"
+	workloadSrcFile="/home/tanle/projects/SpeedFairSim/workload/jobs_input_1_1_simple.txt"
 	workloadFile="/home/tanle/hadoop/conf/simple.txt"
+	profilePath="/home/tanle/hadoop/conf/"
+	simLogPath="/home/tanle/SWIM/scriptsTest/workGenLogs/"
+	genJavaFileDst="/home/tanle/hadoop/conf/GenerateProfile.java"
 else
 	workloadFile="/users/tanle/hadoop/conf/simple.txt"
+	profilePath="/users/tanle/hadoop/conf/"
+	simLogPath="/users/tanle/SWIM/scriptsTest/workGenLogs/"
+	genJavaFileDst="/users/tanle/hadoop/conf/GenerateProfile.java"
 fi
 
 yarnVcores=32
@@ -114,7 +141,7 @@ elif [ "$METHOD" == "$DRFW" ];
 then
 	shedulingPolicy="drf"; weight=4
 else
-	echo "This method does not exist."; exit;
+	echo "[ERROR] This METHOD $METHOD does not exist."; exit;
 	shedulingPolicy="drf";
 fi
 
@@ -174,29 +201,35 @@ fi
 
 ##########
 
-PARALLEL=5
+PARALLEL=41
 
 if $isLocalhost
 then
 	hostname="localhost"; 
 else
-	hostname="ctl.yarn-perf.yarnrm-pg0.wisc.cloudlab.us"; cp ~/.ssh/config.yarn-perf ~/.ssh/config; 
-	#hostname="ctl.yarn-drf.yarnrm-pg0.utah.cloudlab.us"; cp ~/.ssh/config.yarn-drf ~/.ssh/config; isUploadYarn=true ; 
-	#hostname="ctl.yarn-small.yarnrm-pg0.wisc.cloudlab.us"; cp ~/.ssh/config.yarn-small ~/.ssh/config; 
-	#hostname="ctl.yarn-large.yarnrm-pg0.utah.cloudlab.us"; cp ~/.ssh/config.yarn-large ~/.ssh/config;
+
+	if [ -z "$1" ]
+	then
+		#hostname="ctl.yarn-perf.yarnrm-pg0.wisc.cloudlab.us"; cp ~/.ssh/config.yarn-perf ~/.ssh/config; 
+		#hostname="ctl.yarn-drf.yarnrm-pg0.utah.cloudlab.us"; cp ~/.ssh/config.yarn-drf ~/.ssh/config; isUploadYarn=true ; 
+		#hostname="ctl.yarn-small.yarnrm-pg0.wisc.cloudlab.us"; cp ~/.ssh/config.yarn-small ~/.ssh/config; 
+		hostname="ctl.yarn-large.yarnrm-pg0.utah.cloudlab.us"; cp ~/.ssh/config.yarn-large ~/.ssh/config; 
+	else
+		hostname="ctl.$1.yarnrm-pg0.utah.cloudlab.us"; cp ~/.ssh/config.$1 ~/.ssh/config; 
+	fi
 fi
-echo "==== Running the setup for the cluster $hostname ======="
+echo "[INFO] =====set up $hostname====="
 
 REBOOT=false
 
 isUploadYarn=false
 isDownload=false
-isExtract=true
+isExtract=false
 
 isInstallHadoop=true
 
 isInstallTez=true
-isUploadTez=false
+isUploadTez=true
 
 
 if $isUploadYarn
@@ -278,7 +311,7 @@ then
 	isUploadKey=true
 	isGenerateKey=false
 	isPasswordlessSSH=true
-	isAddToGroup=true
+	isAddToGroup=false
 
 	isInstallBasePackages=true
 
@@ -299,17 +332,37 @@ then
 	isUploadTez=true
 fi
 
-if $isCloudLab
+if $isLocalhost
+then
+	echo "Setup Yarn on localhost"
+	masterNode="localhost"
+	serverList="localhost"
+	slaveNodes="localhost"
+	numOfReplication=1
+	numOfworkers=1
+	isUploadKey=false
+	isInstallBasePackages=false
+	isInstallGanglia=false
+	isInstallFlink=false
+	isAddToGroup=false
+	isInitPath=false # use it if working on the new computer
+
+	isDownload=false
+	isUploadYarn=true
+	isExtract=true
+
+	isInstallTez=true
+	isUploadTez=true
+elif $isCloudLab
 then
 	echo " at CLOUDLAB "
 	masterNode="ctl"
 	if $isOfficial
 	then
 		numOfworkers=40
-		#serverList="$masterNode ctl cp-1 cp-2 cp-3 cp-4 cp-5 cp-6 cp-7 cp-8 cp-9 cp-10 cp-11 cp-12 cp-13 cp-14 cp-15 cp-16 cp-17 cp-18 cp-19 cp-20 cp-21 cp-22 cp-23 cp-24 cp-25 cp-26 cp-27 cp-28 cp-29 cp-30 cp-31 cp-32 cp-33 cp-34 cp-35 cp-36 cp-37 cp-38 cp-39 cp-40 cp-41 cp-42 cp-43 cp-44 cp-45 cp-46 cp-47 cp-48 cp-49"
-		serverList="$masterNode cp-1 cp-2 cp-3 cp-4 cp-5 cp-6 cp-7 cp-8 cp-9 cp-10 cp-11 cp-12 cp-13     cp-15 cp-16 cp-17 cp-18 cp-19 cp-20 cp-21 cp-22 cp-23 cp-24 cp-25 cp-26 cp-27   cp-29 cp-30 cp-31   cp-33 cp-34 cp-35 cp-36 cp-37 cp-38 cp-39 cp-40 cp-41 cp-42"
-		#serverList="cp-21 cp-30"
-		slaveNodes="cp-1 cp-2 cp-3 cp-4 cp-5 cp-6 cp-7 cp-8 cp-9 cp-10 cp-11 cp-12 cp-13     cp-15 cp-16 cp-17 cp-18 cp-19 cp-20 cp-21 cp-22 cp-23 cp-24 cp-25 cp-26 cp-27   cp-29 cp-30 cp-31   cp-33 cp-34 cp-35 cp-36 cp-37 cp-38 cp-39 cp-40 cp-41 cp-42"
+		serverList="$masterNode cp-1 cp-2 cp-3 cp-4 cp-5 cp-6 cp-7 cp-8 cp-9 cp-10 cp-11 cp-12 cp-13 cp-14 cp-15 cp-16 cp-17 cp-18 cp-19 cp-20 cp-21 cp-22 cp-23 cp-24 cp-25 cp-26 cp-27 cp-28 cp-29 cp-30 cp-31 cp-32 cp-33 cp-34 cp-35 cp-36 cp-37 cp-38 cp-39 cp-40"
+		#serverList="$masterNode cp-1 cp-2 cp-3 cp-4 cp-5 cp-6 cp-7 cp-8 cp-9 cp-10 cp-11 cp-12 cp-13     cp-15 cp-16 cp-17 cp-18 cp-19 cp-20 cp-21 cp-22 cp-23 cp-24 cp-25 cp-26 cp-27   cp-29 cp-30 cp-31   cp-33 cp-34 cp-35 cp-36 cp-37 cp-38 cp-39 cp-40 cp-41 cp-42"
+		slaveNodes="cp-1 cp-2 cp-3 cp-4 cp-5 cp-6 cp-7 cp-8 cp-9 cp-10 cp-11 cp-12 cp-13 cp-14 cp-15 cp-16 cp-17 cp-18 cp-19 cp-20 cp-21 cp-22 cp-23 cp-24 cp-25 cp-26 cp-27 cp-28 cp-29 cp-30 cp-31 cp-32 cp-33 cp-34 cp-35 cp-36 cp-37 cp-38 cp-39 cp-40"
 		numOfReplication=3
 	else
 		if $TEST
@@ -329,30 +382,6 @@ then
 elif $isAmazonEC
 then
 	echo "Amazon EC"
-else
-	
-	if $isLocalhost
-	then
-		echo "Setup Yarn on localhost"
-		masterNode="localhost"
-		serverList="localhost"
-		slaveNodes="localhost"
-		numOfReplication=1
-		numOfworkers=1
-		isUploadKey=false
-		isInstallBasePackages=false
-		isInstallGanglia=false
-		isInstallFlink=false
-		isAddToGroup=false
-		isInitPath=false # use it if working on the new computer
-
-		isDownload=false
-		isUploadYarn=true
-		isExtract=true
-
-		isInstallTez=true
-		isUploadTez=true
-	fi
 fi
 
 
@@ -403,32 +432,32 @@ echo ################################# passwordless SSH ########################
                 [Nn]* ) exit;;
                 * ) echo "Please answer yes or no.";;
             esac
-        done 	
+	    done 	
 		
 	fi
-	rm -rf ~/.ssh/known_hosts
-	echo "uploading keys"
-	for server in $serverList; do
-		echo upload keys to $server
-		$SSH_CMD $username@$server 'sudo rm -rf $HOME/.ssh/id_rsa*'
-		scp ~/.ssh/id_rsa* $username@$server:~/.ssh/
-		$SSH_CMD $username@$server "cat ~/.ssh/id_rsa.pub >> ~/.ssh/authorized_keys ;
+	uploadKeys () { 
+		echo upload keys to $1
+		$SSH_CMD $username@$1 'sudo rm -rf $HOME/.ssh/id_rsa*'
+		scp ~/.ssh/id_rsa* $username@$1:~/.ssh/
+		$SSH_CMD $username@$1 "cat ~/.ssh/id_rsa.pub >> ~/.ssh/authorized_keys ;
 		 chmod 0600 ~/.ssh/id_rsa*; 
 		 chmod 0600 ~/.ssh/authorized_keys; 
 		 rm -rf ~/.ssh/known_hosts; 	
 		 echo 'StrictHostKeyChecking no' >> ~/.ssh/config"
-#		$SSH_CMD $username@$server "echo password less from localhost to $server"
+	}
+	rm -rf ~/.ssh/known_hosts
+
+	echo "uploading keys"
+	for server in $serverList; do
+		uploadKeys $server &
 	done	
+	wait
 fi
 
 if $isAddToGroup
 then
 	for server in $serverList; do
 		$SSH_CMD $username@$server "sudo addgroup $groupname;sudo adduser $username $groupname;	sudo adduser root $groupname" &
-		#$SSH_CMD $username@$server "sudo adduser root $groupname" &
-		
-		#$SSH_CMD $username@$server "sudo adduser $username sudo"
-		#sudo adduser --ingroup $groupname $username;
 	done
 	wait
 fi
@@ -789,6 +818,11 @@ echo "#################################### install Hadoop Yarn #################
     <name>yarn.nodemanager.vmem-check-enabled</name>
     <value>false</value>
   </property>
+
+  <property>
+    <name>yarn.cmpl.path</name>
+    <value>$simLogPath</value>
+  </property>
 	
 </configuration>' > $hadoopFolder/$configFolder/yarn-site.xml"
 
@@ -837,7 +871,6 @@ echo "#################################### install Hadoop Yarn #################
 </queue>
 <queue name=\"batch2\">
 	<weight>1</weight>
-		
 	<schedulingPolicy>fifo</schedulingPolicy>
 </queue>
 </allocations>' > $fairSchedulerFile"
@@ -851,8 +884,9 @@ echo "#################################### install Hadoop Yarn #################
 <defaultFairSharePreemptionThreshold>1.0</defaultFairSharePreemptionThreshold>
 
 <queue name=\"bursty0\">	
-	<minReq>262144 mb, 256 vcores</minReq> 
-	<speedDuration>40000</speedDuration>
+	<minReq>1310720 mb, 1280 vcores</minReq> 
+	<!-- <minReq>16384 mb, 16 vcores</minReq> -->
+	<speedDuration>20000</speedDuration>
 	<period>200000</period>
 	<startTime>-1</startTime>
 	<weight>$weight</weight>
@@ -870,6 +904,31 @@ echo "#################################### install Hadoop Yarn #################
 	<schedulingPolicy>fifo</schedulingPolicy>
 </queue>
 <queue name=\"batch2\">
+	<weight>1</weight>
+	<allowPreemptionFrom>$enablePreemption</allowPreemptionFrom>	
+	<schedulingPolicy>fifo</schedulingPolicy>
+</queue>
+<queue name=\"batch3\">
+	<weight>1</weight>
+	<allowPreemptionFrom>$enablePreemption</allowPreemptionFrom>	
+	<schedulingPolicy>fifo</schedulingPolicy>
+</queue>
+<queue name=\"batch4\">
+	<weight>1</weight>
+	<allowPreemptionFrom>$enablePreemption</allowPreemptionFrom>	
+	<schedulingPolicy>fifo</schedulingPolicy>
+</queue>
+<queue name=\"batch5\">
+	<weight>1</weight>
+	<allowPreemptionFrom>$enablePreemption</allowPreemptionFrom>	
+	<schedulingPolicy>fifo</schedulingPolicy>
+</queue>
+<queue name=\"batch6\">
+	<weight>1</weight>
+	<allowPreemptionFrom>$enablePreemption</allowPreemptionFrom>	
+	<schedulingPolicy>fifo</schedulingPolicy>
+</queue>
+<queue name=\"batch7\">
 	<weight>1</weight>
 	<allowPreemptionFrom>$enablePreemption</allowPreemptionFrom>	
 	<schedulingPolicy>fifo</schedulingPolicy>
@@ -1066,9 +1125,10 @@ echo "#################################### install Hadoop Yarn #################
 				for slave in $slaveNodes; do
 					counter=$((counter+1))
 					$SSH_CMD $username@$slave "sudo rm -rf $hadoopTgz"
+					#uploadCMD="$uploadCMD scp $hadoopTgz $slave:~/ & "
 					uploadCMD="$uploadCMD scp $hadoopTgz $slave:~/ ; "
 				done
-				uploadCMD="$uploadCMD"
+				#uploadCMD="$uploadCMD wait"
 				echo $uploadCMD
 				$SSH_CMD $username@$masterNode "$uploadCMD"
 			fi
@@ -1160,11 +1220,11 @@ spark.streaming.dynamicAllocation.maxExecutors 500' > $sparkFolder/conf/spark-de
 	       	fi
 	done
 	wait
-else
-	for server in $serverList; do
-		#ssh $server "cp ~/spark/lib/$sparkVer-yarn-shuffle.jar ~/hadoop/share/hadoop/yarn/ > .null.txt" 
-		$SSH_CMD $server "cp ~/spark/yarn/$sparkVer-yarn-shuffle.jar ~/hadoop/share/hadoop/yarn/" # for 2.0.0 version
-	done	
+#lse
+#	for server in $serverList; do
+#		#ssh $server "cp ~/spark/lib/$sparkVer-yarn-shuffle.jar ~/hadoop/share/hadoop/yarn/ > .null.txt" 
+#		$SSH_CMD $server "cp ~/spark/yarn/$sparkVer-yarn-shuffle.jar ~/hadoop/share/hadoop/yarn/" # for 2.0.0 version
+#	done	
 fi
 
 
@@ -1235,8 +1295,28 @@ then
 		$SSH_CMD $username@$1 "echo '<?xml version=\"1.0\"?>
 		<configuration>
 			<property>
+			     <name>tez.am.container.reuse.enabled</name>
+			     <value>false</value>
+			</property>
+			<property>
+			     <name>tez.dag.profile.enable</name>
+			     <value>true</value>
+			</property>
+			<property>
 			     <name>tez.workload.trace</name>
 			     <value>$workloadFile</value>
+			</property>
+			<property>
+			     <name>tez.dag.profile.path</name>
+			     <value>$profilePath</value>
+			</property>
+			<property>
+			     <name>tez.simulation.log.enable</name>
+			     <value>true</value>
+			</property>
+			<property>
+			     <name>tez.simulation.log.path</name>
+			     <value>$simLogPath</value>
 			</property>
 			<property>
 			     <name>tez.queue.name</name>
@@ -1270,6 +1350,18 @@ then
 			<property>
 			     <name>tez.resource.singlenode</name>
 			     <value>$isLocalhost</value>
+			</property>			
+			<property>
+			     <name>tez.am.preemption.percentage</name>
+			     <value>0</value>
+			</property>
+			<property>
+			     <name>tez.am.preemption.max.wait-time-ms</name>
+			     <value>100</value>
+			</property>
+			<property>
+			     <name>tez.am.preemption.heartbeats-between-preemptions</name>
+			     <value>1</value>
 			</property>
 		</configuration>' > $hadoopFolder/$tezConfigFolder/tez-site.xml"
 		$SSH_CMD $username@$1 "mkdir $TEZ_JARS; tar -xvzf $tezMinTaz -C $TEZ_JARS"
@@ -1281,6 +1373,9 @@ then
 	$SSH_CMD $username@$masterNode "hadoop/bin/hadoop dfs -rmr /apps/tez/tez-0.8.4.tar.gz;
 	hadoop/bin/hadoop dfs -copyFromLocal tez-0.8.4.tar.gz /apps/tez/"
 	scp $workloadSrcFile  $username@$masterNode:$workloadFile
+	scp $genJavaFile $username@$masterNode:$genJavaFileDst
+	echo "cd hadoop/conf; javac $genJavaFileDst; java $genJavaFileDst $workloadFile"
+	$SSH_CMD $username@$masterNode "cd hadoop/conf; javac $genJavaFileDst; java GenerateProfile $workloadFile"
 	installTezFunc $masterNode
 	
 	#counter=0

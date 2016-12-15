@@ -433,7 +433,6 @@ public class TaskSchedulerManager extends AbstractService implements EventHandle
   }
 
   private void handleTaLaunchRequest(AMSchedulerEventTALaunchRequest event) {
-    LOG.info("[Tan]  handleTaLaunchRequest " + event);
 
     TaskAttempt taskAttempt = event.getTaskAttempt();
 

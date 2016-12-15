@@ -1810,6 +1810,11 @@ public class YarnConfiguration extends Configuration {
   public static final String NODE_LABELS_ENABLED = NODE_LABELS_PREFIX
       + "enabled";
   public static final boolean DEFAULT_NODE_LABELS_ENABLED = false;
+  
+  // emulation <<
+  public static final String YARN_COMPL_TIME_LOG_PATH = "yarn.cmpl.path";
+  public static final String YARN_COMPL_TIME_LOG_PATH_DEFAULT = "../";
+  // emulation >>
 
   public YarnConfiguration() {
     super();
