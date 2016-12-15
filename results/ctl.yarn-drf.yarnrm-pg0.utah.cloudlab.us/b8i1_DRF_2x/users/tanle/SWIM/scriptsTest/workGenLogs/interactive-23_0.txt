@@ -1,0 +1,183 @@
+SLF4J: Class path contains multiple SLF4J bindings.
+SLF4J: Found binding in [jar:file:/users/tanle/hadoop/share/hadoop/common/lib/slf4j-log4j12-1.7.10.jar!/org/slf4j/impl/StaticLoggerBinder.class]
+SLF4J: Found binding in [jar:file:/users/tanle/hadoop/tez_jars/lib/slf4j-log4j12-1.7.10.jar!/org/slf4j/impl/StaticLoggerBinder.class]
+SLF4J: See http://www.slf4j.org/codes.html#multiple_bindings for an explanation.
+SLF4J: Actual binding is of type [org.slf4j.impl.Log4jLoggerFactory]
+16/12/15 02:40:32 INFO shim.HadoopShimsLoader: Trying to locate HadoopShimProvider for hadoopVersion=2.7.2.1, majorVersion=2, minorVersion=7
+16/12/15 02:40:32 INFO shim.HadoopShimsLoader: Picked HadoopShim org.apache.tez.hadoop.shim.HadoopShim26, providerName=org.apache.tez.hadoop.shim.HadoopShim25_26_27Provider, overrideProviderViaConfig=null, hadoopVersion=2.7.2.1, majorVersion=2, minorVersion=7
+16/12/15 02:40:32 WARN util.NativeCodeLoader: Unable to load native-hadoop library for your platform... using builtin-java classes where applicable
+16/12/15 02:40:33 INFO client.TezClient: Tez Client Version: [ component=tez-api, version=0.8.4, revision=4e78776fe62e42a3dd9a37c81ab69f72b41f0c1c, SCM-URL=scm:git:https://git-wip-us.apache.org/repos/asf/tez.git, buildTime=20161210-1553 ]
+16/12/15 02:40:34 INFO client.RMProxy: Connecting to ResourceManager at ctl.yarn-drf.yarnrm-PG0.utah.cloudlab.us/128.110.152.151:8032
+16/12/15 02:40:34 INFO examples.DumpJob: 	 +++ Running ==== 23 ====
+16/12/15 02:40:35 INFO client.TezClient: Submitting DAG application with id: application_1481789616144_0124
+16/12/15 02:40:35 INFO client.TezClientUtils: Using tez.lib.uris value from configuration: hdfs://ctl:9000//apps/tez/tez-0.8.4.tar.gz
+16/12/15 02:40:35 INFO client.TezClientUtils: Using tez.lib.uris.classpath value from configuration: null
+16/12/15 02:40:36 INFO client.TezClient: Tez system stage directory hdfs://ctl:9000/tmp/tanle/tez/staging/.tez/application_1481789616144_0124 doesn't exist and is created
+16/12/15 02:40:37 INFO client.TezClient: Submitting DAG to YARN, applicationId=application_1481789616144_0124, dagName=23
+16/12/15 02:40:37 INFO impl.YarnClientImpl: Submitted application application_1481789616144_0124
+16/12/15 02:40:37 INFO client.TezClient: The url to track the Tez AM: http://ctl.yarn-drf.yarnrm-pg0.utah.cloudlab.us:8088/proxy/application_1481789616144_0124/
+16/12/15 02:45:46 INFO client.RMProxy: Connecting to ResourceManager at ctl.yarn-drf.yarnrm-pg0.utah.cloudlab.us/128.110.152.151:8032
+16/12/15 02:45:47 INFO client.DAGClientImpl: DAG initialized: CurrentState=Running
+16/12/15 02:45:47 INFO client.DAGClientImpl: DAG: State: RUNNING Progress: 0% TotalTasks: 280 Succeeded: 0 Running: 0 Failed: 0 Killed: 0
+16/12/15 02:45:47 INFO client.DAGClientImpl: 	VertexStatus: VertexName: Map1 Progress: 0% TotalTasks: 240 Succeeded: 0 Running: 0 Failed: 0 Killed: 0
+16/12/15 02:45:47 INFO client.DAGClientImpl: 	VertexStatus: VertexName: Reducer2 Progress: 0% TotalTasks: 40 Succeeded: 0 Running: 0 Failed: 0 Killed: 0
+16/12/15 02:45:52 INFO client.DAGClientImpl: DAG: State: RUNNING Progress: 0% TotalTasks: 280 Succeeded: 0 Running: 0 Failed: 0 Killed: 0
+16/12/15 02:45:52 INFO client.DAGClientImpl: 	VertexStatus: VertexName: Map1 Progress: 0% TotalTasks: 240 Succeeded: 0 Running: 0 Failed: 0 Killed: 0
+16/12/15 02:45:52 INFO client.DAGClientImpl: 	VertexStatus: VertexName: Reducer2 Progress: 0% TotalTasks: 40 Succeeded: 0 Running: 0 Failed: 0 Killed: 0
+16/12/15 02:45:57 INFO client.DAGClientImpl: DAG: State: RUNNING Progress: 0% TotalTasks: 280 Succeeded: 0 Running: 0 Failed: 0 Killed: 0
+16/12/15 02:45:57 INFO client.DAGClientImpl: 	VertexStatus: VertexName: Map1 Progress: 0% TotalTasks: 240 Succeeded: 0 Running: 0 Failed: 0 Killed: 0
+16/12/15 02:45:57 INFO client.DAGClientImpl: 	VertexStatus: VertexName: Reducer2 Progress: 0% TotalTasks: 40 Succeeded: 0 Running: 0 Failed: 0 Killed: 0
+16/12/15 02:46:02 INFO client.DAGClientImpl: DAG: State: RUNNING Progress: 0% TotalTasks: 280 Succeeded: 0 Running: 0 Failed: 0 Killed: 0
+16/12/15 02:46:02 INFO client.DAGClientImpl: 	VertexStatus: VertexName: Map1 Progress: 0% TotalTasks: 240 Succeeded: 0 Running: 0 Failed: 0 Killed: 0
+16/12/15 02:46:02 INFO client.DAGClientImpl: 	VertexStatus: VertexName: Reducer2 Progress: 0% TotalTasks: 40 Succeeded: 0 Running: 0 Failed: 0 Killed: 0
+16/12/15 02:46:07 INFO client.DAGClientImpl: DAG: State: RUNNING Progress: 0% TotalTasks: 280 Succeeded: 0 Running: 0 Failed: 0 Killed: 0
+16/12/15 02:46:07 INFO client.DAGClientImpl: 	VertexStatus: VertexName: Map1 Progress: 0% TotalTasks: 240 Succeeded: 0 Running: 0 Failed: 0 Killed: 0
+16/12/15 02:46:07 INFO client.DAGClientImpl: 	VertexStatus: VertexName: Reducer2 Progress: 0% TotalTasks: 40 Succeeded: 0 Running: 0 Failed: 0 Killed: 0
+16/12/15 02:46:12 INFO client.DAGClientImpl: DAG: State: RUNNING Progress: 0% TotalTasks: 280 Succeeded: 0 Running: 0 Failed: 0 Killed: 0
+16/12/15 02:46:12 INFO client.DAGClientImpl: 	VertexStatus: VertexName: Map1 Progress: 0% TotalTasks: 240 Succeeded: 0 Running: 0 Failed: 0 Killed: 0
+16/12/15 02:46:12 INFO client.DAGClientImpl: 	VertexStatus: VertexName: Reducer2 Progress: 0% TotalTasks: 40 Succeeded: 0 Running: 0 Failed: 0 Killed: 0
+16/12/15 02:46:17 INFO client.DAGClientImpl: DAG: State: RUNNING Progress: 0% TotalTasks: 280 Succeeded: 0 Running: 0 Failed: 0 Killed: 0
+16/12/15 02:46:17 INFO client.DAGClientImpl: 	VertexStatus: VertexName: Map1 Progress: 0% TotalTasks: 240 Succeeded: 0 Running: 0 Failed: 0 Killed: 0
+16/12/15 02:46:17 INFO client.DAGClientImpl: 	VertexStatus: VertexName: Reducer2 Progress: 0% TotalTasks: 40 Succeeded: 0 Running: 0 Failed: 0 Killed: 0
+16/12/15 02:46:22 INFO client.DAGClientImpl: DAG: State: RUNNING Progress: 0% TotalTasks: 280 Succeeded: 0 Running: 0 Failed: 0 Killed: 0
+16/12/15 02:46:22 INFO client.DAGClientImpl: 	VertexStatus: VertexName: Map1 Progress: 0% TotalTasks: 240 Succeeded: 0 Running: 0 Failed: 0 Killed: 0
+16/12/15 02:46:22 INFO client.DAGClientImpl: 	VertexStatus: VertexName: Reducer2 Progress: 0% TotalTasks: 40 Succeeded: 0 Running: 0 Failed: 0 Killed: 0
+16/12/15 02:46:27 INFO client.DAGClientImpl: DAG: State: RUNNING Progress: 0% TotalTasks: 280 Succeeded: 0 Running: 0 Failed: 0 Killed: 0
+16/12/15 02:46:27 INFO client.DAGClientImpl: 	VertexStatus: VertexName: Map1 Progress: 0% TotalTasks: 240 Succeeded: 0 Running: 0 Failed: 0 Killed: 0
+16/12/15 02:46:27 INFO client.DAGClientImpl: 	VertexStatus: VertexName: Reducer2 Progress: 0% TotalTasks: 40 Succeeded: 0 Running: 0 Failed: 0 Killed: 0
+16/12/15 02:46:32 INFO client.DAGClientImpl: DAG: State: RUNNING Progress: 0% TotalTasks: 280 Succeeded: 0 Running: 42 Failed: 0 Killed: 0
+16/12/15 02:46:32 INFO client.DAGClientImpl: 	VertexStatus: VertexName: Map1 Progress: 0% TotalTasks: 240 Succeeded: 0 Running: 42 Failed: 0 Killed: 0
+16/12/15 02:46:32 INFO client.DAGClientImpl: 	VertexStatus: VertexName: Reducer2 Progress: 0% TotalTasks: 40 Succeeded: 0 Running: 0 Failed: 0 Killed: 0
+16/12/15 02:46:37 INFO client.DAGClientImpl: DAG: State: RUNNING Progress: 0% TotalTasks: 280 Succeeded: 0 Running: 101 Failed: 0 Killed: 0
+16/12/15 02:46:37 INFO client.DAGClientImpl: 	VertexStatus: VertexName: Map1 Progress: 0% TotalTasks: 240 Succeeded: 0 Running: 101 Failed: 0 Killed: 0
+16/12/15 02:46:37 INFO client.DAGClientImpl: 	VertexStatus: VertexName: Reducer2 Progress: 0% TotalTasks: 40 Succeeded: 0 Running: 0 Failed: 0 Killed: 0
+16/12/15 02:46:41 INFO client.DAGClientImpl: DAG: State: RUNNING Progress: 0.71% TotalTasks: 280 Succeeded: 2 Running: 112 Failed: 0 Killed: 0
+16/12/15 02:46:41 INFO client.DAGClientImpl: 	VertexStatus: VertexName: Map1 Progress: 0.83% TotalTasks: 240 Succeeded: 2 Running: 112 Failed: 0 Killed: 0
+16/12/15 02:46:41 INFO client.DAGClientImpl: 	VertexStatus: VertexName: Reducer2 Progress: 0% TotalTasks: 40 Succeeded: 0 Running: 0 Failed: 0 Killed: 0
+16/12/15 02:46:43 INFO client.DAGClientImpl: DAG: State: RUNNING Progress: 2.14% TotalTasks: 280 Succeeded: 6 Running: 108 Failed: 0 Killed: 0
+16/12/15 02:46:43 INFO client.DAGClientImpl: 	VertexStatus: VertexName: Map1 Progress: 2.5% TotalTasks: 240 Succeeded: 6 Running: 107 Failed: 0 Killed: 0
+16/12/15 02:46:43 INFO client.DAGClientImpl: 	VertexStatus: VertexName: Reducer2 Progress: 0% TotalTasks: 40 Succeeded: 0 Running: 0 Failed: 0 Killed: 0
+16/12/15 02:46:43 INFO client.DAGClientImpl: DAG: State: RUNNING Progress: 3.93% TotalTasks: 280 Succeeded: 11 Running: 103 Failed: 0 Killed: 0
+16/12/15 02:46:43 INFO client.DAGClientImpl: 	VertexStatus: VertexName: Map1 Progress: 4.58% TotalTasks: 240 Succeeded: 11 Running: 103 Failed: 0 Killed: 0
+16/12/15 02:46:43 INFO client.DAGClientImpl: 	VertexStatus: VertexName: Reducer2 Progress: 0% TotalTasks: 40 Succeeded: 0 Running: 0 Failed: 0 Killed: 0
+16/12/15 02:46:44 INFO client.DAGClientImpl: DAG: State: RUNNING Progress: 4.29% TotalTasks: 280 Succeeded: 12 Running: 105 Failed: 0 Killed: 0
+16/12/15 02:46:44 INFO client.DAGClientImpl: 	VertexStatus: VertexName: Map1 Progress: 5% TotalTasks: 240 Succeeded: 12 Running: 105 Failed: 0 Killed: 0
+16/12/15 02:46:44 INFO client.DAGClientImpl: 	VertexStatus: VertexName: Reducer2 Progress: 0% TotalTasks: 40 Succeeded: 0 Running: 0 Failed: 0 Killed: 0
+16/12/15 02:46:44 INFO client.DAGClientImpl: DAG: State: RUNNING Progress: 10.71% TotalTasks: 280 Succeeded: 30 Running: 87 Failed: 0 Killed: 0
+16/12/15 02:46:44 INFO client.DAGClientImpl: 	VertexStatus: VertexName: Map1 Progress: 12.5% TotalTasks: 240 Succeeded: 30 Running: 87 Failed: 0 Killed: 0
+16/12/15 02:46:44 INFO client.DAGClientImpl: 	VertexStatus: VertexName: Reducer2 Progress: 0% TotalTasks: 40 Succeeded: 0 Running: 0 Failed: 0 Killed: 0
+16/12/15 02:46:45 INFO client.DAGClientImpl: DAG: State: RUNNING Progress: 14.64% TotalTasks: 280 Succeeded: 41 Running: 79 Failed: 0 Killed: 0
+16/12/15 02:46:45 INFO client.DAGClientImpl: 	VertexStatus: VertexName: Map1 Progress: 17.08% TotalTasks: 240 Succeeded: 41 Running: 79 Failed: 0 Killed: 0
+16/12/15 02:46:45 INFO client.DAGClientImpl: 	VertexStatus: VertexName: Reducer2 Progress: 0% TotalTasks: 40 Succeeded: 0 Running: 0 Failed: 0 Killed: 0
+16/12/15 02:46:46 INFO client.DAGClientImpl: DAG: State: RUNNING Progress: 15% TotalTasks: 280 Succeeded: 42 Running: 80 Failed: 0 Killed: 0
+16/12/15 02:46:46 INFO client.DAGClientImpl: 	VertexStatus: VertexName: Map1 Progress: 17.5% TotalTasks: 240 Succeeded: 42 Running: 80 Failed: 0 Killed: 0
+16/12/15 02:46:46 INFO client.DAGClientImpl: 	VertexStatus: VertexName: Reducer2 Progress: 0% TotalTasks: 40 Succeeded: 0 Running: 0 Failed: 0 Killed: 0
+16/12/15 02:46:46 INFO client.DAGClientImpl: DAG: State: RUNNING Progress: 20.71% TotalTasks: 280 Succeeded: 58 Running: 64 Failed: 0 Killed: 0
+16/12/15 02:46:46 INFO client.DAGClientImpl: 	VertexStatus: VertexName: Map1 Progress: 24.17% TotalTasks: 240 Succeeded: 58 Running: 64 Failed: 0 Killed: 0
+16/12/15 02:46:46 INFO client.DAGClientImpl: 	VertexStatus: VertexName: Reducer2 Progress: 0% TotalTasks: 40 Succeeded: 0 Running: 0 Failed: 0 Killed: 0
+16/12/15 02:46:47 INFO client.DAGClientImpl: DAG: State: RUNNING Progress: 21.07% TotalTasks: 280 Succeeded: 59 Running: 63 Failed: 0 Killed: 0
+16/12/15 02:46:47 INFO client.DAGClientImpl: 	VertexStatus: VertexName: Map1 Progress: 24.58% TotalTasks: 240 Succeeded: 59 Running: 63 Failed: 0 Killed: 0
+16/12/15 02:46:47 INFO client.DAGClientImpl: 	VertexStatus: VertexName: Reducer2 Progress: 0% TotalTasks: 40 Succeeded: 0 Running: 0 Failed: 0 Killed: 0
+16/12/15 02:46:47 INFO client.DAGClientImpl: DAG: State: RUNNING Progress: 28.57% TotalTasks: 280 Succeeded: 80 Running: 42 Failed: 0 Killed: 0
+16/12/15 02:46:47 INFO client.DAGClientImpl: 	VertexStatus: VertexName: Map1 Progress: 33.33% TotalTasks: 240 Succeeded: 80 Running: 42 Failed: 0 Killed: 0
+16/12/15 02:46:47 INFO client.DAGClientImpl: 	VertexStatus: VertexName: Reducer2 Progress: 0% TotalTasks: 40 Succeeded: 0 Running: 0 Failed: 0 Killed: 0
+16/12/15 02:46:48 INFO client.DAGClientImpl: DAG: State: RUNNING Progress: 28.93% TotalTasks: 280 Succeeded: 81 Running: 50 Failed: 0 Killed: 0
+16/12/15 02:46:48 INFO client.DAGClientImpl: 	VertexStatus: VertexName: Map1 Progress: 33.75% TotalTasks: 240 Succeeded: 81 Running: 50 Failed: 0 Killed: 0
+16/12/15 02:46:48 INFO client.DAGClientImpl: 	VertexStatus: VertexName: Reducer2 Progress: 0% TotalTasks: 40 Succeeded: 0 Running: 0 Failed: 0 Killed: 0
+16/12/15 02:46:48 INFO client.DAGClientImpl: DAG: State: RUNNING Progress: 33.21% TotalTasks: 280 Succeeded: 93 Running: 38 Failed: 0 Killed: 0
+16/12/15 02:46:48 INFO client.DAGClientImpl: 	VertexStatus: VertexName: Map1 Progress: 38.75% TotalTasks: 240 Succeeded: 93 Running: 38 Failed: 0 Killed: 0
+16/12/15 02:46:48 INFO client.DAGClientImpl: 	VertexStatus: VertexName: Reducer2 Progress: 0% TotalTasks: 40 Succeeded: 0 Running: 0 Failed: 0 Killed: 0
+16/12/15 02:46:49 INFO client.DAGClientImpl: DAG: State: RUNNING Progress: 34.29% TotalTasks: 280 Succeeded: 96 Running: 54 Failed: 0 Killed: 0
+16/12/15 02:46:49 INFO client.DAGClientImpl: 	VertexStatus: VertexName: Map1 Progress: 40% TotalTasks: 240 Succeeded: 96 Running: 54 Failed: 0 Killed: 0
+16/12/15 02:46:49 INFO client.DAGClientImpl: 	VertexStatus: VertexName: Reducer2 Progress: 0% TotalTasks: 40 Succeeded: 0 Running: 0 Failed: 0 Killed: 0
+16/12/15 02:46:49 INFO client.DAGClientImpl: DAG: State: RUNNING Progress: 35.71% TotalTasks: 280 Succeeded: 100 Running: 50 Failed: 0 Killed: 0
+16/12/15 02:46:49 INFO client.DAGClientImpl: 	VertexStatus: VertexName: Map1 Progress: 41.67% TotalTasks: 240 Succeeded: 100 Running: 50 Failed: 0 Killed: 0
+16/12/15 02:46:49 INFO client.DAGClientImpl: 	VertexStatus: VertexName: Reducer2 Progress: 0% TotalTasks: 40 Succeeded: 0 Running: 0 Failed: 0 Killed: 0
+16/12/15 02:46:50 INFO client.DAGClientImpl: DAG: State: RUNNING Progress: 36.07% TotalTasks: 280 Succeeded: 101 Running: 61 Failed: 0 Killed: 0
+16/12/15 02:46:50 INFO client.DAGClientImpl: 	VertexStatus: VertexName: Map1 Progress: 42.08% TotalTasks: 240 Succeeded: 101 Running: 61 Failed: 0 Killed: 0
+16/12/15 02:46:50 INFO client.DAGClientImpl: 	VertexStatus: VertexName: Reducer2 Progress: 0% TotalTasks: 40 Succeeded: 0 Running: 0 Failed: 0 Killed: 0
+16/12/15 02:46:51 INFO client.DAGClientImpl: DAG: State: RUNNING Progress: 36.79% TotalTasks: 280 Succeeded: 103 Running: 72 Failed: 0 Killed: 0
+16/12/15 02:46:51 INFO client.DAGClientImpl: 	VertexStatus: VertexName: Map1 Progress: 42.92% TotalTasks: 240 Succeeded: 103 Running: 72 Failed: 0 Killed: 0
+16/12/15 02:46:51 INFO client.DAGClientImpl: 	VertexStatus: VertexName: Reducer2 Progress: 0% TotalTasks: 40 Succeeded: 0 Running: 0 Failed: 0 Killed: 0
+16/12/15 02:46:52 INFO client.DAGClientImpl: DAG: State: RUNNING Progress: 39.29% TotalTasks: 280 Succeeded: 110 Running: 87 Failed: 0 Killed: 0
+16/12/15 02:46:52 INFO client.DAGClientImpl: 	VertexStatus: VertexName: Map1 Progress: 45.83% TotalTasks: 240 Succeeded: 110 Running: 87 Failed: 0 Killed: 0
+16/12/15 02:46:52 INFO client.DAGClientImpl: 	VertexStatus: VertexName: Reducer2 Progress: 0% TotalTasks: 40 Succeeded: 0 Running: 0 Failed: 0 Killed: 0
+16/12/15 02:46:53 INFO client.DAGClientImpl: DAG: State: RUNNING Progress: 40.71% TotalTasks: 280 Succeeded: 114 Running: 97 Failed: 0 Killed: 0
+16/12/15 02:46:53 INFO client.DAGClientImpl: 	VertexStatus: VertexName: Map1 Progress: 47.5% TotalTasks: 240 Succeeded: 114 Running: 97 Failed: 0 Killed: 0
+16/12/15 02:46:53 INFO client.DAGClientImpl: 	VertexStatus: VertexName: Reducer2 Progress: 0% TotalTasks: 40 Succeeded: 0 Running: 0 Failed: 0 Killed: 0
+16/12/15 02:46:57 INFO client.DAGClientImpl: DAG: State: RUNNING Progress: 41.79% TotalTasks: 280 Succeeded: 117 Running: 113 Failed: 0 Killed: 0
+16/12/15 02:46:57 INFO client.DAGClientImpl: 	VertexStatus: VertexName: Map1 Progress: 48.75% TotalTasks: 240 Succeeded: 117 Running: 113 Failed: 0 Killed: 0
+16/12/15 02:46:57 INFO client.DAGClientImpl: 	VertexStatus: VertexName: Reducer2 Progress: 0% TotalTasks: 40 Succeeded: 0 Running: 0 Failed: 0 Killed: 0
+16/12/15 02:46:58 INFO client.DAGClientImpl: DAG: State: RUNNING Progress: 42.86% TotalTasks: 280 Succeeded: 120 Running: 114 Failed: 0 Killed: 0
+16/12/15 02:46:58 INFO client.DAGClientImpl: 	VertexStatus: VertexName: Map1 Progress: 50% TotalTasks: 240 Succeeded: 120 Running: 114 Failed: 0 Killed: 0
+16/12/15 02:46:58 INFO client.DAGClientImpl: 	VertexStatus: VertexName: Reducer2 Progress: 0% TotalTasks: 40 Succeeded: 0 Running: 0 Failed: 0 Killed: 0
+16/12/15 02:46:59 INFO client.DAGClientImpl: DAG: State: RUNNING Progress: 43.57% TotalTasks: 280 Succeeded: 122 Running: 112 Failed: 0 Killed: 0
+16/12/15 02:46:59 INFO client.DAGClientImpl: 	VertexStatus: VertexName: Map1 Progress: 50.83% TotalTasks: 240 Succeeded: 122 Running: 112 Failed: 0 Killed: 0
+16/12/15 02:46:59 INFO client.DAGClientImpl: 	VertexStatus: VertexName: Reducer2 Progress: 0% TotalTasks: 40 Succeeded: 0 Running: 0 Failed: 0 Killed: 0
+16/12/15 02:47:01 INFO client.DAGClientImpl: DAG: State: RUNNING Progress: 46.43% TotalTasks: 280 Succeeded: 130 Running: 104 Failed: 0 Killed: 0
+16/12/15 02:47:01 INFO client.DAGClientImpl: 	VertexStatus: VertexName: Map1 Progress: 54.58% TotalTasks: 240 Succeeded: 131 Running: 103 Failed: 0 Killed: 0
+16/12/15 02:47:01 INFO client.DAGClientImpl: 	VertexStatus: VertexName: Reducer2 Progress: 0% TotalTasks: 40 Succeeded: 0 Running: 0 Failed: 0 Killed: 0
+16/12/15 02:47:02 INFO client.DAGClientImpl: DAG: State: RUNNING Progress: 46.79% TotalTasks: 280 Succeeded: 131 Running: 103 Failed: 0 Killed: 0
+16/12/15 02:47:02 INFO client.DAGClientImpl: 	VertexStatus: VertexName: Map1 Progress: 54.58% TotalTasks: 240 Succeeded: 131 Running: 103 Failed: 0 Killed: 0
+16/12/15 02:47:02 INFO client.DAGClientImpl: 	VertexStatus: VertexName: Reducer2 Progress: 0% TotalTasks: 40 Succeeded: 0 Running: 0 Failed: 0 Killed: 0
+16/12/15 02:47:02 INFO client.DAGClientImpl: DAG: State: RUNNING Progress: 49.64% TotalTasks: 280 Succeeded: 139 Running: 98 Failed: 0 Killed: 0
+16/12/15 02:47:02 INFO client.DAGClientImpl: 	VertexStatus: VertexName: Map1 Progress: 57.92% TotalTasks: 240 Succeeded: 139 Running: 98 Failed: 0 Killed: 0
+16/12/15 02:47:02 INFO client.DAGClientImpl: 	VertexStatus: VertexName: Reducer2 Progress: 0% TotalTasks: 40 Succeeded: 0 Running: 0 Failed: 0 Killed: 0
+16/12/15 02:47:03 INFO client.DAGClientImpl: DAG: State: RUNNING Progress: 53.57% TotalTasks: 280 Succeeded: 150 Running: 87 Failed: 0 Killed: 0
+16/12/15 02:47:03 INFO client.DAGClientImpl: 	VertexStatus: VertexName: Map1 Progress: 62.5% TotalTasks: 240 Succeeded: 150 Running: 87 Failed: 0 Killed: 0
+16/12/15 02:47:03 INFO client.DAGClientImpl: 	VertexStatus: VertexName: Reducer2 Progress: 0% TotalTasks: 40 Succeeded: 0 Running: 0 Failed: 0 Killed: 0
+16/12/15 02:47:03 INFO client.DAGClientImpl: DAG: State: RUNNING Progress: 54.29% TotalTasks: 280 Succeeded: 152 Running: 88 Failed: 0 Killed: 0
+16/12/15 02:47:03 INFO client.DAGClientImpl: 	VertexStatus: VertexName: Map1 Progress: 63.33% TotalTasks: 240 Succeeded: 152 Running: 88 Failed: 0 Killed: 0
+16/12/15 02:47:03 INFO client.DAGClientImpl: 	VertexStatus: VertexName: Reducer2 Progress: 0% TotalTasks: 40 Succeeded: 0 Running: 0 Failed: 0 Killed: 0
+16/12/15 02:47:04 INFO client.DAGClientImpl: DAG: State: RUNNING Progress: 57.5% TotalTasks: 280 Succeeded: 161 Running: 79 Failed: 0 Killed: 0
+16/12/15 02:47:04 INFO client.DAGClientImpl: 	VertexStatus: VertexName: Map1 Progress: 67.08% TotalTasks: 240 Succeeded: 161 Running: 79 Failed: 0 Killed: 0
+16/12/15 02:47:04 INFO client.DAGClientImpl: 	VertexStatus: VertexName: Reducer2 Progress: 0% TotalTasks: 40 Succeeded: 0 Running: 0 Failed: 0 Killed: 0
+16/12/15 02:47:04 INFO client.DAGClientImpl: DAG: State: RUNNING Progress: 58.21% TotalTasks: 280 Succeeded: 163 Running: 78 Failed: 0 Killed: 0
+16/12/15 02:47:04 INFO client.DAGClientImpl: 	VertexStatus: VertexName: Map1 Progress: 67.92% TotalTasks: 240 Succeeded: 163 Running: 77 Failed: 0 Killed: 0
+16/12/15 02:47:04 INFO client.DAGClientImpl: 	VertexStatus: VertexName: Reducer2 Progress: 0% TotalTasks: 40 Succeeded: 0 Running: 1 Failed: 0 Killed: 0
+16/12/15 02:47:05 INFO client.DAGClientImpl: DAG: State: RUNNING Progress: 63.21% TotalTasks: 280 Succeeded: 177 Running: 64 Failed: 0 Killed: 0
+16/12/15 02:47:05 INFO client.DAGClientImpl: 	VertexStatus: VertexName: Map1 Progress: 73.75% TotalTasks: 240 Succeeded: 177 Running: 63 Failed: 0 Killed: 0
+16/12/15 02:47:05 INFO client.DAGClientImpl: 	VertexStatus: VertexName: Reducer2 Progress: 0% TotalTasks: 40 Succeeded: 0 Running: 1 Failed: 0 Killed: 0
+16/12/15 02:47:05 INFO client.DAGClientImpl: DAG: State: RUNNING Progress: 63.57% TotalTasks: 280 Succeeded: 178 Running: 63 Failed: 0 Killed: 0
+16/12/15 02:47:05 INFO client.DAGClientImpl: 	VertexStatus: VertexName: Map1 Progress: 74.17% TotalTasks: 240 Succeeded: 178 Running: 62 Failed: 0 Killed: 0
+16/12/15 02:47:05 INFO client.DAGClientImpl: 	VertexStatus: VertexName: Reducer2 Progress: 0% TotalTasks: 40 Succeeded: 0 Running: 1 Failed: 0 Killed: 0
+16/12/15 02:47:06 INFO client.DAGClientImpl: DAG: State: RUNNING Progress: 71.79% TotalTasks: 280 Succeeded: 201 Running: 40 Failed: 0 Killed: 0
+16/12/15 02:47:06 INFO client.DAGClientImpl: 	VertexStatus: VertexName: Map1 Progress: 83.33% TotalTasks: 240 Succeeded: 200 Running: 40 Failed: 0 Killed: 0
+16/12/15 02:47:06 INFO client.DAGClientImpl: 	VertexStatus: VertexName: Reducer2 Progress: 2.5% TotalTasks: 40 Succeeded: 1 Running: 0 Failed: 0 Killed: 0
+16/12/15 02:47:07 INFO client.DAGClientImpl: DAG: State: RUNNING Progress: 76.43% TotalTasks: 280 Succeeded: 214 Running: 37 Failed: 0 Killed: 0
+16/12/15 02:47:07 INFO client.DAGClientImpl: 	VertexStatus: VertexName: Map1 Progress: 88.75% TotalTasks: 240 Succeeded: 213 Running: 27 Failed: 0 Killed: 0
+16/12/15 02:47:07 INFO client.DAGClientImpl: 	VertexStatus: VertexName: Reducer2 Progress: 2.5% TotalTasks: 40 Succeeded: 1 Running: 10 Failed: 0 Killed: 0
+16/12/15 02:47:08 INFO client.DAGClientImpl: DAG: State: RUNNING Progress: 82.5% TotalTasks: 280 Succeeded: 231 Running: 39 Failed: 0 Killed: 0
+16/12/15 02:47:08 INFO client.DAGClientImpl: 	VertexStatus: VertexName: Map1 Progress: 91.67% TotalTasks: 240 Succeeded: 220 Running: 20 Failed: 0 Killed: 0
+16/12/15 02:47:08 INFO client.DAGClientImpl: 	VertexStatus: VertexName: Reducer2 Progress: 27.5% TotalTasks: 40 Succeeded: 11 Running: 19 Failed: 0 Killed: 0
+16/12/15 02:47:09 INFO client.DAGClientImpl: DAG: State: RUNNING Progress: 88.93% TotalTasks: 280 Succeeded: 249 Running: 30 Failed: 0 Killed: 0
+16/12/15 02:47:09 INFO client.DAGClientImpl: 	VertexStatus: VertexName: Map1 Progress: 92.08% TotalTasks: 240 Succeeded: 221 Running: 19 Failed: 0 Killed: 0
+16/12/15 02:47:09 INFO client.DAGClientImpl: 	VertexStatus: VertexName: Reducer2 Progress: 70% TotalTasks: 40 Succeeded: 28 Running: 11 Failed: 0 Killed: 0
+16/12/15 02:47:09 INFO client.DAGClientImpl: DAG: State: RUNNING Progress: 90% TotalTasks: 280 Succeeded: 252 Running: 28 Failed: 0 Killed: 0
+16/12/15 02:47:09 INFO client.DAGClientImpl: 	VertexStatus: VertexName: Map1 Progress: 92.5% TotalTasks: 240 Succeeded: 222 Running: 18 Failed: 0 Killed: 0
+16/12/15 02:47:09 INFO client.DAGClientImpl: 	VertexStatus: VertexName: Reducer2 Progress: 75% TotalTasks: 40 Succeeded: 30 Running: 10 Failed: 0 Killed: 0
+16/12/15 02:47:10 INFO client.DAGClientImpl: DAG: State: RUNNING Progress: 92.86% TotalTasks: 280 Succeeded: 260 Running: 20 Failed: 0 Killed: 0
+16/12/15 02:47:10 INFO client.DAGClientImpl: 	VertexStatus: VertexName: Map1 Progress: 92.92% TotalTasks: 240 Succeeded: 223 Running: 17 Failed: 0 Killed: 0
+16/12/15 02:47:10 INFO client.DAGClientImpl: 	VertexStatus: VertexName: Reducer2 Progress: 95% TotalTasks: 40 Succeeded: 38 Running: 2 Failed: 0 Killed: 0
+16/12/15 02:47:10 INFO client.DAGClientImpl: DAG: State: RUNNING Progress: 94.64% TotalTasks: 280 Succeeded: 265 Running: 14 Failed: 0 Killed: 0
+16/12/15 02:47:10 INFO client.DAGClientImpl: 	VertexStatus: VertexName: Map1 Progress: 94.58% TotalTasks: 240 Succeeded: 227 Running: 13 Failed: 0 Killed: 0
+16/12/15 02:47:10 INFO client.DAGClientImpl: 	VertexStatus: VertexName: Reducer2 Progress: 97.5% TotalTasks: 40 Succeeded: 39 Running: 1 Failed: 0 Killed: 0
+16/12/15 02:47:11 INFO client.DAGClientImpl: DAG: State: RUNNING Progress: 96.43% TotalTasks: 280 Succeeded: 270 Running: 10 Failed: 0 Killed: 0
+16/12/15 02:47:11 INFO client.DAGClientImpl: 	VertexStatus: VertexName: Map1 Progress: 95.83% TotalTasks: 240 Succeeded: 230 Running: 10 Failed: 0 Killed: 0
+16/12/15 02:47:11 INFO client.DAGClientImpl: 	VertexStatus: VertexName: Reducer2 Progress: 100% TotalTasks: 40 Succeeded: 40 Running: 0 Failed: 0 Killed: 0
+16/12/15 02:47:11 INFO client.DAGClientImpl: DAG: State: RUNNING Progress: 97.14% TotalTasks: 280 Succeeded: 272 Running: 8 Failed: 0 Killed: 0
+16/12/15 02:47:11 INFO client.DAGClientImpl: 	VertexStatus: VertexName: Map1 Progress: 96.67% TotalTasks: 240 Succeeded: 232 Running: 8 Failed: 0 Killed: 0
+16/12/15 02:47:11 INFO client.DAGClientImpl: 	VertexStatus: VertexName: Reducer2 Progress: 100% TotalTasks: 40 Succeeded: 40 Running: 0 Failed: 0 Killed: 0
+16/12/15 02:47:12 INFO client.DAGClientImpl: DAG: State: RUNNING Progress: 97.86% TotalTasks: 280 Succeeded: 274 Running: 6 Failed: 0 Killed: 0
+16/12/15 02:47:12 INFO client.DAGClientImpl: 	VertexStatus: VertexName: Map1 Progress: 97.5% TotalTasks: 240 Succeeded: 234 Running: 6 Failed: 0 Killed: 0
+16/12/15 02:47:12 INFO client.DAGClientImpl: 	VertexStatus: VertexName: Reducer2 Progress: 100% TotalTasks: 40 Succeeded: 40 Running: 0 Failed: 0 Killed: 0
+16/12/15 02:47:15 INFO client.DAGClientImpl: DAG: State: RUNNING Progress: 98.93% TotalTasks: 280 Succeeded: 277 Running: 3 Failed: 0 Killed: 0
+16/12/15 02:47:15 INFO client.DAGClientImpl: 	VertexStatus: VertexName: Map1 Progress: 98.75% TotalTasks: 240 Succeeded: 237 Running: 3 Failed: 0 Killed: 0
+16/12/15 02:47:15 INFO client.DAGClientImpl: 	VertexStatus: VertexName: Reducer2 Progress: 100% TotalTasks: 40 Succeeded: 40 Running: 0 Failed: 0 Killed: 0
+16/12/15 02:47:16 INFO client.DAGClientImpl: DAG: State: RUNNING Progress: 99.29% TotalTasks: 280 Succeeded: 278 Running: 2 Failed: 0 Killed: 0
+16/12/15 02:47:16 INFO client.DAGClientImpl: 	VertexStatus: VertexName: Map1 Progress: 99.17% TotalTasks: 240 Succeeded: 238 Running: 1 Failed: 0 Killed: 0
+16/12/15 02:47:16 INFO client.DAGClientImpl: 	VertexStatus: VertexName: Reducer2 Progress: 100% TotalTasks: 40 Succeeded: 40 Running: 0 Failed: 0 Killed: 0
+16/12/15 02:47:16 INFO client.DAGClientImpl: DAG: State: SUCCEEDED Progress: 100% TotalTasks: 280 Succeeded: 280 Running: 0 Failed: 0 Killed: 0
+16/12/15 02:47:16 INFO client.DAGClientImpl: 	VertexStatus: VertexName: Map1 Progress: 100% TotalTasks: 240 Succeeded: 240 Running: 0 Failed: 0 Killed: 0
+16/12/15 02:47:16 INFO client.DAGClientImpl: 	VertexStatus: VertexName: Reducer2 Progress: 100% TotalTasks: 40 Succeeded: 40 Running: 0 Failed: 0 Killed: 0
+16/12/15 02:47:16 INFO client.DAGClientImpl: DAG completed. FinalState=SUCCEEDED
