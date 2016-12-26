@@ -26,6 +26,7 @@ if ~exist(filename, 'file')
    usedCPUs = 0;
    usedMemory = 0;
    flag = false;
+   fprintf('%s does no exist \n',filename);
    return;
 end
 

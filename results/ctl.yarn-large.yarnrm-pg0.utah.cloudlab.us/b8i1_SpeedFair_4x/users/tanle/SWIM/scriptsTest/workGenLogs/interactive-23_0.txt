@@ -1,0 +1,22 @@
+SLF4J: Class path contains multiple SLF4J bindings.
+SLF4J: Found binding in [jar:file:/users/tanle/hadoop/share/hadoop/common/lib/slf4j-log4j12-1.7.10.jar!/org/slf4j/impl/StaticLoggerBinder.class]
+SLF4J: Found binding in [jar:file:/users/tanle/hadoop/tez_jars/lib/slf4j-log4j12-1.7.10.jar!/org/slf4j/impl/StaticLoggerBinder.class]
+SLF4J: See http://www.slf4j.org/codes.html#multiple_bindings for an explanation.
+SLF4J: Actual binding is of type [org.slf4j.impl.Log4jLoggerFactory]
+16/12/18 19:34:45 INFO shim.HadoopShimsLoader: Trying to locate HadoopShimProvider for hadoopVersion=2.7.2.1, majorVersion=2, minorVersion=7
+16/12/18 19:34:45 INFO shim.HadoopShimsLoader: Picked HadoopShim org.apache.tez.hadoop.shim.HadoopShim26, providerName=org.apache.tez.hadoop.shim.HadoopShim25_26_27Provider, overrideProviderViaConfig=null, hadoopVersion=2.7.2.1, majorVersion=2, minorVersion=7
+16/12/18 19:34:46 WARN util.NativeCodeLoader: Unable to load native-hadoop library for your platform... using builtin-java classes where applicable
+16/12/18 19:34:47 INFO client.TezClient: Tez Client Version: [ component=tez-api, version=0.8.4, revision=4e78776fe62e42a3dd9a37c81ab69f72b41f0c1c, SCM-URL=scm:git:https://git-wip-us.apache.org/repos/asf/tez.git, buildTime=20161210-1553 ]
+16/12/18 19:34:47 INFO client.RMProxy: Connecting to ResourceManager at ctl.yarn-large.yarnrm-PG0.utah.cloudlab.us/128.110.153.45:8032
+16/12/18 19:34:48 INFO examples.DumpJob: 	 +++ Running ==== 23 ====
+16/12/18 19:34:48 INFO client.TezClient: Submitting DAG application with id: application_1482109899793_0124
+16/12/18 19:34:48 INFO client.TezClientUtils: Using tez.lib.uris value from configuration: hdfs://ctl:9000//apps/tez/tez-0.8.4.tar.gz
+16/12/18 19:34:48 INFO client.TezClientUtils: Using tez.lib.uris.classpath value from configuration: null
+16/12/18 19:34:50 INFO client.TezClient: Tez system stage directory hdfs://ctl:9000/tmp/tanle/tez/staging/.tez/application_1482109899793_0124 doesn't exist and is created
+16/12/18 19:34:51 INFO client.TezClient: Submitting DAG to YARN, applicationId=application_1482109899793_0124, dagName=23
+16/12/18 19:34:51 INFO impl.YarnClientImpl: Submitted application application_1482109899793_0124
+16/12/18 19:34:51 INFO client.TezClient: The url to track the Tez AM: http://ctl.yarn-large.yarnrm-pg0.utah.cloudlab.us:8088/proxy/application_1482109899793_0124/
+16/12/18 19:47:58 INFO client.TezClient: App did not succeed. Diagnostics: Application killed by user.
+16/12/18 19:47:59 INFO client.RMProxy: Connecting to ResourceManager at ctl.yarn-large.yarnrm-pg0.utah.cloudlab.us/128.110.153.45:8032
+16/12/18 19:47:59 INFO client.DAGClientImpl: DAG completed. FinalState=KILLED
+16/12/18 19:47:59 INFO examples.DumpJob: DAG diagnostics: [Application killed by user.]

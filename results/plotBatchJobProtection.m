@@ -10,7 +10,7 @@ num_interactive_queue = 1;
 num_queues = num_batch_queues + num_interactive_queue;
 jobIdThreshold=100000;
 
-plots = [false false true];
+plots = [true false true];
 
 %%
 subfolder = 'users/tanle/SWIM/scriptsTest/workGenLogs/'; 
@@ -21,7 +21,7 @@ file = [subfolder csvFile];
 drf_compl_files = {
                 ['ctl.yarn-drf.yarnrm-pg0.utah.cloudlab.us/' 'b8i1_DRF_1x/' file];
               ['ctl.yarn-drf.yarnrm-pg0.utah.cloudlab.us/' 'b8i1_DRF_2x/' file];
-              ['ctl.yarn-drf.yarnrm-pg0.utah.cloudlab.us/' 'b8i1_DRF_4x/' file];
+              ['ctl.yarn-drf.yarnrm-pg0.utah.cloudlab.us/' 'b8i1_DRF_4x_new/' file];
               ['ctl.yarn-drf.yarnrm-pg0.utah.cloudlab.us/' 'b8i1_DRF_8x/' file]
               };
 
@@ -32,17 +32,23 @@ drfw_compl_files = {
         ['ctl.yarn-drf.yarnrm-pg0.utah.cloudlab.us/' 'b8i1_DRFW/' file]
       };  
 
-speedfair_compl_files = { ['ctl.yarn-large.yarnrm-pg0.utah.cloudlab.us/' 'b8i1_SpeedFair_1x/' file];
-                        ['ctl.yarn-large.yarnrm-pg0.utah.cloudlab.us/' 'b8i1_SpeedFair_2x/' file];
-                        ['ctl.yarn-large.yarnrm-pg0.utah.cloudlab.us/' 'b8i1_SpeedFair_4x/' file];
-                        ['ctl.yarn-large.yarnrm-pg0.utah.cloudlab.us/' 'b8i1_SpeedFair_8x/' file]
+% speedfair_compl_files = { ['ctl.yarn-large.yarnrm-pg0.utah.cloudlab.us/' 'b8i1_SpeedFair_1x/' file];
+%                         ['ctl.yarn-large.yarnrm-pg0.utah.cloudlab.us/' 'b8i1_SpeedFair_2x/' file];
+%                         ['ctl.yarn-large.yarnrm-pg0.utah.cloudlab.us/' 'b8i1_SpeedFair_4x/' file];
+%                         ['ctl.yarn-large.yarnrm-pg0.utah.cloudlab.us/' 'b8i1_SpeedFair_8x/' file]
+%                     };
+                  
+speedfair_compl_files = { ['ctl.yarn-large.yarnrm-pg0.utah.cloudlab.us/' 'b8i1_SpeedFair_1x_new/' file];
+                        ['ctl.yarn-large.yarnrm-pg0.utah.cloudlab.us/' 'b8i1_SpeedFair_2x_new/' file];
+                        ['ctl.yarn-large.yarnrm-pg0.utah.cloudlab.us/' 'b8i1_SpeedFair_4x_new/' file];
+                        ['ctl.yarn-large.yarnrm-pg0.utah.cloudlab.us/' 'b8i1_SpeedFair_8x_new/' file]
                     };
 
 strict_compl_files = {
             ['ctl.yarn-large.yarnrm-pg0.utah.cloudlab.us/' 'b8i1_Strict_1x/' file]; % yarn-drf
           ['ctl.yarn-large.yarnrm-pg0.utah.cloudlab.us/' 'b8i1_Strict_2x/' file]; % yarn-drf
           ['ctl.yarn-large.yarnrm-pg0.utah.cloudlab.us/' 'b8i1_Strict_4x/' file];
-          ['ctl.yarn-large.yarnrm-pg0.utah.cloudlab.us/' 'b8i1_Strict_8x/' file]
+          ['ctl.yarn-large.yarnrm-pg0.utah.cloudlab.us/' 'b8i1_Strict_8x_new/' file]
           }; 
           
 others = { 
@@ -52,7 +58,7 @@ others = {
           ['ctl.yarn-large.yarnrm-pg0.utah.cloudlab.us/' 'runb8i1_Strict_tez/' file]
           }; 
           
-batchQueues = [1 2 4 8];
+scaleUpFactors = {'1x' '2x' '4x' '8x'};
 
 
 CDF_ids = [2, 3, 4, 5];
@@ -60,11 +66,11 @@ extra = '';
 % extra = '';
 %%
 
-[ drf_busrty_avg_time burstyComplTimes drf_batch_avg_time batchComplTimes] = obtain_compl_time( drf_compl_files, jobIdThreshold, type);
-% [ drfw_avg_compl_time burstyComplTimes batchAvgTime batchComplTimes] = obtain_compl_time( drfw_compl_files, jobIdThreshold, type);
-[ speedfair_busrty_avg_time burstyComplTimes speedfair_batch_avg_time batchComplTimes] = obtain_compl_time( speedfair_compl_files, jobIdThreshold, type);
+[ drf_busrty_avg_time burstyComplTimes drf_batch_avg_time drf_batchComplTimes drf_burstyMinMax drf_batchMinMax] = obtain_compl_time( drf_compl_files, jobIdThreshold, type);
+% [ drfw_avg_compl_time burstyComplTimes batchAvgTime drfw_batchComplTimes] = obtain_compl_time( drfw_compl_files, jobIdThreshold, type);
+[ speedfair_busrty_avg_time burstyComplTimes speedfair_batch_avg_time speedfair_batchComplTimes  speedfair_burstyMinMax speedfair_batchMinMax] = obtain_compl_time( speedfair_compl_files, jobIdThreshold, type);
 
-[ strict_busrty_avg_time burstyComplTimes strict_batch_avg_time batchComplTimes] = obtain_compl_time( strict_compl_files, jobIdThreshold, type);
+[ strict_busrty_avg_time burstyComplTimes strict_batch_avg_time strict_batchComplTimes  strict_burstyMinMax strict_batchMinMax] = obtain_compl_time( strict_compl_files, jobIdThreshold, type);
 
 %[ other_avg_time burstyComplTimes strict_preempt_batch_avg_time batchComplTimes] = obtain_compl_time( others, jobIdThreshold, type);
 
@@ -82,21 +88,21 @@ if (plots(1))
    end
    
    %title('Average completion time of interactive jobs','fontsize',fontLegend);
-   xLabel='number of batch queues';
+   xLabel='scale up factor of bursty jobs';
     yLabel='completion time (seconds)';
     legendStr={strDRF, strStrict, strProposed};
 
-    xLabels=batchQueues;
+    xLabels=scaleUpFactors;
     legend(legendStr,'Location','northoutside','FontSize',fontLegend,'Orientation','horizontal');    
     set (gcf, 'Units', 'Inches', 'Position', figSize, 'PaperUnits', 'inches', 'PaperPosition', figSize);
     xlabel(xLabel,'FontSize',fontAxis);
-    xlim([0.5 length(batchQueues)+0.5 ]);
+    xlim([0.5 length(scaleUpFactors)+0.5 ]);
     ylabel(yLabel,'FontSize',fontAxis);
     set(gca,'XTickLabel',xLabels,'FontSize',fontAxis);
    
    if is_printed
        figIdx=figIdx +1;
-      fileNames{figIdx} = 'busty_perf_grt';
+      fileNames{figIdx} = 'long_busty';
       epsFile = [ LOCAL_FIG fileNames{figIdx} '.eps'];
         print ('-depsc', epsFile);
    end
@@ -144,7 +150,7 @@ if (plots(2))
 
        if is_printed
           figIdx=figIdx +1;
-          fileNames{figIdx} = ['busty_perf_grt_cdf' int2str(batchQueues(CDF_idx))];
+          fileNames{figIdx} = ['busty_perf_grt_cdf' int2str(scaleUpFactors(CDF_idx))];
           epsFile = [ LOCAL_FIG fileNames{figIdx} '.eps'];
             print ('-depsc', epsFile);
        end
@@ -153,38 +159,57 @@ end
 
 %% batch jobs
 if (plots(3))
-%     batch_time = [drf_batch_avg_time ;  strict_batch_avg_time; speedfair_batch_avg_time] / 1000;
-    batch_time = [drf_batch_avg_time ;  strict_batch_avg_time; speedfair_batch_avg_time] / 1000;
-   figure;
-   scrsz = get(groot,'ScreenSize');   
-   barChart = bar(batch_time', 'group');
-   %title('Average completion time of interactive jobs','fontsize',fontLegend);
-   
-  for i=1:length(barChart)
-   %barChart(i).LineWidth = barLineWidth;
-%        barChart(i).EdgeColor = colorCellsExperiment{i};
-    barChart(i).FaceColor = colorCellsExperiment{i};
-  end
-   
-   xLabel='number of batch queues';
-    yLabel='completion time (seconds)';
-    legendStr={strDRF, strStrict, strProposed};
+  %     batch_time = [drf_batch_avg_time ;  strict_batch_avg_time; speedfair_batch_avg_time] / 1000;
+  batch_time = [drf_batch_avg_time ;  strict_batch_avg_time; speedfair_batch_avg_time]' / 1000;
+  batch_min= [drf_batchMinMax(1,:) ;  strict_batchMinMax(1,:); speedfair_batchMinMax(1,:)]' / 1000;
+  batch_max= [drf_batchMinMax(2,:) ;  strict_batchMinMax(2,:); speedfair_batchMinMax(2,:)]' / 1000;
+  
+  barData = batch_time;
+  figure;
+  scrsz = get(groot,'ScreenSize');   
+  barChart = bar(barData, 'group');   
 
-    xLabels=batchQueues;
-    legend(legendStr,'Location','northoutside','FontSize',fontLegend,'Orientation','horizontal');    
-    set (gcf, 'Units', 'Inches', 'Position', figSize, 'PaperUnits', 'inches', 'PaperPosition', figSize);
-    xlabel(xLabel,'FontSize',fontAxis);
-    xlim([0.5 length(batchQueues)+0.5 ]);
-    ylabel(yLabel,'FontSize',fontAxis);
-    set(gca,'XTickLabel',xLabels,'FontSize',fontAxis);
-   
-   if is_printed
-       figIdx=figIdx +1;
-      fileNames{figIdx} = 'batch_perf_protect';
-      epsFile = [ LOCAL_FIG fileNames{figIdx} '.eps'];
-        print ('-depsc', epsFile);
-   end
+  %title('Average completion time of interactive jobs','fontsize',fontLegend);
+
+  for i=1:length(barChart)
+  %barChart(i).LineWidth = barLineWidth;
+  %        barChart(i).EdgeColor = colorCellsExperiment{i};
+  barChart(i).FaceColor = colorCellsExperiment{i};
+  end
+
+  barLowerErr = barData-batch_min;
+  barUpperErr= batch_max-barData;
+  hold on; 
+  numgroups = size(barData, 1); 
+  numbars = size(barData, 2); 
+  groupwidth = min(0.8, numbars/(numbars+1.5));
+  for i = 1:numbars  
+        x = (1:numgroups) - groupwidth/2 + (2*i-1) * groupwidth / (2*numbars);  % Aligning error bar with individual bar
+        minMaxBarChart = errorbar(x, barData(:,i), barLowerErr(:,i), barUpperErr(:,i), colorBarMinMax, 'linestyle', 'none','linewidth',lineWidthBarMinMax);
+  end
+
+  xLabel='scale up factor of bursty jobs';
+  yLabel='completion time (seconds)';
+  legendStr={strDRF, strStrict, strProposed};
+
+  xLabels=scaleUpFactors;
+  legend(legendStr,'Location','northoutside','FontSize',fontLegend,'Orientation','horizontal');    
+  set (gcf, 'Units', 'Inches', 'Position', figSize, 'PaperUnits', 'inches', 'PaperPosition', figSize);
+  xlabel(xLabel,'FontSize',fontAxis);
+  xlim([0.5 length(scaleUpFactors)+0.5 ]);
+  ylabel(yLabel,'FontSize',fontAxis);
+  set(gca,'XTickLabel',xLabels,'FontSize',fontAxis);
+
+  if is_printed
+     figIdx=figIdx +1;
+    fileNames{figIdx} = 'batch_perf_protect';
+    epsFile = [ LOCAL_FIG fileNames{figIdx} '.eps'];
+      print ('-depsc', epsFile);
+  end
 end
+
+
+%%
 
 %%
 fileNames
