@@ -4,6 +4,11 @@
 #Scripts
 *.pdf
 
+# Eclipse
+.classpath
+.project
+.settings/
+
 #java
 *.jar
 *.class
@@ -18,3 +23,8 @@
 
 #Matlab
 *.~m
+*.eps
+
+# Maven
+log/
+target/
