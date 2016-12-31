@@ -248,4 +248,10 @@ public class FakeSchedulable implements Schedulable {
     // TODO Auto-generated method stub
     return false;
   }
+
+  @Override
+  public boolean isBursty() {
+    // TODO Auto-generated method stub
+    return false;
+  }
 }

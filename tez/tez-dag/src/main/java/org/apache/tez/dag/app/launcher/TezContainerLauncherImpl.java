@@ -18,8 +18,11 @@
 
 package org.apache.tez.dag.app.launcher;
 
+import java.io.BufferedWriter;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.util.Collections;
+import java.util.Date;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -40,6 +43,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.CommonConfigurationKeysPublic;
+import org.apache.hadoop.fs.FileSystem;
+import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.yarn.api.protocolrecords.StartContainerRequest;
 import org.apache.hadoop.yarn.api.protocolrecords.StartContainersRequest;
 import org.apache.hadoop.yarn.api.protocolrecords.StartContainersResponse;
@@ -65,6 +70,11 @@ import com.google.common.util.concurrent.ThreadFactoryBuilder;
  * This class is responsible for launching of containers.
  */
 public class TezContainerLauncherImpl extends ContainerLauncher {
+  
+  // emulation <<
+  private long launchTime = 0;
+  private long stopTime = 0;
+  // emulation >>
 
   // TODO Ensure the same thread is used to launch / stop the same container. Or - ensure event ordering.
   static final Logger LOG = LoggerFactory.getLogger(TezContainerLauncherImpl.class);
@@ -128,6 +138,11 @@ public class TezContainerLauncherImpl extends ContainerLauncher {
     @SuppressWarnings("unchecked")
     public synchronized void launch(ContainerLaunchRequest event) {
       LOG.info("Launching " + event.getContainerId());
+      
+      // emulation <<
+      launchTime = System.currentTimeMillis();
+      // emulation >>
+      
       if(this.state == ContainerState.KILLED_BEFORE_LAUNCH) {
         state = ContainerState.DONE;
         sendContainerLaunchFailedMsg(event.getContainerId(),
@@ -186,6 +201,36 @@ public class TezContainerLauncherImpl extends ContainerLauncher {
         this.state = ContainerState.KILLED_BEFORE_LAUNCH;
       } else {
         LOG.info("Stopping " + containerID);
+        
+        // emulation <<
+        stopTime = System.currentTimeMillis();
+        
+        boolean enableLog = conf.getBoolean(TezConfiguration.TEZ_SIMULATION_LOG_ENABLE,
+            TezConfiguration.TEZ_SIMULATION_LOG_ENABLE_DEFAULT);
+        if (enableLog) {
+          conf.get(TezConfiguration.TEZ_SIMULATION_LOG_PATH, TezConfiguration.TEZ_SIMULATION_LOG_PATH_DEFAULT);
+          String toWrite = containerID.toString() + ", " + launchTime + ", "
+              + stopTime + "\n";
+
+          try {
+            FileSystem fs = FileSystem.get(conf);
+            Path outFile = new Path("tez_container_time.csv");
+            BufferedWriter br = null;
+            if (fs.exists(outFile)) {
+              LOG.info("log file already exists");
+              br = new BufferedWriter(new OutputStreamWriter(fs.append(outFile)));
+            } else {
+              LOG.info("Create log file");
+              br = new BufferedWriter(new OutputStreamWriter(fs.create(outFile)));
+            }
+            br.write(toWrite);
+            br.close();
+          } catch (IOException e1) {
+            LOG.error(e1.getMessage());
+          }
+        }
+        
+        // emulation >>
 
         ContainerManagementProtocolProxyData proxy = null;
         try {

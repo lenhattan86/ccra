@@ -26,7 +26,7 @@ plots = [true false]; %DRF, DRF-W, Strict, SpeedFair
 
 %%
 if plots(1) 
-  START_TIME = 1; END_TIME = 2400+START_TIME;  
+  START_TIME = 1; END_TIME = 3500+START_TIME;  
   lengendStr = {'User A','User B'};
   
   queues = cell(1,num_queues);
@@ -39,9 +39,17 @@ if plots(1)
   method = '';  
 
 
-  server='ctl.yarn-drf.yarnrm-pg0.utah.cloudlab.us'; subFolder = 'DRF_mov'; method = 'DRF';
+%   server='ctl.yarn-drf.yarnrm-pg0.utah.cloudlab.us'; subFolder = 'DRF_mov'; method = 'DRF';
 %   server='ctl.yarn-large.yarnrm-pg0.utah.cloudlab.us'; subFolder = 'Strict_mov';method = 'Strict';
 %   server='ctl.yarn-large.yarnrm-pg0.utah.cloudlab.us'; subFolder = 'SpeedFair_mov'; method = 'SpeedFair';
+
+server='ctl.yarn-large.yarnrm-pg0.utah.cloudlab.us'; subFolder = 'SpeedFair_mov_60_800'; method = 'SpeedFair';
+  
+%   server='ctl.yarn-drf.yarnrm-pg0.utah.cloudlab.us'; subFolder = 'DRF_mov_80_600'; method = 'DRF';
+%   server='ctl.yarn-large.yarnrm-pg0.utah.cloudlab.us'; subFolder = 'Strict_mov_80_600';method = 'Strict';
+%   server='ctl.yarn-large.yarnrm-pg0.utah.cloudlab.us'; subFolder = 'SpeedFair_mov_80_600'; method = 'SpeedFair';
+
+
   
   subfolder = ['b' int2str(num_batch_queues) 'i1_' subFolder]; extra='';
   if num_batch_queues==0

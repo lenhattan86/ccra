@@ -1815,6 +1815,11 @@ public class YarnConfiguration extends Configuration {
   public static final String YARN_COMPL_TIME_LOG_PATH = "yarn.cmpl.path";
   public static final String YARN_COMPL_TIME_LOG_PATH_DEFAULT = "../";
   // emulation >>
+  
+//emulation <<
+ public static final String YARN_CONTAIN_TIME_LOG_ENABLE = "yarn.container.time.log.enable";
+ public static final boolean YARN_CONTAIN_TIME_LOG_ENABLE_DEFAULT = false;
+ // emulation >>
 
   public YarnConfiguration() {
     super();

@@ -1648,6 +1648,9 @@ public class TezConfiguration extends Configuration {
   public static final String TEZ_SIMULATION_LOG_ENABLE = "tez.simulation.log.enable";
   public static final boolean TEZ_SIMULATION_LOG_ENABLE_DEFAULT = false;
   
+  public static final String TEZ_CONTAINER_LOG_ENABLE = "tez.container.log.enable";
+  public static final boolean TEZ_CONTAINER_LOG_ENABLE_DEFAULT = false;
+  
   public static final String TEZ_SIMULATION_LOG_PATH = "tez.simulation.log.path";
   public static final String TEZ_SIMULATION_LOG_PATH_DEFAULT = "/users/tanle/SWIM/scriptsTest/workGenLogs/";
   

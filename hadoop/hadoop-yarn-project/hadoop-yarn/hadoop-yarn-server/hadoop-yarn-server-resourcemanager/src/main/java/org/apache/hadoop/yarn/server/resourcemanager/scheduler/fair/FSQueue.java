@@ -381,6 +381,7 @@ public abstract class FSQueue implements Queue, Schedulable {
     return this.period;
   }
   
+  @Override
   public boolean isBursty(){
     if (this.getStage1Duration()>0)
       return true;
@@ -426,10 +427,11 @@ public abstract class FSQueue implements Queue, Schedulable {
   }
 
   public void setGuaranteeShare(int guaranteedShare, ResourceType type) {
-    if (type.equals(ResourceType.CPU))
+    if (type.equals(ResourceType.CPU)){
       this.guaranteeShare.setVirtualCores(guaranteedShare);
-    else
+    } else {
       this.guaranteeShare.setMemory(guaranteedShare);
+    }
   }
   
   @Override

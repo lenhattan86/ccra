@@ -140,4 +140,6 @@ public interface Schedulable {
   public boolean isLeafQueue();
   
   public boolean isAdmitted();
+  
+  public boolean isBursty();
 }

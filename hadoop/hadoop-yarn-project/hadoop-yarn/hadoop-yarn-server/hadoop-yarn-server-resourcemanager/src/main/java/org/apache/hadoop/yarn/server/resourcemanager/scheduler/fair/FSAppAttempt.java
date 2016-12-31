@@ -821,4 +821,10 @@ public class FSAppAttempt extends SchedulerApplicationAttempt implements Schedul
     return false;
   }
 
+  @Override
+  public boolean isBursty() {
+    // TODO Auto-generated method stub
+    return false;
+  }
+
 }

@@ -1,0 +1,32 @@
+rm -rf b0i1/users/tanle/SWIM/scriptsTest/workGenLogs/*.txt
+rm -rf b1i1_DRF_mov_0/users/tanle/SWIM/scriptsTest/workGenLogs/*.txt
+rm -rf b1i1_DRF_mov_80_600/users/tanle/SWIM/scriptsTest/workGenLogs/*.txt
+rm -rf b2i1_DRF/users/tanle/SWIM/scriptsTest/workGenLogs/*.txt
+rm -rf b4i1_DRF_2x/users/tanle/SWIM/scriptsTest/workGenLogs/*.txt
+rm -rf b8i1_DRF_1x/users/tanle/SWIM/scriptsTest/workGenLogs/*.txt
+rm -rf b8i1_DRF_4x/users/tanle/SWIM/scriptsTest/workGenLogs/*.txt
+rm -rf b8i1_DRF_8x/users/tanle/SWIM/scriptsTest/workGenLogs/*.txt
+rm -rf b1i1_DRF_mov/users/tanle/SWIM/scriptsTest/workGenLogs/*.txt
+rm -rf b1i1_DRF_mov_1/users/tanle/SWIM/scriptsTest/workGenLogs/*.txt
+rm -rf b1i1_DRF_mov_long/users/tanle/SWIM/scriptsTest/workGenLogs/*.txt
+rm -rf b4i1_DRF/users/tanle/SWIM/scriptsTest/workGenLogs/*.txt
+rm -rf b8i1_DRF/users/tanle/SWIM/scriptsTest/workGenLogs/*.txt
+rm -rf b8i1_DRF_2x/users/tanle/SWIM/scriptsTest/workGenLogs/*.txt
+rm -rf b8i1_DRF_4x_new/users/tanle/SWIM/scriptsTest/workGenLogs/*.txt
+
+
+rm -rf b0i1/users/tanle/SWIM/scriptsTest/*.sh
+rm -rf b1i1_DRF_mov_0/users/tanle/SWIM/scriptsTest/*.sh
+rm -rf b1i1_DRF_mov_80_600/users/tanle/SWIM/scriptsTest/*.sh
+rm -rf b2i1_DRF/users/tanle/SWIM/scriptsTest/*.sh
+rm -rf b4i1_DRF_2x/users/tanle/SWIM/scriptsTest/*.sh
+rm -rf b8i1_DRF_1x/users/tanle/SWIM/scriptsTest/*.sh
+rm -rf b8i1_DRF_4x/users/tanle/SWIM/scriptsTest/*.sh
+rm -rf b8i1_DRF_8x/users/tanle/SWIM/scriptsTest/*.sh
+rm -rf b1i1_DRF_mov/users/tanle/SWIM/scriptsTest/*.sh
+rm -rf b1i1_DRF_mov_1/users/tanle/SWIM/scriptsTest/*.sh
+rm -rf b1i1_DRF_mov_long/users/tanle/SWIM/scriptsTest/*.sh
+rm -rf b4i1_DRF/users/tanle/SWIM/scriptsTest/*.sh
+rm -rf b8i1_DRF/users/tanle/SWIM/scriptsTest/*.sh
+rm -rf b8i1_DRF_2x/users/tanle/SWIM/scriptsTest/*.sh
+rm -rf b8i1_DRF_4x_new/users/tanle/SWIM/scriptsTest/*.sh

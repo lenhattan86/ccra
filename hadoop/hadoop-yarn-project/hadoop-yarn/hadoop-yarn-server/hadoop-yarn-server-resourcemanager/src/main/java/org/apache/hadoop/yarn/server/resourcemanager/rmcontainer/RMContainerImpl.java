@@ -18,6 +18,9 @@
 
 package org.apache.hadoop.yarn.server.resourcemanager.rmcontainer;
 
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.Date;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
@@ -28,7 +31,6 @@ import org.apache.commons.lang.time.DateUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.hadoop.yarn.api.records.ApplicationAttemptId;
-import org.apache.hadoop.yarn.api.records.ApplicationId;
 import org.apache.hadoop.yarn.api.records.Container;
 import org.apache.hadoop.yarn.api.records.ContainerExitStatus;
 import org.apache.hadoop.yarn.api.records.ContainerId;
@@ -50,11 +52,8 @@ import org.apache.hadoop.yarn.server.resourcemanager.rmapp.attempt.RMAppAttemptE
 import org.apache.hadoop.yarn.server.resourcemanager.rmapp.attempt.event.RMAppAttemptContainerFinishedEvent;
 import org.apache.hadoop.yarn.server.resourcemanager.rmnode.RMNodeCleanContainerEvent;
 import org.apache.hadoop.yarn.state.InvalidStateTransitonException;
-import org.apache.hadoop.yarn.server.resourcemanager.scheduler.Queue;
 import org.apache.hadoop.yarn.server.resourcemanager.scheduler.SchedulerApplicationAttempt;
 import org.apache.hadoop.yarn.server.resourcemanager.scheduler.event.ContainerRescheduledEvent;
-import org.apache.hadoop.yarn.server.resourcemanager.scheduler.fair.FSAppAttempt;
-import org.apache.hadoop.yarn.server.resourcemanager.scheduler.fair.FSLeafQueue;
 import org.apache.hadoop.yarn.state.MultipleArcTransition;
 import org.apache.hadoop.yarn.state.SingleArcTransition;
 import org.apache.hadoop.yarn.state.StateMachine;
@@ -62,95 +61,101 @@ import org.apache.hadoop.yarn.state.StateMachineFactory;
 import org.apache.hadoop.yarn.util.ConverterUtils;
 import org.apache.hadoop.yarn.webapp.util.WebAppUtils;
 
-@SuppressWarnings({"unchecked", "rawtypes"})
+@SuppressWarnings({ "unchecked", "rawtypes" })
 public class RMContainerImpl implements RMContainer {
 
   private static final Log LOG = LogFactory.getLog(RMContainerImpl.class);
 
-  private static final StateMachineFactory<RMContainerImpl, RMContainerState, 
-                                           RMContainerEventType, RMContainerEvent> 
-   stateMachineFactory = new StateMachineFactory<RMContainerImpl, 
-       RMContainerState, RMContainerEventType, RMContainerEvent>(
+  // emulation <<
+  private long newTime = 0;
+  private long allocatedTime = 0;
+  private long localizedTime = 0;
+  private long runningTime = 0;
+  private long successTime = 0;
+  private long releaseTime = 0;
+  // emulation >>
+
+  private static final StateMachineFactory<RMContainerImpl, RMContainerState, RMContainerEventType, RMContainerEvent> stateMachineFactory = new StateMachineFactory<RMContainerImpl, RMContainerState, RMContainerEventType, RMContainerEvent>(
       RMContainerState.NEW)
 
-    // Transitions from NEW state
-    .addTransition(RMContainerState.NEW, RMContainerState.ALLOCATED,
-        RMContainerEventType.START, new ContainerStartedTransition())
-    .addTransition(RMContainerState.NEW, RMContainerState.KILLED,
-        RMContainerEventType.KILL)
-    .addTransition(RMContainerState.NEW, RMContainerState.RESERVED,
-        RMContainerEventType.RESERVED, new ContainerReservedTransition())
-    .addTransition(RMContainerState.NEW,
-        EnumSet.of(RMContainerState.RUNNING, RMContainerState.COMPLETED),
-        RMContainerEventType.RECOVER, new ContainerRecoveredTransition())
+          // Transitions from NEW state
+          .addTransition(RMContainerState.NEW, RMContainerState.ALLOCATED,
+              RMContainerEventType.START, new ContainerStartedTransition())
+          .addTransition(RMContainerState.NEW, RMContainerState.KILLED,
+              RMContainerEventType.KILL)
+          .addTransition(RMContainerState.NEW, RMContainerState.RESERVED,
+              RMContainerEventType.RESERVED, new ContainerReservedTransition())
+          .addTransition(RMContainerState.NEW,
+              EnumSet.of(RMContainerState.RUNNING, RMContainerState.COMPLETED),
+              RMContainerEventType.RECOVER, new ContainerRecoveredTransition())
 
-    // Transitions from RESERVED state
-    .addTransition(RMContainerState.RESERVED, RMContainerState.RESERVED,
-        RMContainerEventType.RESERVED, new ContainerReservedTransition())
-    .addTransition(RMContainerState.RESERVED, RMContainerState.ALLOCATED,
-        RMContainerEventType.START, new ContainerStartedTransition())
-    .addTransition(RMContainerState.RESERVED, RMContainerState.KILLED,
-        RMContainerEventType.KILL) // nothing to do
-    .addTransition(RMContainerState.RESERVED, RMContainerState.RELEASED,
-        RMContainerEventType.RELEASED) // nothing to do
-       
+          // Transitions from RESERVED state
+          .addTransition(RMContainerState.RESERVED, RMContainerState.RESERVED,
+              RMContainerEventType.RESERVED, new ContainerReservedTransition())
+          .addTransition(RMContainerState.RESERVED, RMContainerState.ALLOCATED,
+              RMContainerEventType.START, new ContainerStartedTransition())
+          .addTransition(RMContainerState.RESERVED, RMContainerState.KILLED,
+              RMContainerEventType.KILL) // nothing to do
+          .addTransition(RMContainerState.RESERVED, RMContainerState.RELEASED,
+              RMContainerEventType.RELEASED) // nothing to do
 
-    // Transitions from ALLOCATED state
-    .addTransition(RMContainerState.ALLOCATED, RMContainerState.ACQUIRED,
-        RMContainerEventType.ACQUIRED, new AcquiredTransition())
-    .addTransition(RMContainerState.ALLOCATED, RMContainerState.EXPIRED,
-        RMContainerEventType.EXPIRE, new FinishedTransition())
-    .addTransition(RMContainerState.ALLOCATED, RMContainerState.KILLED,
-        RMContainerEventType.KILL, new ContainerRescheduledTransition())
+          // Transitions from ALLOCATED state
+          .addTransition(RMContainerState.ALLOCATED, RMContainerState.ACQUIRED,
+              RMContainerEventType.ACQUIRED, new AcquiredTransition())
+          .addTransition(RMContainerState.ALLOCATED, RMContainerState.EXPIRED,
+              RMContainerEventType.EXPIRE, new FinishedTransition())
+          .addTransition(RMContainerState.ALLOCATED, RMContainerState.KILLED,
+              RMContainerEventType.KILL, new ContainerRescheduledTransition())
 
-    // Transitions from ACQUIRED state
-    .addTransition(RMContainerState.ACQUIRED, RMContainerState.RUNNING,
-        RMContainerEventType.LAUNCHED, new LaunchedTransition())
-    .addTransition(RMContainerState.ACQUIRED, RMContainerState.COMPLETED,
-        RMContainerEventType.FINISHED, new ContainerFinishedAtAcquiredState())
-    .addTransition(RMContainerState.ACQUIRED, RMContainerState.RELEASED,
-        RMContainerEventType.RELEASED, new KillTransition())
-    .addTransition(RMContainerState.ACQUIRED, RMContainerState.EXPIRED,
-        RMContainerEventType.EXPIRE, new KillTransition())
-    .addTransition(RMContainerState.ACQUIRED, RMContainerState.KILLED,
-        RMContainerEventType.KILL, new KillTransition())
+          // Transitions from ACQUIRED state
+          .addTransition(RMContainerState.ACQUIRED, RMContainerState.RUNNING,
+              RMContainerEventType.LAUNCHED, new LaunchedTransition())
+          .addTransition(RMContainerState.ACQUIRED, RMContainerState.COMPLETED,
+              RMContainerEventType.FINISHED,
+              new ContainerFinishedAtAcquiredState())
+          .addTransition(RMContainerState.ACQUIRED, RMContainerState.RELEASED,
+              RMContainerEventType.RELEASED, new KillTransition())
+          .addTransition(RMContainerState.ACQUIRED, RMContainerState.EXPIRED,
+              RMContainerEventType.EXPIRE, new KillTransition())
+          .addTransition(RMContainerState.ACQUIRED, RMContainerState.KILLED,
+              RMContainerEventType.KILL, new KillTransition())
 
-    // Transitions from RUNNING state
-    .addTransition(RMContainerState.RUNNING, RMContainerState.COMPLETED,
-        RMContainerEventType.FINISHED, new FinishedTransition())
-    .addTransition(RMContainerState.RUNNING, RMContainerState.KILLED,
-        RMContainerEventType.KILL, new KillTransition())
-    .addTransition(RMContainerState.RUNNING, RMContainerState.RELEASED,
-        RMContainerEventType.RELEASED, new KillTransition())
-    .addTransition(RMContainerState.RUNNING, RMContainerState.RUNNING,
-        RMContainerEventType.EXPIRE)
+          // Transitions from RUNNING state
+          .addTransition(RMContainerState.RUNNING, RMContainerState.COMPLETED,
+              RMContainerEventType.FINISHED, new FinishedTransition())
+          .addTransition(RMContainerState.RUNNING, RMContainerState.KILLED,
+              RMContainerEventType.KILL, new KillTransition())
+          .addTransition(RMContainerState.RUNNING, RMContainerState.RELEASED,
+              RMContainerEventType.RELEASED, new KillTransition())
+          .addTransition(RMContainerState.RUNNING, RMContainerState.RUNNING,
+              RMContainerEventType.EXPIRE)
 
-    // Transitions from COMPLETED state
-    .addTransition(RMContainerState.COMPLETED, RMContainerState.COMPLETED,
-        EnumSet.of(RMContainerEventType.EXPIRE, RMContainerEventType.RELEASED,
-            RMContainerEventType.KILL))
+          // Transitions from COMPLETED state
+          .addTransition(RMContainerState.COMPLETED, RMContainerState.COMPLETED,
+              EnumSet.of(RMContainerEventType.EXPIRE,
+                  RMContainerEventType.RELEASED, RMContainerEventType.KILL))
 
-    // Transitions from EXPIRED state
-    .addTransition(RMContainerState.EXPIRED, RMContainerState.EXPIRED,
-        EnumSet.of(RMContainerEventType.RELEASED, RMContainerEventType.KILL))
+          // Transitions from EXPIRED state
+          .addTransition(RMContainerState.EXPIRED, RMContainerState.EXPIRED,
+              EnumSet.of(RMContainerEventType.RELEASED,
+                  RMContainerEventType.KILL))
 
-    // Transitions from RELEASED state
-    .addTransition(RMContainerState.RELEASED, RMContainerState.RELEASED,
-        EnumSet.of(RMContainerEventType.EXPIRE, RMContainerEventType.RELEASED,
-            RMContainerEventType.KILL, RMContainerEventType.FINISHED))
+          // Transitions from RELEASED state
+          .addTransition(RMContainerState.RELEASED, RMContainerState.RELEASED,
+              EnumSet.of(RMContainerEventType.EXPIRE,
+                  RMContainerEventType.RELEASED, RMContainerEventType.KILL,
+                  RMContainerEventType.FINISHED))
 
-    // Transitions from KILLED state
-    .addTransition(RMContainerState.KILLED, RMContainerState.KILLED,
-        EnumSet.of(RMContainerEventType.EXPIRE, RMContainerEventType.RELEASED,
-            RMContainerEventType.KILL, RMContainerEventType.FINISHED))
+          // Transitions from KILLED state
+          .addTransition(RMContainerState.KILLED, RMContainerState.KILLED,
+              EnumSet.of(RMContainerEventType.EXPIRE,
+                  RMContainerEventType.RELEASED, RMContainerEventType.KILL,
+                  RMContainerEventType.FINISHED))
 
-    // create the topology tables
-    .installTopology(); 
-                        
-                        
+          // create the topology tables
+          .installTopology();
 
-  private final StateMachine<RMContainerState, RMContainerEventType,
-                                                 RMContainerEvent> stateMachine;
+  private final StateMachine<RMContainerState, RMContainerEventType, RMContainerEvent> stateMachine;
   private final ReadLock readLock;
   private final WriteLock writeLock;
   private final ContainerId containerId;
@@ -170,27 +175,25 @@ public class RMContainerImpl implements RMContainer {
   private ContainerStatus finishedStatus;
   private boolean isAMContainer;
   private List<ResourceRequest> resourceRequests;
-  
+
   private SchedulerApplicationAttempt appAttempt = null;
 
   private boolean saveNonAMContainerMetaInfo;
 
-  public RMContainerImpl(Container container,
-      ApplicationAttemptId appAttemptId, NodeId nodeId, String user,
-      RMContext rmContext
-      , SchedulerApplicationAttempt appAttempt) //iglf
-  { 
-    this(container, appAttemptId, nodeId, user, rmContext, System
-      .currentTimeMillis());
+  public RMContainerImpl(Container container, ApplicationAttemptId appAttemptId,
+      NodeId nodeId, String user, RMContext rmContext,
+      SchedulerApplicationAttempt appAttempt) // iglf
+  {
+    this(container, appAttemptId, nodeId, user, rmContext,
+        System.currentTimeMillis());
 
-    //iglf:pass the application using this container.
+    // iglf:pass the application using this container.
     this.appAttempt = appAttempt;
+
   }
 
-  public RMContainerImpl(Container container,
-      ApplicationAttemptId appAttemptId, NodeId nodeId,
-      String user, RMContext rmContext, long creationTime
-      ) { 
+  public RMContainerImpl(Container container, ApplicationAttemptId appAttemptId,
+      NodeId nodeId, String user, RMContext rmContext, long creationTime) {
     this.stateMachine = stateMachineFactory.make(this);
     this.containerId = container.getId();
     this.nodeId = nodeId;
@@ -209,9 +212,8 @@ public class RMContainerImpl implements RMContainer {
     this.writeLock = lock.writeLock();
 
     saveNonAMContainerMetaInfo = rmContext.getYarnConfiguration().getBoolean(
-       YarnConfiguration.APPLICATION_HISTORY_SAVE_NON_AM_CONTAINER_META_INFO,
-       YarnConfiguration
-                 .DEFAULT_APPLICATION_HISTORY_SAVE_NON_AM_CONTAINER_META_INFO);
+        YarnConfiguration.APPLICATION_HISTORY_SAVE_NON_AM_CONTAINER_META_INFO,
+        YarnConfiguration.DEFAULT_APPLICATION_HISTORY_SAVE_NON_AM_CONTAINER_META_INFO);
 
     rmContext.getRMApplicationHistoryWriter().containerStarted(this);
 
@@ -220,9 +222,13 @@ public class RMContainerImpl implements RMContainer {
     // will still be published for this container, but that calculation happens
     // later.
     if (saveNonAMContainerMetaInfo) {
-      rmContext.getSystemMetricsPublisher().containerCreated(
-          this, this.creationTime);
+      rmContext.getSystemMetricsPublisher().containerCreated(this,
+          this.creationTime);
     }
+
+    // emulation <<
+    this.newTime = System.currentTimeMillis();
+    // emulation >>
 
   }
 
@@ -316,11 +322,10 @@ public class RMContainerImpl implements RMContainer {
     try {
       readLock.lock();
       StringBuilder logURL = new StringBuilder();
-      logURL.append(WebAppUtils.getHttpSchemePrefix(rmContext
-          .getYarnConfiguration()));
-      logURL.append(WebAppUtils.getRunningLogURL(
-          container.getNodeHttpAddress(), ConverterUtils.toString(containerId),
-          user));
+      logURL.append(
+          WebAppUtils.getHttpSchemePrefix(rmContext.getYarnConfiguration()));
+      logURL.append(WebAppUtils.getRunningLogURL(container.getNodeHttpAddress(),
+          ConverterUtils.toString(containerId), user));
       return logURL.toString();
     } finally {
       readLock.unlock();
@@ -354,7 +359,7 @@ public class RMContainerImpl implements RMContainer {
       readLock.unlock();
     }
   }
-  
+
   @Override
   public List<ResourceRequest> getResourceRequests() {
     try {
@@ -364,7 +369,7 @@ public class RMContainerImpl implements RMContainer {
       readLock.unlock();
     }
   }
-  
+
   public void setResourceRequests(List<ResourceRequest> requests) {
     try {
       writeLock.lock();
@@ -378,7 +383,7 @@ public class RMContainerImpl implements RMContainer {
   public String toString() {
     return containerId.toString();
   }
-  
+
   @Override
   public boolean isAMContainer() {
     try {
@@ -402,41 +407,76 @@ public class RMContainerImpl implements RMContainer {
     // This call to getSystemMetricsPublisher().containerCreated() is mutually
     // exclusive with the one in the RMContainerImpl constructor.
     if (!saveNonAMContainerMetaInfo && this.isAMContainer) {
-      rmContext.getSystemMetricsPublisher().containerCreated(
-          this, this.creationTime);
+      rmContext.getSystemMetricsPublisher().containerCreated(this,
+          this.creationTime);
     }
   }
-  
+
   @Override
   public void handle(RMContainerEvent event) {
-    LOG.debug("Processing " + event.getContainerId() + " of type " + event.getType());
+    LOG.debug(
+        "Processing " + event.getContainerId() + " of type " + event.getType());
     try {
       writeLock.lock();
       RMContainerState oldState = getState();
       try {
-         stateMachine.doTransition(event.getType(), event);
+        stateMachine.doTransition(event.getType(), event);
       } catch (InvalidStateTransitonException e) {
         LOG.error("Can't handle this event at current state", e);
-        LOG.error("Invalid event " + event.getType() + 
-            " on container " + this.containerId);
+        LOG.error("Invalid event " + event.getType() + " on container "
+            + this.containerId);
       }
       if (oldState != getState()) {
         LOG.info(event.getContainerId() + " Container Transitioned from "
             + oldState + " to " + getState());
+        RMContainerState newState = getState();
+        // emulation <<
+        boolean enableLog = rmContext.getYarnConfiguration().getBoolean(
+            YarnConfiguration.YARN_CONTAIN_TIME_LOG_ENABLE,
+            YarnConfiguration.YARN_CONTAIN_TIME_LOG_ENABLE_DEFAULT);
+        ;
+        if (enableLog) {
+          // TODO: log the job completion time here.
+          long currTime = System.currentTimeMillis();
+          if (newState.equals(RMContainerState.ALLOCATED)) {
+            this.allocatedTime = currTime;
+          } else if (newState.equals(RMContainerState.RUNNING)) {
+            this.runningTime = currTime;
+          } else if (newState.equals(RMContainerState.RELEASED)) {
+            this.releaseTime = currTime;
+            String folder = rmContext.getYarnConfiguration().get(
+                YarnConfiguration.YARN_COMPL_TIME_LOG_PATH,
+                YarnConfiguration.YARN_COMPL_TIME_LOG_PATH_DEFAULT);
+
+            String fileToWrite = folder + "container_time.csv";
+            String toWrite = this.containerId.toString() + ", "
+                + new Date(this.newTime) + ", " + this.allocatedTime + ", "
+                + this.runningTime + ", " + this.releaseTime + "\n";
+            try {
+              FileWriter timeLog = new FileWriter(fileToWrite, true);
+              timeLog.write(toWrite.toCharArray(), 0, toWrite.length());
+              timeLog.close();
+            } catch (IOException e1) {
+              LOG.error(e1.getMessage());
+            }
+          }
+        }
+        // emulation >>
       }
+
     }
-    
+
     finally {
       writeLock.unlock();
     }
   }
-  
+
   public ContainerStatus getFinishedStatus() {
     return finishedStatus;
   }
-  
-  private static class BaseTransition implements
-      SingleArcTransition<RMContainerImpl, RMContainerEvent> {
+
+  private static class BaseTransition
+      implements SingleArcTransition<RMContainerImpl, RMContainerEvent> {
 
     @Override
     public void transition(RMContainerImpl cont, RMContainerEvent event) {
@@ -444,28 +484,27 @@ public class RMContainerImpl implements RMContainer {
     }
   }
 
-  private static final class ContainerRecoveredTransition
-      implements
+  private static final class ContainerRecoveredTransition implements
       MultipleArcTransition<RMContainerImpl, RMContainerEvent, RMContainerState> {
     @Override
     public RMContainerState transition(RMContainerImpl container,
         RMContainerEvent event) {
-      NMContainerStatus report =
-          ((RMContainerRecoverEvent) event).getContainerReport();
+      NMContainerStatus report = ((RMContainerRecoverEvent) event)
+          .getContainerReport();
       if (report.getContainerState().equals(ContainerState.COMPLETE)) {
-        ContainerStatus status =
-            ContainerStatus.newInstance(report.getContainerId(),
-              report.getContainerState(), report.getDiagnostics(),
-              report.getContainerExitStatus());
+        ContainerStatus status = ContainerStatus.newInstance(
+            report.getContainerId(), report.getContainerState(),
+            report.getDiagnostics(), report.getContainerExitStatus());
 
         new FinishedTransition().transition(container,
-          new RMContainerFinishedEvent(container.containerId, status,
-            RMContainerEventType.FINISHED));
+            new RMContainerFinishedEvent(container.containerId, status,
+                RMContainerEventType.FINISHED));
         return RMContainerState.COMPLETED;
       } else if (report.getContainerState().equals(ContainerState.RUNNING)) {
         // Tell the app
-        container.eventHandler.handle(new RMAppRunningOnNodeEvent(container
-            .getApplicationAttemptId().getApplicationId(), container.nodeId));
+        container.eventHandler.handle(new RMAppRunningOnNodeEvent(
+            container.getApplicationAttemptId().getApplicationId(),
+            container.nodeId));
         return RMContainerState.RUNNING;
       } else {
         // This can never happen.
@@ -476,21 +515,19 @@ public class RMContainerImpl implements RMContainer {
     }
   }
 
-  private static final class ContainerReservedTransition extends
-  BaseTransition {
+  private static final class ContainerReservedTransition
+      extends BaseTransition {
 
     @Override
     public void transition(RMContainerImpl container, RMContainerEvent event) {
-      RMContainerReservedEvent e = (RMContainerReservedEvent)event;
+      RMContainerReservedEvent e = (RMContainerReservedEvent) event;
       container.reservedResource = e.getReservedResource();
       container.reservedNode = e.getReservedNode();
       container.reservedPriority = e.getReservedPriority();
     }
   }
 
-
-  private static final class ContainerStartedTransition extends
-      BaseTransition {
+  private static final class ContainerStartedTransition extends BaseTransition {
 
     @Override
     public void transition(RMContainerImpl container, RMContainerEvent event) {
@@ -505,13 +542,14 @@ public class RMContainerImpl implements RMContainer {
     public void transition(RMContainerImpl container, RMContainerEvent event) {
       // Clear ResourceRequest stored in RMContainer
       container.setResourceRequests(null);
-      
+
       // Register with containerAllocationExpirer.
       container.containerAllocationExpirer.register(container.getContainerId());
 
       // Tell the app
-      container.eventHandler.handle(new RMAppRunningOnNodeEvent(container
-          .getApplicationAttemptId().getApplicationId(), container.nodeId));
+      container.eventHandler.handle(new RMAppRunningOnNodeEvent(
+          container.getApplicationAttemptId().getApplicationId(),
+          container.nodeId));
     }
   }
 
@@ -520,13 +558,13 @@ public class RMContainerImpl implements RMContainer {
     @Override
     public void transition(RMContainerImpl container, RMContainerEvent event) {
       // Unregister from containerAllocationExpirer.
-      container.containerAllocationExpirer.unregister(container
-          .getContainerId());
+      container.containerAllocationExpirer
+          .unregister(container.getContainerId());
     }
   }
-  
-  private static final class ContainerRescheduledTransition extends
-      FinishedTransition {
+
+  private static final class ContainerRescheduledTransition
+      extends FinishedTransition {
 
     @Override
     public void transition(RMContainerImpl container, RMContainerEvent event) {
@@ -541,7 +579,7 @@ public class RMContainerImpl implements RMContainer {
     @Override
     public void transition(RMContainerImpl container, RMContainerEvent event) {
       RMContainerFinishedEvent finishedEvent = (RMContainerFinishedEvent) event;
-      
+
       container.finishTime = System.currentTimeMillis();
       container.finishedStatus = finishedEvent.getRemoteContainerStatus();
       // Inform AppAttempt
@@ -550,22 +588,20 @@ public class RMContainerImpl implements RMContainer {
       updateAttemptMetrics(container);
 
       container.eventHandler.handle(new RMAppAttemptContainerFinishedEvent(
-        container.appAttemptId, finishedEvent.getRemoteContainerStatus(),
+          container.appAttemptId, finishedEvent.getRemoteContainerStatus(),
           container.getAllocatedNode()));
 
-      container.rmContext.getRMApplicationHistoryWriter().containerFinished(
-        container);
+      container.rmContext.getRMApplicationHistoryWriter()
+          .containerFinished(container);
 
-      boolean saveNonAMContainerMetaInfo =
-          container.rmContext.getYarnConfiguration().getBoolean(
-              YarnConfiguration
-                .APPLICATION_HISTORY_SAVE_NON_AM_CONTAINER_META_INFO,
-              YarnConfiguration
-                .DEFAULT_APPLICATION_HISTORY_SAVE_NON_AM_CONTAINER_META_INFO);
+      boolean saveNonAMContainerMetaInfo = container.rmContext
+          .getYarnConfiguration().getBoolean(
+              YarnConfiguration.APPLICATION_HISTORY_SAVE_NON_AM_CONTAINER_META_INFO,
+              YarnConfiguration.DEFAULT_APPLICATION_HISTORY_SAVE_NON_AM_CONTAINER_META_INFO);
 
       if (saveNonAMContainerMetaInfo || container.isAMContainer()) {
-        container.rmContext.getSystemMetricsPublisher().containerFinished(
-            container, container.finishTime);
+        container.rmContext.getSystemMetricsPublisher()
+            .containerFinished(container, container.finishTime);
       }
 
     }
@@ -577,35 +613,35 @@ public class RMContainerImpl implements RMContainer {
           .get(container.getApplicationAttemptId().getApplicationId())
           .getCurrentAppAttempt();
       if (ContainerExitStatus.PREEMPTED == container.finishedStatus
-        .getExitStatus()) {
+          .getExitStatus()) {
         rmAttempt.getRMAppAttemptMetrics().updatePreemptionInfo(resource,
-          container);
+            container);
       }
 
       if (rmAttempt != null) {
         long usedMillis = container.finishTime - container.creationTime;
-        long memorySeconds = resource.getMemory()
-                              * usedMillis / DateUtils.MILLIS_PER_SECOND;
-        long vcoreSeconds = resource.getVirtualCores()
-                             * usedMillis / DateUtils.MILLIS_PER_SECOND;
+        long memorySeconds = resource.getMemory() * usedMillis
+            / DateUtils.MILLIS_PER_SECOND;
+        long vcoreSeconds = resource.getVirtualCores() * usedMillis
+            / DateUtils.MILLIS_PER_SECOND;
         rmAttempt.getRMAppAttemptMetrics()
-                  .updateAggregateAppResourceUsage(memorySeconds,vcoreSeconds);
-        
+            .updateAggregateAppResourceUsage(memorySeconds, vcoreSeconds);
+
       }
     }
   }
-  
-  public SchedulerApplicationAttempt getAppAttempt(){ //iglf:
+
+  public SchedulerApplicationAttempt getAppAttempt() { // iglf:
     return this.appAttempt;
   }
 
-  private static final class ContainerFinishedAtAcquiredState extends
-      FinishedTransition {
+  private static final class ContainerFinishedAtAcquiredState
+      extends FinishedTransition {
     @Override
     public void transition(RMContainerImpl container, RMContainerEvent event) {
       // Unregister from containerAllocationExpirer.
-      container.containerAllocationExpirer.unregister(container
-          .getContainerId());
+      container.containerAllocationExpirer
+          .unregister(container.getContainerId());
 
       // Inform AppAttempt
       super.transition(container, event);
@@ -618,8 +654,8 @@ public class RMContainerImpl implements RMContainer {
     public void transition(RMContainerImpl container, RMContainerEvent event) {
 
       // Unregister from containerAllocationExpirer.
-      container.containerAllocationExpirer.unregister(container
-          .getContainerId());
+      container.containerAllocationExpirer
+          .unregister(container.getContainerId());
 
       // Inform node
       container.eventHandler.handle(new RMNodeCleanContainerEvent(
@@ -653,8 +689,8 @@ public class RMContainerImpl implements RMContainer {
       readLock.lock();
       if (container.getNodeHttpAddress() != null) {
         StringBuilder httpAddress = new StringBuilder();
-        httpAddress.append(WebAppUtils.getHttpSchemePrefix(rmContext
-            .getYarnConfiguration()));
+        httpAddress.append(
+            WebAppUtils.getHttpSchemePrefix(rmContext.getYarnConfiguration()));
         httpAddress.append(container.getNodeHttpAddress());
         return httpAddress.toString();
       } else {

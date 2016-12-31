@@ -726,7 +726,6 @@ public class DAGAppMaster extends AbstractService {
       // emulation <<
       boolean enableLog = this.amConf.getBoolean(TezConfiguration.TEZ_SIMULATION_LOG_ENABLE,
           TezConfiguration.TEZ_SIMULATION_LOG_ENABLE_DEFAULT);
-      ;
       if (enableLog) {
         this.amConf.get(TezConfiguration.TEZ_SIMULATION_LOG_PATH, TezConfiguration.TEZ_SIMULATION_LOG_PATH_DEFAULT);
         long dagComplTime1 = currentDAG.getFinishTime() - currentDAG.getStartTime();

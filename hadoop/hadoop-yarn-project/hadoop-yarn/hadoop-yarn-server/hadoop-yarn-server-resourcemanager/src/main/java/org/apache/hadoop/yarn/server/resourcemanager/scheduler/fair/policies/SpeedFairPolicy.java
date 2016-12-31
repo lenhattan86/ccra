@@ -55,7 +55,7 @@ public class SpeedFairPolicy extends SchedulingPolicy {
   private static boolean ENABLE_COMPENSATION = true;
 
   private InstantaneousGuaranteeComparator comparator = new InstantaneousGuaranteeComparator();
-  private static final Log LOG = LogFactory.getLog(SchedulingPolicy.class);
+  private static final Log LOG = LogFactory.getLog(SpeedFairPolicy.class);
 
   private static final boolean DEBUG = false;
 
@@ -142,10 +142,12 @@ public class SpeedFairPolicy extends SchedulingPolicy {
       // Calculate shares of the cluster for each resource both schedulables.
 
       calculateShares(s1.getResourceUsage(), clusterCapacity, sharesOfCluster1,
-          resourceOrder1, s1.getWeights(), s1.getGuaranteeShare());
+          resourceOrder1, s1.getWeights(), s1.getGuaranteeShare(),
+          s1.isBursty());
 
       calculateShares(s2.getResourceUsage(), clusterCapacity, sharesOfCluster2,
-          resourceOrder2, s2.getWeights(), s2.getGuaranteeShare());
+          resourceOrder2, s2.getWeights(), s2.getGuaranteeShare(),
+          s2.isBursty());
 
       // A queue is needy for its min share if its dominant resource
       // (with respect to the cluster capacity) is below its configured
@@ -159,17 +161,14 @@ public class SpeedFairPolicy extends SchedulingPolicy {
         // Apps are tied in fairness ratio. Break the tie by submit time.
         res = (int) (s1.getStartTime() - s2.getStartTime());
       }
-      
-/*      if (s1.isLeafQueue()){
-        // break the deadlock when
-        FSQueue q1 = (FSQueue)s1; FSQueue q2 = (FSQueue)s2;
-        if (q1.getNumRunnableApps()>0 && q2.getNumRunnableApps()==0)
-          res = -1;
-        else if (q1.getNumRunnableApps()==0 && q2.getNumRunnableApps()>0) {
-          res = 1;
-        }
-      }
-*/        
+
+      /*
+       * if (s1.isLeafQueue()){ // break the deadlock when FSQueue q1 =
+       * (FSQueue)s1; FSQueue q2 = (FSQueue)s2; if (q1.getNumRunnableApps()>0 &&
+       * q2.getNumRunnableApps()==0) res = -1; else if
+       * (q1.getNumRunnableApps()==0 && q2.getNumRunnableApps()>0) { res = 1; }
+       * }
+       */
       return res;
     }
 
@@ -184,20 +183,22 @@ public class SpeedFairPolicy extends SchedulingPolicy {
 
     void calculateShares(Resource resource, Resource pool,
         ResourceWeights shares, ResourceType[] resourceOrder,
-        ResourceWeights weights, Resource guranteedRes) { // iglf
+        ResourceWeights weights, Resource guranteedRes, boolean isBursty) { // iglf
 
-      if (guranteedRes.isEmpty()) {
+      if (!isBursty) {
         shares.setWeight(MEMORY, (float) resource.getMemory()
             / (pool.getMemory() * weights.getWeight(MEMORY)));
         shares.setWeight(CPU, (float) resource.getVirtualCores()
             / (pool.getVirtualCores() * weights.getWeight(CPU)));
       } else {
-        shares.setWeight(MEMORY, 1);
-        shares.setWeight(CPU, 1);
-        if (resource.getMemory() < guranteedRes.getMemory())
-          shares.setWeight(MEMORY, 0);
-        if (resource.getVirtualCores() < guranteedRes.getVirtualCores())
-          shares.setWeight(CPU, 0);
+        shares.setWeight(MEMORY, 0);
+        shares.setWeight(CPU, 0);
+        // Implement MAX method.
+        if (resource.getMemory() >= guranteedRes.getMemory()
+            || resource.getVirtualCores() >= guranteedRes.getVirtualCores()) {
+          shares.setWeight(MEMORY, 1);
+          shares.setWeight(CPU, 1);
+        }
       }
       // sort order vector by resource share
       if (resourceOrder != null) {
@@ -603,7 +604,7 @@ public class SpeedFairPolicy extends SchedulingPolicy {
   private static int guaranteeServiceRate(
       Collection<? extends Schedulable> admittedBurstyQueues,
       int numAdmittedBatch, ResourceType type, int maxResource) {
-
+    log("guaranteeServiceRate: maxResource=" + maxResource);
     int numAdmittedBursty = admittedBurstyQueues.size();
     int minReqResource = 0;
     int takenByBursty = 0;
@@ -618,20 +619,29 @@ public class SpeedFairPolicy extends SchedulingPolicy {
         long stage1Duration = (long) queue.getStage1Duration()
             / DateUtils.MILLIS_PER_SECOND;
         long period = queue.getPeriod() / DateUtils.MILLIS_PER_SECOND;
-        long lasted = queue.lastedInPeriod();
-        
+        long lasted = queue.lastedInPeriod() / DateUtils.MILLIS_PER_SECOND;
+
         if (ENABLE_COMPENSATION) {
           long receivedRes = getAggregateResouce(queue.getMetrics(), type);
           long stage1Res = alpha * stage1Duration;
-          if (receivedRes<stage1Res)
+          if (receivedRes < stage1Res)
             guaranteedShare = alpha;
-          else{
+          else {
             if (period > lasted) {
-              float tmp = (maxResource * period
-                  / ((float) (numAdmittedBursty + numAdmittedBatch))
-                  - receivedRes) / (period - lasted);
+              log("guaranteeServiceRate: maxResource=" + maxResource
+                  + " period=" + period );
+              double fairTotalShare = ((double) maxResource * period)
+                  / (double) (numAdmittedBursty + numAdmittedBatch);
+              double nom = (fairTotalShare - receivedRes);
+              log("guaranteeServiceRate: fairTotalShare=" + fairTotalShare
+                  + " receivedRes=" + receivedRes + " numAdmittedBursty="
+                  + numAdmittedBursty + " numAdmittedBatch="
+                  + numAdmittedBatch);
+              double tmp = nom / (period - lasted);
               guaranteedShare = (int) Math.max(tmp, 0);
               guaranteedShare = (int) Math.min(guaranteedShare, maxResource);
+              log("guaranteeServiceRate: guaranteedShare="
+                  + guaranteedShare + " tmp=" + tmp);
             }
           }
         } else {
@@ -648,29 +658,31 @@ public class SpeedFairPolicy extends SchedulingPolicy {
           }
         }
         
-        if (guaranteedShare <= remainingRes && guaranteedShare >= 0) {
-          minReqResource += guaranteedShare;
-          remainingRes = maxResource - guaranteedShare;
-          ComputeFairShares.setResourceValue(guaranteedShare,
-              sched.getFairShare(), type);
-          queue.setGuaranteeShare(guaranteedShare, type);
-        }
+        guaranteedShare = (int) Math.min(guaranteedShare, remainingRes);
+        minReqResource += guaranteedShare;
+        remainingRes = maxResource - guaranteedShare;
         
-        takenByBursty += ComputeFairShares.getResourceValue(sched.getResourceUsage(), type);
+        ComputeFairShares.setResourceValue(guaranteedShare,
+            sched.getFairShare(), type);
+        queue.setGuaranteeShare(guaranteedShare, type);
+
+        takenByBursty += ComputeFairShares
+            .getResourceValue(sched.getResourceUsage(), type);
       }
     }
-    
+
     return Math.min(minReqResource, takenByBursty);
   }
 
-private static long getAggregateResouce(QueueMetrics metrics, ResourceType type){
-  if (type.equals(ResourceType.MEMORY))
-    return (long) metrics.getMemorySeconds();
-  else
-    return (long) metrics.getVcoreSeconds();
-}
+  private static long getAggregateResouce(QueueMetrics metrics,
+      ResourceType type) {
+    if (type.equals(ResourceType.MEMORY))
+      return (long) metrics.getMemorySeconds();
+    else
+      return (long) metrics.getVcoreSeconds();
+  }
 
-  private void log(String msg) {
+  private static void log(String msg) {
     if (DEBUG)
       LOG.info(msg);
   }
