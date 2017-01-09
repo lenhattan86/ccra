@@ -1,7 +1,7 @@
 addpath('func');
 common_settings;
 
-plots = [true false true];
+plots = [true false false];
 
 output_sufix = 'short/'; STEP_TIME = 1.0; 
 
@@ -12,11 +12,20 @@ num_interactive_queue = 1;
 num_queues = num_batch_queues + num_interactive_queue;
 jobIdThreshold=100000;
 
+numIgnoredBurstyJobs = 1; % ignore the last jobs
+
+%%
+% WORKLOAD='BB';
+WORKLOAD='TPC-DS';
+% WORKLOAD='TPC-H';
+
 %%
 subfolder = 'users/tanle/SWIM/scriptsTest/workGenLogs/'; 
-csvFile = 'completion_time.csv'; type =1;
+csvFile = 'completion_time.csv'; 
 % csvFile = 'yarn_completion_time.csv'; type =2;
 file = [subfolder csvFile];
+if strcmp(WORKLOAD,'BB')
+  type =1;
 drf_compl_files = {
                 ['ctl.yarn-drf.yarnrm-pg0.utah.cloudlab.us/' 'b0i1/' file];
                 ['ctl.yarn-drf.yarnrm-pg0.utah.cloudlab.us/' 'b1i1_DRF/' file];
@@ -54,6 +63,78 @@ others = { ['ctl.yarn-large.yarnrm-pg0.utah.cloudlab.us/' 'runb0i1_Strict_tez/' 
           ['ctl.yarn-large.yarnrm-pg0.utah.cloudlab.us/' 'runb4i1_Strict_tez/' file];
           ['ctl.yarn-large.yarnrm-pg0.utah.cloudlab.us/' 'runb8i1_Strict_tez/' file]
           }; 
+elseif strcmp(WORKLOAD,'TPC-DS')
+  type =2;
+  drf_compl_files = {
+                ['ctl.yarn-drf.yarnrm-pg0.utah.cloudlab.us/' 'b0i1_TPC_DS/' file];
+                ['ctl.yarn-drf.yarnrm-pg0.utah.cloudlab.us/' 'b1i1_DRF_TPC_DS/' file];
+              ['ctl.yarn-drf.yarnrm-pg0.utah.cloudlab.us/' 'b2i1_DRF_TPC_DS/' file];
+              ['ctl.yarn-drf.yarnrm-pg0.utah.cloudlab.us/' 'b4i1_DRF_TPC_DS/' file];
+              ['ctl.yarn-drf.yarnrm-pg0.utah.cloudlab.us/' 'b8i1_DRF_TPC_DS/' file]
+              };
+
+  drfw_compl_files = {
+          ['ctl.yarn-drf.yarnrm-pg0.utah.cloudlab.us/' 'b0i1_TPC_DS' file];
+          ['ctl.yarn-drf.yarnrm-pg0.utah.cloudlab.us/' 'b1i1_DRFW_TPC_DS' file];
+          ['ctl.yarn-drf.yarnrm-pg0.utah.cloudlab.us/' 'b2i1_DRFW_TPC_DS/' file];
+          ['ctl.yarn-drf.yarnrm-pg0.utah.cloudlab.us/' 'b4i1_DRFW_TPC_DS/' file];
+          ['ctl.yarn-drf.yarnrm-pg0.utah.cloudlab.us/' 'b8i1_DRFW_TPC_DS/' file]
+        };  
+
+  speedfair_compl_files = {['ctl.yarn-drf.yarnrm-pg0.utah.cloudlab.us/' 'b0i1_TPC_DS/' file];
+                          ['ctl.yarn-large.yarnrm-pg0.utah.cloudlab.us/' 'b1i1_SpeedFair_TPC_DS/' file];
+                          ['ctl.yarn-large.yarnrm-pg0.utah.cloudlab.us/' 'b2i1_SpeedFair_TPC_DS/' file];
+                          ['ctl.yarn-large.yarnrm-pg0.utah.cloudlab.us/' 'b4i1_SpeedFair_TPC_DS/' file];
+                          ['ctl.yarn-large.yarnrm-pg0.utah.cloudlab.us/' 'b8i1_SpeedFair_TPC_DS/' file]
+                      };
+
+  strict_compl_files = {
+              ['ctl.yarn-drf.yarnrm-pg0.utah.cloudlab.us/' 'b0i1_TPC_DS/' file]; % yarn-drf
+              ['ctl.yarn-large.yarnrm-pg0.utah.cloudlab.us/' 'b1i1_Strict_TPC_DS/' file]; % yarn-drf
+            ['ctl.yarn-large.yarnrm-pg0.utah.cloudlab.us/' 'b2i1_Strict_TPC_DS/' file]; % yarn-drf
+            ['ctl.yarn-large.yarnrm-pg0.utah.cloudlab.us/' 'b4i1_Strict_TPC_DS/' file];
+            ['ctl.yarn-large.yarnrm-pg0.utah.cloudlab.us/' 'b8i1_Strict_TPC_DS/' file]
+            }; 
+
+  others = { ['ctl.yarn-large.yarnrm-pg0.utah.cloudlab.us/' 'runb0i1_Strict_tez_TPC_DS/' file]; % yarn-drf
+            ['ctl.yarn-large.yarnrm-pg0.utah.cloudlab.us/' 'runb1i1_Strict_tez_TPC_DS/' file]; % yarn-drf
+            ['ctl.yarn-large.yarnrm-pg0.utah.cloudlab.us/' 'runb2i1_Strict_tez_TPC_DS/' file]; % yarn-drf
+            ['ctl.yarn-large.yarnrm-pg0.utah.cloudlab.us/' 'runb4i1_Strict_tez_TPC_DS/' file];
+            ['ctl.yarn-large.yarnrm-pg0.utah.cloudlab.us/' 'runb8i1_Strict_tez_TPC_DS/' file]
+            }; 
+elseif strcmp(WORKLOAD,'TPC-H')
+  type =2;
+  drf_compl_files = {
+                  ['ctl.yarn-large.yarnrm-pg0.utah.cloudlab.us/' 'b0i1_TPC_H/' file];
+                  ['ctl.yarn-drf.yarnrm-pg0.utah.cloudlab.us/' 'b1i1_DRF_TPC_H/' file];
+                ['ctl.yarn-drf.yarnrm-pg0.utah.cloudlab.us/' 'b2i1_DRF_TPC_H/' file];
+                ['ctl.yarn-drf.yarnrm-pg0.utah.cloudlab.us/' 'b4i1_DRF_TPC_H/' file];
+                ['ctl.yarn-drf.yarnrm-pg0.utah.cloudlab.us/' 'b8i1_DRF_TPC_H/' file]
+                };
+
+  drfw_compl_files = {
+          ['ctl.yarn-large.yarnrm-pg0.utah.cloudlab.us/' 'b0i1_TPC_H' file];
+          ['ctl.yarn-drf.yarnrm-pg0.utah.cloudlab.us/' 'b1i1_DRFW_TPC_H' file];
+          ['ctl.yarn-drf.yarnrm-pg0.utah.cloudlab.us/' 'b2i1_DRFW_TPC_H/' file];
+          ['ctl.yarn-drf.yarnrm-pg0.utah.cloudlab.us/' 'b4i1_DRFW_TPC_H/' file];
+          ['ctl.yarn-drf.yarnrm-pg0.utah.cloudlab.us/' 'b8i1_DRFW_TPC_H/' file]
+        };  
+
+  speedfair_compl_files = {['ctl.yarn-large.yarnrm-pg0.utah.cloudlab.us/' 'b0i1_TPC_H/' file];
+                          ['ctl.yarn-large.yarnrm-pg0.utah.cloudlab.us/' 'b1i1_SpeedFair_TPC_H/' file];
+                          ['ctl.yarn-large.yarnrm-pg0.utah.cloudlab.us/' 'b2i1_SpeedFair_TPC_H/' file];
+                          ['ctl.yarn-large.yarnrm-pg0.utah.cloudlab.us/' 'b4i1_SpeedFair_TPC_H/' file];
+                          ['ctl.yarn-large.yarnrm-pg0.utah.cloudlab.us/' 'b8i1_SpeedFair_TPC_H/' file]
+                      };
+
+  strict_compl_files = {
+              ['ctl.yarn-large.yarnrm-pg0.utah.cloudlab.us/' 'b0i1_TPC_H/' file]; % yarn-drf
+              ['ctl.yarn-large.yarnrm-pg0.utah.cloudlab.us/' 'b1i1_Strict_TPC_H/' file]; % yarn-drf
+            ['ctl.yarn-large.yarnrm-pg0.utah.cloudlab.us/' 'b2i1_Strict_TPC_H/' file]; % yarn-drf
+            ['ctl.yarn-large.yarnrm-pg0.utah.cloudlab.us/' 'b4i1_Strict_TPC_H/' file];
+            ['ctl.yarn-large.yarnrm-pg0.utah.cloudlab.us/' 'b8i1_Strict_TPC_H/' file]
+            };
+end
           
 batchQueues = [0 1 2 4 8];
 figSize = [0.0 0 5.0 3.0];
@@ -63,11 +144,11 @@ extra = '';
 % extra = '';
 %%
 
-[ drf_busrty_avg_time burstyComplTimes drf_batch_avg_time batchComplTimes] = obtain_compl_time( drf_compl_files, jobIdThreshold, type);
+[ drf_busrty_avg_time burstyComplTimes drf_batch_avg_time batchComplTimes] = obtain_compl_time( drf_compl_files, jobIdThreshold, type,numIgnoredBurstyJobs);
 % [ drfw_avg_compl_time burstyComplTimes batchAvgTime batchComplTimes] = obtain_compl_time( drfw_compl_files, jobIdThreshold, type);
-[ speedfair_busrty_avg_time burstyComplTimes speedfair_batch_avg_time batchComplTimes] = obtain_compl_time( speedfair_compl_files, jobIdThreshold, type);
+[ speedfair_busrty_avg_time burstyComplTimes speedfair_batch_avg_time batchComplTimes] = obtain_compl_time( speedfair_compl_files, jobIdThreshold, type,numIgnoredBurstyJobs);
 
-[ strict_busrty_avg_time burstyComplTimes strict_batch_avg_time batchComplTimes] = obtain_compl_time( strict_compl_files, jobIdThreshold, type);
+[ strict_busrty_avg_time burstyComplTimes strict_batch_avg_time batchComplTimes] = obtain_compl_time( strict_compl_files, jobIdThreshold, type,numIgnoredBurstyJobs);
 
 %[ other_avg_time burstyComplTimes strict_preempt_batch_avg_time batchComplTimes] = obtain_compl_time( others, jobIdThreshold, type);
 
@@ -76,7 +157,13 @@ if (plots(1))
    busrty_time = [drf_busrty_avg_time ;  strict_busrty_avg_time; speedfair_busrty_avg_time] / 1000;
    figure;
    scrsz = get(groot,'ScreenSize');   
-   barChart = bar(busrty_time', 'group');
+   barChart = bar(busrty_time', 'group','EdgeColor','none');
+   
+   latencyReductionFactors_2 = drf_busrty_avg_time./strict_busrty_avg_time
+   latencyReductionFactors = drf_busrty_avg_time./speedfair_busrty_avg_time
+   
+   
+   colorCellsExperiment = {colorDRF; colorStrict; colorProposed};
    
    for i=1:length(barChart)
        %barChart(i).LineWidth = barLineWidth;
@@ -99,7 +186,7 @@ if (plots(1))
    
    if is_printed
        figIdx=figIdx +1;
-      fileNames{figIdx} = 'busty_perf_grt';
+      fileNames{figIdx} = ['busty_perf_grt_' WORKLOAD];
       epsFile = [ LOCAL_FIG fileNames{figIdx} '.eps'];
         print ('-depsc', epsFile);
    end
@@ -107,29 +194,30 @@ end
 
 %% cdf of bursty jobs
 if (plots(2))
-    for i=1:length(CDF_ids)
+%     for i=1:length(CDF_ids)
+  for i=3:4
         CDF_idx=CDF_ids(i);        
-       [ burstyAvgTime drfBurstyComplTimes batchAvgTime batchComplTimes] = obtain_compl_time( drf_compl_files(CDF_idx), jobIdThreshold, type);
-       [ burstyAvgTime speedfairBurstyComplTimes batchAvgTime batchComplTimes] = obtain_compl_time( speedfair_compl_files(CDF_idx), jobIdThreshold, type);
-       [ burstyAvgTime strictBurstyComplTimes batchAvgTime batchComplTimes] = obtain_compl_time( strict_compl_files(CDF_idx), jobIdThreshold, type);
+       [ burstyAvgTime drfBurstyComplTimes batchAvgTime batchComplTimes] = obtain_compl_time( drf_compl_files(CDF_idx), jobIdThreshold, type,numIgnoredBurstyJobs);
+       [ burstyAvgTime speedfairBurstyComplTimes batchAvgTime batchComplTimes] = obtain_compl_time( speedfair_compl_files(CDF_idx), jobIdThreshold, type,numIgnoredBurstyJobs);
+       [ burstyAvgTime strictBurstyComplTimes batchAvgTime batchComplTimes] = obtain_compl_time( strict_compl_files(CDF_idx), jobIdThreshold, type,numIgnoredBurstyJobs);
        maxVal = 10;
        figure;
        scrsz = get(groot,'ScreenSize');      
-       if(length(drfBurstyComplTimes)>0)
-            xData = drfBurstyComplTimes/1000;
-            [f,x]=ecdf(xData);   plot(x,f,'LineWidth',LineWidth); hold on;
+       if(length(drfBurstyComplTimes{1})>0)
+            xData = drfBurstyComplTimes{1}/1000;
+            [f,x]=ecdf(xData);   plot(x,f,lineDRF,'LineWidth',LineWidth,'Color', colorDRF); hold on;
             legendStr{1}=strDRF;
             maxVal = max(maxVal,max(xData)); 
        end   
-       if(length(strictBurstyComplTimes)>0)
-           xData = strictBurstyComplTimes/1000;
-            [f,x]=ecdf(xData);   plot(x,f,'LineWidth',LineWidth); hold on;
+       if(length(strictBurstyComplTimes{1})>0)
+           xData = strictBurstyComplTimes{1}/1000;
+            [f,x]=ecdf(xData);   plot(x,f,lineStrict,'LineWidth',LineWidth,'Color', colorStrict); hold on;
             legendStr{2}=strStrict;
             maxVal = max(maxVal,max(xData));
        end
-       if(length(speedfairBurstyComplTimes)>0)
-           xData = speedfairBurstyComplTimes/1000;
-            [f,x]=ecdf(xData);   plot(x,f,'LineWidth',LineWidth); hold on;
+       if(length(speedfairBurstyComplTimes{1})>0)
+           xData = speedfairBurstyComplTimes{1}/1000;
+            [f,x]=ecdf(xData);   plot(x,f,lineProposed,'LineWidth',LineWidth,'Color', colorProposed); hold on;
             legendStr{3}=strProposed;
             maxVal = max(maxVal,max(xData));
        end
@@ -147,7 +235,7 @@ if (plots(2))
 
        if is_printed
           figIdx=figIdx +1;
-          fileNames{figIdx} = ['busty_perf_grt_cdf' int2str(batchQueues(CDF_idx))];
+          fileNames{figIdx} = ['busty_perf_grt_cdf' int2str(batchQueues(CDF_idx)) '_' WORKLOAD];
           epsFile = [ LOCAL_FIG fileNames{figIdx} '.eps'];
             print ('-depsc', epsFile);
        end
@@ -160,7 +248,7 @@ if (plots(3))
     batch_time = [drf_batch_avg_time ;  strict_batch_avg_time; speedfair_batch_avg_time] / 1000;
    figure;
    scrsz = get(groot,'ScreenSize');   
-   barChart = bar(batch_time', 'group');
+   barChart = bar(batch_time', 'group','EdgeColor','none');
    %title('Average completion time of interactive jobs','fontsize',fontLegend);
    
   for i=1:length(barChart)
@@ -183,7 +271,7 @@ if (plots(3))
    
    if is_printed
        figIdx=figIdx +1;
-      fileNames{figIdx} = 'batch_perf_protect';
+      fileNames{figIdx} = ['batch_perf_protect_' WORKLOAD];
       epsFile = [ LOCAL_FIG fileNames{figIdx} '.eps'];
         print ('-depsc', epsFile);
    end

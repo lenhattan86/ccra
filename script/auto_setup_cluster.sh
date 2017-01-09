@@ -2,9 +2,11 @@
 
 ## constants
 SPEEDFAIR="SpeedFair"
-DRF="drf"
+DRF="DRF"
 Strict="Strict"
-DRFW="drf-w"
+DRFW="DRF-W"
+Fair="Fair"
+StrictFair="StrictFair"
 METHOD=$SPEEDFAIR
 
 if [ -z "$2" ]
@@ -46,6 +48,8 @@ SSH_CMD="autossh"
 yarnFramework="yarn"
 enableSim="true"
 enablePreemption="false"
+enableContainerLog="false"
+
 if $isOfficial
 then
 	scaleDown=1.0 # DEFAULT 1.0, use 4.0 to increase the number of tasks -> 4 times.
@@ -68,7 +72,10 @@ genJavaFile="/home/tanle/projects/ccra/SWIM/GenerateProfile.java"
 
 java_home='/usr/lib/jvm/java-8-oracle'
 
+## Proposed Parameters
 
+PERIOD=200000
+STAGE01=20000
 
 ######################### Hadoop  #####################
 hadoopFolder="hadoop"
@@ -83,7 +90,7 @@ hadoopTgz="hadoop-$hadoopVersion.tar.gz"
 
 if $isLocalhost
 then
-	workloadSrcFile="/home/tanle/projects/SpeedFairSim/workload/jobs_input_1_1_simple.txt"
+	workloadSrcFile="/home/tanle/projects/SpeedFairSim/input_gen/jobs_input_1_3.txt"
 	workloadFile="/home/tanle/hadoop/conf/simple.txt"
 	profilePath="/home/tanle/hadoop/conf/"
 	simLogPath="/home/tanle/SWIM/scriptsTest/workGenLogs/"
@@ -98,16 +105,17 @@ fi
 yarnVcores=32
 if $isLocalhost
 then
-	yarnVcores=16
+	yarnVcores=11
 fi
 vmemRatio=4
 #yarnNodeMem=131072 # 128 GB
 #yarnNodeMem=65536 # 64 GB
-yarnNodeMem=$(($yarnVcores*1024)) # 2 times of number of vcores
+yarnNodeMem=$(($yarnVcores*1024*2)) # 2 times of number of vcores
 #yarnNodeMem=32768 # 32 GB
 
+yarnMaxMem=$yarnNodeMem # for each container
 
-yarnMaxMem=32768 # for each container
+
 isCapacityScheduler=false
 if $isLocalhost
 then
@@ -134,9 +142,15 @@ then
 elif [ "$METHOD" == "$DRF" ];
 then
 	shedulingPolicy="drf"; weight=1
+elif [ "$METHOD" == "$StrictFair" ];
+then
+	shedulingPolicy="fair"; weight=999999
 elif [ "$METHOD" == "$Strict" ];
 then
 	shedulingPolicy="drf"; weight=999999
+elif [ "$METHOD" == "$Fair" ];
+then
+	shedulingPolicy="fair"; weight=1
 elif [ "$METHOD" == "$DRFW" ];
 then
 	shedulingPolicy="drf"; weight=4
@@ -264,8 +278,8 @@ then
 fi
 isModifyHadoop=false
 isShutDownHadoop=false
-restartHadoop=false
-isFormatHDFS=false
+restartHadoop=true
+isFormatHDFS=true
 
 
 
@@ -334,7 +348,7 @@ fi
 
 if $isLocalhost
 then
-	echo "Setup Yarn on localhost"
+	echo "[INFO] Setup Yarn on localhost"
 	masterNode="localhost"
 	serverList="localhost"
 	slaveNodes="localhost"
@@ -355,7 +369,7 @@ then
 	isUploadTez=true
 elif $isCloudLab
 then
-	echo " at CLOUDLAB "
+	echo "[INFO]  at CLOUDLAB "
 	masterNode="ctl"
 	if $isOfficial
 	then
@@ -381,7 +395,7 @@ then
 	fi
 elif $isAmazonEC
 then
-	echo "Amazon EC"
+	echo "[INFO] Amazon EC"
 fi
 
 
@@ -402,7 +416,7 @@ echo ############### REBOOT all servers #############################
 		$SSH_CMD $username@$server "ssh $server 'sudo reboot'" &
 	done
 	wait
-	echo "Waiting for 15 mins for the cluster to be ready."
+	echo "[INFO] Waiting for 15 mins for the cluster to be ready."
 	sleep 900
 fi
 
@@ -447,7 +461,7 @@ echo ################################# passwordless SSH ########################
 	}
 	rm -rf ~/.ssh/known_hosts
 
-	echo "uploading keys"
+	echo "[INFO] uploading keys"
 	for server in $serverList; do
 		uploadKeys $server &
 	done	
@@ -478,7 +492,7 @@ fi
 
 if $isInstallBasePackages
 then
-	echo ################################# install JAVA ######################################
+	echo "################################# install JAVA ######################################"
 	installPackages () {
 		$SSH_CMD $username@$1 "sudo apt-get -y install $SSH_CMD
 			sudo apt-get purge -y openjdk*
@@ -490,7 +504,6 @@ then
 			sudo apt-get install -y oracle-java8-installer"
 		$SSH_CMD $username@$1 "sudo apt-get install -y cgroup-tools; sudo apt-get install -y scala; sudo apt-get install -y vim"	
 	}
-	echo "TODO: install JAVA"
 	counter=0;
 	for server in $serverList; do
 		counter=$((counter+1))
@@ -510,7 +523,7 @@ fi
 if $isInstallGanglia
 then
 echo ################################# install Ganglia ###################################
-	echo "Configure Ganglia master node $masterNode"
+	echo "[INFO] Configure Ganglia master node $masterNode"
 	$SSH_CMD $username@$masterNode 'yes Y | sudo apt-get purge ganglia-monitor gmetad'
 	### PLZ manually install Ganglia as we need to respond to some pop-ups
 	# we may restart the Apache2 twice
@@ -711,14 +724,14 @@ echo "#################################### install Hadoop Yarn #################
 
 </configuration>' > $hadoopFolder/$configFolder/hdfs-site.xml"
 
-			echo Configure Yarn at $1 step 0
+			echo "[INFO] Configure Yarn at $1 step 0"
 
 			# etc/hadoop/yarn-site.xml
 			## Configurations for ResourceManager and NodeManager:
 
 			$SSH_CMD $username@$1 "sudo rm -rf $yarnAppLogs; sudo mkdir $yarnAppLogs; sudo chmod 777 $yarnAppLogs"
 
-			echo Configure Yarn at $1 step 1 yarn-site.xml
+			echo "[INFO] Configure Yarn at $1 step 1 yarn-site.xml"
 			$SSH_CMD $username@$1 "echo '<?xml version=\"1.0\"?>
 <configuration>
 
@@ -823,7 +836,11 @@ echo "#################################### install Hadoop Yarn #################
     <name>yarn.cmpl.path</name>
     <value>$simLogPath</value>
   </property>
-	
+
+  <property>
+    <name>yarn.container.time.log.enable</name>
+    <value>$enableContainerLog</value>
+  </property>	
 </configuration>' > $hadoopFolder/$configFolder/yarn-site.xml"
 
 
@@ -838,7 +855,7 @@ echo "#################################### install Hadoop Yarn #################
 #			$SSH_CMD $username@$1 "cgdelete cpu:yarn"
 
 # setup scheduler https://hadoop.apache.org/docs/r2.7.1/hadoop-yarn/hadoop-yarn-site/FairScheduler.html
-			echo Configure Yarn at $1 step 2 $fairSchedulerFile
+			echo "[INFO] Configure Yarn at $1 step 2 $fairSchedulerFile"
 			if $isLocalhost
 			then
 				$SSH_CMD $username@$1 "echo  '<?xml version=\"1.0\"?>
@@ -850,11 +867,11 @@ echo "#################################### install Hadoop Yarn #################
 <defaultFairSharePreemptionThreshold>1.0</defaultFairSharePreemptionThreshold>
 
 <queue name=\"bursty0\">	
-	<minReq>16384 mb, 16 vcores</minReq>
+	<minReq>11264 mb, 11 vcores</minReq>
 	<!-- <minReq>8192 mb, 8 vcores</minReq> -->
-	<speedDuration>20000</speedDuration>
+	<speedDuration>80000</speedDuration>
 	<allowPreemptionFrom>$enablePreemption</allowPreemptionFrom>
-	<period>100000</period>
+	<period>600000</period>
 	<startTime>-1</startTime>
 	<weight>$weight</weight>
 	<schedulingPolicy>fifo</schedulingPolicy>
@@ -875,6 +892,11 @@ echo "#################################### install Hadoop Yarn #################
 </queue>
 </allocations>' > $fairSchedulerFile"
 			else
+
+#strBQ=""
+#for bId in seq(1,$numBatchQ); do
+#	$SSH_CMD $username@$server " echo Hello $server " &
+#done
 			$SSH_CMD $username@$1 "echo  '<?xml version=\"1.0\"?>
 <allocations>
 
@@ -884,10 +906,11 @@ echo "#################################### install Hadoop Yarn #################
 <defaultFairSharePreemptionThreshold>1.0</defaultFairSharePreemptionThreshold>
 
 <queue name=\"bursty0\">	
-	<minReq>1310720 mb, 1280 vcores</minReq> 
+	<!--<minReq>1310720 mb, 1280 vcores</minReq> -->
+	<minReq>2621440 mb, 1280 vcores</minReq> 
 	<!-- <minReq>16384 mb, 16 vcores</minReq> -->
-	<speedDuration>20000</speedDuration>
-	<period>200000</period>
+	<speedDuration>$STAGE01</speedDuration>
+	<period>$PERIOD</period>
 	<startTime>-1</startTime>
 	<weight>$weight</weight>
 	<allowPreemptionFrom>$enablePreemption</allowPreemptionFrom>
@@ -898,6 +921,7 @@ echo "#################################### install Hadoop Yarn #################
 	<allowPreemptionFrom>$enablePreemption</allowPreemptionFrom>
 	<schedulingPolicy>fifo</schedulingPolicy>
 </queue>
+
 <queue name=\"batch1\">
 	<weight>1</weight>
 	<allowPreemptionFrom>$enablePreemption</allowPreemptionFrom>
@@ -937,7 +961,7 @@ echo "#################################### install Hadoop Yarn #################
 </allocations>' > $fairSchedulerFile"
 			fi
 
-			echo Configure Yarn at $1 step 3 $capacitySchedulerFile
+			echo "[INFO] Configure Yarn at $1 step 3 $capacitySchedulerFile"
 			$SSH_CMD $username@$1 "echo '<?xml version=\"1.0\"?>
 <configuration>
   <property>
@@ -980,7 +1004,7 @@ echo "#################################### install Hadoop Yarn #################
   </property>
 
 </configuration>' > $capacitySchedulerFile"
-			echo Configure Yarn at $1 step 4 - mapred-site.xml
+			echo "[INFO] Configure Yarn at $1 step 4 - mapred-site.xml"
 			# etc/hadoop/mapred-site.xml
 			$SSH_CMD $username@$1 "echo '<?xml version=\"1.0\"?>
 <?xml-stylesheet type=\"text/xsl\" href=\"configuration.xsl\"?>
@@ -1056,7 +1080,7 @@ echo "#################################### install Hadoop Yarn #################
 			
 			
 			# monitoring script in etc/hadoop/yarn-site.xml
-			echo Configure Yarn at $1 step 5 - $hadoopFolder/$configFolder/slaves
+			echo "[INFO] Configure Yarn at $1 step 5 - $hadoopFolder/$configFolder/slaves"
 			# slaves etc/hadoop/slaves
 			$SSH_CMD $username@$1 "sudo rm -rf $hadoopFolder/$configFolder/slaves"
 			#slaveStr=""
@@ -1116,10 +1140,10 @@ echo "#################################### install Hadoop Yarn #################
 			scp $customizedHadoopPath $username@$masterNode:~/ 
 			if $isLocalhost
 			then
-				echo "uploaded Yarn ..."
+				echo "[INFO] uploaded Yarn ..."
 			else
 				# share upload file among the workers.
-				echo "multithread sharing...."
+				echo "[INFO] multithread sharing...."
 				uploadCMD=""
 				counter=0
 				for slave in $slaveNodes; do
@@ -1160,17 +1184,17 @@ if $isInstallSpark
 then 	
 	echo "#################################### Setup Spark #####################################"	
 	installSparkFunc () {
-		echo "install Spark at $1 - step 1"
+		echo "[INFO] install Spark at $1 - step 1"
 		if $isDownload
 		then
 			ssh $1 "sudo rm -rf $sparkTgz; wget $sparkDownloadLink >> log.txt"
 		fi
-		echo "install Spark at $1 - step 2"
+		echo "[INFO] install Spark at $1 - step 2"
 		if $isExtract
 		then			
 			ssh $1 "rm -rf $sparkFolder; tar -xvzf $sparkTgz >> log.txt; mv $sparkTgzFolder $sparkFolder"
 		fi
-		echo "install Spark at $1 - step 3"
+		echo "[INFO] install Spark at $1 - step 3"
 		ssh $1 "echo 'export SPARK_DIST_CLASSPATH=~/$hadoopFolder/bin/hadoop
 #export SPARK_JAVA_OPTS=-Dspark.driver.port=53411
 export HADOOP_CONF_DIR=$hadoopFolder/$configFolder
@@ -1200,7 +1224,7 @@ spark.streaming.dynamicAllocation.scalingUpRatio 0.0005
 spark.streaming.dynamicAllocation.scalingDownRatio 0.0000001
 spark.streaming.dynamicAllocation.minExecutors 1
 spark.streaming.dynamicAllocation.maxExecutors 500' > $sparkFolder/conf/spark-defaults.conf"
-		echo "install Spark at $1 - step 5"
+		echo "[INFO] install Spark at $1 - step 5"
 		#Create /opt/spark-ver/conf/slaves add all the hostnames of spark slave nodes to it.
 		$SSH_CMD $1 "sudo rm -rf $sparkFolder/conf/slaves"
 		for slave in $slaveNodes; do
@@ -1266,7 +1290,6 @@ then
 	then
 		# upload to the $masterNode
 		$SSH_CMD $username@$masterNode "rm -rf $TEZ_JARS; mkdir $TEZ_JARS"
-		echo "scp ~/projects/ccra/tez/tez-dist/target/$tezMinTaz $username@$masterNode:~/"
 		scp ~/projects/ccra/tez/tez-dist/target/$tezMinTaz  $username@$masterNode:~/
 		#if $isLocalhost
 		#then
@@ -1362,6 +1385,11 @@ then
 			<property>
 			     <name>tez.am.preemption.heartbeats-between-preemptions</name>
 			     <value>1</value>
+			</property>
+
+			<property>
+			     <name>tez.container.log.enable</name>
+			     <value>$enableContainerLog</value>
 			</property>
 		</configuration>' > $hadoopFolder/$tezConfigFolder/tez-site.xml"
 		$SSH_CMD $username@$1 "mkdir $TEZ_JARS; tar -xvzf $tezMinTaz -C $TEZ_JARS"

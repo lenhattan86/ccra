@@ -51,6 +51,8 @@ uploadTestCases () {
 tarFile="SWIM"; testCase="../SWIM"; rm -rf .$testCase/*.class; uploadTestCases $tarFile $testCase &
 
 ssh tanle@$hostname "hadoop/bin/hadoop fs -rm -skipTrash /user/tanle/completion_time.csv;"
+ssh tanle@$hostname "hadoop/bin/hadoop fs -rm -skipTrash /user/tanle/tez_container_time.csv;"
+
 scp $workloadSrcFile  $hostname:$workloadFile
 ssh tanle@$hostname "cd hadoop/conf; rm -rf *.profile; javac GenerateProfile.java; java GenerateProfile $workloadFile"
 

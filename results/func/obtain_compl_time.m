@@ -1,4 +1,4 @@
-function [ burstyAvgTime burstyComplTimes batchAvgTime batchComplTimes burstyMinMax batchMinMax] = obtain_compl_time( files, jobIdThreshold, type)
+function [ burstyAvgTime burstyComplTimes batchAvgTime batchComplTimes burstyMinMax batchMinMax] = obtain_compl_time( files, jobIdThreshold, type, numIgnoredBurstyJobs)
 
 %     global batchJobRange
 
@@ -28,6 +28,7 @@ function [ burstyAvgTime burstyComplTimes batchAvgTime batchComplTimes burstyMin
          batchComplTimes{i} = runningTime(jobIds>=jobIdThreshold)';
          
          if length(burstyComplTimes{i})>0
+            burstyComplTimes{i} = burstyComplTimes{i}(1:length(burstyComplTimes{i})-numIgnoredBurstyJobs);
             burstyAvgTime(i) = mean(burstyComplTimes{i});
             burstyMinMax(1,i) = min(burstyComplTimes{i});        
             burstyMinMax(2,i) = max(burstyComplTimes{i});

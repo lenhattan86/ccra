@@ -12,6 +12,8 @@ jobIdThreshold=100000;
 
 plots = [true false true];
 
+WORKLOAD = 'BB';
+
 %%
 subfolder = 'users/tanle/SWIM/scriptsTest/workGenLogs/'; 
 csvFile = 'completion_time.csv'; type =1;
@@ -66,20 +68,21 @@ extra = '';
 % extra = '';
 %%
 
-[ drf_busrty_avg_time burstyComplTimes drf_batch_avg_time drf_batchComplTimes drf_burstyMinMax drf_batchMinMax] = obtain_compl_time( drf_compl_files, jobIdThreshold, type);
+[ drf_busrty_avg_time burstyComplTimes drf_batch_avg_time drf_batchComplTimes drf_burstyMinMax drf_batchMinMax] = obtain_compl_time( drf_compl_files, jobIdThreshold, type, 0);
 % [ drfw_avg_compl_time burstyComplTimes batchAvgTime drfw_batchComplTimes] = obtain_compl_time( drfw_compl_files, jobIdThreshold, type);
-[ speedfair_busrty_avg_time burstyComplTimes speedfair_batch_avg_time speedfair_batchComplTimes  speedfair_burstyMinMax speedfair_batchMinMax] = obtain_compl_time( speedfair_compl_files, jobIdThreshold, type);
+[ speedfair_busrty_avg_time burstyComplTimes speedfair_batch_avg_time speedfair_batchComplTimes  speedfair_burstyMinMax speedfair_batchMinMax] = obtain_compl_time( speedfair_compl_files, jobIdThreshold, type, 0);
 
-[ strict_busrty_avg_time burstyComplTimes strict_batch_avg_time strict_batchComplTimes  strict_burstyMinMax strict_batchMinMax] = obtain_compl_time( strict_compl_files, jobIdThreshold, type);
+[ strict_busrty_avg_time burstyComplTimes strict_batch_avg_time strict_batchComplTimes  strict_burstyMinMax strict_batchMinMax] = obtain_compl_time( strict_compl_files, jobIdThreshold, type, 0);
 
 %[ other_avg_time burstyComplTimes strict_preempt_batch_avg_time batchComplTimes] = obtain_compl_time( others, jobIdThreshold, type);
 
-%%  bursty jobs
+%%  LQ jobs
 if (plots(1))
+   colorCellsExperiment = {colorDRF; colorStrict; colorProposed};
    busrty_time = [drf_busrty_avg_time ;  strict_busrty_avg_time; speedfair_busrty_avg_time] / 1000;
    figure;
    scrsz = get(groot,'ScreenSize');   
-   barChart = bar(busrty_time', 'group');
+   barChart = bar(busrty_time', 'group','EdgeColor','none');
    
    for i=1:length(barChart)
        %barChart(i).LineWidth = barLineWidth;
@@ -88,13 +91,13 @@ if (plots(1))
    end
    
    %title('Average completion time of interactive jobs','fontsize',fontLegend);
-   xLabel='scale up factor of bursty jobs';
+   xLabel='scale up factor of LQ jobs';
     yLabel='completion time (seconds)';
     legendStr={strDRF, strStrict, strProposed};
 
     xLabels=scaleUpFactors;
     legend(legendStr,'Location','northoutside','FontSize',fontLegend,'Orientation','horizontal');    
-    set (gcf, 'Units', 'Inches', 'Position', figSize, 'PaperUnits', 'inches', 'PaperPosition', figSize);
+    set (gcf, 'Units', 'Inches', 'Position', figSizeOneCol, 'PaperUnits', 'inches', 'PaperPosition', figSizeOneCol);
     xlabel(xLabel,'FontSize',fontAxis);
     xlim([0.5 length(scaleUpFactors)+0.5 ]);
     ylabel(yLabel,'FontSize',fontAxis);
@@ -108,13 +111,13 @@ if (plots(1))
    end
 end
 
-%% cdf of bursty jobs
+%% cdf of LQ jobs
 if (plots(2))
     for i=1:length(CDF_ids)
         CDF_idx=CDF_ids(i);        
-       [ burstyAvgTime drfBurstyComplTimes batchAvgTime batchComplTimes] = obtain_compl_time( drf_compl_files(CDF_idx), jobIdThreshold, type);
-       [ burstyAvgTime speedfairBurstyComplTimes batchAvgTime batchComplTimes] = obtain_compl_time( speedfair_compl_files(CDF_idx), jobIdThreshold, type);
-       [ burstyAvgTime strictBurstyComplTimes batchAvgTime batchComplTimes] = obtain_compl_time( strict_compl_files(CDF_idx), jobIdThreshold, type);
+       [ burstyAvgTime drfBurstyComplTimes batchAvgTime batchComplTimes] = obtain_compl_time( drf_compl_files(CDF_idx), jobIdThreshold, type,0);
+       [ burstyAvgTime speedfairBurstyComplTimes batchAvgTime batchComplTimes] = obtain_compl_time( speedfair_compl_files(CDF_idx), jobIdThreshold, type,0);
+       [ burstyAvgTime strictBurstyComplTimes batchAvgTime batchComplTimes] = obtain_compl_time( strict_compl_files(CDF_idx), jobIdThreshold, type,0);
        maxVal = 10;
        figure;
        scrsz = get(groot,'ScreenSize');      
@@ -143,7 +146,7 @@ if (plots(2))
        xlim([0 maxVal]);
 
         legend(legendStr,'Location','northoutside','FontSize',fontLegend,'Orientation','horizontal');    
-        set (gcf, 'Units', 'Inches', 'Position', figSize, 'PaperUnits', 'inches', 'PaperPosition', figSize);
+        set (gcf, 'Units', 'Inches', 'Position', figSizeOneCol, 'PaperUnits', 'inches', 'PaperPosition', figSize);
         xlabel(xLabel,'FontSize',fontAxis);
         ylabel(yLabel,'FontSize',fontAxis);
     %     set(gca,'XTickLabel',xLabels,'FontSize',fontAxis);
@@ -167,7 +170,7 @@ if (plots(3))
   barData = batch_time;
   figure;
   scrsz = get(groot,'ScreenSize');   
-  barChart = bar(barData, 'group');   
+  barChart = bar(barData, 'group','EdgeColor','none');   
 
   %title('Average completion time of interactive jobs','fontsize',fontLegend);
 
@@ -188,13 +191,13 @@ if (plots(3))
         minMaxBarChart = errorbar(x, barData(:,i), barLowerErr(:,i), barUpperErr(:,i), colorBarMinMax, 'linestyle', 'none','linewidth',lineWidthBarMinMax);
   end
 
-  xLabel='scale up factor of bursty jobs';
+  xLabel='scale up factor of LQ jobs';
   yLabel='completion time (seconds)';
   legendStr={strDRF, strStrict, strProposed};
 
   xLabels=scaleUpFactors;
   legend(legendStr,'Location','northoutside','FontSize',fontLegend,'Orientation','horizontal');    
-  set (gcf, 'Units', 'Inches', 'Position', figSize, 'PaperUnits', 'inches', 'PaperPosition', figSize);
+  set (gcf, 'Units', 'Inches', 'Position', figSizeOneCol, 'PaperUnits', 'inches', 'PaperPosition', figSizeOneCol);
   xlabel(xLabel,'FontSize',fontAxis);
   xlim([0.5 length(scaleUpFactors)+0.5 ]);
   ylabel(yLabel,'FontSize',fontAxis);
@@ -219,7 +222,7 @@ return
 for i=1:length(fileNames)
     fileName = fileNames{i};
     epsFile = [ LOCAL_FIG fileName '.eps'];
-    pdfFile = [ fig_path fileName extra '.pdf']    
+    pdfFile = [ fig_path fileName '_' WORKLOAD extra '.pdf']    
     cmd = sprintf(PS_CMD_FORMAT, epsFile, pdfFile);
     status = system(cmd);
 end

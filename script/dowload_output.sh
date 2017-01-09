@@ -11,7 +11,7 @@ fi
 resultPath="../results"
 defaultFolder="runb2i1"
 method=""
-echo "download the files from $hostname"
+echo "[INFO] download the files from $hostname"
 
 if [ -z "$2" ]
 then
@@ -19,6 +19,9 @@ then
 else
 	newFolder="$2"
 fi
+
+subfolder1="users/tanle/SWIM/scriptsTest/workGenLogs"
+subfolder2="users/tanle/SWIM/scriptsTest"
 
 prompt () {
 	while true; do
@@ -33,7 +36,7 @@ prompt () {
 
 
 downloadOuput () {
-	echo "download $2 ................"
+	echo "[INFO] download $2 ................"
 	rm -rf $resultPath/$hostname/$3;
 	mkdir $resultPath/$hostname/
 	ssh tanle@$hostname "tar zcvf $1.tar $2"
@@ -42,6 +45,8 @@ downloadOuput () {
 	tar -xvzf $resultPath/$hostname/$3/$1.tar -C $resultPath/$hostname/$3
 	ssh tanle@$hostname "rm -rf $1.tar"
 	rm -rf $resultPath/$3/$1.tar;
+	rm -rf $resultPath/$hostname/$3/$subfolder1/*.txt
+	rm -rf $resultPath/$hostname/$3/$subfolder2/*.sh
 }
 
 #prompt
@@ -49,6 +54,7 @@ downloadOuput () {
 
 tarFile="scriptTest"; folder="~/SWIM/scriptsTest"; 
 ssh tanle@$hostname "rm -rf ~/SWIM/scriptsTest/workGenLogs/completion_time.csv; hadoop/bin/hadoop fs -copyToLocal /user/tanle/completion_time.csv ~/SWIM/scriptsTest/workGenLogs/completion_time.csv;"
+ssh tanle@$hostname "rm -rf ~/SWIM/scriptsTest/workGenLogs/tez_container_time.csv; hadoop/bin/hadoop fs -copyToLocal /user/tanle/tez_container_time.csv ~/SWIM/scriptsTest/workGenLogs/tez_container_time.csv;"
 downloadOuput $tarFile $folder $newFolder
 #ssh tanle@$hostname "hadoop/bin/hadoop fs -rm -skipTrash /user/tanle/completion_time.csv;"
 

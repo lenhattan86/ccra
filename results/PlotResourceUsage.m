@@ -9,7 +9,7 @@ output_sufix = 'short/'; STEP_TIME = 1.0;
 is_printed = true;
 numOfNodes = 40;
 MAX_CPU = numOfNodes*32;
-MAX_MEM = numOfNodes*32;
+MAX_MEM = numOfNodes*64;
 GB = 1024;
 extra='';
 
@@ -21,28 +21,49 @@ workload='BB';
 
 plots = [false true]; %DRF, DRF-W, Strict, SpeedFair
 
+colorBars = cell(num_queues,1);
+for i=1:num_queues
+  colorBars{i} = colorb8i1{i};
+end
+
 %%
 if plots(1) 
-  START_TIME = 20; END_TIME = 1500+START_TIME;  
+  START_TIME = 1; END_TIME = 6000+START_TIME;  
   
   
   queues = cell(1,num_queues);
+  lengendQueuesStr = cell(1,num_queues);
   for i=1:num_interactive_queue
       queues{i} = ['bursty' int2str(i-1)];
+      lengendQueuesStr{i} = [strLQ '-' int2str(i-1)];
   end
   for j=1:num_batch_queues
       queues{num_interactive_queue+j} = ['batch' int2str(j-1)];
+      lengendQueuesStr{num_interactive_queue+j} = [strTQ '-' int2str(j-1)];
   end
   method = '';  
+  
+memFactor = 1;
 
+%% BB
   % server='ctl.yarn-large.yarnrm-pg0.utah.cloudlab.us'; subFolder = 'SpeedFair';method = 'SpeedFair';
-  server='ctl.yarn-large.yarnrm-pg0.utah.cloudlab.us'; subFolder = 'SpeedFair_8x_new'; method = 'SpeedFair';
-  % server='ctl.yarn-drf.yarnrm-pg0.utah.cloudlab.us'; subFolder = 'DRF';method = 'DRF';
+%   server='ctl.yarn-large.yarnrm-pg0.utah.cloudlab.us'; subFolder = 'SpeedFair_8x_new'; method = 'SpeedFair';
+%   server='ctl.yarn-drf.yarnrm-pg0.utah.cloudlab.us'; subFolder = 'DRF';method = 'DRF'; memFactor = 2;
   % server='ctl.yarn-drf.yarnrm-pg0.utah.cloudlab.us'; subFolder = 'DRF_2x';method = 'DRF';
   % server='ctl.yarn-large.yarnrm-pg0.utah.cloudlab.us'; subFolder = 'Strict';method = 'Strict';
 %   server='ctl.yarn-large.yarnrm-pg0.utah.cloudlab.us'; subFolder = 'Strict_8x_new'; method = 'Strict';
+%% TPC-DS
+%   server = 'ctl.yarn-drf.yarnrm-pg0.utah.cloudlab.us'; subFolder = 'DRF_TPC_DS'; method = 'DRF';
+%   server = 'ctl.yarn-large.yarnrm-pg0.utah.cloudlab.us'; subFolder = 'Strict_TPC_DS'; method = 'Strict';
+%   server = 'ctl.yarn-large.yarnrm-pg0.utah.cloudlab.us'; subFolder = 'SpeedFair_TPC_DS'; method = 'SpeedFair';
+%% TPC-H
+%   server = 'ctl.yarn-drf.yarnrm-pg0.utah.cloudlab.us'; subFolder = 'DRF_TPC_H'; method = 'DRF';
+%   server = 'ctl.yarn-large.yarnrm-pg0.utah.cloudlab.us'; subFolder = 'Strict_TPC_H'; method = 'Strict';
+  server = 'ctl.yarn-large.yarnrm-pg0.utah.cloudlab.us'; subFolder = 'SpeedFair_TPC_H'; method = 'SpeedFair';
 
+  
   subfolder = ['b' int2str(num_batch_queues) 'i1_' subFolder]; extra='';
+  
   if num_batch_queues==0
       subFolder='';
       subfolder = ['b' int2str(num_batch_queues) 'i1'];
@@ -94,8 +115,7 @@ if plots(1)
    %logFile = [ logfolder 'SpeedFair-output' extraStr '.csv'];
    logFile = [ logfolder 'yarnUsedResources.csv'];
    [datetimes, queueNames, res1, res2, flag] = importRealResUsageLog(logFile); res2=res2./GB;
-   if (flag)
-      lengendStr = queues;
+   if (flag)      
       usedCPUs= zeros(length(queues),num_time_steps);
       usedMEM= zeros(length(queues),num_time_steps);
       queueIdxs = zeros(length(queues),num_time_steps);
@@ -105,24 +125,26 @@ if plots(1)
         endIdx= len-start_time_step+1;
         queueIdxs(i,1:endIdx)=temp(start_time_step:len);
         usedCPUs(i,1:endIdx) = res1(temp(start_time_step:len));
-        usedMEM(i,1:endIdx) = res2(temp(start_time_step:len));
+        usedMEM(i,1:endIdx) = res2(temp(start_time_step:len))*memFactor;
       end
       
       figure;
       subplot(2,1,1); 
-      bar(timeInSeconds,usedCPUs',barwidth,'stacked','EdgeColor','none');
+      hBar = bar(timeInSeconds,usedCPUs',barwidth,'stacked','EdgeColor','none');
+%       set(hBar, {'FaceColor'}, colorBars); 
       ylabel('CPUs');xlabel('seconds');
       ylim([0 MAX_CPU]);
       xlim([0 max(timeInSeconds)]);
-      legend(lengendStr,'Location','northoutside','FontSize',fontLegend,'Orientation','horizontal');
+      legend(lengendQueuesStr,'Location','northoutside','FontSize',fontLegend,'Orientation','horizontal');
       title([method '- CPUs'],'fontsize',fontLegend);
       
       subplot(2,1,2); 
-      bar(timeInSeconds,usedMEM',barwidth,'stacked','EdgeColor','none');
+      hBar =bar(timeInSeconds,usedMEM',barwidth,'stacked','EdgeColor','none');
+%       set(hBar,{'FaceColor'}, colorBars); 
       ylabel('GB');xlabel('seconds');
       ylim([0 MAX_MEM]);
       xlim([0 max(timeInSeconds)]);
-      legend(lengendStr,'Location','northoutside','FontSize',fontLegend,'Orientation','horizontal');
+      legend(lengendQueuesStr,'Location','northoutside','FontSize',fontLegend,'Orientation','horizontal');
       title([method '- Memory'],'fontsize',fontLegend);
       localFigSize = [0.0 0 10.0 7.0];
       set (gcf, 'Units', 'Inches', 'Position', localFigSize, 'PaperUnits', 'inches', 'PaperPosition', localFigSize);     
@@ -188,8 +210,8 @@ if plots(2)
     [ strict_avgRes1, strict_avgRes2, flag] = computeResourceUsage( strict_yarn_files{scaleUpFactorIdx}, queues, beginTimeIdx,  endTimeIdx);    
 
   
-  burstyIdxs = [1];
-  batchIdxs = [2:8];
+  burstyIdxs = [1:num_interactive_queue];
+  batchIdxs = [num_interactive_queue+1:num_queues];
   drf_bursty = sum(drf_avgRes1( burstyIdxs));
   drf_batch = sum(drf_avgRes1( batchIdxs));
   speedFair_bursty = sum(speedfair_avgRes1( burstyIdxs));
@@ -215,17 +237,18 @@ if plots(2)
     ];
   
   colorQueueType = {colorBursty, colorBatch, colorWasted};
-  stackLabels = {'bursty','batch','wasted'};
-  groupLabels = {'DRF','SpeedFair','Strict'};
+  stackLabels = {strLQs,strTQs,strUnalloc};
+  groupLabels = {strDRF,strProposed,strStrict};
   resGroupBars = zeros([size(avgRes1,1) 2 size(avgRes1,2)]);
   resGroupBars(:,1,:) = avgRes1/MAX_CPU;
   resGroupBars(:,2,:) = avgRes2/(MAX_MEM*GB);
   h = plotBarStackGroups(resGroupBars, colorQueueType);  
   ylim([0 1]);
+  ylabel('capacity');
   legend(stackLabels,'Location','northoutside','FontSize',fontLegend,'Orientation','horizontal');  
   set(gca,'XTickLabel',groupLabels, 'FontSize', fontAxis);   
   
-  set (gcf, 'Units', 'Inches', 'Position', figSize, 'PaperUnits', 'inches', 'PaperPosition', figSize);     
+  set (gcf, 'Units', 'Inches', 'Position', figSizeOneCol, 'PaperUnits', 'inches', 'PaperPosition', figSizeOneCol);     
   if is_printed   
     figIdx=figIdx +1;
     fileNames{figIdx} = ['b' int2str(num_batch_queues) '_avg_res_' workload extra];        
@@ -236,13 +259,14 @@ if plots(2)
 end
 
 %%
+fileNames
 return;
 %%
 
 for i=1:length(fileNames)
     fileName = fileNames{i};
     epsFile = [ LOCAL_FIG fileName '.eps'];
-    pdfFile = [ fig_path fileName  '.pdf']    
+    pdfFile = [ fig_path fileName  '.pdf'];    
     cmd = sprintf(PS_CMD_FORMAT, epsFile, pdfFile);
     status = system(cmd);
 end

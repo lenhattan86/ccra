@@ -20,14 +20,16 @@ num_queues = num_batch_queues + num_interactive_queue;
 
 workload='BB';
 
+
+
 enableSeparateLegend = true;
 
 plots = [true false]; %DRF, DRF-W, Strict, SpeedFair
 
 %%
 if plots(1) 
-  START_TIME = 1; END_TIME = 3500+START_TIME;  
-  lengendStr = {'User A','User B'};
+  START_TIME = 1; END_TIME = 2600+START_TIME;  
+  lengendStr = {'Queue A','Queue B'};
   
   queues = cell(1,num_queues);
   for i=1:num_interactive_queue
@@ -43,12 +45,13 @@ if plots(1)
 %   server='ctl.yarn-large.yarnrm-pg0.utah.cloudlab.us'; subFolder = 'Strict_mov';method = 'Strict';
 %   server='ctl.yarn-large.yarnrm-pg0.utah.cloudlab.us'; subFolder = 'SpeedFair_mov'; method = 'SpeedFair';
 
-server='ctl.yarn-large.yarnrm-pg0.utah.cloudlab.us'; subFolder = 'SpeedFair_mov_60_800'; method = 'SpeedFair';
+% server='ctl.yarn-large.yarnrm-pg0.utah.cloudlab.us'; subFolder = 'SpeedFair_mov_60_800'; method = 'SpeedFair';
   
 %   server='ctl.yarn-drf.yarnrm-pg0.utah.cloudlab.us'; subFolder = 'DRF_mov_80_600'; method = 'DRF';
 %   server='ctl.yarn-large.yarnrm-pg0.utah.cloudlab.us'; subFolder = 'Strict_mov_80_600';method = 'Strict';
-%   server='ctl.yarn-large.yarnrm-pg0.utah.cloudlab.us'; subFolder = 'SpeedFair_mov_80_600'; method = 'SpeedFair';
+  server='ctl.yarn-large.yarnrm-pg0.utah.cloudlab.us'; subFolder = 'SpeedFair_mov_80_600'; method = 'SpeedFair';
 
+%   server=''; subFolder = 'Optimum'; method = 'Optimum';  stage1Period = 80; period = 600; submissionDelay = 20; queueUpPeriod = 200;
 
   
   subfolder = ['b' int2str(num_batch_queues) 'i1_' subFolder]; extra='';
@@ -73,10 +76,28 @@ server='ctl.yarn-large.yarnrm-pg0.utah.cloudlab.us'; subFolder = 'SpeedFair_mov_
 
   extraStr = ['_' int2str(num_interactive_queue) '_' int2str(num_batch_queues)];
 
- 
-   logFile = [ logfolder 'yarnUsedResources.csv'];
-   [datetimes, queueNames, res1, res2, flag] = importRealResUsageLog(logFile); res2=res2./TB;
-   if (flag)      
+   if strcmp(method,'Optimum')
+     flag = true;
+     temp = (start_time_step:max_time_step);
+     usedMEM = zeros(length(queues),length(temp));
+     % batch jobs
+     usedMEM(2,:) = MAX_MEM/GB;
+     % stage 1 for 4 jobs - bursty 
+     jobNum = 4;
+     for j = 1:jobNum
+       startTime = start_time_step + period*(j-1)+queueUpPeriod;
+       usedMEM(1, startTime:stage1Period+startTime) = MAX_MEM/GB;
+     end
+     % stage 2 for 2 last jobs
+     jobNum = 2;
+     for j = 1:jobNum
+       startTime = start_time_step + period*(j+1)+queueUpPeriod;
+       stage2Res = period*MAX_MEM/2-stage1Period*MAX_MEM;
+       usedMEM(1, startTime+stage1Period:period+startTime) = stage2Res/GB/(period-stage1Period);
+     end     
+   else
+    logFile = [ logfolder 'yarnUsedResources.csv'];
+    [datetimes, queueNames, res1, res2, flag] = importRealResUsageLog(logFile); res2=res2./TB;
       usedCPUs= zeros(length(queues),num_time_steps);
       usedMEM= zeros(length(queues),num_time_steps);
       queueIdxs = zeros(length(queues),num_time_steps);
@@ -88,8 +109,9 @@ server='ctl.yarn-large.yarnrm-pg0.utah.cloudlab.us'; subFolder = 'SpeedFair_mov_
         usedCPUs(i,1:endIdx) = res1(temp(start_time_step:len));
         usedMEM(i,1:endIdx) = res2(temp(start_time_step:len));
       end
-      
-      
+   end
+   
+   if (flag)  
 %       figure;
 %       subplot(2,1,1); 
 %       bar(timeInSeconds,usedCPUs',barwidth,'stacked','EdgeColor','none');
@@ -117,8 +139,8 @@ server='ctl.yarn-large.yarnrm-pg0.utah.cloudlab.us'; subFolder = 'SpeedFair_mov_
       
       set (gcf, 'Units', 'Inches', 'Position', figSizeOneColHaflRow, 'PaperUnits', 'inches', 'PaperPosition', figSizeOneColHaflRow);     
       if is_printed   
-          figIdx=figIdx +1;
-        fileNames{figIdx} = ['b' int2str(num_batch_queues) '_mov_' subFolder '_' workload extra];        
+        figIdx=figIdx +1;
+        fileNames{figIdx} = ['b' int2str(num_batch_queues) '_mov_' method '_' workload extra];        
         epsFile = [ LOCAL_FIG fileNames{figIdx} '.eps'];
         print ('-depsc', epsFile);
       end
@@ -134,10 +156,11 @@ server='ctl.yarn-large.yarnrm-pg0.utah.cloudlab.us'; subFolder = 'SpeedFair_mov_
         axis([20000,20001,20000,20001]) %move dummy points out of view
         axis off %hide axis  
         set(gca,'YColor','none');      
-        set (gcf, 'Units', 'Inches', 'Position', legendSize, 'PaperUnits', 'inches', 'PaperPosition', legendSize);     
+        set (gcf, 'Units', 'Inches', 'Position', legendSize, 'PaperUnits', 'inches', 'PaperPosition', legendSize);    
+        
         if is_printed   
             figIdx=figIdx +1;
-          fileNames{figIdx} = ['b' int2str(num_batch_queues) '_mov_legend_' workload extra];        
+          fileNames{figIdx} = ['b' int2str(num_batch_queues) '_mov_legend'];        
           epsFile = [ LOCAL_FIG fileNames{figIdx} '.eps'];
           print ('-depsc', epsFile);
         end
@@ -224,7 +247,7 @@ if plots(2)
   end   
   
 end
-
+fileNames
 %%
 return;
 %%

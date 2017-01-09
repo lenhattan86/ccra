@@ -23,4 +23,5 @@ If you want to modify, or install one of them, you only need to set IS_INIT=fals
    * isDownload=true
    * isExtract=true
    * installHadoop=true
-
+# ssh-add
+eval `ssh-agent -s`
