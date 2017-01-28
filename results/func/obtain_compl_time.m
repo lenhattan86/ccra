@@ -15,7 +15,7 @@ function [ burstyAvgTime burstyComplTimes batchAvgTime batchComplTimes burstyMin
       batchAvgTime(i)= 0;
       if exist(filename, 'file')
           if (type==1)
-            if length(strfind(filename,'new'))>0
+            if length(strfind(filename,'new'))>0 || length(strfind(filename,'TPC'))>0
               [jobIds,startDatetime,startDatetime_2,runningTime,runningTime_2,endTimeStamp] = import_compl_time_01_new(filename);
             else
               [jobIds,startDatetime,startTimeStamp,runningTime,endTimeStamp] = import_compl_time_01(filename);

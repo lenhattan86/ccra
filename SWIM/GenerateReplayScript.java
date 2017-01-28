@@ -1057,7 +1057,7 @@ public class GenerateReplayScript {
           hadoopCommand, pathToWorkGenJar, pathToWorkGenConf, 100, burstyAppNum,
           1, (int) (256 * 0.9));
     } else {
-      int numOfBatchQueues = 1; isCleanLogFile = true;
+      int numOfBatchQueues = 8; isCleanLogFile = true;
       SLEEP_TO_REDUCE_LOAD = 20*NUM_JOB_SUBMIT;
       int burstyAppNum = 50;
       int batchAppNum = 100; // 80, we just measure 80 batch jobs 
@@ -1075,7 +1075,7 @@ public class GenerateReplayScript {
           hadoopCommand, pathToWorkGenJar, batchAppNum, numOfBatchQueues);
 
       printTezBurstyJobs(burstyIds, scriptDirPath, workloadOutputDir,
-          hadoopCommand, pathToWorkGenJar, 200, burstyAppNum, 1);
+          hadoopCommand, pathToWorkGenJar, 300, burstyAppNum, 1);
     }
 
     System.out.println("Parameter values for randomwriter_conf.xsl:");

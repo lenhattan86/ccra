@@ -3,7 +3,7 @@ common_settings;
 
 output_sufix = 'short/'; STEP_TIME = 1.0; 
 
-% fig_path = ['../../EuroSys17/fig/'];
+fig_path = ['../../EuroSys17/fig/'];
 
 num_batch_queues = 8;
 num_interactive_queue = 1;
@@ -63,6 +63,10 @@ others = {
 scaleUpFactors = {'1x' '2x' '4x' '8x'};
 
 
+% figSize = figSizeTwothirdCol;
+% figSize = figSizeOneCola;
+figSize = figSizeFourFifthCol;
+
 CDF_ids = [2, 3, 4, 5];
 extra = '';
 % extra = '';
@@ -82,7 +86,7 @@ if (plots(1))
    busrty_time = [drf_busrty_avg_time ;  strict_busrty_avg_time; speedfair_busrty_avg_time] / 1000;
    figure;
    scrsz = get(groot,'ScreenSize');   
-   barChart = bar(busrty_time', 'group','EdgeColor','none');
+   barChart = bar(busrty_time', groupBarSize, 'group');
    
    for i=1:length(barChart)
        %barChart(i).LineWidth = barLineWidth;
@@ -92,12 +96,12 @@ if (plots(1))
    
    %title('Average completion time of interactive jobs','fontsize',fontLegend);
    xLabel='scale up factor of LQ jobs';
-    yLabel='completion time (seconds)';
+    yLabel=strAvgComplTime;
     legendStr={strDRF, strStrict, strProposed};
 
     xLabels=scaleUpFactors;
-    legend(legendStr,'Location','northoutside','FontSize',fontLegend,'Orientation','horizontal');    
-    set (gcf, 'Units', 'Inches', 'Position', figSizeOneCol, 'PaperUnits', 'inches', 'PaperPosition', figSizeOneCol);
+    legend(legendStr,'Location','northeast','FontSize',fontLegend,'Orientation','horizontal');    
+    set (gcf, 'Units', 'Inches', 'Position', figSize, 'PaperUnits', 'inches', 'PaperPosition', figSize);
     xlabel(xLabel,'FontSize',fontAxis);
     xlim([0.5 length(scaleUpFactors)+0.5 ]);
     ylabel(yLabel,'FontSize',fontAxis);
@@ -122,38 +126,38 @@ if (plots(2))
        figure;
        scrsz = get(groot,'ScreenSize');      
        if(length(drfBurstyComplTimes)>0)
-            xData = drfBurstyComplTimes/1000;
+            xData = cell2mat(drfBurstyComplTimes)/1000;
             [f,x]=ecdf(xData);   plot(x,f,'LineWidth',LineWidth); hold on;
             legendStr{1}=strDRF;
             maxVal = max(maxVal,max(xData)); 
        end   
        if(length(strictBurstyComplTimes)>0)
-           xData = strictBurstyComplTimes/1000;
+           xData = cell2mat(strictBurstyComplTimes)/1000;
             [f,x]=ecdf(xData);   plot(x,f,'LineWidth',LineWidth); hold on;
             legendStr{2}=strStrict;
             maxVal = max(maxVal,max(xData));
        end
        if(length(speedfairBurstyComplTimes)>0)
-           xData = speedfairBurstyComplTimes/1000;
+           xData = cell2mat(speedfairBurstyComplTimes)/1000;
             [f,x]=ecdf(xData);   plot(x,f,'LineWidth',LineWidth); hold on;
             legendStr{3}=strProposed;
             maxVal = max(maxVal,max(xData));
        end
 %         maxVal = 700;
        %title('Average completion time of interactive jobs','fontsize',fontLegend);
-       xLabel='completion time (seconds)';
+       xLabel=strAvgComplTime;
        yLabel='cdf';
        xlim([0 maxVal]);
 
         legend(legendStr,'Location','northoutside','FontSize',fontLegend,'Orientation','horizontal');    
-        set (gcf, 'Units', 'Inches', 'Position', figSizeOneCol, 'PaperUnits', 'inches', 'PaperPosition', figSize);
+        set (gcf, 'Units', 'Inches', 'Position', figSize, 'PaperUnits', 'inches', 'PaperPosition', figSize);
         xlabel(xLabel,'FontSize',fontAxis);
         ylabel(yLabel,'FontSize',fontAxis);
     %     set(gca,'XTickLabel',xLabels,'FontSize',fontAxis);
 
        if is_printed
           figIdx=figIdx +1;
-          fileNames{figIdx} = ['busty_perf_grt_cdf' int2str(scaleUpFactors(CDF_idx))];
+          fileNames{figIdx} = ['busty_perf_grt_cdf' scaleUpFactors(CDF_idx)];
           epsFile = [ LOCAL_FIG fileNames{figIdx} '.eps'];
             print ('-depsc', epsFile);
        end
@@ -170,7 +174,7 @@ if (plots(3))
   barData = batch_time;
   figure;
   scrsz = get(groot,'ScreenSize');   
-  barChart = bar(barData, 'group','EdgeColor','none');   
+  barChart = bar(barData,groupBarSize, 'group');   
 
   %title('Average completion time of interactive jobs','fontsize',fontLegend);
 
@@ -192,12 +196,12 @@ if (plots(3))
   end
 
   xLabel='scale up factor of LQ jobs';
-  yLabel='completion time (seconds)';
+  yLabel=strAvgComplTime;
   legendStr={strDRF, strStrict, strProposed};
 
   xLabels=scaleUpFactors;
-  legend(legendStr,'Location','northoutside','FontSize',fontLegend,'Orientation','horizontal');    
-  set (gcf, 'Units', 'Inches', 'Position', figSizeOneCol, 'PaperUnits', 'inches', 'PaperPosition', figSizeOneCol);
+  legend(legendStr,'Location','northwest','FontSize',fontLegend,'Orientation','horizontal');    
+  set (gcf, 'Units', 'Inches', 'Position', figSize, 'PaperUnits', 'inches', 'PaperPosition', figSize);
   xlabel(xLabel,'FontSize',fontAxis);
   xlim([0.5 length(scaleUpFactors)+0.5 ]);
   ylabel(yLabel,'FontSize',fontAxis);

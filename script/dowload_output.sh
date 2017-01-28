@@ -1,11 +1,14 @@
 defaulHostname="ctl.yarn-perf.yarnrm-pg0.wisc.cloudlab.us"
 #defaulHostname="ctl.yarn-large.yarnrm-pg0.utah.cloudlab.us"
 
+#defaultDomain="yarnrm-pg0.utah.cloudlab.us"
+defaultDomain="yarnrm-pg0.clemson.cloudlab.us"
+
 if [ -z "$1" ]
 then
 	hostname=$defaulHostname
 else
-	hostname="ctl.$1.yarnrm-pg0.utah.cloudlab.us"
+	hostname="ctl.$1.$defaultDomain"
 fi
 
 resultPath="../results"

@@ -1,7 +1,8 @@
 defaulHostname="ctl.yarn-perf.yarnrm-pg0.wisc.cloudlab.us"
 #defaulHostname="ctl.yarn-large.yarnrm-pg0.utah.cloudlab.us"
 
-defaultDomain="yarnrm-pg0.utah.cloudlab.us"
+#defaultDomain="yarnrm-pg0.utah.cloudlab.us"
+defaultDomain="yarnrm-pg0.clemson.cloudlab.us"
 
 
 
@@ -19,7 +20,8 @@ else
 	batchNum=$2
 fi
 
-workloadSrcFile="/home/tanle/projects/SpeedFairSim/input_gen/jobs_input_1_$batchNum.txt"
+workloadSrcFile="/home/tanle/projects/SpeedFairSim/input/jobs_input_1_$batchNum.txt"
+#workloadSrcFile="/home/tanle/projects/SpeedFairSim/input_gen/jobs_input_1_1_40_BB_mov.txt"
 workloadFile="/users/tanle/hadoop/conf/simple.txt"
 
 echo "upload the files to $hostname"

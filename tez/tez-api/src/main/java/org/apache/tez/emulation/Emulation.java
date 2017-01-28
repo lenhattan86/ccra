@@ -52,7 +52,7 @@ public class Emulation {
   // static final Logger LOG = LoggerFactory.getLogger(Emulation.class);
 
   private final int NUM_DIMENSIONS = 2;
-  private int[] nodeCapacities = { 1024 * 2, 2 };
+  private int[] nodeCapacities = { 2, 1024 * 2};
   private double scaleResource = 1.0;
 
   public static List<DAG> dags;
@@ -61,10 +61,12 @@ public class Emulation {
   private TezConfiguration conf;
 
   public Emulation(TezConfiguration conf) {
-    nodeCapacities[0] = conf.getInt(TezConfiguration.TEZ_NODE_CAPACITY_MEM,
-        TezConfiguration.TEZ_NODE_CAPACITY_MEM_DEFAULT);
-    nodeCapacities[1] = conf.getInt(TezConfiguration.TEZ_NODE_CAPACITY_VCORES,
+
+    nodeCapacities[0] = conf.getInt(TezConfiguration.TEZ_NODE_CAPACITY_VCORES,
         TezConfiguration.TEZ_NODE_CAPACITY_VCORES_DEFAULT);
+    
+    nodeCapacities[1] = conf.getInt(TezConfiguration.TEZ_NODE_CAPACITY_MEM,
+        TezConfiguration.TEZ_NODE_CAPACITY_MEM_DEFAULT);
 
     scaleResource = conf.getDouble(TezConfiguration.TEZ_RESOURCE_SCALE_DOWN,
         TezConfiguration.TEZ_RESOURCE_SCALE_DOWN_DEFAULT);
@@ -73,8 +75,8 @@ public class Emulation {
         TezConfiguration.TEZ_RESOURCE_SINGLE_NODE_DEFAULT);
 
     if (isSingleNode) {
-      nodeCapacities[0] = nodeCapacities[0] - 1024;
-      nodeCapacities[1] = nodeCapacities[1] - 1;
+      nodeCapacities[0] = nodeCapacities[0] - 1;
+      nodeCapacities[1] = nodeCapacities[1] - 1024;
     }
 
     this.conf = conf;
@@ -93,10 +95,10 @@ public class Emulation {
       int val = (int) (resources[type] * nodeCapacities[type] / scaleResource);
       switch (type) {
       case 0:
-        res.setMemory(val);
-        break;
-      case 1:
         res.setVirtualCores(val);
+        break;
+      case 1:        
+        res.setMemory(val);
         break;
       case 2:
         res.setInNetwork(val);

@@ -1,5 +1,6 @@
 #!/bin/bash
-
+# usage:
+# ./auto_setup_cluster.sh [hostname] [method] [batchNum]
 ## constants
 SPEEDFAIR="SpeedFair"
 DRF="DRF"
@@ -41,6 +42,7 @@ isCloudLab=true
 isAmazonEC=false
 isLocalhost=false
 IS_INIT=false
+isTestNetwork=false
 isOfficial=true
 TEST=false
 SSH_CMD="autossh"
@@ -67,15 +69,18 @@ fi
 username="tanle"
 groupname="yarnrm-PG0"
 
-workloadSrcFile="/home/tanle/projects/SpeedFairSim/input_gen/jobs_input_1_$batchNum.txt"
+workloadSrcFile="/home/tanle/projects/SpeedFairSim/input/jobs_input_1_$batchNum.txt"
+#workloadSrcFile="/home/tanle/projects/SpeedFairSim/input_gen/jobs_input_1_1_40_BB_mov.txt"
 genJavaFile="/home/tanle/projects/ccra/SWIM/GenerateProfile.java"
 
 java_home='/usr/lib/jvm/java-8-oracle'
 
 ## Proposed Parameters
 
-PERIOD=200000
-STAGE01=20000
+PERIOD=300000 #200000
+STAGE01=30000
+#PERIOD=600000 
+#STAGE01=300000
 
 ######################### Hadoop  #####################
 hadoopFolder="hadoop"
@@ -229,7 +234,8 @@ else
 		#hostname="ctl.yarn-small.yarnrm-pg0.wisc.cloudlab.us"; cp ~/.ssh/config.yarn-small ~/.ssh/config; 
 		hostname="ctl.yarn-large.yarnrm-pg0.utah.cloudlab.us"; cp ~/.ssh/config.yarn-large ~/.ssh/config; 
 	else
-		hostname="ctl.$1.yarnrm-pg0.utah.cloudlab.us"; cp ~/.ssh/config.$1 ~/.ssh/config; 
+		#hostname="ctl.$1.yarnrm-pg0.utah.cloudlab.us"; cp ~/.ssh/config.$1 ~/.ssh/config;
+		hostname="ctl.$1.yarnrm-pg0.clemson.cloudlab.us"; cp ~/.ssh/config.$1 ~/.ssh/config;  
 	fi
 fi
 echo "[INFO] =====set up $hostname====="
@@ -285,7 +291,7 @@ isFormatHDFS=true
 
 isInstallFlink=false
 isModifyFlink=false
-startFlinkYarn=false
+startFlinkYarn=falsefalse
 shudownFlink=false
 startFlinkStandalone=false # not necessary
 
@@ -344,6 +350,7 @@ then
 
 	isInstallTez=true
 	isUploadTez=true
+	isTestNetwork=true
 fi
 
 if $isLocalhost
@@ -421,10 +428,14 @@ echo ############### REBOOT all servers #############################
 fi
 
 echo ####################### TEST CLUSTER NETWORK ##########################
-for server in $serverList; do
-	$SSH_CMD $username@$server " echo Hello $server " &
-done
-wait
+if $isTestNetwork
+then
+	for server in $serverList; do
+	$SSH_CMD $username@$server " echo Hello $server "
+	done
+	wait
+fi
+
 
 if $isUploadKey
 then		
@@ -956,8 +967,7 @@ echo "#################################### install Hadoop Yarn #################
 	<weight>1</weight>
 	<allowPreemptionFrom>$enablePreemption</allowPreemptionFrom>	
 	<schedulingPolicy>fifo</schedulingPolicy>
-</queue>
-
+</queue> 
 </allocations>' > $fairSchedulerFile"
 			fi
 

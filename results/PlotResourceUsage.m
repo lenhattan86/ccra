@@ -160,7 +160,8 @@ end
 %%
 
 if plots(2)
-
+    num_interactive_queue=1;
+    num_batch_queues=8;
     queues = cell(1,num_queues);
     for i=1:num_interactive_queue
         queues{i} = ['bursty' int2str(i-1)];
@@ -244,7 +245,7 @@ if plots(2)
   resGroupBars(:,2,:) = avgRes2/(MAX_MEM*GB);
   h = plotBarStackGroups(resGroupBars, colorQueueType);  
   ylim([0 1]);
-  ylabel('capacity');
+  ylabel('normalized capacity');
   legend(stackLabels,'Location','northoutside','FontSize',fontLegend,'Orientation','horizontal');  
   set(gca,'XTickLabel',groupLabels, 'FontSize', fontAxis);   
   
