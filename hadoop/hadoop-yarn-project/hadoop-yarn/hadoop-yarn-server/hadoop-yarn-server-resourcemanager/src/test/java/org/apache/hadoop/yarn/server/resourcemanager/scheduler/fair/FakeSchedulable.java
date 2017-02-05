@@ -254,4 +254,28 @@ public class FakeSchedulable implements Schedulable {
     // TODO Auto-generated method stub
     return false;
   }
+
+  @Override
+  public boolean isRejected() {
+    // TODO Auto-generated method stub
+    return false;
+  }
+
+  @Override
+  public boolean isNewArrival() {
+    // TODO Auto-generated method stub
+    return false;
+  }
+
+  @Override
+  public boolean isHardGuaranteed() {
+    // TODO Auto-generated method stub
+    return false;
+  }
+
+  @Override
+  public boolean isSoftGuaranteed() {
+    // TODO Auto-generated method stub
+    return false;
+  }
 }

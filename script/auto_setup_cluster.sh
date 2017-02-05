@@ -1,27 +1,28 @@
 #!/bin/bash
 # usage:
-# ./auto_setup_cluster.sh [hostname] [method] [batchNum]
+# ./auto_setup_cluster.sh [hostname] [method] [parameters]
 ## constants
-SPEEDFAIR="SpeedFair"
+BPF="BPF"
 DRF="DRF"
+N_BPF="N-BPF"
 Strict="Strict"
 DRFW="DRF-W"
 Fair="Fair"
-StrictFair="StrictFair"
-METHOD=$SPEEDFAIR
+
+METHOD=$BPF
 
 if [ -z "$2" ]
 then
-	METHOD=$SPEEDFAIR
+	METHOD=$BPF
 else
 	METHOD="$2"
 fi
 
 if [ -z "$3" ]
 then
-	batchNum=4
+	parameters=4
 else
-	batchNum=$3
+	parameters=$3
 fi
 
 ## author: Tan N. Le ~ CS department Stony Brook University
@@ -54,9 +55,9 @@ enableContainerLog="false"
 
 if $isOfficial
 then
-	scaleDown=1.0 # DEFAULT 1.0, use 4.0 to increase the number of tasks -> 4 times.
+	scaleDown=4.0 # DEFAULT 1.0
 else
-	scaleDown=4.0 # DEFAULT 1.0, use 4.0 to increase the number of tasks -> 4 times.
+	scaleDown=4.0 # use 4.0 to increase the number of tasks -> 4 times.
 fi
 
 if $isLocalhost
@@ -69,16 +70,16 @@ fi
 username="tanle"
 groupname="yarnrm-PG0"
 
-workloadSrcFile="/home/tanle/projects/SpeedFairSim/input/jobs_input_1_$batchNum.txt"
-#workloadSrcFile="/home/tanle/projects/SpeedFairSim/input_gen/jobs_input_1_1_40_BB_mov.txt"
-genJavaFile="/home/tanle/projects/ccra/SWIM/GenerateProfile.java"
+workloadSrcFile="/home/tanle/projects/BPFSim/input/jobs_input_$parameters.txt"
+#workloadSrcFile="/home/tanle/projects/BPFSim/input_gen/jobs_input_1_1_40_BB_mov.txt"
+genJavaFile="/home/tanle/projects/BPFImpl/SWIM/GenerateProfile.java"
 
 java_home='/usr/lib/jvm/java-8-oracle'
 
 ## Proposed Parameters
 
 PERIOD=300000 #200000
-STAGE01=30000
+STAGE01=27000
 #PERIOD=600000 
 #STAGE01=300000
 
@@ -95,7 +96,7 @@ hadoopTgz="hadoop-$hadoopVersion.tar.gz"
 
 if $isLocalhost
 then
-	workloadSrcFile="/home/tanle/projects/SpeedFairSim/input_gen/jobs_input_1_3.txt"
+	workloadSrcFile="/home/tanle/projects/BPFSim/input/jobs_input_3_1_1_BB.txt"
 	workloadFile="/home/tanle/hadoop/conf/simple.txt"
 	profilePath="/home/tanle/hadoop/conf/"
 	simLogPath="/home/tanle/SWIM/scriptsTest/workGenLogs/"
@@ -110,7 +111,7 @@ fi
 yarnVcores=32
 if $isLocalhost
 then
-	yarnVcores=11
+	yarnVcores=13
 fi
 vmemRatio=4
 #yarnNodeMem=131072 # 128 GB
@@ -120,7 +121,7 @@ yarnNodeMem=$(($yarnVcores*1024*2)) # 2 times of number of vcores
 
 yarnMaxMem=$yarnNodeMem # for each container
 
-
+	
 isCapacityScheduler=false
 if $isLocalhost
 then
@@ -141,15 +142,15 @@ fi
 
 echo "METHOD: $METHOD"
 
-if [ "$METHOD" == "$SPEEDFAIR" ];
+if [ "$METHOD" == "$BPF" ];
 then
-        shedulingPolicy="SpeedFair"; weight=1
+        shedulingPolicy="bpf"; weight=1
+elif [ "$METHOD" == "$N_BPF" ];
+then
+	shedulingPolicy="n-bpf"; weight=1
 elif [ "$METHOD" == "$DRF" ];
 then
 	shedulingPolicy="drf"; weight=1
-elif [ "$METHOD" == "$StrictFair" ];
-then
-	shedulingPolicy="fair"; weight=999999
 elif [ "$METHOD" == "$Strict" ];
 then
 	shedulingPolicy="drf"; weight=999999
@@ -234,15 +235,15 @@ else
 		#hostname="ctl.yarn-small.yarnrm-pg0.wisc.cloudlab.us"; cp ~/.ssh/config.yarn-small ~/.ssh/config; 
 		hostname="ctl.yarn-large.yarnrm-pg0.utah.cloudlab.us"; cp ~/.ssh/config.yarn-large ~/.ssh/config; 
 	else
-		#hostname="ctl.$1.yarnrm-pg0.utah.cloudlab.us"; cp ~/.ssh/config.$1 ~/.ssh/config;
-		hostname="ctl.$1.yarnrm-pg0.clemson.cloudlab.us"; cp ~/.ssh/config.$1 ~/.ssh/config;  
+		hostname="ctl.$1.yarnrm-pg0.utah.cloudlab.us"; cp ~/.ssh/config.$1 ~/.ssh/config;
+		#hostname="ctl.$1.yarnrm-pg0.clemson.cloudlab.us"; cp ~/.ssh/config.$1 ~/.ssh/config;  
 	fi
 fi
 echo "[INFO] =====set up $hostname====="
 
 REBOOT=false
 
-isUploadYarn=false
+isUploadYarn=true
 isDownload=false
 isExtract=false
 
@@ -260,7 +261,7 @@ then
 	isExtract=true
 fi
 
-customizedHadoopPath="/home/tanle/projects/ccra/hadoop/hadoop-dist/target/$hadoopTgz"
+customizedHadoopPath="/home/tanle/projects/BPFImpl/hadoop/hadoop-dist/target/$hadoopTgz"
 
 isUploadKey=false
 isGenerateKey=false	
@@ -335,7 +336,7 @@ then
 
 	isInstallBasePackages=true
 
-	isInstallGanglia=false
+	isInstallGanglia=true
 	startGanglia=false
 
 	isInstallHadoop=true
@@ -362,6 +363,8 @@ then
 	numOfReplication=1
 	numOfworkers=1
 	isUploadKey=false
+#	isUploadKey=true
+#	isGenerateKey=true
 	isInstallBasePackages=false
 	isInstallGanglia=false
 	isInstallFlink=false
@@ -453,6 +456,10 @@ echo ################################# passwordless SSH ########################
 			sudo chmod 0600 $HOME/.ssh/id_rsa*
 			sudo chmod 0600 ~/.ssh/authorized_keys
 			echo 'StrictHostKeyChecking no' >> ~/.ssh/config
+			if $isLocalhost
+			then
+				ssh-add
+			fi
 			break;;
                 [Nn]* ) exit;;
                 * ) echo "Please answer yes or no.";;
@@ -878,11 +885,28 @@ echo "#################################### install Hadoop Yarn #################
 <defaultFairSharePreemptionThreshold>1.0</defaultFairSharePreemptionThreshold>
 
 <queue name=\"bursty0\">	
-	<minReq>11264 mb, 11 vcores</minReq>
-	<!-- <minReq>8192 mb, 8 vcores</minReq> -->
-	<speedDuration>80000</speedDuration>
+	<minReq>26624 mb, 13 vcores</minReq>
+	<speedDuration>$STAGE01</speedDuration>
 	<allowPreemptionFrom>$enablePreemption</allowPreemptionFrom>
-	<period>600000</period>
+	<period>150000</period>
+	<startTime>-1</startTime>
+	<weight>$weight</weight>
+	<schedulingPolicy>fifo</schedulingPolicy>
+</queue>
+<queue name=\"bursty1\">	
+	<minReq>26624 mb, 13 vcores</minReq>
+	<speedDuration>$STAGE01</speedDuration>
+	<allowPreemptionFrom>$enablePreemption</allowPreemptionFrom>
+	<period>110000</period>
+	<startTime>-1</startTime>
+	<weight>$weight</weight>
+	<schedulingPolicy>fifo</schedulingPolicy>
+</queue>
+<queue name=\"bursty2\">	
+	<minReq>26624 mb, 13 vcores</minReq>
+	<speedDuration>$STAGE01</speedDuration>
+	<allowPreemptionFrom>$enablePreemption</allowPreemptionFrom>
+	<period>60000</period>
 	<startTime>-1</startTime>
 	<weight>$weight</weight>
 	<schedulingPolicy>fifo</schedulingPolicy>
@@ -917,11 +941,27 @@ echo "#################################### install Hadoop Yarn #################
 <defaultFairSharePreemptionThreshold>1.0</defaultFairSharePreemptionThreshold>
 
 <queue name=\"bursty0\">	
-	<!--<minReq>1310720 mb, 1280 vcores</minReq> -->
 	<minReq>2621440 mb, 1280 vcores</minReq> 
-	<!-- <minReq>16384 mb, 16 vcores</minReq> -->
 	<speedDuration>$STAGE01</speedDuration>
-	<period>$PERIOD</period>
+	<period>150000</period>
+	<startTime>-1</startTime>
+	<weight>$weight</weight>
+	<allowPreemptionFrom>$enablePreemption</allowPreemptionFrom>
+	<schedulingPolicy>fifo</schedulingPolicy>
+</queue>
+<queue name=\"bursty1\">	
+	<minReq>2621440 mb, 1280 vcores</minReq> 
+	<speedDuration>$STAGE01</speedDuration>
+	<period>110000</period>
+	<startTime>-1</startTime>
+	<weight>$weight</weight>
+	<allowPreemptionFrom>$enablePreemption</allowPreemptionFrom>
+	<schedulingPolicy>fifo</schedulingPolicy>
+</queue>
+<queue name=\"bursty2\">	
+	<minReq>2621440 mb, 1280 vcores</minReq> 
+	<speedDuration>$STAGE01</speedDuration>
+	<period>60000</period>
 	<startTime>-1</startTime>
 	<weight>$weight</weight>
 	<allowPreemptionFrom>$enablePreemption</allowPreemptionFrom>
@@ -1300,7 +1340,7 @@ then
 	then
 		# upload to the $masterNode
 		$SSH_CMD $username@$masterNode "rm -rf $TEZ_JARS; mkdir $TEZ_JARS"
-		scp ~/projects/ccra/tez/tez-dist/target/$tezMinTaz  $username@$masterNode:~/
+		scp ~/projects/BPFImpl/tez/tez-dist/target/$tezMinTaz  $username@$masterNode:~/
 		#if $isLocalhost
 		#then
 		#	echo "uploaded Tez ..."
@@ -1407,7 +1447,7 @@ then
 
 	$SSH_CMD $username@$masterNode "hadoop/bin/hadoop dfs -mkdir /apps"
 	$SSH_CMD $username@$masterNode "hadoop/bin/hadoop dfs -mkdir /apps/tez"
-	scp ~/projects/ccra/tez/tez-dist/target/tez-0.8.4.tar.gz $username@$masterNode:~/
+	scp ~/projects/BPFImpl/tez/tez-dist/target/tez-0.8.4.tar.gz $username@$masterNode:~/
 	$SSH_CMD $username@$masterNode "hadoop/bin/hadoop dfs -rmr /apps/tez/tez-0.8.4.tar.gz;
 	hadoop/bin/hadoop dfs -copyFromLocal tez-0.8.4.tar.gz /apps/tez/"
 	scp $workloadSrcFile  $username@$masterNode:$workloadFile

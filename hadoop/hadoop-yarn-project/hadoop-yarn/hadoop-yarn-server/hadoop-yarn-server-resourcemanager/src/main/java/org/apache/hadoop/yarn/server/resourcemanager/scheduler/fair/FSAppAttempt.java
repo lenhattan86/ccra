@@ -54,7 +54,7 @@ import org.apache.hadoop.yarn.server.resourcemanager.scheduler.NodeType;
 import org.apache.hadoop.yarn.server.resourcemanager.scheduler.Queue;
 import org.apache.hadoop.yarn.server.resourcemanager.scheduler.QueueMetrics;
 import org.apache.hadoop.yarn.server.resourcemanager.scheduler.SchedulerApplicationAttempt;
-import org.apache.hadoop.yarn.server.resourcemanager.scheduler.fair.policies.SpeedFairPolicy;
+import org.apache.hadoop.yarn.server.resourcemanager.scheduler.fair.policies.BoundedPriorityFairnessPolicy;
 import org.apache.hadoop.yarn.server.utils.BuilderUtils;
 import org.apache.hadoop.yarn.util.resource.DefaultResourceCalculator;
 import org.apache.hadoop.yarn.util.resource.Resources;
@@ -823,6 +823,30 @@ public class FSAppAttempt extends SchedulerApplicationAttempt implements Schedul
 
   @Override
   public boolean isBursty() {
+    // TODO Auto-generated method stub
+    return false;
+  }
+
+  @Override
+  public boolean isRejected() {
+    // TODO Auto-generated method stub
+    return false;
+  }
+
+  @Override
+  public boolean isNewArrival() {
+    // TODO Auto-generated method stub
+    return false;
+  }
+
+  @Override
+  public boolean isHardGuaranteed() {
+    // TODO Auto-generated method stub
+    return false;
+  }
+
+  @Override
+  public boolean isSoftGuaranteed() {
     // TODO Auto-generated method stub
     return false;
   }

@@ -75,7 +75,11 @@ public class FairSchedulerQueueInfo {
   private boolean isSpeedup;
   
   boolean admitted;
+  boolean rejected;
   boolean isBursty;
+  
+  private boolean hardGuaranteed = false;
+  private boolean softGuaranteed = false;
   
   @XmlTransient
   private QueueMetrics queueMetrics; //iglf
@@ -83,6 +87,8 @@ public class FairSchedulerQueueInfo {
   
 
 private Collection<FairSchedulerQueueInfo> childQueues;
+
+
   
   public FairSchedulerQueueInfo() {
   } // JAXB needs this
@@ -100,6 +106,10 @@ private Collection<FairSchedulerQueueInfo> childQueues;
     startTime = queue.getStartTime();
     isSpeedup = queue.isDuringSpeedupDuration();
     admitted = queue.isAdmitted();
+    rejected = queue.isRejected();
+    hardGuaranteed = queue.isHardGuaranteed();
+
+    softGuaranteed = queue.isSoftGuaranteed();
     isBursty= queue.isBursty();
     queueMetrics=queue.getMetrics();
     //iglf - begin
@@ -266,6 +276,18 @@ private Collection<FairSchedulerQueueInfo> childQueues;
   
   public boolean isAmitted() {
     return admitted;
+  }
+  
+  public boolean isHardGuranteed() {
+    return hardGuaranteed;
+  }
+  
+  public boolean isSoftGuranteed() {
+    return softGuaranteed;
+  }
+  
+  public boolean isRejected() {
+    return rejected;
   }
   
   public boolean isBursty(){

@@ -25,7 +25,7 @@ import org.apache.hadoop.yarn.api.records.Resource;
 import org.apache.hadoop.yarn.server.resourcemanager.scheduler.fair.policies.DominantResourceFairnessPolicy;
 import org.apache.hadoop.yarn.server.resourcemanager.scheduler.fair.policies.FairSharePolicy;
 import org.apache.hadoop.yarn.server.resourcemanager.scheduler.fair.policies.FifoPolicy;
-import org.apache.hadoop.yarn.server.resourcemanager.scheduler.fair.policies.SpeedFairPolicy;
+import org.apache.hadoop.yarn.server.resourcemanager.scheduler.fair.policies.BoundedPriorityFairnessPolicy;
 
 import java.util.Collection;
 import java.util.Comparator;
@@ -45,6 +45,7 @@ public abstract class SchedulingPolicy {
   public static final byte DEPTH_ROOT = (byte) 4;
   public static final byte DEPTH_PARENT = (byte) 6; // Root and Intermediate
   public static final byte DEPTH_ANY = (byte) 7;
+  public static boolean IS_NBPF = false;
 
   /**
    * Returns a {@link SchedulingPolicy} instance corresponding to the passed clazz
@@ -81,9 +82,13 @@ public abstract class SchedulingPolicy {
       clazz = FifoPolicy.class;
     } else if (text.equalsIgnoreCase(DominantResourceFairnessPolicy.NAME)) {
       clazz = DominantResourceFairnessPolicy.class;
-    } else if (text.equalsIgnoreCase(SpeedFairPolicy.NAME)) { //iglf
-        clazz = SpeedFairPolicy.class;
-    } else {
+    } else if (text.equalsIgnoreCase(BoundedPriorityFairnessPolicy.NAME)) { //iglf
+        clazz = BoundedPriorityFairnessPolicy.class;
+    } else if (text.equalsIgnoreCase(BoundedPriorityFairnessPolicy.N_BPF)) { //iglf
+      clazz = BoundedPriorityFairnessPolicy.class;
+      IS_NBPF = true;
+    } 
+    else {
       try {
         clazz = Class.forName(policy);
       } catch (ClassNotFoundException cnfe) {

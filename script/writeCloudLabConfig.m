@@ -35,3 +35,5 @@ for i=1:dataSize(1)
 end
 
 fclose(fileID);
+
+disp('done');

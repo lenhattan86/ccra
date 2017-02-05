@@ -19,7 +19,7 @@ num_queues = num_batch_queues + num_interactive_queue;
 
 workload='BB';
 
-plots = [false true]; %DRF, DRF-W, Strict, SpeedFair
+plots = [true false]; %DRF, DRF-W, Strict, SpeedFair
 
 colorBars = cell(num_queues,1);
 for i=1:num_queues
@@ -28,8 +28,7 @@ end
 
 %%
 if plots(1) 
-  START_TIME = 1; END_TIME = 6000+START_TIME;  
-  
+  START_TIME = 3500; END_TIME = 500+START_TIME;    
   
   queues = cell(1,num_queues);
   lengendQueuesStr = cell(1,num_queues);
@@ -46,11 +45,11 @@ if plots(1)
 memFactor = 1;
 
 %% BB
-  % server='ctl.yarn-large.yarnrm-pg0.utah.cloudlab.us'; subFolder = 'SpeedFair';method = 'SpeedFair';
+  server='ctl.yarn-large.yarnrm-pg0.utah.cloudlab.us'; subFolder = 'SpeedFair';method = 'SpeedFair'; memFactor = 2;
 %   server='ctl.yarn-large.yarnrm-pg0.utah.cloudlab.us'; subFolder = 'SpeedFair_8x_new'; method = 'SpeedFair';
 %   server='ctl.yarn-drf.yarnrm-pg0.utah.cloudlab.us'; subFolder = 'DRF';method = 'DRF'; memFactor = 2;
   % server='ctl.yarn-drf.yarnrm-pg0.utah.cloudlab.us'; subFolder = 'DRF_2x';method = 'DRF';
-  % server='ctl.yarn-large.yarnrm-pg0.utah.cloudlab.us'; subFolder = 'Strict';method = 'Strict';
+%   server='ctl.yarn-large.yarnrm-pg0.utah.cloudlab.us'; subFolder = 'Strict';method = 'Strict';
 %   server='ctl.yarn-large.yarnrm-pg0.utah.cloudlab.us'; subFolder = 'Strict_8x_new'; method = 'Strict';
 %% TPC-DS
 %   server = 'ctl.yarn-drf.yarnrm-pg0.utah.cloudlab.us'; subFolder = 'DRF_TPC_DS'; method = 'DRF';
@@ -59,7 +58,7 @@ memFactor = 1;
 %% TPC-H
 %   server = 'ctl.yarn-drf.yarnrm-pg0.utah.cloudlab.us'; subFolder = 'DRF_TPC_H'; method = 'DRF';
 %   server = 'ctl.yarn-large.yarnrm-pg0.utah.cloudlab.us'; subFolder = 'Strict_TPC_H'; method = 'Strict';
-  server = 'ctl.yarn-large.yarnrm-pg0.utah.cloudlab.us'; subFolder = 'SpeedFair_TPC_H'; method = 'SpeedFair';
+%   server = 'ctl.yarn-large.yarnrm-pg0.utah.cloudlab.us'; subFolder = 'SpeedFair_TPC_H'; method = 'SpeedFair';
 
   
   subfolder = ['b' int2str(num_batch_queues) 'i1_' subFolder]; extra='';
@@ -82,7 +81,7 @@ memFactor = 1;
 
   % method = 'SpeedFair'; subfolder = 'runb3i1_1203_preemption'; extra='_preemption';
 
-  result_folder=['/home/tanle/projects/ccra/results/' server '/' subfolder '/users/tanle/SWIM/scriptsTest/workGenLogs/'];
+  result_folder=['/home/tanle/projects/BPFImpl/results/' server '/' subfolder '/users/tanle/SWIM/scriptsTest/workGenLogs/'];
 
   % result_folder=['/home/tanle//projects/ccra/SWIM/scriptsTest/workGenLogs/']; method=''; MAX_CPU = 16; MAX_MEM = 16; END_TIME=500;
   
@@ -96,9 +95,7 @@ memFactor = 1;
   % fig_path = ['figs/' output_sufix]; 
   % is_printed = true;
 
-  logfolder = [result_folder];
-
-  start_time_step = START_TIME/STEP_TIME;
+   start_time_step = START_TIME/STEP_TIME;
   max_time_step = END_TIME/STEP_TIME;
   startIdx = start_time_step*num_queues+1;
   endIdx = max_time_step*num_queues;
@@ -113,7 +110,7 @@ memFactor = 1;
 
   
    %logFile = [ logfolder 'SpeedFair-output' extraStr '.csv'];
-   logFile = [ logfolder 'yarnUsedResources.csv'];
+   logFile = [ result_folder 'yarnUsedResources.csv'];
    [datetimes, queueNames, res1, res2, flag] = importRealResUsageLog(logFile); res2=res2./GB;
    if (flag)      
       usedCPUs= zeros(length(queues),num_time_steps);

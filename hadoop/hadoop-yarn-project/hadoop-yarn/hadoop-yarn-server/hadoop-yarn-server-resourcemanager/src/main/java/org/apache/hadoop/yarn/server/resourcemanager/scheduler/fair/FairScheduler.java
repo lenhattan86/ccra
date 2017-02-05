@@ -82,7 +82,7 @@ import org.apache.hadoop.yarn.server.resourcemanager.scheduler.event.NodeRemoved
 import org.apache.hadoop.yarn.server.resourcemanager.scheduler.event.NodeResourceUpdateSchedulerEvent;
 import org.apache.hadoop.yarn.server.resourcemanager.scheduler.event.NodeUpdateSchedulerEvent;
 import org.apache.hadoop.yarn.server.resourcemanager.scheduler.event.SchedulerEvent;
-import org.apache.hadoop.yarn.server.resourcemanager.scheduler.fair.policies.SpeedFairPolicy;
+import org.apache.hadoop.yarn.server.resourcemanager.scheduler.fair.policies.BoundedPriorityFairnessPolicy;
 import org.apache.hadoop.yarn.server.resourcemanager.security.RMContainerTokenSecretManager;
 import org.apache.hadoop.yarn.util.Clock;
 import org.apache.hadoop.yarn.util.SystemClock;
@@ -934,7 +934,7 @@ public class FairScheduler
     // iglf - START
     if (ENABLE_ADMISSION) {
       if (queueMgr.getRootQueue().getPolicy().getName()
-          .equalsIgnoreCase(SpeedFairPolicy.NAME)) {
+          .equalsIgnoreCase(BoundedPriorityFairnessPolicy.NAME)) {
         // TODO: check the root policy
         // if the remaining flexible is less than the demand
         FSQueue queue = application.getQueue();

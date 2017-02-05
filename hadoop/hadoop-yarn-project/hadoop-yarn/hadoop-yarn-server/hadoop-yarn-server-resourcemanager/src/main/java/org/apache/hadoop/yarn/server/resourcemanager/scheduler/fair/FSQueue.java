@@ -63,15 +63,22 @@ public abstract class FSQueue implements Queue, Schedulable {
   private boolean isRunning = false; // iglf
   private long stage1Duration = 0;
   private long period = -1;
-  
+
   private long startSessionTime = -1;
   private long startTime = 0;
   private Resource receivedResource = null;
-  
+
   private Resource guaranteeShare = null;
-  
+
   private boolean admitted = false;
   
+  private boolean hardGuaranteed = false;
+  
+  private boolean softGuaranteed = false;
+  
+  private boolean rejected = false;
+  
+  public boolean isArrive = true;
 
   public float getFairPriority() {
     if (!isDuringSpeedupDuration())
@@ -99,12 +106,12 @@ public abstract class FSQueue implements Queue, Schedulable {
     this.guaranteeShare = Resources.clone(this.minReq);
     this.receivedResource = Resource.newInstance(0, 0);
   }
-  
-  public FSQueue(String name){
+
+  public FSQueue(String name) {
     this.name = name;
-    scheduler=null;
-    metrics=null;
-    parent=null;
+    scheduler = null;
+    metrics = null;
+    parent = null;
   }
 
   public String getName() {
@@ -124,10 +131,8 @@ public abstract class FSQueue implements Queue, Schedulable {
     return parent;
   }
 
-  protected void throwPolicyDoesnotApplyException(SchedulingPolicy policy)
-      throws AllocationConfigurationException {
-    throw new AllocationConfigurationException(
-        "SchedulingPolicy " + policy + " does not apply to queue " + getName());
+  protected void throwPolicyDoesnotApplyException(SchedulingPolicy policy) throws AllocationConfigurationException {
+    throw new AllocationConfigurationException("SchedulingPolicy " + policy + " does not apply to queue " + getName());
   }
 
   public abstract void setPolicy(SchedulingPolicy policy) throws AllocationConfigurationException;
@@ -149,7 +154,17 @@ public abstract class FSQueue implements Queue, Schedulable {
 
   @Override
   public long getStartTime() {
-     return startTime;
+    return startTime;
+  }
+
+  @Override
+  public boolean isNewArrival() {
+    if(isArrive && isActive()){
+      isArrive = false;
+      this.startTime = System.currentTimeMillis();
+      return true;
+    }
+    return false;
   }
 
   @Override
@@ -167,15 +182,13 @@ public abstract class FSQueue implements Queue, Schedulable {
     if (scheduler.getClusterResource().getMemory() == 0) {
       queueInfo.setCapacity(0.0f);
     } else {
-      queueInfo.setCapacity(
-          (float) getFairShare().getMemory() / scheduler.getClusterResource().getMemory());
+      queueInfo.setCapacity((float) getFairShare().getMemory() / scheduler.getClusterResource().getMemory());
     }
 
     if (getFairShare().getMemory() == 0) {
       queueInfo.setCurrentCapacity(0.0f);
     } else {
-      queueInfo
-          .setCurrentCapacity((float) getResourceUsage().getMemory() / getFairShare().getMemory());
+      queueInfo.setCurrentCapacity((float) getResourceUsage().getMemory() / getFairShare().getMemory());
     }
 
     ArrayList<QueueInfo> childQueueInfos = new ArrayList<QueueInfo>();
@@ -255,20 +268,17 @@ public abstract class FSQueue implements Queue, Schedulable {
    */
   public void updatePreemptionVariables() {
     // For min share timeout
-    minSharePreemptionTimeout = scheduler.getAllocationConfiguration()
-        .getMinSharePreemptionTimeout(getName());
+    minSharePreemptionTimeout = scheduler.getAllocationConfiguration().getMinSharePreemptionTimeout(getName());
     if (minSharePreemptionTimeout == -1 && parent != null) {
       minSharePreemptionTimeout = parent.getMinSharePreemptionTimeout();
     }
     // For fair share timeout
-    fairSharePreemptionTimeout = scheduler.getAllocationConfiguration()
-        .getFairSharePreemptionTimeout(getName());
+    fairSharePreemptionTimeout = scheduler.getAllocationConfiguration().getFairSharePreemptionTimeout(getName());
     if (fairSharePreemptionTimeout == -1 && parent != null) {
       fairSharePreemptionTimeout = parent.getFairSharePreemptionTimeout();
     }
     // For fair share preemption threshold
-    fairSharePreemptionThreshold = scheduler.getAllocationConfiguration()
-        .getFairSharePreemptionThreshold(getName());
+    fairSharePreemptionThreshold = scheduler.getAllocationConfiguration().getFairSharePreemptionThreshold(getName());
     if (fairSharePreemptionThreshold < 0 && parent != null) {
       fairSharePreemptionThreshold = parent.getFairSharePreemptionThreshold();
     }
@@ -300,8 +310,7 @@ public abstract class FSQueue implements Queue, Schedulable {
    * @return true if check passes (can assign) or false otherwise
    */
   protected boolean assignContainerPreCheck(FSSchedulerNode node) {
-    if (!Resources.fitsIn(getResourceUsage(),
-        scheduler.getAllocationConfiguration().getMaxResources(getName()))
+    if (!Resources.fitsIn(getResourceUsage(), scheduler.getAllocationConfiguration().getMaxResources(getName()))
         || node.getReservedContainer() != null) {
       return false;
     }
@@ -316,25 +325,18 @@ public abstract class FSQueue implements Queue, Schedulable {
   }
 
   public boolean isRunning() { // iglf:
-    // TODO: find another condition to indicate there is ready app in the queue
-    // return getResourceUsage().getMemory()>0 ||
-    // getResourceUsage().getVirtualCores()>0; // to slow
     return isRunning;
   }
 
   public void setIsRunning(boolean isRunning) {
     this.isRunning = isRunning;
-    if(this.startTime<=0){
-//      this.startSessionTime = System.currentTimeMillis();
-      this.startTime = System.currentTimeMillis();
-    }
   }
 
   /** Convenient toString implementation for debugging. */
   @Override
   public String toString() {
-    return String.format("[%s, demand=%s, running=%s, share=%s, w=%s]", getName(), getDemand(),
-        getResourceUsage(), fairShare, getWeights());
+    return String.format("[%s, demand=%s, running=%s, share=%s, w=%s]", getName(), getDemand(), getResourceUsage(),
+        fairShare, getWeights());
   }
 
   @Override
@@ -353,17 +355,18 @@ public abstract class FSQueue implements Queue, Schedulable {
 
   @Override
   public Resource getGuaranteeShare() {
-    return guaranteeShare; 
+    return guaranteeShare;
   }
-  /*public Resource getGuaranteeShare() {
-    Resource res = Resource.newInstance(0, 0);
-    
-    if (isDuringSpeedupDuration())
-      res = scheduler.getAllocationConfiguration().getMinReqs(getName());
+  /*
+   * public Resource getGuaranteeShare() { Resource res =
+   * Resource.newInstance(0, 0);
+   * 
+   * if (isDuringSpeedupDuration()) res =
+   * scheduler.getAllocationConfiguration().getMinReqs(getName());
+   * 
+   * return res; }
+   */
 
-    return res; 
-  }*/
-  
   public RMContext getRMContext() { // iglf
     return scheduler.getRMContext();
   }
@@ -371,40 +374,40 @@ public abstract class FSQueue implements Queue, Schedulable {
   public Queue getParentQueue() {
     return this.parent;
   }
-  
-  public long getStage1Duration(){
+
+  public long getStage1Duration() {
     return this.stage1Duration;
   }
 
-  
-  public long getPeriod(){
+  public long getPeriod() {
     return this.period;
   }
-  
+
   @Override
-  public boolean isBursty(){
-    if (this.getStage1Duration()>0)
+  public boolean isBursty() {
+    if (this.getStage1Duration() > 0)
       return true;
     return false;
   }
-  
-  public boolean isBatch(){
-    if (this.getQueueName().contains("batch")) //TODO: add a property for batch queue
+
+  public boolean isBatch() {
+    if (this.getQueueName().contains("batch")) // TODO: add a property for batch
+                                               // queue
       return true;
     return false;
   }
-  
-  public long lastedInPeriod(){
+
+  public long lastedInPeriod() {
     long lasted = (System.currentTimeMillis() - this.getStartTime());
     return lasted % this.period;
   }
-  
-  public boolean isDuringSpeedupDuration(){
+
+  public boolean isDuringSpeedupDuration() {
     long sTime = this.getStartTime();
-    if(this.period <= 0){
+    if (this.period <= 0) {
       return false;
     }
-    if(sTime <= 0 && this.isBursty()){
+    if (sTime <= 0 && this.isBursty()) {
       return true;
     }
     long lasted = lastedInPeriod();
@@ -413,49 +416,76 @@ public abstract class FSQueue implements Queue, Schedulable {
     }
     return false;
   }
-  
-  public long getStartSessionTime(){
+
+  public long getStartSessionTime() {
     return startSessionTime;
   }
-  
-  public Resource getAlpha(){
+
+  public Resource getAlpha() {
     return this.minReq;
   }
-  
-  public void setGuaranteeShare(Resource res){
+
+  public void setGuaranteeShare(Resource res) {
     this.guaranteeShare = res;
   }
 
   public void setGuaranteeShare(int guaranteedShare, ResourceType type) {
-    if (type.equals(ResourceType.CPU)){
+    if (type.equals(ResourceType.CPU)) {
       this.guaranteeShare.setVirtualCores(guaranteedShare);
     } else {
       this.guaranteeShare.setMemory(guaranteedShare);
     }
   }
-  
+
   @Override
-  public boolean isAdmitted(){
+  public boolean isAdmitted() {
     return this.admitted;
   }
-  
-  public void setAdmitted(boolean admitted){
-    this.admitted = admitted;
+  @Override
+  public boolean isRejected(){
+    return this.rejected;
   }
   
-  public FairScheduler getScheduler(){
+  public void reject() {
+    this.rejected = true;
+  }
+
+  public void admit() {
+    this.admitted = true;
+  }
+
+  public FairScheduler getScheduler() {
     return this.scheduler;
   }
-  
-  public void setStage1Period(long period){
+
+  public void setStage1Period(long period) {
     this.stage1Duration = period;
   }
-  
-  public void setPeriod(long period){
+
+  public void setPeriod(long period) {
     this.period = period;
   }
-  
-  public void setAlpha(Resource alpha){
+
+  public void setAlpha(Resource alpha) {
     this.minReq = Resource.newInstance(alpha.getMemory(), alpha.getVirtualCores());
   }
+  
+  @Override
+  public boolean isHardGuaranteed(){
+    return hardGuaranteed;
+  }
+  
+  public void setHardGuarantee(){
+    this.hardGuaranteed = true;
+  }
+  
+  @Override
+  public boolean isSoftGuaranteed(){
+    return softGuaranteed;
+  }
+  
+  public void setSoftGuarantee(){
+    this.softGuaranteed = true;
+  }
+  
 }

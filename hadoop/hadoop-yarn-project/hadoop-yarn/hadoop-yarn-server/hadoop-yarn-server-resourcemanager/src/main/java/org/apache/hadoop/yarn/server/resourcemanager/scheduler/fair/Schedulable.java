@@ -141,5 +141,13 @@ public interface Schedulable {
   
   public boolean isAdmitted();
   
+  public boolean isRejected();
+  
   public boolean isBursty();
+  
+  public boolean isNewArrival();
+  
+  public boolean isHardGuaranteed();
+  
+  public boolean isSoftGuaranteed();
 }

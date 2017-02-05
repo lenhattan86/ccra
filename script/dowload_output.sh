@@ -1,8 +1,8 @@
 defaulHostname="ctl.yarn-perf.yarnrm-pg0.wisc.cloudlab.us"
 #defaulHostname="ctl.yarn-large.yarnrm-pg0.utah.cloudlab.us"
 
-#defaultDomain="yarnrm-pg0.utah.cloudlab.us"
-defaultDomain="yarnrm-pg0.clemson.cloudlab.us"
+defaultDomain="yarnrm-pg0.utah.cloudlab.us"
+#defaultDomain="yarnrm-pg0.clemson.cloudlab.us"
 
 if [ -z "$1" ]
 then
@@ -62,6 +62,7 @@ downloadOuput $tarFile $folder $newFolder
 #ssh tanle@$hostname "hadoop/bin/hadoop fs -rm -skipTrash /user/tanle/completion_time.csv;"
 
 #tarFile="logs"; folder="~/hadoop/logs"; logFolder="logs"; downloadOuput $tarFile $folder $logFolder
+tarFile="SWIM"; srcFolder="~/SWIM"; destFolder="SWIM"; downloadOuput $tarFile $srcFolder $destFolder
 
 echo "[INFO] $hostname "
 echo "[INFO] Finished at: $(date) "
