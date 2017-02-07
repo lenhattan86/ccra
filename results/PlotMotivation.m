@@ -50,11 +50,11 @@ if plots(1)
 
 % server='ctl.yarn-large.yarnrm-pg0.utah.cloudlab.us'; subFolder = 'SpeedFair_mov_60_800'; method = 'SpeedFair';
   
-%    server='ctl.yarn-drf.yarnrm-pg0.utah.cloudlab.us'; subFolder = 'DRF_mov_80_600'; method = 'DRF';
+   server='ctl.yarn-drf.yarnrm-pg0.utah.cloudlab.us'; subFolder = 'DRF_mov_80_600'; method = 'DRF';
 %   server='ctl.yarn-large.yarnrm-pg0.utah.cloudlab.us'; subFolder = 'Strict_mov_80_600';method = 'Strict';
 %     server='ctl.yarn-large.yarnrm-pg0.utah.cloudlab.us'; subFolder = 'SpeedFair_mov_80_600'; method = 'SpeedFair';
 
-     server='ctl.yarn-drf.yarnrm-pg0.clemson.cloudlab.us'; subFolder = 'SpeedFair_mov_300_600'; method = 'SpeedFair'; is_switch_res = true;
+%      server='ctl.yarn-drf.yarnrm-pg0.clemson.cloudlab.us'; subFolder = 'SpeedFair_mov_300_600'; method = 'SpeedFair'; is_switch_res = true;
 %     server='ctl.yarn-drf.yarnrm-pg0.clemson.cloudlab.us'; subFolder = 'SpeedFair_mov_290_600'; method = 'SpeedFair'; is_switch_res = true;
 %         server='ctl.yarn-drf.yarnrm-pg0.clemson.cloudlab.us'; subFolder = 'SpeedFair_mov_280_600'; method = 'SpeedFair'; is_switch_res = true;
 
@@ -67,7 +67,7 @@ if plots(1)
       subfolder = ['b' int2str(num_batch_queues) 'i1'];
   end
  
-  result_folder=['/home/tanle/projects/ccra/results/' server '/' subfolder '/users/tanle/SWIM/scriptsTest/workGenLogs/'];
+  result_folder=['/home/tanle/projects/BPFImpl/results/' server '/' subfolder '/users/tanle/SWIM/scriptsTest/workGenLogs/'];
 
   logfolder = [result_folder];
 
@@ -113,7 +113,8 @@ if plots(1)
      end     
    else
     logFile = [ logfolder 'yarnUsedResources.csv'];
-    [datetimes, queueNames, res1, res2, flag] = importRealResUsageLog(logFile); res2=res2./TB;
+    [datetimes, queueNames, res1, res2, flag] = importRealResUsageLog(logFile); 
+    res2=res2./TB;
       usedCPUs= zeros(length(queues),num_time_steps);
       usedMEM= zeros(length(queues),num_time_steps);
       queueIdxs = zeros(length(queues),num_time_steps);
@@ -162,8 +163,7 @@ if plots(1)
         fileNames{figIdx} = ['b' int2str(num_batch_queues) '_mov_' method '_' workload extra];        
         epsFile = [ LOCAL_FIG fileNames{figIdx} '.eps'];
         print ('-depsc', epsFile);
-      end
-      
+      end      
       
       %% create dummy graph with legends
       if enableSeparateLegend

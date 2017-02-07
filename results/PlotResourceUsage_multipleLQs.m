@@ -14,9 +14,16 @@ fig_path = ['../../BPF/fig/'];
 
 %%
 %  server='ctl.yarn-large.yarnrm-pg0.clemson.cloudlab.us'; subFolder = 'multi_LQs_BPF'; method = 'BPF';
-%%
-   server='ctl.yarn-drf.yarnrm-pg0.utah.cloudlab.us'; subFolder = 'b1i3_BPF_BB'; method = 'BPF';
+%% % 4x number tasks but 1/4x resource demand
+%    server='ctl.yarn-drf.yarnrm-pg0.utah.cloudlab.us'; subFolder = 'b1i3_BPF_BB_unofficial'; method = 'BPF';
+%    server='ctl.yarn-drf.yarnrm-pg0.utah.cloudlab.us'; subFolder = 'b1i3_NBPF_BB_unofficial'; method = 'N-BPF';
+%     server='ctl.yarn-drf.yarnrm-pg0.utah.cloudlab.us'; subFolder = 'b1i3_Strict_BB_unofficial'; method = 'SP';
+%         server='ctl.yarn-drf.yarnrm-pg0.utah.cloudlab.us'; subFolder = 'b1i3_DRF_BB_unofficial'; method = 'DRF';
+%% final version
+%    server='ctl.yarn-drf.yarnrm-pg0.utah.cloudlab.us'; subFolder = 'b1i3_BPF_BB'; method = 'BPF';
 %    server='ctl.yarn-drf.yarnrm-pg0.utah.cloudlab.us'; subFolder = 'b1i3_NBPF_BB'; method = 'N-BPF';
+%     server='ctl.yarn-drf.yarnrm-pg0.utah.cloudlab.us'; subFolder = 'b1i3_Strict_BB'; method = 'SP';
+  server='ctl.yarn-drf.yarnrm-pg0.utah.cloudlab.us'; subFolder = 'b1i3_DRF_BB'; method = 'DRF';
 %%
 %  server='~/SWIM'; subFolder = 'multi_LQs_DRF'; method = 'DRF';
 result_folder=['/home/tanle/projects/BPFImpl/results/' server '/' subFolder '/users/tanle/SWIM/scriptsTest/workGenLogs/'];
@@ -50,7 +57,7 @@ legendSize = [1 1 4/5 1] .* legendSize;
 
 %%
 if plots(1) 
-  START_TIME = 1; END_TIME = 2500+START_TIME;  
+  START_TIME = 1; END_TIME = 1000+START_TIME;  
   lengendStr = {'LQ-0','LQ-1','LQ-2', 'TQ-0'};
   
   queues = cell(1,num_queues);

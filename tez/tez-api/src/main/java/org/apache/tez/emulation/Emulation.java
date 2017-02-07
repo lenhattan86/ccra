@@ -50,7 +50,8 @@ public class Emulation {
 
   static final Log LOG = LogFactory.getLog(Emulation.class);
   // static final Logger LOG = LoggerFactory.getLogger(Emulation.class);
-
+  
+  private static int MIN_YARN_ALLOCATION = 1024;
   private final int NUM_DIMENSIONS = 2;
   private int[] nodeCapacities = { 2, 1024 * 2};
   private double scaleResource = 1.0;
@@ -98,6 +99,8 @@ public class Emulation {
         res.setVirtualCores(val);
         break;
       case 1:        
+        val = (int) Math.floor(resources[type] * (nodeCapacities[type]/MIN_YARN_ALLOCATION) / scaleResource);
+        val = MIN_YARN_ALLOCATION*val;
         res.setMemory(val);
         break;
       case 2:

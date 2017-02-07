@@ -962,9 +962,10 @@ public class GenerateReplayScript {
       int numOfBatchQueues = 1;
       SLEEP_TO_REDUCE_LOAD = 20 * NUM_JOB_SUBMIT;
       int numOfBurstyQueues = 3;
-       int[] burstyStartTimes = { 250, 300, 350 };
+//       int[] burstyStartTimes = { 250, 300, 350 };
+      int[] burstyStartTimes = { 150, 200, 250 };
       int[] burstyPeriods = { 150, 110, 60 };
-      int burstyAppNum = 30;
+      int burstyAppNum = 500;
       int batchAppNum = 20; // 80, we just measure 80 batch jobs
       int batchAppStartId = 100000;
       ArrayList<String> batchIds = new ArrayList<String>();

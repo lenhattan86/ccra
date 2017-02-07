@@ -95,8 +95,8 @@ public class FairSchedulerPage extends RmView {
           ._("Weights:", qinfo.getWeights().toString())
           ._("isBursty:", qinfo.isBursty())
           ._("isAdmitted:", qinfo.isAmitted())
-          ._("isHardGuaranteed:", qinfo.isAmitted())
-          ._("isSoftGuaranteed:", qinfo.isAmitted())
+          ._("isHardGuaranteed:", qinfo.isHardGuranteed())
+          ._("isSoftGuaranteed:", qinfo.isSoftGuranteed())
           ._("isRejected:", qinfo.isRejected())
           ._("alpha:", qinfo.getMinReq().toString()). // iglf
           _("guaranteeRate:", qinfo.getGuaranteeShare().toString()). // iglf

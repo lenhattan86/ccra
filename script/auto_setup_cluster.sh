@@ -55,7 +55,7 @@ enableContainerLog="false"
 
 if $isOfficial
 then
-	scaleDown=4.0 # DEFAULT 1.0
+	scaleDown=1.0 # DEFAULT 1.0
 else
 	scaleDown=4.0 # use 4.0 to increase the number of tasks -> 4 times.
 fi
@@ -88,10 +88,7 @@ hadoopFolder="hadoop"
 configFolder="etc/hadoop"
 tezConfigFolder="etc/tez"
 
-hadoopVersion="2.7.2.1"
-hadoopFullVer="hadoop-$hadoopVersion"
-hadoopLink="http://apache.claz.org/hadoop/common/hadoop-$hadoopVersion/hadoop-$hadoopVersion.tar.gz"
-hadoopTgz="hadoop-$hadoopVersion.tar.gz"
+
 
 
 if $isLocalhost
@@ -122,24 +119,6 @@ yarnNodeMem=$(($yarnVcores*1024*2)) # 2 times of number of vcores
 yarnMaxMem=$yarnNodeMem # for each container
 
 	
-isCapacityScheduler=false
-if $isLocalhost
-then
-	temp="/home/$username"
-else
-	temp="/users/$username"
-fi
-fairSchedulerFile="$temp/$hadoopFolder/etc/fair-scheduler.xml"
-capacitySchedulerFile="$temp/$hadoopFolder/etc/capacity-scheduler.xml"
-if $isCapacityScheduler
-then
-	schedulerFile=$capacitySchedulerFile
-	scheduler="org.apache.hadoop.yarn.server.resourcemanager.scheduler.capacity.CapacityScheduler"
-else
-	schedulerFile=$fairSchedulerFile
-	scheduler="org.apache.hadoop.yarn.server.resourcemanager.scheduler.fair.FairScheduler" 
-fi
-
 echo "METHOD: $METHOD"
 
 if [ "$METHOD" == "$BPF" ];
@@ -212,6 +191,7 @@ sparkFolder="spark"
 sparkVer="spark-2.0.2"
 sparkTgz="spark-2.0.2-bin-hadoop2.7.tgz"
 sparkTgzFolder="spark-2.0.2-bin-hadoop2.7"
+
 if $isLocalhost
 then
 	sparkDownloadLink="http://mirror.navercorp.com/apache/spark/spark-2.0.2/spark-2.0.2-bin-hadoop2.7.tgz"
@@ -243,7 +223,7 @@ echo "[INFO] =====set up $hostname====="
 
 REBOOT=false
 
-isUploadYarn=true
+isUploadYarn=false
 isDownload=false
 isExtract=false
 
@@ -261,7 +241,7 @@ then
 	isExtract=true
 fi
 
-customizedHadoopPath="/home/tanle/projects/BPFImpl/hadoop/hadoop-dist/target/$hadoopTgz"
+
 
 isUploadKey=false
 isGenerateKey=false	
@@ -407,6 +387,38 @@ elif $isAmazonEC
 then
 	echo "[INFO] Amazon EC"
 fi
+
+hadoopVersion="2.7.2.1"
+if $isDownload
+then
+	hadoopVersion="2.7.2"
+fi
+
+
+hadoopFullVer="hadoop-$hadoopVersion"
+hadoopLink="http://apache.claz.org/hadoop/common/hadoop-$hadoopVersion/hadoop-$hadoopVersion.tar.gz"
+hadoopTgz="hadoop-$hadoopVersion.tar.gz"
+customizedHadoopPath="/home/tanle/projects/BPFImpl/hadoop/hadoop-dist/target/$hadoopTgz"
+
+isCapacityScheduler=false
+if $isLocalhost
+then
+	temp="/home/$username"
+else
+	temp="/users/$username"
+fi
+fairSchedulerFile="$temp/$hadoopFolder/etc/fair-scheduler.xml"
+capacitySchedulerFile="$temp/$hadoopFolder/etc/capacity-scheduler.xml"
+if $isCapacityScheduler
+then
+	schedulerFile=$capacitySchedulerFile
+	scheduler="org.apache.hadoop.yarn.server.resourcemanager.scheduler.capacity.CapacityScheduler"
+else
+	schedulerFile=$fairSchedulerFile
+	scheduler="org.apache.hadoop.yarn.server.resourcemanager.scheduler.fair.FairScheduler" 
+fi
+
+
 
 
 if $REBOOT

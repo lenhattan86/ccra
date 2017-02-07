@@ -62,7 +62,7 @@ downloadOuput $tarFile $folder $newFolder
 #ssh tanle@$hostname "hadoop/bin/hadoop fs -rm -skipTrash /user/tanle/completion_time.csv;"
 
 #tarFile="logs"; folder="~/hadoop/logs"; logFolder="logs"; downloadOuput $tarFile $folder $logFolder
-tarFile="SWIM"; srcFolder="~/SWIM"; destFolder="SWIM"; downloadOuput $tarFile $srcFolder $destFolder
+#tarFile="SWIM"; srcFolder="~/SWIM"; destFolder="SWIM"; downloadOuput $tarFile $srcFolder $destFolder
 
 echo "[INFO] $hostname "
 echo "[INFO] Finished at: $(date) "
