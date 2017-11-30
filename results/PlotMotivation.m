@@ -4,7 +4,7 @@ figIdx = 0;
 
 STEP_TIME = 1.0; 
 
-% fig_path = ['../../EuroSys17/fig/'];
+fig_path = ['./figs/'];
 
 is_printed = true;
 numOfNodes = 40;
@@ -22,12 +22,12 @@ workload='BB';
 
 enableSeparateLegend = true;
 
-plots = [true true]; %DRF, DRF-W, Strict, SpeedFair
+plots = [true false]; %DRF, DRF-W, Strict, SpeedFair
 
 %%
 if plots(1) 
   START_TIME = 1; END_TIME = 2600+START_TIME;  
-  lengendStr = {'LQ A','TQ B'};
+  lengendStr = {'LQ','TQ'};
   
   queues = cell(1,num_queues);
   for i=1:num_interactive_queue
@@ -50,13 +50,15 @@ if plots(1)
 
 % server='ctl.yarn-large.yarnrm-pg0.utah.cloudlab.us'; subFolder = 'SpeedFair_mov_60_800'; method = 'SpeedFair';
   
-   server='ctl.yarn-drf.yarnrm-pg0.utah.cloudlab.us'; subFolder = 'DRF_mov_80_600'; method = 'DRF';
+%   server='ctl.yarn-drf.yarnrm-pg0.utah.cloudlab.us'; subFolder = 'DRF_mov_80_600'; method = 'DRF';
 %   server='ctl.yarn-large.yarnrm-pg0.utah.cloudlab.us'; subFolder = 'Strict_mov_80_600';method = 'Strict';
-%     server='ctl.yarn-large.yarnrm-pg0.utah.cloudlab.us'; subFolder = 'SpeedFair_mov_80_600'; method = 'SpeedFair';
+%     server='ctl.yarn-large.yarnrm-pg0.utah.cloudlab.us'; subFolder = 'SpeedFair_mov_80_600'; method = 'SpeedFair';     
+%  server='ctl.yarn-drf.yarnrm-pg0.clemson.cloudlab.us'; subFolder = 'BPF_mov'; method = 'BPF'; 
+%   server='ctl.yarn-drf.yarnrm-pg0.clemson.cloudlab.us'; subFolder = 'bug'; method = 'BPF';
 
-%      server='ctl.yarn-drf.yarnrm-pg0.clemson.cloudlab.us'; subFolder = 'SpeedFair_mov_300_600'; method = 'SpeedFair'; is_switch_res = true;
+%       server='ctl.yarn-drf.yarnrm-pg0.clemson.cloudlab.us'; subFolder = 'SpeedFair_mov_300_600'; method = 'SpeedFair'; is_switch_res = true;
 %     server='ctl.yarn-drf.yarnrm-pg0.clemson.cloudlab.us'; subFolder = 'SpeedFair_mov_290_600'; method = 'SpeedFair'; is_switch_res = true;
-%         server='ctl.yarn-drf.yarnrm-pg0.clemson.cloudlab.us'; subFolder = 'SpeedFair_mov_280_600'; method = 'SpeedFair'; is_switch_res = true;
+        server='ctl.yarn-drf.yarnrm-pg0.clemson.cloudlab.us'; subFolder = 'SpeedFair_mov_280_600'; method = 'SpeedFair'; is_switch_res = true;
 
 %   server=''; subFolder = 'Optimum'; method = 'Optimum';  stage1Period = 80; period = 600; submissionDelay = 20; queueUpPeriod = 200;
 
@@ -68,7 +70,7 @@ if plots(1)
   end
  
   result_folder=['/home/tanle/projects/BPFImpl/results/' server '/' subfolder '/users/tanle/SWIM/scriptsTest/workGenLogs/'];
-
+%   result_folder= ['/home/tanle/projects/BPFImpl/SWIM/scriptsTest/workGenLogs/'];
   logfolder = [result_folder];
 
   start_time_step = START_TIME/STEP_TIME;

@@ -187,7 +187,14 @@ public class FSParentQueue extends FSQueue {
     FSQueue candidateQueue = null;
     Comparator<Schedulable> comparator = policy.getComparator();
     for (FSQueue queue : childQueues) {
-      if (candidateQueue == null ||
+      /*if (candidateQueue == null ||
+          comparator.compare(queue, candidateQueue) > 0) {
+        candidateQueue = queue;
+      }*/
+      if (candidateQueue == null && (!queue.isSoftGuaranteed() && !queue.isHardGuaranteed())) {
+        candidateQueue = queue;
+      }
+      if (queue.isAdmitted() && !queue.isSoftGuaranteed() && !queue.isHardGuaranteed() &&
           comparator.compare(queue, candidateQueue) > 0) {
         candidateQueue = queue;
       }
@@ -195,7 +202,9 @@ public class FSParentQueue extends FSQueue {
 
     // Let the selected queue choose which of its container to preempt
     if (candidateQueue != null) {
+      LOG.info("[Tan] Queue to be preempted: "+candidateQueue.getQueueName());
       toBePreempted = candidateQueue.preemptContainer();
+      LOG.info("[Tan] Container to be preempted: "+toBePreempted);
     }
     return toBePreempted;
   }

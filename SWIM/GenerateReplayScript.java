@@ -17,7 +17,7 @@ public class GenerateReplayScript {
 
   static int SLEEP_TO_REDUCE_LOAD = 60;
   static int NUM_JOB_SUBMIT = 8;
-  static boolean isCleanLogFile = false;
+  static boolean isCleanLogFile = true;
 
   static final int[] MAP_VCORES = { 4, 5, 1, 4, 5, 6, 3, 2, 6, 2, 7, 3, 5, 6, 6, 4, 4, 5, 6, 1, 6, 2, 3, 4, 5, 4, 3, 6,
       6, 6, 6, 7, 4, 6, 4, 5, 4, 4, 6, 4, 3, 2, 3, 3, 2, 5, 4, 3, 6, 3, 4, 2, 3, 1, 3, 6, 4, 2, 3, 2, 6, 3, 2, 3, 4, 6,
@@ -192,6 +192,11 @@ public class GenerateReplayScript {
             if (SLEEP_TO_REDUCE_LOAD > 0) {
               toWrite = "sleep " + SLEEP_TO_REDUCE_LOAD + " \n";
               runAllJobs.write(toWrite.toCharArray(), 0, toWrite.length());
+              
+             /* if (isCleanLogFile) {
+                toWrite = cleanYarnLogFiles(NUM_CP_NODES);
+                runAllJobs.write(toWrite.toCharArray(), 0, toWrite.length());
+              }*/
             }
           }
         }
@@ -961,12 +966,14 @@ public class GenerateReplayScript {
       isCleanLogFile = true;
       int numOfBatchQueues = 1;
       SLEEP_TO_REDUCE_LOAD = 20 * NUM_JOB_SUBMIT;
-      int numOfBurstyQueues = 3;
+      int numOfBurstyQueues = 1; //3;
 //       int[] burstyStartTimes = { 250, 300, 350 };
-      int[] burstyStartTimes = { 150, 200, 250 };
-      int[] burstyPeriods = { 150, 110, 60 };
-      int burstyAppNum = 500;
-      int batchAppNum = 20; // 80, we just measure 80 batch jobs
+      //int[] burstyStartTimes = { 150, 200, 250 };
+      int[] burstyStartTimes = {200}; //200
+      //int[] burstyPeriods = { 150, 110, 60 };
+      int[] burstyPeriods = { 600 };
+      int burstyAppNum = 4; //500;
+      int batchAppNum = 20; //20 // 80, we just measure 80 batch jobs
       int batchAppStartId = 100000;
       ArrayList<String> batchIds = new ArrayList<String>();
       ArrayList<String> burstyIds = new ArrayList<String>();

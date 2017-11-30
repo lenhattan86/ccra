@@ -50,7 +50,7 @@ workload='BB';
 
 enableSeparateLegend = true;
 
-plots = [true true]; %DRF, DRF-W, Strict, SpeedFair
+plots = [false true]; %DRF, DRF-W, Strict, SpeedFair
 
 figureSize = [1 1 4/5 4/5].* figSizeOneCol;
 legendSize = [1 1 4/5 1] .* legendSize;
@@ -177,6 +177,95 @@ if plots(1)
       end
    end
 end
+
+%%
+
+%% total resource usage
+%%
+
+if plots(2)
+    num_interactive_queue=3;
+    num_batch_queues=1;
+    queues = cell(1,num_queues);
+    for i=1:num_interactive_queue
+        queues{i} = ['bursty' int2str(i-1)];
+    end
+    for j=1:num_batch_queues
+        queues{num_interactive_queue+j} = ['batch' int2str(j-1)];
+    end    
+  
+    beginTimeIdx = 200;
+    endTimeIdx = 1000;
+    %    server='ctl.yarn-drf.yarnrm-pg0.utah.cloudlab.us'; subFolder = 'b1i3_BPF_BB'; method = 'BPF';
+%    server='ctl.yarn-drf.yarnrm-pg0.utah.cloudlab.us'; subFolder = 'b1i3_NBPF_BB'; method = 'N-BPF';
+%     server='ctl.yarn-drf.yarnrm-pg0.utah.cloudlab.us'; subFolder = 'b1i3_Strict_BB'; method = 'SP';
+ % server='ctl.yarn-drf.yarnrm-pg0.utah.cloudlab.us'; subFolder = 'b1i3_DRF_BB'; method = 'DRF';
+  
+
+    csvFile = 'yarnUsedResources.csv';
+
+    drf_folder = ['/home/tanle/projects/BPFImpl/results/' server '/' 'b1i3_DRF_BB' '/users/tanle/SWIM/scriptsTest/workGenLogs/'];
+    drf_yarn_files = [drf_folder  csvFile];
+
+    speedfair_folder= ['/home/tanle/projects/BPFImpl/results/' server '/' 'b1i3_BPF_BB' '/users/tanle/SWIM/scriptsTest/workGenLogs/'];
+    speedfair_yarn_files = [speedfair_folder csvFile];
+
+    sp_folder=['/home/tanle/projects/BPFImpl/results/' server '/' 'b1i3_Strict_BB' '/users/tanle/SWIM/scriptsTest/workGenLogs/'];
+    strict_yarn_files = [sp_folder csvFile]; 
+            
+    [ drf_avgRes1, drf_avgRes2, flag] = computeResourceUsage( drf_yarn_files, queues, beginTimeIdx,  endTimeIdx);
+    [ speedfair_avgRes1, speedfair_avgRes2, flag] = computeResourceUsage( speedfair_yarn_files, queues, beginTimeIdx,  endTimeIdx);
+    [ strict_avgRes1, strict_avgRes2, flag] = computeResourceUsage( strict_yarn_files, queues, beginTimeIdx,  endTimeIdx);    
+
+  
+  burstyIdxs = [1:num_interactive_queue];
+  batchIdxs = [num_interactive_queue+1:num_queues];
+  drf_bursty = sum(drf_avgRes1( burstyIdxs));
+  drf_batch = sum(drf_avgRes1( batchIdxs));
+  speedFair_bursty = sum(speedfair_avgRes1( burstyIdxs));
+  speedFair_batch = sum(speedfair_avgRes1( batchIdxs));
+  strict_bursty = sum(strict_avgRes1( burstyIdxs));
+  strict_batch = sum(strict_avgRes1( batchIdxs));
+  
+  avgRes1 = [drf_bursty, drf_batch, MAX_CPU - (drf_bursty+drf_batch) ; ...
+    speedFair_bursty, speedFair_batch, MAX_CPU - (speedFair_bursty+speedFair_batch) ;...
+    strict_bursty, strict_batch, MAX_CPU - (strict_bursty+strict_batch) ;
+    ];
+  
+  drf_bursty = sum(drf_avgRes2( burstyIdxs));
+  drf_batch = sum(drf_avgRes2( batchIdxs));
+  speedFair_bursty = sum(speedfair_avgRes2( burstyIdxs));
+  speedFair_batch = sum(speedfair_avgRes2( batchIdxs));
+  strict_bursty = sum(strict_avgRes2( burstyIdxs));
+  strict_batch = sum(strict_avgRes2( batchIdxs));
+  
+  avgRes2= [drf_bursty, drf_batch, MAX_MEM*GB - (drf_bursty+drf_batch) ; ...
+    speedFair_bursty, speedFair_batch, MAX_MEM*GB - (speedFair_bursty+speedFair_batch) ;...
+    strict_bursty, strict_batch, MAX_MEM*GB - (strict_bursty+strict_batch) ;
+    ];
+  
+  colorQueueType = {colorBursty, colorBatch, colorWasted};
+  stackLabels = {['3' strLQs],[1 strTQs],strUnalloc};
+  groupLabels = {strDRF,strProposed,strStrict};
+  resGroupBars = zeros([size(avgRes1,1) 2 size(avgRes1,2)]);
+  resGroupBars(:,1,:) = avgRes1/MAX_CPU;
+  resGroupBars(:,2,:) = avgRes2/(MAX_MEM*GB);
+  h = plotBarStackGroups(resGroupBars, colorQueueType);  
+  ylim([0 1]);
+  ylabel('normalized capacity');
+  legend(stackLabels,'Location','northoutside','FontSize',fontLegend,'Orientation','horizontal');  
+  set(gca,'XTickLabel',groupLabels, 'FontSize', fontAxis);   
+  
+  set (gcf, 'Units', 'Inches', 'Position', figSizeOneCol, 'PaperUnits', 'inches', 'PaperPosition', figSizeOneCol);     
+  if is_printed   
+    figIdx=figIdx +1;
+    fileNames{figIdx} = ['b' int2str(num_batch_queues) '_avg_res_' workload extra];        
+    epsFile = [ LOCAL_FIG fileNames{figIdx} '.eps'];
+    print ('-depsc', epsFile);
+  end   
+  
+end
+
 
 fileNames
 %%

@@ -36,7 +36,7 @@ LOCAL_FIG = 'figs/';
 PS_CMD_FORMAT='ps2pdf -dEmbedAllFonts#true -dSubsetFonts#true -dEPSCrop#false -dPDFSETTINGS#/prepress %s %s';
 
 % fig_path = ['figs/'];
-fig_path = ['../../EuroSys17/fig/'];
+fig_path = ['../../BPF/fig/'];
 
 %%
 
@@ -119,6 +119,7 @@ colorBatch7 = [0.2500    0.2500    0.2500];
 colorb8i1 = {colorBursty0; colorBatch0; colorBatch1; colorBatch2; colorBatch3; colorBatch4; colorBatch5; colorBatch6; colorBatch7};
 colorb1i1 = {colorBursty0; colorBatch0};
 colorb1i3 = {colorBursty0; colorBursty1;colorBursty2; colorBatch0};
+colorb1i2 = {colorBursty0; colorBursty2; colorBatch0};
 
 colorBursty = colorBursty0;
 colorBatch = colorBatch0;

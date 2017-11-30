@@ -14,7 +14,7 @@ function [ avgRes1, avgRes2, flag] = computeResourceUsage(logFile, queues, begin
     queueIdxs = zeros(length(queues),num_time_steps);
     for i=1:length(queues)
       temp = find(strcmp(queueNames, ['root.' queues{i}]));      
-      queueIdxs(i, 1:num_time_steps)= temp(beginTimeIdx:endTimeIdx);
+      queueIdxs(i, 1:num_time_steps)= temp(beginTimeIdx:endTimeIdx);      
       usedRes1(i,  1:num_time_steps) = res1(temp(beginTimeIdx:endTimeIdx));
       usedRes2(i,  1:num_time_steps) = res2(temp(beginTimeIdx:endTimeIdx));
     end

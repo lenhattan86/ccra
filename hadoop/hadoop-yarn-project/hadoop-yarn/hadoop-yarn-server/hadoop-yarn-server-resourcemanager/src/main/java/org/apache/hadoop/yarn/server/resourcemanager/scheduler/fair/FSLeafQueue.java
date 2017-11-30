@@ -42,6 +42,7 @@ import org.apache.hadoop.yarn.server.resourcemanager.rmcontainer.RMContainer;
 import org.apache.hadoop.yarn.server.resourcemanager.scheduler.ActiveUsersManager;
 import org.apache.hadoop.yarn.server.resourcemanager.scheduler.SchedulerAppUtils;
 import org.apache.hadoop.yarn.server.resourcemanager.scheduler.SchedulerApplicationAttempt;
+import org.apache.hadoop.yarn.server.resourcemanager.scheduler.fair.policies.BoundedPriorityFairnessPolicy;
 import org.apache.hadoop.yarn.util.resource.Resources;
 
 @Private
@@ -366,19 +367,23 @@ public class FSLeafQueue extends FSQueue {
     if (!preemptContainerPreCheck()) {
       return toBePreempted;
     }
-    
 
     if (LOG.isDebugEnabled()) {
       LOG.debug("Queue " + getName() + " is going to preempt a container " +
           "from its applications.");
     }
-
+    log("Queue " + getName() + " is going to preempt a container " +
+        "from its applications. "+runnableApps.size());
     // Choose the app that is most over fair share
     Comparator<Schedulable> comparator = policy.getComparator();
     FSAppAttempt candidateSched = null;
     readLock.lock();
     try {
       for (FSAppAttempt sched : runnableApps) {
+        
+        if(sched.getLiveContainers().size()==0) //iglf
+          continue;
+        
         if (candidateSched == null ||
             comparator.compare(sched, candidateSched) > 0) {
           candidateSched = sched;
@@ -388,8 +393,6 @@ public class FSLeafQueue extends FSQueue {
       readLock.unlock();
     }
     
-    LOG.info("[Tan] preemptContainer() candidateSched "+candidateSched); 
-
     // Preempt from the selected app
     if (candidateSched != null) {
       toBePreempted = candidateSched.preemptContainer();
@@ -593,5 +596,10 @@ public class FSLeafQueue extends FSQueue {
   @Override
   public boolean isLeafQueue(){
     return true;
+  }
+  
+  private static void log(String msg) {
+    if (BoundedPriorityFairnessPolicy.DEBUG)
+      LOG.info(msg);
   }
 }

@@ -761,15 +761,24 @@ public class FSAppAttempt extends SchedulerApplicationAttempt implements Schedul
     if (LOG.isDebugEnabled()) {
       LOG.debug("App " + getName() + " is going to preempt a running " + "container");
     }
-
+    log("App " + getName() + " is going to preempt a running " + "container");
     RMContainer toBePreempted = null;
+    log("App " + getName() + " number of live containers " + getLiveContainers().size() + "; reserve containers: " + reservedContainers.size());
+    
     for (RMContainer container : getLiveContainers()) {
       if (!getPreemptionContainers().contains(container)
           && (toBePreempted == null || comparator.compare(toBePreempted, container) > 0)) {
-        toBePreempted = container;
+        if(!container.isAMContainer())  //iglf: prevent killing the application master
+          toBePreempted = container;
       }
     }
+    log("[Tan] container to be preempted: "+toBePreempted);
     return toBePreempted;
+  }
+  
+  private static void log(String msg) {
+    if (BoundedPriorityFairnessPolicy.DEBUG)
+      LOG.info(msg);
   }
 
   @Override

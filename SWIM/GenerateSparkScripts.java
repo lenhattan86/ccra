@@ -340,7 +340,7 @@ public class GenerateSparkScripts {
     }
 
     // print shell scripts
-    int numBurstyQueues = 3;
+    int numBurstyQueues = 1;
     printOutput(hostName, workloadData, clusterSizeRaw, clusterSizeWorkload, scriptDirPath, workloadOutputDir,
         sparkCommand, pathToWorkGenJar, classname, executorMemory, executorCore, appParameters, numBurstyQueues, 30);
   }

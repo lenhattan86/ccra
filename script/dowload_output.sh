@@ -1,8 +1,8 @@
 defaulHostname="ctl.yarn-perf.yarnrm-pg0.wisc.cloudlab.us"
 #defaulHostname="ctl.yarn-large.yarnrm-pg0.utah.cloudlab.us"
 
-defaultDomain="yarnrm-pg0.utah.cloudlab.us"
-#defaultDomain="yarnrm-pg0.clemson.cloudlab.us"
+#defaultDomain="yarnrm-pg0.utah.cloudlab.us"
+defaultDomain="yarnrm-pg0.clemson.cloudlab.us"
 
 if [ -z "$1" ]
 then

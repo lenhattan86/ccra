@@ -1,0 +1,17 @@
+== similar problem.
+http://hadoop-common.472056.n3.nabble.com/hadoop-datanodes-keep-shuthing-down-with-SIGTERM-15-td4096279.html
+http://mail-archives.apache.org/mod_mbox/hadoop-user/201411.mbox/%3CCAOZy0e=SMmQ-GL33VhZWUKoFctiiLR0=Qqb6PzS9sK-OW+nnDg@mail.gmail.com%3E
+
+== older version of OpenStack _> not works.
+
+-> Refresh the nodes -> not works.
+https://stackoverflow.com/questions/40818108/error-org-apache-hadoop-hdfs-server-datanode-datanode-received-signal-15-sigte
+
+-> sofware version check: https://hadoop.apache.org/docs/stable/hadoop-project-dist/hadoop-common/SingleCluster.html
+
+-> https://community.hortonworks.com/questions/41298/datanode-getting-down-1.html
+== https://issues.apache.org/jira/browse/HDFS-9572
+
+
+delete the space manually.
+disable preemption.

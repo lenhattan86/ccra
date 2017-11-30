@@ -62,7 +62,7 @@ public class BoundedPriorityFairnessPolicy extends SchedulingPolicy {
   private static final Log LOG = LogFactory
       .getLog(BoundedPriorityFairnessPolicy.class);
 
-  private static final boolean DEBUG = true;
+  public static final boolean DEBUG = false; // enabling this can resulting failing the data nodes.
 
   @Override
   public String getName() {
@@ -605,7 +605,7 @@ public class BoundedPriorityFairnessPolicy extends SchedulingPolicy {
   }
 
   private int priorityAllocate(Collection<Schedulable> LQs, ResourceType type, int maxResource) {
-    log("guaranteeServiceRate: maxResource=" + maxResource);
+//    log("guaranteeServiceRate: maxResource=" + maxResource);
     int numHardQueues = hardGuaranteeQueues.size();
     int numSoftQueues = softGuaranteeQueues.size();
     int numElasticQueues = softGuaranteeQueues.size();
@@ -630,40 +630,38 @@ public class BoundedPriorityFairnessPolicy extends SchedulingPolicy {
 
         long receivedRes = getAggregateResouce(queue.getMetrics(), type);
         long stage1Res = alpha * stage1Duration;
-        if (receivedRes < stage1Res)
+        if (receivedRes < stage1Res){
           guaranteedShare = alpha;
-        else {
+          if(!queue.isRunning())
+            guaranteedShare = 0; // If the app is finished.
+        } else {
           if (period > lasted) {
-            log("guaranteeServiceRate: maxResource=" + maxResource
-                + " period=" + period);
             double fairTotalShare = ((double) maxResource * period)
                 / (double) (numAdmittedQueues);
             double nom = (fairTotalShare - receivedRes);
             
-            log("guaranteeServiceRate: fairTotalShare=" + fairTotalShare
-                + " receivedRes=" + receivedRes + " numHardQueues="
-                + numHardQueues + " numSoftQueues="
-                    + numSoftQueues + " numElasticQueues="
-                + numElasticQueues);
             double tmp = nom / (period - lasted);
             guaranteedShare = (int) Math.max(tmp, 0);
             guaranteedShare = (int) Math.min(guaranteedShare, maxResource);
-            log("guaranteeServiceRate: guaranteedShare=" + guaranteedShare
-                + " tmp=" + tmp);
+            
           }
         }
 
         guaranteedShare = (int) Math.min(guaranteedShare, remainingRes);
         minReqResource += guaranteedShare;
         remainingRes = maxResource - guaranteedShare;
-
+        
+        log("guaranteeServiceRate: guaranteedShare=" + guaranteedShare);
         ComputeFairShares.setResourceValue(guaranteedShare,
             sched.getFairShare(), type);
-        
         queue.setGuaranteeShare(guaranteedShare, type);
-
-        takenRes += ComputeFairShares
-            .getResourceValue(sched.getResourceUsage(), type);
+        
+        if(lasted<=stage1Duration)
+          takenRes += guaranteedShare;
+        else
+          takenRes += ComputeFairShares
+              .getResourceValue(sched.getResourceUsage(), type);
+          
       }
     }
 

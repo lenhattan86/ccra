@@ -313,7 +313,7 @@ public class YarnConfiguration extends Configuration {
    */
   public static final String RM_AM_MAX_ATTEMPTS =
     RM_PREFIX + "am.max-attempts";
-  public static final int DEFAULT_RM_AM_MAX_ATTEMPTS = 2;
+  public static final int DEFAULT_RM_AM_MAX_ATTEMPTS = 999999; //iglf: infinite restart to deal with preemption.
   
   /** The keytab for the resource manager.*/
   public static final String RM_KEYTAB = 

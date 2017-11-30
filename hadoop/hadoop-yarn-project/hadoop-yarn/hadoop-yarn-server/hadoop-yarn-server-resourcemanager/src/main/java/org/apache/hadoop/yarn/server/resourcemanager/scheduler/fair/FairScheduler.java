@@ -409,7 +409,7 @@ public class FairScheduler
     if (Resources.equals(toPreempt, Resources.none())) {
       return;
     }
-
+    log("[Tan] warnedContainers.size()="+warnedContainers.size());
     // Scan down the list of containers we've already warned and kill them
     // if we need to. Remove any containers from the list that we don't need
     // or that are no longer running.
@@ -473,7 +473,7 @@ public class FairScheduler
       // if we asked for preemption more than maxWaitTimeBeforeKill ms ago,
       // proceed with kill
       if (time + waitTimeBeforeKill < getClock().getTime()) {
-        LOG.info("[Tan] BEFORE preemption: available resource: " + Resource.newInstance(rootMetrics.getAvailableMB(),
+        log("[Tan] BEFORE preemption: available resource: " + Resource.newInstance(rootMetrics.getAvailableMB(),
             rootMetrics.getAvailableVirtualCores()));
         
         ContainerStatus status = SchedulerUtils.createPreemptedContainerStatus(
@@ -482,11 +482,11 @@ public class FairScheduler
         // TODO: Not sure if this ever actually adds this to the list of cleanup
         // containers on the RMNode (see SchedulerNode.releaseContainer()).
         completedContainer(container, status, RMContainerEventType.KILL);
-        LOG.info("Killing container " + container
+        log("Killing container " + container
             + " (after waiting for premption for "
             + (getClock().getTime() - time) + "ms)");
         
-        LOG.info("[Tan] AFTER preemption: available resource: " + Resource.newInstance(rootMetrics.getAvailableMB(),
+        log("[Tan] AFTER preemption: available resource: " + Resource.newInstance(rootMetrics.getAvailableMB(),
             rootMetrics.getAvailableVirtualCores()));
       }
     } else {
@@ -506,6 +506,8 @@ public class FairScheduler
    * timeouts to be identical for some reason).
    */
   protected Resource resToPreempt(FSLeafQueue sched, long curTime) {
+    
+    /*
     long minShareTimeout = sched.getMinSharePreemptionTimeout();
     long fairShareTimeout = sched.getFairSharePreemptionTimeout();
     Resource resDueToMinShare = Resources.none();
@@ -524,15 +526,38 @@ public class FairScheduler
           Resources.none(),
           Resources.subtract(target, sched.getResourceUsage()));
     }
+    
+    
     Resource resToPreempt = Resources.max(RESOURCE_CALCULATOR, clusterResource,
         resDueToMinShare, resDueToFairShare);
-    if (Resources.greaterThan(RESOURCE_CALCULATOR, clusterResource,
-        resToPreempt, Resources.none())) {
-      String message = "Should preempt " + resToPreempt + " res for queue "
-          + sched.getName() + ": resDueToMinShare = " + resDueToMinShare
-          + ", resDueToFairShare = " + resDueToFairShare;
-      LOG.info(message);
+    
+     if (Resources.greaterThan(RESOURCE_CALCULATOR, clusterResource,
+    resToPreempt, Resources.none())) {
+  String message = "Should preempt " + resToPreempt + " res for queue "
+      + sched.getName() + ": resDueToMinShare = " + resDueToMinShare
+      + ", resDueToFairShare = " + resDueToFairShare;
+  LOG.info(message);
+  }*/
+    Resource resToPreempt = Resources.none();
+    //For BPF
+    if (queueMgr.getRootQueue().getPolicy().getName()
+        .equalsIgnoreCase(BoundedPriorityFairnessPolicy.NAME)) {      
+        Resource elasticResToPrempt = Resources.none();
+        if(sched.isAdmitted() && sched.isRunning() && (sched.isHardGuaranteed() || sched.isSoftGuaranteed())){
+          elasticResToPrempt = Resources.subtract(sched.getGuaranteeShare(), sched.getResourceUsage());
+        }
+        resToPreempt = Resources.max(RESOURCE_CALCULATOR, clusterResource,
+            elasticResToPrempt, Resources.none());
+        /*if(sched.isAdmitted() && (!sched.isHardGuaranteed() || !sched.isSoftGuaranteed())){
+          elasticResToPrempt = Resources.subtract(sched.getResourceUsage(), sched.getFairShare());
+        }
+        resToPreempt = Resources.max(RESOURCE_CALCULATOR, clusterResource,
+            elasticResToPrempt, Resources.none()); */
+        String message = "Should preempt " + resToPreempt + " res for queue "
+            + sched.getName() + " isRunning="+sched.isRunning();
+        log(message);
     }
+    
     return resToPreempt;
   }
 
@@ -810,7 +835,7 @@ public class FairScheduler
     // if(allocConf.getSchedulingPolicy(queue.getName()).getName().equalsIgnoreCase(InstantaneousGuaranteePolicy.NAME)){
     if (queue.getNumActiveApps() == 0) { // TODO need to consider the case of
                                          // the apps running not being active
-      LOG.info("set queue: " + queue
+      log("set queue: " + queue
           + " isRunning=false if there are no runnable apps");
       queue.setIsRunning(false);
     }
@@ -825,6 +850,8 @@ public class FairScheduler
       maxRunningEnforcer.untrackNonRunnableApp(attempt);
     }
   }
+  
+
 
   /**
    * Clean up a completed container.
@@ -944,7 +971,7 @@ public class FairScheduler
         // if (flexibleRes.isEmpty()) {
         if (!queue.isAdmitted()) {
           // this cause the accepted app can no longer
-          LOG.info("[admission control] Cannot allocate " + appAttemptId + "as "
+          log("[admission control] Cannot allocate " + appAttemptId + "as "
               + queue.getName() + " is not admitted ");
           return null;
         }
@@ -1766,5 +1793,10 @@ public class FairScheduler
       targetQueueName = getDefaultQueueForPlanQueue(targetQueueName);
     }
     return targetQueueName;
+  }
+  
+  private static void log(String msg) {
+    if (BoundedPriorityFairnessPolicy.DEBUG)
+      LOG.info(msg);
   }
 }

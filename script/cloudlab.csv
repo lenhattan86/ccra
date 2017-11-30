@@ -1,81 +1,82 @@
-cp-33	clnode137	c6320	ssh -p 22 tanle@clnode137.clemson.cloudlab.us		
+cp-33	ms0405	m400	ssh -p 22 tanle@ms0405.utah.cloudlab.us		
 
-cp-32	clnode130	c6320	ssh -p 22 tanle@clnode130.clemson.cloudlab.us		
+cp-32	ms0342	m400	ssh -p 22 tanle@ms0342.utah.cloudlab.us		
 
-cp-38	clnode163	c6320	ssh -p 22 tanle@clnode163.clemson.cloudlab.us		
+cp-38	ms0220	m400	ssh -p 22 tanle@ms0220.utah.cloudlab.us		
 
-cp-36	clnode148	c6320	ssh -p 22 tanle@clnode148.clemson.cloudlab.us		
+cp-36	ms0310	m400	ssh -p 22 tanle@ms0310.utah.cloudlab.us		
 
-cp-37	clnode134	c6320	ssh -p 22 tanle@clnode134.clemson.cloudlab.us		
+cp-37	ms0430	m400	ssh -p 22 tanle@ms0430.utah.cloudlab.us		
 
-cp-34	clnode136	c6320	ssh -p 22 tanle@clnode136.clemson.cloudlab.us		
+cp-34	ms0236	m400	ssh -p 22 tanle@ms0236.utah.cloudlab.us		
 
-cp-35	clnode171	c6320	ssh -p 22 tanle@clnode171.clemson.cloudlab.us		
+cp-35	ms0140	m400	ssh -p 22 tanle@ms0140.utah.cloudlab.us		
 
-cp-18	clnode173	c6320	ssh -p 22 tanle@clnode173.clemson.cloudlab.us		
+cp-18	ms0145	m400	ssh -p 22 tanle@ms0145.utah.cloudlab.us		
 
-cp-19	clnode104	c6320	ssh -p 22 tanle@clnode104.clemson.cloudlab.us		
+cp-19	ms0328	m400	ssh -p 22 tanle@ms0328.utah.cloudlab.us		
 
-cp-30	clnode178	c6320	ssh -p 22 tanle@clnode178.clemson.cloudlab.us		
+cp-30	ms0423	m400	ssh -p 22 tanle@ms0423.utah.cloudlab.us		
 
-cp-31	clnode177	c6320	ssh -p 22 tanle@clnode177.clemson.cloudlab.us		
+cp-31	ms0433	m400	ssh -p 22 tanle@ms0433.utah.cloudlab.us		
 
-cp-14	clnode100	c6320	ssh -p 22 tanle@clnode100.clemson.cloudlab.us		
+cp-14	ms0403	m400	ssh -p 22 tanle@ms0403.utah.cloudlab.us		
 
-cp-15	clnode144	c6320	ssh -p 22 tanle@clnode144.clemson.cloudlab.us		
+cp-15	ms0308	m400	ssh -p 22 tanle@ms0308.utah.cloudlab.us		
 
-cp-16	clnode164	c6320	ssh -p 22 tanle@clnode164.clemson.cloudlab.us		
+cp-16	ms0208	m400	ssh -p 22 tanle@ms0208.utah.cloudlab.us		
 
-cp-17	clnode143	c6320	ssh -p 22 tanle@clnode143.clemson.cloudlab.us		
+cp-17	ms0214	m400	ssh -p 22 tanle@ms0214.utah.cloudlab.us		
 
-cp-10	clnode175	c6320	ssh -p 22 tanle@clnode175.clemson.cloudlab.us		
+cp-10	ms0422	m400	ssh -p 22 tanle@ms0422.utah.cloudlab.us		
 
-cp-11	clnode141	c6320	ssh -p 22 tanle@clnode141.clemson.cloudlab.us		
+cp-11	ms0143	m400	ssh -p 22 tanle@ms0143.utah.cloudlab.us		
 
-cp-12	clnode166	c6320	ssh -p 22 tanle@clnode166.clemson.cloudlab.us		
+cp-12	ms0210	m400	ssh -p 22 tanle@ms0210.utah.cloudlab.us		
 
-cp-13	clnode135	c6320	ssh -p 22 tanle@clnode135.clemson.cloudlab.us		
+cp-13	ms0442	m400	ssh -p 22 tanle@ms0442.utah.cloudlab.us		
 
-cp-6	clnode109	c6320	ssh -p 22 tanle@clnode109.clemson.cloudlab.us		
+cp-6	ms0125	m400	ssh -p 22 tanle@ms0125.utah.cloudlab.us		
 
-cp-7	clnode127	c6320	ssh -p 22 tanle@clnode127.clemson.cloudlab.us		
+cp-7	ms0227	m400	ssh -p 22 tanle@ms0227.utah.cloudlab.us		
 
-cp-4	clnode145	c6320	ssh -p 22 tanle@clnode145.clemson.cloudlab.us		
+cp-4	ms0233	m400	ssh -p 22 tanle@ms0233.utah.cloudlab.us		
 
-cp-5	clnode121	c6320	ssh -p 22 tanle@clnode121.clemson.cloudlab.us		
+cp-5	ms0225	m400	ssh -p 22 tanle@ms0225.utah.cloudlab.us		
 
-cp-2	clnode112	c6320	ssh -p 22 tanle@clnode112.clemson.cloudlab.us		
+cp-2	ms0224	m400	ssh -p 22 tanle@ms0224.utah.cloudlab.us		
 
-cp-3	clnode152	c6320	ssh -p 22 tanle@clnode152.clemson.cloudlab.us		
+cp-3	ms0413	m400	ssh -p 22 tanle@ms0413.utah.cloudlab.us		
 
-cp-1	clnode119	c6320	ssh -p 22 tanle@clnode119.clemson.cloudlab.us		
+cp-1	ms0123	m400	ssh -p 22 tanle@ms0123.utah.cloudlab.us		
 
-cp-8	clnode174	c6320	ssh -p 22 tanle@clnode174.clemson.cloudlab.us		
+cp-8	ms0130	m400	ssh -p 22 tanle@ms0130.utah.cloudlab.us		
 
-cp-9	clnode099	c6320	ssh -p 22 tanle@clnode099.clemson.cloudlab.us		
+cp-9	ms0718	m400	ssh -p 22 tanle@ms0718.utah.cloudlab.us		
 
-cp-40	clnode128	c6320	ssh -p 22 tanle@clnode128.clemson.cloudlab.us		
+cp-40	ms0229	m400	ssh -p 22 tanle@ms0229.utah.cloudlab.us		
 
-cp-25	clnode167	c6320	ssh -p 22 tanle@clnode167.clemson.cloudlab.us		
+cp-25	ms0736	m400	ssh -p 22 tanle@ms0736.utah.cloudlab.us		
 
-cp-24	clnode106	c6320	ssh -p 22 tanle@clnode106.clemson.cloudlab.us		
+cp-24	ms0111	m400	ssh -p 22 tanle@ms0111.utah.cloudlab.us		
 
-cp-27	clnode155	c6320	ssh -p 22 tanle@clnode155.clemson.cloudlab.us		
+cp-27	ms0127	m400	ssh -p 22 tanle@ms0127.utah.cloudlab.us		
 
-cp-26	clnode162	c6320	ssh -p 22 tanle@clnode162.clemson.cloudlab.us		
+cp-26	ms0128	m400	ssh -p 22 tanle@ms0128.utah.cloudlab.us		
 
-cp-21	clnode069	c8220	ssh -p 22 tanle@clnode069.clemson.cloudlab.us		
+cp-21	ms0345	m400	ssh -p 22 tanle@ms0345.utah.cloudlab.us		
 
-cp-20	clnode169	c6320	ssh -p 22 tanle@clnode169.clemson.cloudlab.us		
+cp-20	ms0133	m400	ssh -p 22 tanle@ms0133.utah.cloudlab.us		
 
-cp-23	clnode114	c6320	ssh -p 22 tanle@clnode114.clemson.cloudlab.us		
+cp-23	ms0243	m400	ssh -p 22 tanle@ms0243.utah.cloudlab.us		
 
-cp-22	clnode107	c6320	ssh -p 22 tanle@clnode107.clemson.cloudlab.us		
+cp-22	ms0418	m400	ssh -p 22 tanle@ms0418.utah.cloudlab.us		
 
-ctl	clnode133	c6320	ssh -p 22 tanle@clnode133.clemson.cloudlab.us		
+ctl	ms0144	m400	ssh -p 22 tanle@ms0144.utah.cloudlab.us		
 
-cp-39	clnode140	c6320	ssh -p 22 tanle@clnode140.clemson.cloudlab.us		
+cp-39	ms0101	m400	ssh -p 22 tanle@ms0101.utah.cloudlab.us		
 
-cp-29	clnode138	c6320	ssh -p 22 tanle@clnode138.clemson.cloudlab.us		
+cp-29	ms0118	m400	ssh -p 22 tanle@ms0118.utah.cloudlab.us		
 
-cp-28	clnode122	c6320	ssh -p 22 tanle@clnode122.clemson.cloudlab.us
+cp-28	ms0212	m400	ssh -p 22 tanle@ms0212.utah.cloudlab.us		
+

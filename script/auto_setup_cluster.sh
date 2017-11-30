@@ -1,6 +1,6 @@
 #!/bin/bash
 # usage:
-# ./auto_setup_cluster.sh [hostname] [method] [parameters]
+# ./auto_setup_cluster.sh [hostname] [cloudlab site] [method] [parameters]
 ## constants
 BPF="BPF"
 DRF="DRF"
@@ -13,16 +13,23 @@ METHOD=$BPF
 
 if [ -z "$2" ]
 then
-	METHOD=$BPF
+	cloudlabSite='clemson'
 else
-	METHOD="$2"
+	cloudlabSite="$2"
 fi
 
 if [ -z "$3" ]
 then
-	parameters=4
+	METHOD=$BPF
 else
-	parameters=$3
+	METHOD="$3"
+fi
+
+if [ -z "$4" ]
+then
+	parameters="1_1_40_BB_mov"
+else
+	parameters=$4
 fi
 
 ## author: Tan N. Le ~ CS department Stony Brook University
@@ -39,10 +46,11 @@ AUTOSSH_PORT=20000
 
 ######################### System Variables #####################
 
+isUploadKey=false
+IS_INIT=false
 isCloudLab=true
 isAmazonEC=false
 isLocalhost=false
-IS_INIT=false
 isTestNetwork=false
 isOfficial=true
 TEST=false
@@ -71,25 +79,27 @@ username="tanle"
 groupname="yarnrm-PG0"
 
 workloadSrcFile="/home/tanle/projects/BPFSim/input/jobs_input_$parameters.txt"
-#workloadSrcFile="/home/tanle/projects/BPFSim/input_gen/jobs_input_1_1_40_BB_mov.txt"
+#workloadSrcFile="/home/tanle/projects/BPFSim/input/jobs_input_1_1_40_BB_mov.txt"
 genJavaFile="/home/tanle/projects/BPFImpl/SWIM/GenerateProfile.java"
 
-java_home='/usr/lib/jvm/java-8-oracle'
+javaVer="8"
+java_home="/usr/lib/jvm/java-$javaVer-oracle"
 
 ## Proposed Parameters
 
-PERIOD=300000 #200000
-STAGE01=27000
+#PERIOD=300000 #200000
+#STAGE01=27000
 #PERIOD=600000 
 #STAGE01=300000
+
+# motivation
+PERIOD=600000 
+STAGE01=300000
 
 ######################### Hadoop  #####################
 hadoopFolder="hadoop"
 configFolder="etc/hadoop"
 tezConfigFolder="etc/tez"
-
-
-
 
 if $isLocalhost
 then
@@ -202,21 +212,20 @@ fi
 ##########
 
 PARALLEL=41
+passwordLessParralel=2
 
 if $isLocalhost
 then
 	hostname="localhost"; 
 else
-
 	if [ -z "$1" ]
 	then
 		#hostname="ctl.yarn-perf.yarnrm-pg0.wisc.cloudlab.us"; cp ~/.ssh/config.yarn-perf ~/.ssh/config; 
 		#hostname="ctl.yarn-drf.yarnrm-pg0.utah.cloudlab.us"; cp ~/.ssh/config.yarn-drf ~/.ssh/config; isUploadYarn=true ; 
 		#hostname="ctl.yarn-small.yarnrm-pg0.wisc.cloudlab.us"; cp ~/.ssh/config.yarn-small ~/.ssh/config; 
-		hostname="ctl.yarn-large.yarnrm-pg0.utah.cloudlab.us"; cp ~/.ssh/config.yarn-large ~/.ssh/config; 
+		hostname="ctl.yarn-large.yarnrm-pg0.clemson.cloudlab.us"; cp ~/.ssh/config.yarn-large ~/.ssh/config; 
 	else
-		hostname="ctl.$1.yarnrm-pg0.utah.cloudlab.us"; cp ~/.ssh/config.$1 ~/.ssh/config;
-		#hostname="ctl.$1.yarnrm-pg0.clemson.cloudlab.us"; cp ~/.ssh/config.$1 ~/.ssh/config;  
+		hostname="ctl.$1.yarnrm-pg0.$cloudlabSite.cloudlab.us"; cp ~/.ssh/config.$1 ~/.ssh/config;  
 	fi
 fi
 echo "[INFO] =====set up $hostname====="
@@ -225,9 +234,9 @@ REBOOT=false
 
 isUploadYarn=false
 isDownload=false
-isExtract=false
 
 isInstallHadoop=true
+isExtract=false
 
 isInstallTez=true
 isUploadTez=true
@@ -242,8 +251,6 @@ then
 fi
 
 
-
-isUploadKey=false
 isGenerateKey=false	
 isPasswordlessSSH=false
 isAddToGroup=false
@@ -272,7 +279,7 @@ isFormatHDFS=true
 
 isInstallFlink=false
 isModifyFlink=false
-startFlinkYarn=falsefalse
+startFlinkYarn=false
 shudownFlink=false
 startFlinkStandalone=false # not necessary
 
@@ -316,7 +323,7 @@ then
 
 	isInstallBasePackages=true
 
-	isInstallGanglia=true
+	isInstallGanglia=false
 	startGanglia=false
 
 	isInstallHadoop=true
@@ -365,7 +372,7 @@ then
 	then
 		numOfworkers=40
 		serverList="$masterNode cp-1 cp-2 cp-3 cp-4 cp-5 cp-6 cp-7 cp-8 cp-9 cp-10 cp-11 cp-12 cp-13 cp-14 cp-15 cp-16 cp-17 cp-18 cp-19 cp-20 cp-21 cp-22 cp-23 cp-24 cp-25 cp-26 cp-27 cp-28 cp-29 cp-30 cp-31 cp-32 cp-33 cp-34 cp-35 cp-36 cp-37 cp-38 cp-39 cp-40"
-		#serverList="$masterNode cp-1 cp-2 cp-3 cp-4 cp-5 cp-6 cp-7 cp-8 cp-9 cp-10 cp-11 cp-12 cp-13     cp-15 cp-16 cp-17 cp-18 cp-19 cp-20 cp-21 cp-22 cp-23 cp-24 cp-25 cp-26 cp-27   cp-29 cp-30 cp-31   cp-33 cp-34 cp-35 cp-36 cp-37 cp-38 cp-39 cp-40 cp-41 cp-42"
+		#serverList="$masterNode cp-1 cp-2 cp-3 cp-4 cp-5 cp-6 cp-7 cp-8 cp-9 cp-10 cp-11 cp-12 cp-13 cp-15 cp-16 cp-17 cp-18 cp-19 cp-20 cp-21 cp-22 cp-23 cp-24 cp-25 cp-26 cp-27   cp-29 cp-30 cp-31   cp-33 cp-34 cp-35 cp-36 cp-37 cp-38 cp-39 cp-40 cp-41 cp-42"
 		slaveNodes="cp-1 cp-2 cp-3 cp-4 cp-5 cp-6 cp-7 cp-8 cp-9 cp-10 cp-11 cp-12 cp-13 cp-14 cp-15 cp-16 cp-17 cp-18 cp-19 cp-20 cp-21 cp-22 cp-23 cp-24 cp-25 cp-26 cp-27 cp-28 cp-29 cp-30 cp-31 cp-32 cp-33 cp-34 cp-35 cp-36 cp-37 cp-38 cp-39 cp-40"
 		numOfReplication=3
 	else
@@ -377,9 +384,9 @@ then
 			numOfReplication=1
 
 		else
-			numOfworkers=8
-			serverList="$masterNode cp-1 cp-2 cp-3 cp-4 cp-5 cp-6 cp-7 cp-8"
-			slaveNodes="cp-1 cp-2 cp-3 cp-4 cp-5 cp-6 cp-7 cp-8"
+			numOfworkers=4
+			serverList="$masterNode cp-1 cp-2 cp-3 cp-4"
+			slaveNodes="cp-1 cp-2 cp-3 cp-4"
 			numOfReplication=3
 		fi
 	fi
@@ -394,9 +401,8 @@ then
 	hadoopVersion="2.7.2"
 fi
 
-
 hadoopFullVer="hadoop-$hadoopVersion"
-hadoopLink="http://apache.claz.org/hadoop/common/hadoop-$hadoopVersion/hadoop-$hadoopVersion.tar.gz"
+hadoopLink="https://archive.apache.org/dist/hadoop/core/hadoop-$hadoopVersion/hadoop-$hadoopVersion.tar.gz"
 hadoopTgz="hadoop-$hadoopVersion.tar.gz"
 customizedHadoopPath="/home/tanle/projects/BPFImpl/hadoop/hadoop-dist/target/$hadoopTgz"
 
@@ -417,8 +423,6 @@ else
 	schedulerFile=$fairSchedulerFile
 	scheduler="org.apache.hadoop.yarn.server.resourcemanager.scheduler.fair.FairScheduler" 
 fi
-
-
 
 
 if $REBOOT
@@ -442,25 +446,16 @@ echo ############### REBOOT all servers #############################
 	sleep 900
 fi
 
-echo ####################### TEST CLUSTER NETWORK ##########################
-if $isTestNetwork
-then
-	for server in $serverList; do
-	$SSH_CMD $username@$server " echo Hello $server "
-	done
-	wait
-fi
-
 
 if $isUploadKey
 then		
 echo ################################# passwordless SSH ####################################
 	if $isGenerateKey 
 	then
-            while true; do
-            	read -p "Do you wish to generate new public keys ?" yn
-            case $yn in
-                [Yy]* ) 
+        while true; do
+        	read -p "Do you wish to generate new public keys ?" yn
+        case $yn in
+            [Yy]* ) 
 			sudo rm -rf $HOME/.ssh/id_rsa*
 			sudo rm -rf $HOME/.ssh/authorized_keys*
 			yes Y | ssh-keygen -t rsa -P '' -f ~/.ssh/id_rsa	
@@ -481,7 +476,7 @@ echo ################################# passwordless SSH ########################
 	fi
 	uploadKeys () { 
 		echo upload keys to $1
-		$SSH_CMD $username@$1 'sudo rm -rf $HOME/.ssh/id_rsa*'
+#		$SSH_CMD $username@$1 'sudo rm -rf $HOME/.ssh/id_rsa*'
 		scp ~/.ssh/id_rsa* $username@$1:~/.ssh/
 		$SSH_CMD $username@$1 "cat ~/.ssh/id_rsa.pub >> ~/.ssh/authorized_keys ;
 		 chmod 0600 ~/.ssh/id_rsa*; 
@@ -493,8 +488,17 @@ echo ################################# passwordless SSH ########################
 
 	echo "[INFO] uploading keys"
 	for server in $serverList; do
-		uploadKeys $server &
+		uploadKeys $server
 	done	
+	wait
+fi
+
+echo ####################### TEST CLUSTER NETWORK ##########################
+if $isTestNetwork
+then
+	for server in $serverList; do
+	$SSH_CMD $username@$server " echo Hello $server "
+	done
 	wait
 fi
 
@@ -512,13 +516,21 @@ then
 		echo "test ssh from $1 to $2"
 		ssh $username@$1 "ssh $2 'echo test passwordless SSH: $1 to $2'" ;
 	}
+	
+	counter=0;
 	for server1 in $serverList; do
 		for server2 in $serverList; do		
+		  counter=$((counter+1))
 			passwordlessSSH $server1 $server2 &
+		  if [[ "$counter" -gt $passwordLessParralel ]]; then
+	      counter=0;
+			  wait
+	    fi		
 		done
 	done
 	wait
 fi
+
 
 if $isInstallBasePackages
 then
@@ -530,8 +542,8 @@ then
 			sudo apt-get install -y software-properties-common			
 			yes='' | sudo add-apt-repository ppa:webupd8team/java
 			sudo apt-get update
-			sudo echo oracle-java8-installer shared/accepted-oracle-license-v1-1 select true | sudo /usr/bin/debconf-set-selections	
-			sudo apt-get install -y oracle-java8-installer"
+			sudo echo oracle-java$javaVer-installer shared/accepted-oracle-license-v1-1 select true | sudo /usr/bin/debconf-set-selections	
+			sudo apt-get install --force-yes -y oracle-java$javaVer-installer"
 		$SSH_CMD $username@$1 "sudo apt-get install -y cgroup-tools; sudo apt-get install -y scala; sudo apt-get install -y vim"	
 	}
 	counter=0;
@@ -809,7 +821,7 @@ echo "#################################### install Hadoop Yarn #################
   
   <property>
     <name>yarn.scheduler.fair.preemption.cluster-utilization-threshold</name>
-    <value>0.8</value>
+    <value>0.5</value>
   </property>
 
   <property>
@@ -900,25 +912,7 @@ echo "#################################### install Hadoop Yarn #################
 	<minReq>26624 mb, 13 vcores</minReq>
 	<speedDuration>$STAGE01</speedDuration>
 	<allowPreemptionFrom>$enablePreemption</allowPreemptionFrom>
-	<period>150000</period>
-	<startTime>-1</startTime>
-	<weight>$weight</weight>
-	<schedulingPolicy>fifo</schedulingPolicy>
-</queue>
-<queue name=\"bursty1\">	
-	<minReq>26624 mb, 13 vcores</minReq>
-	<speedDuration>$STAGE01</speedDuration>
-	<allowPreemptionFrom>$enablePreemption</allowPreemptionFrom>
-	<period>110000</period>
-	<startTime>-1</startTime>
-	<weight>$weight</weight>
-	<schedulingPolicy>fifo</schedulingPolicy>
-</queue>
-<queue name=\"bursty2\">	
-	<minReq>26624 mb, 13 vcores</minReq>
-	<speedDuration>$STAGE01</speedDuration>
-	<allowPreemptionFrom>$enablePreemption</allowPreemptionFrom>
-	<period>60000</period>
+	<period>600000</period>
 	<startTime>-1</startTime>
 	<weight>$weight</weight>
 	<schedulingPolicy>fifo</schedulingPolicy>
@@ -926,15 +920,6 @@ echo "#################################### install Hadoop Yarn #################
 <queue name=\"batch0\">
 	<weight>1</weight>
 	<allowPreemptionFrom>$enablePreemption</allowPreemptionFrom>	
-	<schedulingPolicy>fifo</schedulingPolicy>
-</queue>
-<queue name=\"batch1\">
-	<weight>1</weight>
-	<allowPreemptionFrom>$enablePreemption</allowPreemptionFrom>
-	<schedulingPolicy>fifo</schedulingPolicy>
-</queue>
-<queue name=\"batch2\">
-	<weight>1</weight>
 	<schedulingPolicy>fifo</schedulingPolicy>
 </queue>
 </allocations>' > $fairSchedulerFile"
@@ -955,12 +940,14 @@ echo "#################################### install Hadoop Yarn #################
 <queue name=\"bursty0\">	
 	<minReq>2621440 mb, 1280 vcores</minReq> 
 	<speedDuration>$STAGE01</speedDuration>
-	<period>150000</period>
+	<period>600000</period>
 	<startTime>-1</startTime>
 	<weight>$weight</weight>
 	<allowPreemptionFrom>$enablePreemption</allowPreemptionFrom>
 	<schedulingPolicy>fifo</schedulingPolicy>
 </queue>
+
+<!--
 <queue name=\"bursty1\">	
 	<minReq>2621440 mb, 1280 vcores</minReq> 
 	<speedDuration>$STAGE01</speedDuration>
@@ -978,13 +965,16 @@ echo "#################################### install Hadoop Yarn #################
 	<weight>$weight</weight>
 	<allowPreemptionFrom>$enablePreemption</allowPreemptionFrom>
 	<schedulingPolicy>fifo</schedulingPolicy>
-</queue>
+</queue> 
+-->
+
 <queue name=\"batch0\">
 	<weight>1</weight>	
 	<allowPreemptionFrom>$enablePreemption</allowPreemptionFrom>
 	<schedulingPolicy>fifo</schedulingPolicy>
 </queue>
 
+<!--
 <queue name=\"batch1\">
 	<weight>1</weight>
 	<allowPreemptionFrom>$enablePreemption</allowPreemptionFrom>
@@ -1020,6 +1010,7 @@ echo "#################################### install Hadoop Yarn #################
 	<allowPreemptionFrom>$enablePreemption</allowPreemptionFrom>	
 	<schedulingPolicy>fifo</schedulingPolicy>
 </queue> 
+-->
 </allocations>' > $fairSchedulerFile"
 			fi
 
@@ -1328,6 +1319,7 @@ then
 		$SSH_CMD $username@$masterNode "sudo rm -rf $hdfsDir; sudo mkdir $hdfsDir; sudo chmod 777 $hdfsDir"
 		$SSH_CMD $username@$masterNode "yes Y | $hadoopFolder/bin/hdfs namenode -format HDFS4Flink"
 	fi
+  sleep 30
 	$SSH_CMD $username@$masterNode "$hadoopFolder/sbin/start-dfs.sh"
 	echo '============================ starting Yarn==================================='
 	# operating YARN
@@ -1347,29 +1339,12 @@ fi
 
 if $isInstallTez
 then
-
+  echo "#####################Install TEZ##############################"
 	if $isUploadTez
 	then
 		# upload to the $masterNode
 		$SSH_CMD $username@$masterNode "rm -rf $TEZ_JARS; mkdir $TEZ_JARS"
-		scp ~/projects/BPFImpl/tez/tez-dist/target/$tezMinTaz  $username@$masterNode:~/
-		#if $isLocalhost
-		#then
-		#	echo "uploaded Tez ..."
-		#else
-		#	# share upload file among the workers.
-		#	echo "multithread sharing...."
-		#	uploadCMD=""
-		#	counter=0
-		#	for slave in $slaveNodes; do
-		#		counter=$((counter+1))
-		#		$SSH_CMD $username@$slave "rm -rf $TEZ_JARS; mkdir $TEZ_JARS"
-		#		uploadCMD="$uploadCMD scp $tezMinTaz $slave:~/ ; "
-		#	done
-		#	uploadCMD="$uploadCMD"
-		#	echo $uploadCMD
-		#	$SSH_CMD $username@$masterNode "$uploadCMD"
-		#fi
+		scp ~/projects/BPFImpl/tez/tez-dist/target/$tezMinTaz  $username@$masterNode:~/		
 	fi
 
 	installTezFunc () {
@@ -1397,7 +1372,7 @@ then
 			</property>
 			<property>
 			     <name>tez.simulation.log.enable</name>
-			     <value>true</value>
+			     <value>false</value> <!-- tez_container_time.csv -->
 			</property>
 			<property>
 			     <name>tez.simulation.log.path</name>

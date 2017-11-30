@@ -1,27 +1,34 @@
 defaulHostname="ctl.yarn-perf.yarnrm-pg0.wisc.cloudlab.us"
 #defaulHostname="ctl.yarn-large.yarnrm-pg0.utah.cloudlab.us"
 
-defaultDomain="yarnrm-pg0.utah.cloudlab.us"
-#defaultDomain="yarnrm-pg0.clemson.cloudlab.us"
+#defaultDomain="yarnrm-pg0.utah.cloudlab.us"
 
 
 if [ -z "$1" ]
+then
+	defaultDomain="yarnrm-pg0.clemson.cloudlab.us"
+else
+	defaultDomain="yarnrm-pg0.$1.cloudlab.us"
+fi
+
+if [ -z "$2" ]
 then
 	hostname="localhost"
 	workloadFile="/home/tanle/hadoop/conf/simple.txt"
 	workloadSrcFile="/home/tanle/projects/BPFSim/input_gen/jobs_input_1_1_40_BB_mov.txt"
 else
-	hostname="ctl.$1.$defaultDomain"
+	hostname="ctl.$2.$defaultDomain"
 	workloadFile="/users/tanle/hadoop/conf/simple.txt"
 fi
 
-if [ -z "$2" ]
-then
-	parameters="3_1_1_BB"
-else
-	parameters=$2
-fi
 
+
+if [ -z "$3" ]
+then
+	parameters="1_1_40_BB_mov"
+else
+	parameters=$3
+fi
 workloadSrcFile="/home/tanle/projects/BPFSim/input/jobs_input_$parameters.txt"
 
 
