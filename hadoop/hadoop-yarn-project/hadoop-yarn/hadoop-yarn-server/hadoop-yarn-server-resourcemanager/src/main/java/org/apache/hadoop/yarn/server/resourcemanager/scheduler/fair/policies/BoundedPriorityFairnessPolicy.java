@@ -608,7 +608,7 @@ public class BoundedPriorityFairnessPolicy extends SchedulingPolicy {
 //    log("guaranteeServiceRate: maxResource=" + maxResource);
     int numHardQueues = hardGuaranteeQueues.size();
     int numSoftQueues = softGuaranteeQueues.size();
-    int numElasticQueues = softGuaranteeQueues.size();
+    int numElasticQueues = elasticQueues.size();
     
     int numAdmittedQueues = numHardQueues + numSoftQueues + numElasticQueues;
     
