@@ -2,6 +2,7 @@ clc; clear; close all;
 common_settings;
 JOB_FILE = 'jobInfo.mat';
 JOB_USAGE = 'jobResUsage.mat';
+mkdir('figs');
 
 load(JOB_FILE);
 %JobInfos
@@ -10,13 +11,12 @@ jobIds = JobInfos(:,1);
 scheduleClass =JobInfos(:,4);
 complTimes = JobInfos(:,3) - JobInfos(:,2); % microsecond
  
- 
- temp = [jobIds complTimes/10^6 scheduleClass];
- % get rid of the jobs that are not finished.
+temp = [jobIds complTimes/10^6 scheduleClass];
+% get rid of the jobs that are not finished.
 jobComplInfos = temp(find(complTimes > 0),:);
  %%
- load(JOB_USAGE); 
- jobUsage = JobInfos;
+load(JOB_USAGE); 
+jobUsage = JobInfos;
  
 %% 
 is_printed = true;
@@ -116,6 +116,51 @@ if(plots(2))
   if is_printed
      figIdx=figIdx +1;
      fileNames{figIdx} = 'google_compl_cdf';
+     epsFile = [ LOCAL_FIG fileNames{figIdx} '.eps'];
+     print ('-depsc', epsFile);
+  end
+end
+
+%%
+if(plots(3))  
+  figure
+  for i=1:4
+    agg_cpu(i) = sum(jobsUsageArray{i}(:,2));
+  end
+  bar(0:3, agg_cpu);
+%   legendStr = {'class 0', 'class 1', 'class 2', 'class 3'};
+%   legend(legendStr,'Location','southeast','FontSize',fontLegend,'Orientation','vertical');
+  xLabel='scheduling class';
+  yLabel='cpu';
+  set (gcf, 'Units', 'Inches', 'Position', figSize, 'PaperUnits', 'inches', 'PaperPosition', figSize);
+  xlabel(xLabel,'FontSize',fontAxis);
+  ylabel(yLabel,'FontSize',fontAxis);
+  set(gca,'FontSize',fontAxis);
+
+  if is_printed
+     figIdx=figIdx +1;
+     fileNames{figIdx} = 'google_agg_cpu_cdf';
+     epsFile = [ LOCAL_FIG fileNames{figIdx} '.eps'];
+     print ('-depsc', epsFile);
+  end
+  
+  figure
+  for i=1:4
+    agg_mem(i) = sum(jobsUsageArray{i}(:,3));
+  end
+  bar(0:3, agg_mem);
+%   legendStr = {'class 0', 'class 1', 'class 2', 'class 3'};
+%   legend(legendStr,'Location','southeast','FontSize',fontLegend,'Orientation','vertical');
+  xLabel='scheduling class';
+  yLabel='mem';
+  set (gcf, 'Units', 'Inches', 'Position', figSize, 'PaperUnits', 'inches', 'PaperPosition', figSize);
+  xlabel(xLabel,'FontSize',fontAxis);
+  ylabel(yLabel,'FontSize',fontAxis);
+  set(gca,'FontSize',fontAxis);
+
+  if is_printed
+     figIdx=figIdx +1;
+     fileNames{figIdx} = 'google_agg_mem_cdf';
      epsFile = [ LOCAL_FIG fileNames{figIdx} '.eps'];
      print ('-depsc', epsFile);
   end

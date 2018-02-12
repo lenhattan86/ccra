@@ -170,7 +170,7 @@ return;
 for i=1:length(fileNames)
     fileName = fileNames{i};
     epsFile = [ LOCAL_FIG fileName '.eps'];
-    pdfFile = [ fig_path fileName '.pdf']   
+    pdfFile = [ fig_path fileName '.pdf']
     cmd = sprintf(PS_CMD_FORMAT, epsFile, pdfFile);
     status = system(cmd);
 end
