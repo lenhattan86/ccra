@@ -9,4 +9,4 @@ fi
 #find ./* -size +50M | cat >> .gitignore
 git add --all
 git commit -m "$message"
-git push https://lenhattan86:nhattan86@github.com/lenhattan86/HiBench-7.0.git
+git push https://lenhattan86:nhattan86@github.com/lenhattan86/BPFimpl
