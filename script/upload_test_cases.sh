@@ -59,9 +59,11 @@ uploadTestCases () {
 #prompt
 
 ################# call back up just in case ###############
+echo "backup the previous setup on the cluster"
 ./dowload_output.sh $1 backup
 
 ################################
+echo "generate workload"
 
 tarFile="SWIM"; testCase="../SWIM"; rm -rf .$testCase/*.class; uploadTestCases $tarFile $testCase &
 

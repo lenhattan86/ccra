@@ -30,8 +30,3 @@ fi
 wait $prepareInput
 
 #~/hadoop/bin/hadoop fs -ls hdfs:///user/tanle/workGenInput
-
-
-
- 
-

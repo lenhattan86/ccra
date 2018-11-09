@@ -1,0 +1,47 @@
+StrictHostKeyChecking no 
+
+host cp-6 
+  Hostname 128.110.154.165 
+  Port 22 
+  User tanle 
+   
+host cp-7 
+  Hostname 128.110.154.180 
+  Port 22 
+  User tanle 
+   
+host cp-4 
+  Hostname 128.110.154.168 
+  Port 22 
+  User tanle 
+   
+host cp-5 
+  Hostname 128.110.154.167 
+  Port 22 
+  User tanle 
+   
+host cp-2 
+  Hostname 128.110.154.181 
+  Port 22 
+  User tanle 
+   
+host cp-3 
+  Hostname 128.110.154.172 
+  Port 22 
+  User tanle 
+   
+host cp-1 
+  Hostname 128.110.154.171 
+  Port 22 
+  User tanle 
+   
+host cp-8 
+  Hostname 128.110.154.177 
+  Port 22 
+  User tanle 
+   
+host ctl 
+  Hostname 128.110.154.163 
+  Port 22 
+  User tanle 
+   

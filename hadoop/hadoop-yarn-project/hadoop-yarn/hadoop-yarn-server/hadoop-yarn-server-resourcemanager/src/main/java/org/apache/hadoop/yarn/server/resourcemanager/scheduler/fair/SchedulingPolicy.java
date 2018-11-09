@@ -25,6 +25,7 @@ import org.apache.hadoop.yarn.api.records.Resource;
 import org.apache.hadoop.yarn.server.resourcemanager.scheduler.fair.policies.DominantResourceFairnessPolicy;
 import org.apache.hadoop.yarn.server.resourcemanager.scheduler.fair.policies.FairSharePolicy;
 import org.apache.hadoop.yarn.server.resourcemanager.scheduler.fair.policies.FifoPolicy;
+import org.apache.hadoop.yarn.server.resourcemanager.scheduler.fair.policies.BoPFSchedulerPolicy;
 import org.apache.hadoop.yarn.server.resourcemanager.scheduler.fair.policies.BoundedPriorityFairnessPolicy;
 
 import java.util.Collection;
@@ -84,6 +85,8 @@ public abstract class SchedulingPolicy {
       clazz = DominantResourceFairnessPolicy.class;
     } else if (text.equalsIgnoreCase(BoundedPriorityFairnessPolicy.NAME)) { //iglf
         clazz = BoundedPriorityFairnessPolicy.class;
+    } else if (text.equalsIgnoreCase(BoPFSchedulerPolicy.NAME)) { //new BoPF with scheduling
+      clazz = BoPFSchedulerPolicy.class;
     } else if (text.equalsIgnoreCase(BoundedPriorityFairnessPolicy.N_BPF)) { //iglf
       clazz = BoundedPriorityFairnessPolicy.class;
       IS_NBPF = true;
