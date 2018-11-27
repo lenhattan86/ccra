@@ -250,8 +250,8 @@ then
 	isExtract=true
 fi
 
-isGenerateKey=false
 isPasswordlessSSH=false
+isGenerateKey=false
 isAddToGroup=false
 
 isInstallBasePackages=false
