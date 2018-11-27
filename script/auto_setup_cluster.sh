@@ -250,7 +250,6 @@ then
 	isExtract=true
 fi
 
-
 isGenerateKey=false
 isPasswordlessSSH=false
 isAddToGroup=false
@@ -384,10 +383,10 @@ then
 			numOfReplication=1
 
 		else
-			numOfworkers=4
-                        serverList="$masterNode cp-1 cp-2 cp-3 cp-4"
-                        slaveNodes="cp-1 cp-2 cp-3 cp-4"
-                        numOfReplication=3
+			numOfworkers=8			
+			masterNode="ctl"; slaveNodes="cp-1 cp-2 cp-3 cp-4 cp-5 cp-6 cp-7 cp-8"
+			serverList="$masterNode $slaveNodes"			
+			numOfReplication=1
 		fi
 	fi
 elif $isAmazonEC
