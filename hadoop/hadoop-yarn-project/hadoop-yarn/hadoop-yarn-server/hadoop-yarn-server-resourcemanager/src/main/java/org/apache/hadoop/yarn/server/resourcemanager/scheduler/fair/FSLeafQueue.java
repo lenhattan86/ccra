@@ -38,10 +38,12 @@ import org.apache.hadoop.yarn.api.records.QueueACL;
 import org.apache.hadoop.yarn.api.records.QueueUserACLInfo;
 import org.apache.hadoop.yarn.api.records.Resource;
 import org.apache.hadoop.yarn.server.resourcemanager.resource.ResourceWeights;
+import org.apache.hadoop.yarn.server.resourcemanager.rmapp.RMAppMetrics;
 import org.apache.hadoop.yarn.server.resourcemanager.rmcontainer.RMContainer;
 import org.apache.hadoop.yarn.server.resourcemanager.scheduler.ActiveUsersManager;
 import org.apache.hadoop.yarn.server.resourcemanager.scheduler.SchedulerAppUtils;
 import org.apache.hadoop.yarn.server.resourcemanager.scheduler.SchedulerApplicationAttempt;
+import org.apache.hadoop.yarn.server.resourcemanager.scheduler.fair.policies.BoPFSchedulerPolicy;
 import org.apache.hadoop.yarn.server.resourcemanager.scheduler.fair.policies.BoundedPriorityFairnessPolicy;
 import org.apache.hadoop.yarn.util.resource.Resources;
 
@@ -61,6 +63,8 @@ public class FSLeafQueue extends FSQueue {
   private final Lock writeLock = rwl.writeLock();
   
   private Resource demand = Resources.createResource(0);
+  
+  public static boolean DEBUG = true;
   
   // Variables used for preemption
   private long lastTimeAtMinShare;
@@ -373,7 +377,7 @@ public class FSLeafQueue extends FSQueue {
           "from its applications.");
     }
     log("Queue " + getName() + " is going to preempt a container " +
-        "from its applications. "+runnableApps.size());
+        "from its applications. ");
     // Choose the app that is most over fair share
     Comparator<Schedulable> comparator = policy.getComparator();
     FSAppAttempt candidateSched = null;
@@ -381,7 +385,11 @@ public class FSLeafQueue extends FSQueue {
     try {
       for (FSAppAttempt sched : runnableApps) {
         
-        if(sched.getLiveContainers().size()==0) //iglf
+        if (this.getPolicy().getName().equalsIgnoreCase(BoundedPriorityFairnessPolicy.NAME))
+          if(sched.getLiveContainers().size()==0) //iglf
+            continue;
+        
+        if(sched.getLiveContainers().size()<=1) // tanle ignore the app with only AM container.
           continue;
         
         if (candidateSched == null ||
@@ -395,6 +403,7 @@ public class FSLeafQueue extends FSQueue {
     
     // Preempt from the selected app
     if (candidateSched != null) {
+      log("Queue " + getName() + " is going to preempt a the app " + candidateSched.getName() + " " + candidateSched.getAppName());
       toBePreempted = candidateSched.preemptContainer();
     }
     return toBePreempted;
@@ -557,6 +566,11 @@ public class FSLeafQueue extends FSQueue {
    * @return true if check passes (can preempt) or false otherwise
    */
   private boolean preemptContainerPreCheck() {
+    // tanle always preempt with BoPF.
+    if (this.getPolicy().getName().equalsIgnoreCase(BoPFSchedulerPolicy.NAME)){
+      return true;
+    }
+      
     return parent.getPolicy().checkIfUsageOverFairShare(getResourceUsage(),
         getFairShare());
   }
@@ -599,7 +613,23 @@ public class FSLeafQueue extends FSQueue {
   }
   
   private static void log(String msg) {
-    if (BoundedPriorityFairnessPolicy.DEBUG)
+    if (DEBUG)
       LOG.info(msg);
+  }
+
+  @Override
+  public String getAppName() {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
+  @Override
+  public RMAppMetrics getAppMetrics() {
+    // TODO Auto-generated method stub
+    return null;
+  }
+  
+  public List<FSAppAttempt> getRunnableApps(){
+    return this.runnableApps;
   }
 }

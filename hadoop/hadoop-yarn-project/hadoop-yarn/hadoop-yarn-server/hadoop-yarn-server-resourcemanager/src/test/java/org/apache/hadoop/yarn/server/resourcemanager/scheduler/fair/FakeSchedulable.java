@@ -24,6 +24,7 @@ import org.apache.hadoop.yarn.api.records.Priority;
 import org.apache.hadoop.yarn.api.records.Resource;
 import org.apache.hadoop.yarn.server.resourcemanager.RMContext;
 import org.apache.hadoop.yarn.server.resourcemanager.resource.ResourceWeights;
+import org.apache.hadoop.yarn.server.resourcemanager.rmapp.RMAppMetrics;
 import org.apache.hadoop.yarn.server.resourcemanager.rmcontainer.RMContainer;
 import org.apache.hadoop.yarn.server.resourcemanager.scheduler.Queue;
 import org.apache.hadoop.yarn.util.Records;
@@ -277,5 +278,22 @@ public class FakeSchedulable implements Schedulable {
   public boolean isSoftGuaranteed() {
     // TODO Auto-generated method stub
     return false;
+  }
+
+  @Override
+  public String getAppName() {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
+  @Override
+  public RMAppMetrics getAppMetrics(){
+    return null;
+  }
+
+  @Override
+  public void setGuaranteeShare(Resource res) {
+    // TODO Auto-generated method stub
+    
   }
 }

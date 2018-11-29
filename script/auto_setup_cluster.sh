@@ -2,7 +2,11 @@
 # usage:
 # ./auto_setup_cluster.sh [hostname] [cloudlab site] [method] [parameters]
 ## constants
+
+echo "waiting for compiling"
+
 BPF="BPF"
+BoPF="BoPF"
 DRF="DRF"
 N_BPF="N-BPF"
 Strict="Strict"
@@ -10,7 +14,6 @@ DRFW="DRF-W"
 Fair="Fair"
 
 METHOD=$DRF
-
 
 
 if [ -z "$2" ]
@@ -22,7 +25,7 @@ fi
 
 if [ -z "$1" ]
 then
-	cluster="hibench"	
+	cluster="bpf"	
 	cp ~/.ssh/config.$cluster ~/.ssh/config; 
 	hostname="ctl.$cluster.yarnrm-pg0.$cloudlabSite.cloudlab.us"
 else
@@ -58,13 +61,13 @@ AUTOSSH_PORT=20000
 
 ######################### System Variables #####################
 
-isUploadKey=true
+isUploadKey=false
 IS_INIT=false
 isCloudLab=true
 isAmazonEC=false
-isLocalhost=false
+isLocalhost=true
 isTestNetwork=false
-isOfficial=false
+isOfficial=true
 TEST=false
 SSH_CMD="autossh"
 #SSH_CMD="ssh -v "
@@ -82,10 +85,12 @@ fi
 
 if $isLocalhost
 then
+	isUploadKey=false
 	isCloudLab=false
 	isAmazonEC=false
 	IS_INIT=false
 	scaleDown=1.0
+	METHOD=$BoPF
 fi
 username="tanle"
 groupname="yarnrm-PG0"
@@ -127,16 +132,19 @@ else
 	genJavaFileDst="/users/tanle/hadoop/conf/GenerateProfile.java"
 fi
 
-yarnVcores=20
-if $isLocalhost
-then
-	yarnVcores=8
-fi
+yarnVcores=16
+
 vmemRatio=4
 #yarnNodeMem=131072 # 128 GB
 #yarnNodeMem=65536 # 64 GB
-yarnNodeMem=$(($yarnVcores*1024*2)) # 2 times of number of vcores
+yarnNodeMem=$(($yarnVcores*1024*3)) # 3 times of number of vcores
 #yarnNodeMem=32768 # 32 GB
+
+if $isLocalhost
+then
+	yarnVcores=16
+	yarnNodeMem=$(($yarnVcores*1024)) 
+fi
 
 yarnMaxMem=$yarnNodeMem # for each container
 
@@ -145,7 +153,10 @@ echo "METHOD: $METHOD"
 
 if [ "$METHOD" == "$BPF" ];
 then
-        shedulingPolicy="bpf"; weight=1
+    shedulingPolicy="bpf"; weight=1
+elif [ "$METHOD" == "$BoPF" ];
+then
+	shedulingPolicy="BoPF"; weight=1
 elif [ "$METHOD" == "$N_BPF" ];
 then
 	shedulingPolicy="n-bpf"; weight=1
@@ -173,8 +184,8 @@ hdfsDir="/dev/hdfs"
 # hdfsDir="/users/tanle/hdfs"
 #hdfsDir="$temp/hdfs"
 #hdfsDir="/proj/yarnrm-PG0/hdfs"
-spark_tmp="/proj/yarnrm-PG0/spark"
-# spark_tmp="/tmp/spark"
+# spark_tmp="/proj/yarnrm-PG0/spark"
+spark_tmp="/tmp/spark"
 
 #yarnAppLogs="/dev/yarn-logs"
 yarnAppLogs="/dev/shm/yarn-logs" # only used in hadoop 2.7
@@ -232,10 +243,16 @@ fi
 yarnPort=9099
 echo "[INFO] =====set up $hostname:$yarnPort ====="
 
-REBOOT=false
+REBOOT=false	
 
-isUploadYarn=false
-isDownload=true
+isUploadYarn=true
+isDownload=false
+if $isLocalhost
+then
+	isUploadYarn=true
+	isDownload=false
+fi
+
 
 isInstallHadoop=true
 isExtract=false
@@ -261,7 +278,7 @@ isGenerateKey=false
 isPasswordlessSSH=false
 isAddToGroup=false
 
-isInstallBasePackages=true
+isInstallBasePackages=false
 
 isInstallGanglia=false
 startGanglia=false
@@ -274,6 +291,7 @@ fi
 isInitPath=false
 if $isDownload
 then
+	METHOD=$DRF
 	isInitPath=true
 fi
 isModifyHadoop=false
@@ -314,8 +332,7 @@ fi
 
 
 if $IS_INIT
-then
-	#shedulingPolicy="drf"
+then	
 	isDownload=false
 	isUploadYarn=true
 	isExtract=true
@@ -338,7 +355,7 @@ then
 
 	isInstallFlink=false
 
-	isInstallSpark=false
+	isInstallSpark=true
 
 	isInstallTez=true
 	isUploadTez=true
@@ -348,9 +365,9 @@ fi
 if $isLocalhost
 then
 	echo "[INFO] Setup Yarn on localhost"
-	masterNode="localhost"
-	serverList="localhost"
-	slaveNodes="localhost"
+	masterNode=$hostname
+	serverList=$hostname
+	slaveNodes=$hostname
 	numOfReplication=1
 	numOfworkers=1
 	isUploadKey=false
@@ -375,8 +392,9 @@ then
 	if $isOfficial
 	then
 		numOfworkers=40
-		slaveNodes="cp-1 cp-2 cp-3 cp-4 cp-5 cp-6 cp-7 cp-8 cp-9 cp-10 cp-11 cp-12 cp-13 cp-14 cp-15 cp-16 cp-17 cp-18 cp-19 cp-20 cp-21 cp-22 cp-23 cp-24 cp-25 cp-26 cp-27 cp-28 cp-29 cp-30 cp-31 cp-32 cp-33 cp-34 cp-35 cp-36 cp-37 cp-38 cp-39 cp-40"
-		serverList="$masterNode cp-1 cp-2 cp-3 cp-4 cp-5 cp-6 cp-7 cp-8 cp-9 cp-10 cp-11 cp-12 cp-13 cp-14 cp-15 cp-16 cp-17 cp-18 cp-19 cp-20 cp-21 cp-22 cp-23 cp-24 cp-25 cp-26 cp-27 cp-28 cp-29 cp-30 cp-31 cp-32 cp-33 cp-34 cp-35 cp-36 cp-37 cp-38 cp-39 cp-40"				
+		# slaveNodes="cp-1 cp-2 cp-3 cp-4 cp-5 cp-6 cp-7 cp-8 cp-9 cp-10 cp-11 cp-12 cp-13 cp-14 cp-15 cp-16 cp-17 cp-18 cp-19 cp-20 cp-21 cp-22 cp-23 cp-24 cp-25 cp-26 cp-27 cp-28 cp-29 cp-30 cp-31 cp-32 cp-33 cp-34 cp-35 cp-36 cp-37 cp-38 cp-39 cp-40"
+		slaveNodes="cp-1 cp-2 cp-3 cp-4 cp-5 cp-6 cp-7 cp-8 cp-9 cp-10 cp-11 cp-12 cp-13 cp-14 cp-15 cp-16 cp-17 cp-18 cp-19 cp-20 cp-21 cp-22 cp-23 cp-24 cp-25 cp-26 cp-27 cp-28 cp-29 cp-30 cp-31 cp-33 cp-34 cp-35 cp-36 cp-37 cp-38 cp-39 cp-40"
+		serverList="$masterNode $slaveNodes"				
 		numOfReplication=1
 	else
 		if $TEST
@@ -389,7 +407,7 @@ then
 		else
 			numOfworkers=8			
 			masterNode="ctl"; slaveNodes="cp-1 cp-2 cp-3 cp-4 cp-5 cp-6 cp-7 cp-8"
-			serverList="$masterNode $slaveNodes"			
+			serverList="$masterNode $slaveNodes"
 			numOfReplication=1
 		fi
 	fi
@@ -840,7 +858,7 @@ echo "#################################### install Hadoop Yarn #################
     <value>100</value>
   </property>
 
-  <property>
+  <property>	
     <name>yarn.scheduler.fair.waitTimeBeforeKill</name>
     <value>100</value>
   </property>
@@ -906,6 +924,11 @@ echo "#################################### install Hadoop Yarn #################
   </property>
 
   <property>
+	<name>job.info.path</name>
+	<value>$profilePath</value>
+  </property>
+
+  <property>
     <name>yarn.container.time.log.enable</name>
     <value>$enableContainerLog</value>
   </property>	
@@ -929,7 +952,7 @@ echo "#################################### install Hadoop Yarn #################
 				$SSH_CMD $username@$1 "echo  '<?xml version=\"1.0\"?>
 <allocations>
 
-<defaultQueueSchedulingPolicy>$shedulingPolicy</defaultQueueSchedulingPolicy>
+<defaultQueueSchedulingPolicy>drf</defaultQueueSchedulingPolicy>
 <defaultMinSharePreemptionTimeout>1</defaultMinSharePreemptionTimeout>
 <defaultFairSharePreemptionTimeout>1</defaultFairSharePreemptionTimeout>
 <defaultFairSharePreemptionThreshold>1.0</defaultFairSharePreemptionThreshold>
@@ -941,12 +964,12 @@ echo "#################################### install Hadoop Yarn #################
 	<period>600000</period>
 	<startTime>-1</startTime>
 	<weight>$weight</weight>
-	<schedulingPolicy>fifo</schedulingPolicy>
+	<schedulingPolicy>$shedulingPolicy</schedulingPolicy>
 </queue>
 <queue name=\"batch0\">
 	<weight>1</weight>
 	<allowPreemptionFrom>$enablePreemption</allowPreemptionFrom>	
-	<schedulingPolicy>fifo</schedulingPolicy>
+	<schedulingPolicy>$shedulingPolicy</schedulingPolicy>
 </queue>
 
 </allocations>' > $fairSchedulerFile"
@@ -959,7 +982,7 @@ echo "#################################### install Hadoop Yarn #################
 			$SSH_CMD $username@$1 "echo  '<?xml version=\"1.0\"?>
 <allocations>
 
-<defaultQueueSchedulingPolicy>$shedulingPolicy</defaultQueueSchedulingPolicy>
+<defaultQueueSchedulingPolicy>drf</defaultQueueSchedulingPolicy>
 <defaultMinSharePreemptionTimeout>1</defaultMinSharePreemptionTimeout>
 <defaultFairSharePreemptionTimeout>1</defaultFairSharePreemptionTimeout>
 <defaultFairSharePreemptionThreshold>1.0</defaultFairSharePreemptionThreshold>
@@ -1003,7 +1026,7 @@ echo "#################################### install Hadoop Yarn #################
 <queue name=\"batch0\">
 	<weight>1</weight>	
 	<allowPreemptionFrom>$enablePreemption</allowPreemptionFrom>
-	<schedulingPolicy>fifo</schedulingPolicy>
+	<schedulingPolicy>$shedulingPolicy</schedulingPolicy>
 </queue>
 
 <!--
@@ -1253,28 +1276,20 @@ if $isInstallSpark
 then 	
 	echo "#################################### Setup Spark #####################################"	
 	installSparkFunc () {
-		echo "[INFO] install Spark at $1 - step 1"
-		if $isDownload
-		then
-			ssh $1 "sudo rm -rf $sparkTgz; wget $sparkDownloadLink >> log.txt"
-		fi
+		echo "[INFO] install Spark at $1 - step 1"				
+		ssh $1 "sudo rm -rf $sparkTgz; wget $sparkDownloadLink >> log.txt"	
+
 		echo "[INFO] install Spark at $1 - step 2"
-		if $isExtract
-		then			
-			ssh $1 "rm -rf $sparkFolder; tar -xvzf $sparkTgz >> log.txt; mv $sparkTgzFolder $sparkFolder"
-		fi
-		echo "[INFO] install Spark at $1 - step 3"
-		
+		ssh $1 "rm -rf $sparkFolder; tar -xvzf $sparkTgz >> log.txt; mv $sparkTgzFolder $sparkFolder"
+
+		echo "[INFO] install Spark at $1 - step 3"		
 		$SSH_CMD $username@$1 "sudo rm -rf $spark_tmp; sudo mkdir $spark_tmp; sudo chmod 777 $spark_tmp"
 		ssh $1 "echo 'export SPARK_DIST_CLASSPATH=~/$hadoopFolder/bin/hadoop
 #export SPARK_JAVA_OPTS=-Dspark.driver.port=53411
-export HADOOP_CONF_DIR=$hadoopFolder/$configFolder
+export HADOOP_CONF_DIR=~/$hadoopFolder/$configFolder
 export SPARK_MASTER_IP=$masterNode
 export SPARK_LOCAL_DIRS=$spark_tmp' > $sparkFolder/conf/spark-env.sh"
 		echo "install Spark at $1 - step 4"
-
-		
-
 
 		ssh $1 "echo '
 # spark.yarn.driver.memoryOverhead=512

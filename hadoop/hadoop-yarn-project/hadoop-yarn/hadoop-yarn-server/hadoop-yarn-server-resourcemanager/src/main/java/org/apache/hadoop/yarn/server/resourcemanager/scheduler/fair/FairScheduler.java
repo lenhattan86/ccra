@@ -82,6 +82,7 @@ import org.apache.hadoop.yarn.server.resourcemanager.scheduler.event.NodeRemoved
 import org.apache.hadoop.yarn.server.resourcemanager.scheduler.event.NodeResourceUpdateSchedulerEvent;
 import org.apache.hadoop.yarn.server.resourcemanager.scheduler.event.NodeUpdateSchedulerEvent;
 import org.apache.hadoop.yarn.server.resourcemanager.scheduler.event.SchedulerEvent;
+import org.apache.hadoop.yarn.server.resourcemanager.scheduler.fair.policies.BoPFSchedulerPolicy;
 import org.apache.hadoop.yarn.server.resourcemanager.scheduler.fair.policies.BoundedPriorityFairnessPolicy;
 import org.apache.hadoop.yarn.server.resourcemanager.security.RMContainerTokenSecretManager;
 import org.apache.hadoop.yarn.util.Clock;
@@ -193,6 +194,8 @@ public class FairScheduler
 
   // admision control.
   final boolean ENABLE_ADMISSION = true;
+  static final boolean DEBUG = true;
+  
 
   private AllocationFileLoaderService allocsLoader;
   @VisibleForTesting
@@ -556,6 +559,51 @@ public class FairScheduler
         String message = "Should preempt " + resToPreempt + " res for queue "
             + sched.getName() + " isRunning="+sched.isRunning();
         log(message);
+    } else if (sched.getPolicy().getName().equalsIgnoreCase(BoPFSchedulerPolicy.NAME)) {
+      Resource lowUrgentResToPrempt = Resources.none();
+      if(sched.isBatch()){
+        Resource guaranteedShare = Resources.clone(Resources.none());
+        for (FSAppAttempt app: sched.getRunnableApps()){
+          guaranteedShare = Resources.add(app.getGuaranteeShare(), guaranteedShare);
+          log("[Tan] guarantee resource of " + app.getAppName() + ": " + app.getGuaranteeShare());
+        }
+        lowUrgentResToPrempt = Resources.subtract(guaranteedShare, sched.getResourceUsage());
+        log("[Tan] needs to preempt resources: " + lowUrgentResToPrempt);
+      }      
+      resToPreempt = Resources.max(RESOURCE_CALCULATOR, clusterResource,
+          lowUrgentResToPrempt, Resources.none());
+    }
+    else {
+      // Default: for fair share.
+      long minShareTimeout = sched.getMinSharePreemptionTimeout();
+      long fairShareTimeout = sched.getFairSharePreemptionTimeout();
+      Resource resDueToMinShare = Resources.none();
+      Resource resDueToFairShare = Resources.none();
+      if (curTime - sched.getLastTimeAtMinShare() > minShareTimeout) {
+        Resource target = Resources.min(RESOURCE_CALCULATOR, clusterResource,
+            sched.getMinShare(), sched.getDemand());
+        resDueToMinShare = Resources.max(RESOURCE_CALCULATOR, clusterResource,
+            Resources.none(),
+            Resources.subtract(target, sched.getResourceUsage()));
+      }
+      if (curTime - sched.getLastTimeAtFairShareThreshold() > fairShareTimeout) {
+        Resource target = Resources.min(RESOURCE_CALCULATOR, clusterResource,
+            sched.getFairShare(), sched.getDemand());
+        resDueToFairShare = Resources.max(RESOURCE_CALCULATOR, clusterResource,
+            Resources.none(),
+            Resources.subtract(target, sched.getResourceUsage()));
+      }
+      
+      resToPreempt = Resources.max(RESOURCE_CALCULATOR, clusterResource,
+          resDueToMinShare, resDueToFairShare);
+      
+       if (Resources.greaterThan(RESOURCE_CALCULATOR, clusterResource,
+          resToPreempt, Resources.none())) {
+        String message = "Should preempt " + resToPreempt + " res for queue "
+            + sched.getName() + ": resDueToMinShare = " + resDueToMinShare
+            + ", resDueToFairShare = " + resDueToFairShare;
+        LOG.info(message);
+       }
     }
     
     return resToPreempt;
@@ -1796,7 +1844,7 @@ public class FairScheduler
   }
   
   private static void log(String msg) {
-    if (BoundedPriorityFairnessPolicy.DEBUG)
+    if (DEBUG)
       LOG.info(msg);
   }
 }

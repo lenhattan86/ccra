@@ -1,0 +1,30 @@
+end_time = 500;
+avail_res = 20*ones(1,end_time);
+
+for i = 1:10:490
+    avail_res(
+
+
+
+
+job_profile = zeros(100,5);
+for i = 1:100
+    job_profile(i,1) = i;
+    job_profile(i,3) = randi(10);
+    job_profile(i,4) = job_profile(i,3)* randi(30);
+end
+
+inter_arrival =  poissrnd(3,1,100);
+
+for i = 2:100
+    job_profile(i,2) = job_profile(i-1,2) + inter_arrival(i);
+end
+
+for i = 1:100
+    job_profile(i,5) =  ceil(job_profile(i,2) + (1+rand)*(job_profile(i,4)/job_profile(i,3)));
+end
+
+
+
+
+

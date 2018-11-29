@@ -43,6 +43,8 @@ fig_path = ['../../BPF/fig/'];
 strLQ = 'LQ';
 strTQ = 'TQ';
 
+strSQ = 'SQ';
+
 strLQs = 'LQs';
 strTQs = 'TQs';
 

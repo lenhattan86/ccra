@@ -26,6 +26,7 @@ import org.apache.hadoop.yarn.api.records.Priority;
 import org.apache.hadoop.yarn.api.records.Resource;
 import org.apache.hadoop.yarn.server.resourcemanager.RMContext;
 import org.apache.hadoop.yarn.server.resourcemanager.resource.ResourceWeights;
+import org.apache.hadoop.yarn.server.resourcemanager.rmapp.RMAppMetrics;
 import org.apache.hadoop.yarn.server.resourcemanager.rmcontainer.RMContainer;
 import org.apache.hadoop.yarn.server.resourcemanager.scheduler.Queue;
 
@@ -119,6 +120,8 @@ public interface Schedulable {
   /** Minimum Resource share required for the schedulable. */
   public Resource getGuaranteeShare();
   
+  public void setGuaranteeShare(Resource res);
+  
   public Resource getAlpha();
   
   public long getStage1Duration();
@@ -150,4 +153,8 @@ public interface Schedulable {
   public boolean isHardGuaranteed();
   
   public boolean isSoftGuaranteed();
+
+  public String getAppName();
+  
+  public RMAppMetrics getAppMetrics();
 }
