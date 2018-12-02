@@ -104,10 +104,7 @@ public class GenerateSparkScripts {
 
       toWrite = "\npython ../get_yarn_queue_info.py --master $server --interval 1 --file " + workloadOutputDir
           + "/yarnUsedResources.csv & pythonScript=$! \n";
-      run.write(toWrite.toCharArray(), 0, toWrite.length());
- 
-      toWrite = "\npython ../get_yarn_detailed_job_info.py --master $server --interval 1" + " & pythonScript1=$! \n";
- 
+      
       run.write(toWrite.toCharArray(), 0, toWrite.length());
 
       toWrite = "./batches-all.sh & runBatches=$! \n";
@@ -131,8 +128,6 @@ public class GenerateSparkScripts {
       toWrite = "\nkill $runInteractives";
       run.write(toWrite.toCharArray(), 0, toWrite.length());
       toWrite = "\nsleep "+waitForAWhile+"; kill $pythonScript";
-      run.write(toWrite.toCharArray(), 0, toWrite.length());
-      toWrite = "\nsleep "+waitForAWhile+"; kill $pythonScript1";
       run.write(toWrite.toCharArray(), 0, toWrite.length());
       toWrite = "\n ~/hadoop/bin/yarn application -kill all";
       run.write(toWrite.toCharArray(), 0, toWrite.length());

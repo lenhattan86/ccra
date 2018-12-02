@@ -250,6 +250,7 @@ then
 	isExtract=true
 fi
 
+
 isGenerateKey=false	
 isPasswordlessSSH=false
 isAddToGroup=false
@@ -383,10 +384,10 @@ then
 			numOfReplication=1
 
 		else
-			numOfworkers=8			
-			masterNode="ctl"; slaveNodes="cp-1 cp-2 cp-3 cp-4 cp-5 cp-6 cp-7 cp-8"
-			serverList="$masterNode $slaveNodes"			
-			numOfReplication=1
+			numOfworkers=4
+			serverList="$masterNode cp-1 cp-2 cp-3 cp-4"
+			slaveNodes="cp-1 cp-2 cp-3 cp-4"
+			numOfReplication=3
 		fi
 	fi
 elif $isAmazonEC
@@ -557,12 +558,6 @@ then
 	wait
 	echo ################################ install screen #####################################
 	$SSH_CMD $username@$masterNode "sudo apt-get install -y screen"
-	 echo ################################ upgrade pip ####################################
-        $SSH_CMD $username@$masterNode "sudo pip install --upgrade pip"
-	echo ################################ install matplotlib ####################################
-        $SSH_CMD $username@$masterNode "sudo python -m pip install -U matplotlib"
-	echo ################################ install pandas #####################################
-        $SSH_CMD $username@$masterNode "sudo python -m pip install -U pandas"
 	
 fi
 
@@ -699,8 +694,8 @@ echo "#################################### install Hadoop Yarn #################
 				# add JAVA_HOME
 				
 				# "copy SWIM config files for Facebook-trace simulation"
-				scp ../SWIM/randomwriter_conf.xsl $username@$1:~/hadoop/config
-				scp ../SWIM/workGenKeyValue_conf.xsl $username@$1:~/hadoop/config
+				scp ../SWIM/randomwriter_conf.xsl $1:~/hadoop/config
+				scp ../SWIM/workGenKeyValue_conf.xsl $1:~/hadoop/config
 			
 				echo Configure Hadoop at $1 step 1
 				
@@ -790,11 +785,6 @@ echo "#################################### install Hadoop Yarn #################
   <property>
     <name>yarn.resourcemanager.hostname</name>
     <value>$hostname</value>
-  </property>
-
-  <property>
-    <name>yarn.resourcemanager.webapp.address</name>
-    <value>$hostname:9099</value>
   </property>
 
   <property>
@@ -1213,7 +1203,7 @@ echo "#################################### install Hadoop Yarn #################
 					counter=$((counter+1))
 					$SSH_CMD $username@$slave "sudo rm -rf $hadoopTgz"
 					#uploadCMD="$uploadCMD scp $hadoopTgz $slave:~/ & "
-					uploadCMD="$uploadCMD scp $hadoopTgz $username@$slave:~/ ; "
+					uploadCMD="$uploadCMD scp $hadoopTgz $slave:~/ ; "
 				done
 				#uploadCMD="$uploadCMD wait"
 				echo $uploadCMD
