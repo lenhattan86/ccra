@@ -94,6 +94,7 @@ import org.apache.hadoop.yarn.server.resourcemanager.scheduler.Allocation;
 import org.apache.hadoop.yarn.server.resourcemanager.scheduler.YarnScheduler;
 import org.apache.hadoop.yarn.server.resourcemanager.scheduler.event.AppAttemptAddedSchedulerEvent;
 import org.apache.hadoop.yarn.server.resourcemanager.scheduler.event.AppAttemptRemovedSchedulerEvent;
+import org.apache.hadoop.yarn.server.resourcemanager.scheduler.fair.policies.BoPFSchedulerPolicy;
 import org.apache.hadoop.yarn.server.resourcemanager.security.ClientToAMTokenSecretManagerInRM;
 import org.apache.hadoop.yarn.server.webproxy.ProxyUriUtils;
 import org.apache.hadoop.yarn.state.InvalidStateTransitonException;
@@ -824,7 +825,8 @@ public class RMAppAttemptImpl implements RMAppAttempt, Recoverable {
           long dagComplTime2 = jobFinishTime - startTime;
           String toWrite = this.appName + ", " + new Date(startTime) + ", "
               + new Date(runningTime) + ", " + dagComplTime1 + ", "
-              + dagComplTime2 + ", " + new Date(jobFinishTime) + "\n";
+              + dagComplTime2 + ", " + new Date(jobFinishTime) +","
+              + new Date(BoPFSchedulerPolicy.startTime) + "\n";
           try {
             FileWriter timeLog = new FileWriter(fileToWrite, true);
             timeLog.write(toWrite.toCharArray(), 0, toWrite.length());

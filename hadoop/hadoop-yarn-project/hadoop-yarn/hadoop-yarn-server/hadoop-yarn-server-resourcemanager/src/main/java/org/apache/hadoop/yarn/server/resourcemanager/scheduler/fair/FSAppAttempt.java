@@ -44,6 +44,7 @@ import org.apache.hadoop.yarn.server.resourcemanager.RMAuditLogger;
 import org.apache.hadoop.yarn.server.resourcemanager.RMAuditLogger.AuditConstants;
 import org.apache.hadoop.yarn.server.resourcemanager.RMContext;
 import org.apache.hadoop.yarn.server.resourcemanager.resource.ResourceWeights;
+import org.apache.hadoop.yarn.server.resourcemanager.rmapp.RMAppMetrics;
 import org.apache.hadoop.yarn.server.resourcemanager.rmcontainer.RMContainer;
 import org.apache.hadoop.yarn.server.resourcemanager.rmcontainer.RMContainerEvent;
 import org.apache.hadoop.yarn.server.resourcemanager.rmcontainer.RMContainerEventType;
@@ -78,6 +79,10 @@ public class FSAppAttempt extends SchedulerApplicationAttempt implements Schedul
   private Resource preemptedResources = Resources.createResource(0);
   private RMContainerComparator comparator = new RMContainerComparator();
   private final Map<RMContainer, Long> preemptionMap = new HashMap<RMContainer, Long>();
+  
+  private final static boolean DEBUG = true;
+  
+  private Resource guaranteeShare = Resources.createResource(0);
 
   /**
    * Delay scheduling: We often want to prioritize scheduling of node-local containers over
@@ -761,7 +766,6 @@ public class FSAppAttempt extends SchedulerApplicationAttempt implements Schedul
     if (LOG.isDebugEnabled()) {
       LOG.debug("App " + getName() + " is going to preempt a running " + "container");
     }
-    log("App " + getName() + " is going to preempt a running " + "container");
     RMContainer toBePreempted = null;
     log("App " + getName() + " number of live containers " + getLiveContainers().size() + "; reserve containers: " + reservedContainers.size());
     
@@ -772,18 +776,28 @@ public class FSAppAttempt extends SchedulerApplicationAttempt implements Schedul
           toBePreempted = container;
       }
     }
+    
+    // tanle workaround to kill reserverd container.
+    if (toBePreempted==null)    
+      for (RMContainer container : getReservedContainers()) {
+        if (!getPreemptionContainers().contains(container)
+            && (toBePreempted == null || comparator.compare(toBePreempted, container) > 0)) {
+            toBePreempted = container;
+        }
+      }
+    
     log("[Tan] container to be preempted: "+toBePreempted);
     return toBePreempted;
   }
   
   private static void log(String msg) {
-    if (BoundedPriorityFairnessPolicy.DEBUG)
+    if (DEBUG)
       LOG.info(msg);
   }
 
   @Override
   public Resource getGuaranteeShare() {
-    return Resources.none();
+    return this.guaranteeShare;
   }
 
   @Override
@@ -860,4 +874,18 @@ public class FSAppAttempt extends SchedulerApplicationAttempt implements Schedul
     return false;
   }
 
+  @Override
+  public String getAppName() {
+    return this.rmContext.getRMApps().get(this.getApplicationId()).getName();
+  }
+
+  @Override
+  public RMAppMetrics getAppMetrics() {
+    return this.rmContext.getRMApps().get(this.getApplicationId()).getRMAppMetrics();
+  }
+
+  @Override
+  public void setGuaranteeShare(Resource res) {
+    this.guaranteeShare = res;
+  }
 }

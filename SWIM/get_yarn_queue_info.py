@@ -40,7 +40,7 @@ args = vars(parser.parse_args())
 
 master_url = args['master']
 interval = int(args['interval'])
-url = 'http://' + args['master'] + ':8088/ws/v1/cluster/scheduler'
+url = 'http://' + args['master'] + ':9099/ws/v1/cluster/scheduler'
 file_name = args['file']
 
 ofile  = open(file_name, "wb")

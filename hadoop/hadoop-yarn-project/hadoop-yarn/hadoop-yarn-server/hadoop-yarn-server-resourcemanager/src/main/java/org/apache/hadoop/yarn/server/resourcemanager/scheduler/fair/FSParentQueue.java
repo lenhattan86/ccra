@@ -34,10 +34,12 @@ import org.apache.hadoop.yarn.api.records.QueueACL;
 import org.apache.hadoop.yarn.api.records.QueueUserACLInfo;
 import org.apache.hadoop.yarn.api.records.Resource;
 import org.apache.hadoop.yarn.server.resourcemanager.RMContext;
+import org.apache.hadoop.yarn.server.resourcemanager.rmapp.RMAppMetrics;
 import org.apache.hadoop.yarn.server.resourcemanager.rmcontainer.RMContainer;
 import org.apache.hadoop.yarn.util.resource.Resources;
 import org.apache.hadoop.yarn.server.resourcemanager.scheduler.ActiveUsersManager;
 import org.apache.hadoop.yarn.server.resourcemanager.scheduler.SchedulerApplicationAttempt;
+import org.apache.hadoop.yarn.server.resourcemanager.scheduler.fair.policies.BoundedPriorityFairnessPolicy;
 
 @Private
 @Unstable
@@ -187,16 +189,29 @@ public class FSParentQueue extends FSQueue {
     FSQueue candidateQueue = null;
     Comparator<Schedulable> comparator = policy.getComparator();
     for (FSQueue queue : childQueues) {
+      
+      // for fair share
       /*if (candidateQueue == null ||
           comparator.compare(queue, candidateQueue) > 0) {
         candidateQueue = queue;
-      }*/
-      if (candidateQueue == null && (!queue.isSoftGuaranteed() && !queue.isHardGuaranteed())) {
-        candidateQueue = queue;
       }
-      if (queue.isAdmitted() && !queue.isSoftGuaranteed() && !queue.isHardGuaranteed() &&
-          comparator.compare(queue, candidateQueue) > 0) {
-        candidateQueue = queue;
+      */
+      if (this.policy.getName().equals(BoundedPriorityFairnessPolicy.NAME)) {
+        if (candidateQueue == null && (!queue.isSoftGuaranteed() && !queue.isHardGuaranteed())) {
+          candidateQueue = queue;
+        }
+      
+        if (queue.isAdmitted() && !queue.isSoftGuaranteed() && !queue.isHardGuaranteed() &&
+            comparator.compare(queue, candidateQueue) > 0) {
+          candidateQueue = queue;
+        }
+      }
+      
+      // for new BoPFScheduler
+      if(queue.isBatch()){
+        if(candidateQueue == null  || comparator.compare(queue, candidateQueue) > 0)
+          candidateQueue = queue;
+        break;
       }
     }
 
@@ -268,5 +283,17 @@ public class FSParentQueue extends FSQueue {
   @Override
   public boolean isLeafQueue() {
     return false;
+  }
+
+  @Override
+  public String getAppName() {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
+  @Override
+  public RMAppMetrics  getAppMetrics() {
+    // TODO Auto-generated method stub
+    return null;
   }
 }

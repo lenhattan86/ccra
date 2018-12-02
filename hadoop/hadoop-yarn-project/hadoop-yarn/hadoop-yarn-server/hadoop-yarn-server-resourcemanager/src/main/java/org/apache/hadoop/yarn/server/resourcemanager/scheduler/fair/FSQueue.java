@@ -385,14 +385,13 @@ public abstract class FSQueue implements Queue, Schedulable {
 
   @Override
   public boolean isBursty() {
-    if (this.getStage1Duration() > 0)
+    if (this.getQueueName().startsWith(SchedulingPolicy.STR_SQ))
       return true;
     return false;
   }
 
   public boolean isBatch() {
-    if (this.getQueueName().contains("batch")) // TODO: add a property for batch
-                                               // queue
+    if (this.getQueueName().startsWith(SchedulingPolicy.STR_TQ))
       return true;
     return false;
   }

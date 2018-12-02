@@ -22,13 +22,16 @@ import org.apache.hadoop.classification.InterfaceStability.Evolving;
 import org.apache.hadoop.util.ReflectionUtils;
 import org.apache.hadoop.util.StringUtils;
 import org.apache.hadoop.yarn.api.records.Resource;
+import org.apache.hadoop.yarn.conf.YarnConfiguration;
 import org.apache.hadoop.yarn.server.resourcemanager.scheduler.fair.policies.DominantResourceFairnessPolicy;
 import org.apache.hadoop.yarn.server.resourcemanager.scheduler.fair.policies.FairSharePolicy;
 import org.apache.hadoop.yarn.server.resourcemanager.scheduler.fair.policies.FifoPolicy;
+import org.apache.hadoop.yarn.server.resourcemanager.scheduler.fair.policies.BoPFSchedulerPolicy;
 import org.apache.hadoop.yarn.server.resourcemanager.scheduler.fair.policies.BoundedPriorityFairnessPolicy;
 
 import java.util.Collection;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Public
@@ -46,6 +49,14 @@ public abstract class SchedulingPolicy {
   public static final byte DEPTH_PARENT = (byte) 6; // Root and Intermediate
   public static final byte DEPTH_ANY = (byte) 7;
   public static boolean IS_NBPF = false;
+  
+  public static final String STR_TQ = "batch";
+  public static final String STR_SQ = "bursty";
+  public static final String STR_IQ = "IQ";
+  
+ 
+  
+  public static HashMap<String, JobInfo> mapJobInfo = null; 
 
   /**
    * Returns a {@link SchedulingPolicy} instance corresponding to the passed clazz
@@ -76,6 +87,8 @@ public abstract class SchedulingPolicy {
     @SuppressWarnings("rawtypes")
     Class clazz;
     String text = StringUtils.toLowerCase(policy);
+    mapJobInfo = JobInfo.readFile("/users/tanle/job_info.csv");
+    
     if (text.equalsIgnoreCase(FairSharePolicy.NAME)) {
       clazz = FairSharePolicy.class;
     } else if (text.equalsIgnoreCase(FifoPolicy.NAME)) {
@@ -83,7 +96,11 @@ public abstract class SchedulingPolicy {
     } else if (text.equalsIgnoreCase(DominantResourceFairnessPolicy.NAME)) {
       clazz = DominantResourceFairnessPolicy.class;
     } else if (text.equalsIgnoreCase(BoundedPriorityFairnessPolicy.NAME)) { //iglf
-        clazz = BoundedPriorityFairnessPolicy.class;
+      clazz = BoundedPriorityFairnessPolicy.class;
+    } else if (text.equalsIgnoreCase(BoPFSchedulerPolicy.NAME)) { //new BoPF with scheduling
+      clazz = BoPFSchedulerPolicy.class;
+      // read offline from a csv files.
+      
     } else if (text.equalsIgnoreCase(BoundedPriorityFairnessPolicy.N_BPF)) { //iglf
       clazz = BoundedPriorityFairnessPolicy.class;
       IS_NBPF = true;

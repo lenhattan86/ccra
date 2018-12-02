@@ -62,7 +62,7 @@ public class GenerateReplayScript {
   static final int SHUFFLE_DATA_SIZE = 4;
   static final int OUTPUT_DATA_SIZE = 5;
 
-  static final int NUM_CP_NODES = 40;
+  static final int NUM_CP_NODES = 1;
   static final int[] failedNodes = {};
   private static final boolean ENABLE_ARRIVAL_TRACES = false;
 
@@ -959,13 +959,12 @@ public class GenerateReplayScript {
           pathToWorkGenJar, pathToWorkGenConf, 100, burstyAppNum, 1, (int) (256 * 0.9));
     } else {
       isCleanLogFile = true;
-      int numOfBatchQueues = 1;
+      int numOfBatchQueues = 0;
       SLEEP_TO_REDUCE_LOAD = 20 * NUM_JOB_SUBMIT;
-      int numOfBurstyQueues = 3;
-       int[] burstyStartTimes = { 250, 300, 350 };
-      int[] burstyPeriods = { 150, 110, 60 };
-      int burstyAppNum = 30;
-      int batchAppNum = 20; // 80, we just measure 80 batch jobs
+      // int numOfBurstyQueues = 3; int[] burstyStartTimes = { 250, 300, 350 }; int[] burstyPeriods = { 150, 110, 60 };
+      int numOfBurstyQueues = 1; int[] burstyStartTimes = { 0}; int[] burstyPeriods = {0};
+      int burstyAppNum = 4;
+      int batchAppNum = 4; // 80, we just measure 80 batch jobs
       int batchAppStartId = 100000;
       ArrayList<String> batchIds = new ArrayList<String>();
       ArrayList<String> burstyIds = new ArrayList<String>();

@@ -1,82 +1,41 @@
-cp-33	ms0405	m400	ssh -p 22 tanle@ms0405.utah.cloudlab.us		
-
-cp-32	ms0342	m400	ssh -p 22 tanle@ms0342.utah.cloudlab.us		
-
-cp-38	ms0220	m400	ssh -p 22 tanle@ms0220.utah.cloudlab.us		
-
-cp-36	ms0310	m400	ssh -p 22 tanle@ms0310.utah.cloudlab.us		
-
-cp-37	ms0430	m400	ssh -p 22 tanle@ms0430.utah.cloudlab.us		
-
-cp-34	ms0236	m400	ssh -p 22 tanle@ms0236.utah.cloudlab.us		
-
-cp-35	ms0140	m400	ssh -p 22 tanle@ms0140.utah.cloudlab.us		
-
-cp-18	ms0145	m400	ssh -p 22 tanle@ms0145.utah.cloudlab.us		
-
-cp-19	ms0328	m400	ssh -p 22 tanle@ms0328.utah.cloudlab.us		
-
-cp-30	ms0423	m400	ssh -p 22 tanle@ms0423.utah.cloudlab.us		
-
-cp-31	ms0433	m400	ssh -p 22 tanle@ms0433.utah.cloudlab.us		
-
-cp-14	ms0403	m400	ssh -p 22 tanle@ms0403.utah.cloudlab.us		
-
-cp-15	ms0308	m400	ssh -p 22 tanle@ms0308.utah.cloudlab.us		
-
-cp-16	ms0208	m400	ssh -p 22 tanle@ms0208.utah.cloudlab.us		
-
-cp-17	ms0214	m400	ssh -p 22 tanle@ms0214.utah.cloudlab.us		
-
-cp-10	ms0422	m400	ssh -p 22 tanle@ms0422.utah.cloudlab.us		
-
-cp-11	ms0143	m400	ssh -p 22 tanle@ms0143.utah.cloudlab.us		
-
-cp-12	ms0210	m400	ssh -p 22 tanle@ms0210.utah.cloudlab.us		
-
-cp-13	ms0442	m400	ssh -p 22 tanle@ms0442.utah.cloudlab.us		
-
-cp-6	ms0125	m400	ssh -p 22 tanle@ms0125.utah.cloudlab.us		
-
-cp-7	ms0227	m400	ssh -p 22 tanle@ms0227.utah.cloudlab.us		
-
-cp-4	ms0233	m400	ssh -p 22 tanle@ms0233.utah.cloudlab.us		
-
-cp-5	ms0225	m400	ssh -p 22 tanle@ms0225.utah.cloudlab.us		
-
-cp-2	ms0224	m400	ssh -p 22 tanle@ms0224.utah.cloudlab.us		
-
-cp-3	ms0413	m400	ssh -p 22 tanle@ms0413.utah.cloudlab.us		
-
-cp-1	ms0123	m400	ssh -p 22 tanle@ms0123.utah.cloudlab.us		
-
-cp-8	ms0130	m400	ssh -p 22 tanle@ms0130.utah.cloudlab.us		
-
-cp-9	ms0718	m400	ssh -p 22 tanle@ms0718.utah.cloudlab.us		
-
-cp-40	ms0229	m400	ssh -p 22 tanle@ms0229.utah.cloudlab.us		
-
-cp-25	ms0736	m400	ssh -p 22 tanle@ms0736.utah.cloudlab.us		
-
-cp-24	ms0111	m400	ssh -p 22 tanle@ms0111.utah.cloudlab.us		
-
-cp-27	ms0127	m400	ssh -p 22 tanle@ms0127.utah.cloudlab.us		
-
-cp-26	ms0128	m400	ssh -p 22 tanle@ms0128.utah.cloudlab.us		
-
-cp-21	ms0345	m400	ssh -p 22 tanle@ms0345.utah.cloudlab.us		
-
-cp-20	ms0133	m400	ssh -p 22 tanle@ms0133.utah.cloudlab.us		
-
-cp-23	ms0243	m400	ssh -p 22 tanle@ms0243.utah.cloudlab.us		
-
-cp-22	ms0418	m400	ssh -p 22 tanle@ms0418.utah.cloudlab.us		
-
-ctl	ms0144	m400	ssh -p 22 tanle@ms0144.utah.cloudlab.us		
-
-cp-39	ms0101	m400	ssh -p 22 tanle@ms0101.utah.cloudlab.us		
-
-cp-29	ms0118	m400	ssh -p 22 tanle@ms0118.utah.cloudlab.us		
-
-cp-28	ms0212	m400	ssh -p 22 tanle@ms0212.utah.cloudlab.us		
-
+cp-33	ms1108	m510	emulab-ops/UBUNTU18-64-OSCP-Q	ssh -p 22 tanle@ms1108.utah.cloudlab.us		
+cp-32	ms0837	m510	emulab-ops/UBUNTU18-64-OSCP-Q	ssh -p 22 tanle@ms0837.utah.cloudlab.us		
+cp-38	ms1106	m510	emulab-ops/UBUNTU18-64-OSCP-Q	ssh -p 22 tanle@ms1106.utah.cloudlab.us		
+cp-36	ms0937	m510	emulab-ops/UBUNTU18-64-OSCP-Q	ssh -p 22 tanle@ms0937.utah.cloudlab.us		
+cp-37	ms1112	m510	emulab-ops/UBUNTU18-64-OSCP-Q	ssh -p 22 tanle@ms1112.utah.cloudlab.us		
+cp-34	ms1117	m510	emulab-ops/UBUNTU18-64-OSCP-Q	ssh -p 22 tanle@ms1117.utah.cloudlab.us		
+cp-35	ms0835	m510	emulab-ops/UBUNTU18-64-OSCP-Q	ssh -p 22 tanle@ms0835.utah.cloudlab.us		
+cp-18	ms1140	m510	emulab-ops/UBUNTU18-64-OSCP-Q	ssh -p 22 tanle@ms1140.utah.cloudlab.us		
+cp-19	ms1136	m510	emulab-ops/UBUNTU18-64-OSCP-Q	ssh -p 22 tanle@ms1136.utah.cloudlab.us		
+cp-30	ms0838	m510	emulab-ops/UBUNTU18-64-OSCP-Q	ssh -p 22 tanle@ms0838.utah.cloudlab.us		
+cp-31	ms1120	m510	emulab-ops/UBUNTU18-64-OSCP-Q	ssh -p 22 tanle@ms1120.utah.cloudlab.us		
+cp-14	ms1107	m510	emulab-ops/UBUNTU18-64-OSCP-Q	ssh -p 22 tanle@ms1107.utah.cloudlab.us		
+cp-15	ms1137	m510	emulab-ops/UBUNTU18-64-OSCP-Q	ssh -p 22 tanle@ms1137.utah.cloudlab.us		
+cp-16	ms1142	m510	emulab-ops/UBUNTU18-64-OSCP-Q	ssh -p 22 tanle@ms1142.utah.cloudlab.us		
+cp-17	ms1131	m510	emulab-ops/UBUNTU18-64-OSCP-Q	ssh -p 22 tanle@ms1131.utah.cloudlab.us		
+cp-10	ms1138	m510	emulab-ops/UBUNTU18-64-OSCP-Q	ssh -p 22 tanle@ms1138.utah.cloudlab.us		
+cp-11	ms0942	m510	emulab-ops/UBUNTU18-64-OSCP-Q	ssh -p 22 tanle@ms0942.utah.cloudlab.us		
+cp-12	ms1130	m510	emulab-ops/UBUNTU18-64-OSCP-Q	ssh -p 22 tanle@ms1130.utah.cloudlab.us		
+cp-13	ms0820	m510	emulab-ops/UBUNTU18-64-OSCP-Q	ssh -p 22 tanle@ms0820.utah.cloudlab.us		
+cp-6	ms1119	m510	emulab-ops/UBUNTU18-64-OSCP-Q	ssh -p 22 tanle@ms1119.utah.cloudlab.us		
+cp-7	ms1103	m510	emulab-ops/UBUNTU18-64-OSCP-Q	ssh -p 22 tanle@ms1103.utah.cloudlab.us		
+cp-4	ms0813	m510	emulab-ops/UBUNTU18-64-OSCP-Q	ssh -p 22 tanle@ms0813.utah.cloudlab.us		
+cp-5	ms1118	m510	emulab-ops/UBUNTU18-64-OSCP-Q	ssh -p 22 tanle@ms1118.utah.cloudlab.us		
+cp-2	ms0836	m510	emulab-ops/UBUNTU18-64-OSCP-Q	ssh -p 22 tanle@ms0836.utah.cloudlab.us		
+cp-3	ms1105	m510	emulab-ops/UBUNTU18-64-OSCP-Q	ssh -p 22 tanle@ms1105.utah.cloudlab.us		
+cp-1	ms1111	m510	emulab-ops/UBUNTU18-64-OSCP-Q	ssh -p 22 tanle@ms1111.utah.cloudlab.us		
+cp-8	ms1139	m510	emulab-ops/UBUNTU18-64-OSCP-Q	ssh -p 22 tanle@ms1139.utah.cloudlab.us		
+cp-9	ms0930	m510	emulab-ops/UBUNTU18-64-OSCP-Q	ssh -p 22 tanle@ms0930.utah.cloudlab.us		
+cp-40	ms1145	m510	emulab-ops/UBUNTU18-64-OSCP-Q	ssh -p 22 tanle@ms1145.utah.cloudlab.us		
+cp-25	ms1114	m510	emulab-ops/UBUNTU18-64-OSCP-Q	ssh -p 22 tanle@ms1114.utah.cloudlab.us		
+cp-24	ms1116	m510	emulab-ops/UBUNTU18-64-OSCP-Q	ssh -p 22 tanle@ms1116.utah.cloudlab.us		
+cp-27	ms1134	m510	emulab-ops/UBUNTU18-64-OSCP-Q	ssh -p 22 tanle@ms1134.utah.cloudlab.us		
+cp-26	ms1127	m510	emulab-ops/UBUNTU18-64-OSCP-Q	ssh -p 22 tanle@ms1127.utah.cloudlab.us		
+cp-21	ms1129	m510	emulab-ops/UBUNTU18-64-OSCP-Q	ssh -p 22 tanle@ms1129.utah.cloudlab.us		
+cp-20	ms0805	m510	emulab-ops/UBUNTU18-64-OSCP-Q	ssh -p 22 tanle@ms0805.utah.cloudlab.us		
+cp-23	ms1126	m510	emulab-ops/UBUNTU18-64-OSCP-Q	ssh -p 22 tanle@ms1126.utah.cloudlab.us		
+cp-22	ms1143	m510	emulab-ops/UBUNTU18-64-OSCP-Q	ssh -p 22 tanle@ms1143.utah.cloudlab.us		
+ctl	ms0839	m510	emulab-ops/UBUNTU18-64-OSCN-Q	ssh -p 22 tanle@ms0839.utah.cloudlab.us		
+cp-39	ms0825	m510	emulab-ops/UBUNTU18-64-OSCP-Q	ssh -p 22 tanle@ms0825.utah.cloudlab.us		
+cp-29	ms0829	m510	emulab-ops/UBUNTU18-64-OSCP-Q	ssh -p 22 tanle@ms0829.utah.cloudlab.us		
+cp-28	ms1121	m510	emulab-ops/UBUNTU18-64-OSCP-Q	ssh -p 22 tanle@ms1121.utah.cloudlab.us

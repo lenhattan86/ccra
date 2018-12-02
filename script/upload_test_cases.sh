@@ -1,4 +1,4 @@
-defaulHostname="ctl.yarn-perf.yarnrm-pg0.wisc.cloudlab.us"
+defaulHostname="ctl.bpf.yarnrm-pg0.utah.cloudlab.us"
 #defaulHostname="ctl.yarn-large.yarnrm-pg0.utah.cloudlab.us"
 
 #defaultDomain="yarnrm-pg0.utah.cloudlab.us"
@@ -6,7 +6,7 @@ defaulHostname="ctl.yarn-perf.yarnrm-pg0.wisc.cloudlab.us"
 
 if [ -z "$1" ]
 then
-	defaultDomain="yarnrm-pg0.clemson.cloudlab.us"
+	defaultDomain="yarnrm-pg0.utah.cloudlab.us"
 else
 	defaultDomain="yarnrm-pg0.$1.cloudlab.us"
 fi
@@ -59,9 +59,11 @@ uploadTestCases () {
 #prompt
 
 ################# call back up just in case ###############
+echo "backup the previous setup on the cluster"
 ./dowload_output.sh $1 backup
 
 ################################
+echo "generate workload"
 
 tarFile="SWIM"; testCase="../SWIM"; rm -rf .$testCase/*.class; uploadTestCases $tarFile $testCase &
 
