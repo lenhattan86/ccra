@@ -825,8 +825,7 @@ public class RMAppAttemptImpl implements RMAppAttempt, Recoverable {
           long dagComplTime2 = jobFinishTime - startTime;
           String toWrite = this.appName + ", " + new Date(startTime) + ", "
               + new Date(runningTime) + ", " + dagComplTime1 + ", "
-              + dagComplTime2 + ", " + new Date(jobFinishTime) +","
-              + new Date(BoPFSchedulerPolicy.startTime) + "\n";
+              + dagComplTime2 + ", " + new Date(jobFinishTime) + "\n";
           try {
             FileWriter timeLog = new FileWriter(fileToWrite, true);
             timeLog.write(toWrite.toCharArray(), 0, toWrite.length());

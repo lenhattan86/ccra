@@ -13,7 +13,7 @@ Strict="Strict"
 DRFW="DRF-W"
 Fair="Fair"
 
-METHOD=$DRF
+METHOD=$BoPF
 
 
 if [ -z "$2" ]
@@ -35,7 +35,7 @@ fi
 
 if [ -z "$3" ]
 then
-	METHOD=$DRF
+	METHOD=$BoPF
 else
 	METHOD="$3"
 fi
@@ -65,10 +65,10 @@ isUploadKey=false
 IS_INIT=false
 isCloudLab=true
 isAmazonEC=false
-isLocalhost=true
+isLocalhost=false
 isTestNetwork=false
-isOfficial=true
-TEST=false
+isOfficial=false
+TEST=true
 SSH_CMD="autossh"
 #SSH_CMD="ssh -v "
 yarnFramework="yarn"
@@ -180,6 +180,9 @@ fi
 echo $schedulingPolicy
 
 hdfsDir="/dev/hdfs"
+if $isLocalhost; then
+	hdfsDir="/ssd/hdfs"
+fi
 
 # hdfsDir="/users/tanle/hdfs"
 #hdfsDir="$temp/hdfs"
@@ -245,7 +248,7 @@ echo "[INFO] =====set up $hostname:$yarnPort ====="
 
 REBOOT=false	
 
-isUploadYarn=true
+isUploadYarn=false
 isDownload=false
 if $isLocalhost
 then
@@ -256,6 +259,7 @@ fi
 
 isInstallHadoop=true
 isExtract=false
+isFormatHDFS=false
 
 isMapHostnames=false
 if $isLocalhost
@@ -297,7 +301,7 @@ fi
 isModifyHadoop=false
 isShutDownHadoop=false
 restartHadoop=true
-isFormatHDFS=true
+
 
 isInstallFlink=false
 isModifyFlink=false
@@ -319,8 +323,7 @@ fi
 if $isInstallHadoop
 then
 	isShutDownHadoop=true
-	restartHadoop=true
-	isFormatHDFS=true
+	restartHadoop=true	
 fi
 
 if $isInstallSpark
@@ -357,7 +360,7 @@ then
 
 	isInstallSpark=true
 
-	isInstallTez=true
+	isInstallTez=false
 	isUploadTez=true
 	isTestNetwork=true
 fi
@@ -392,16 +395,16 @@ then
 	if $isOfficial
 	then
 		numOfworkers=40
-		# slaveNodes="cp-1 cp-2 cp-3 cp-4 cp-5 cp-6 cp-7 cp-8 cp-9 cp-10 cp-11 cp-12 cp-13 cp-14 cp-15 cp-16 cp-17 cp-18 cp-19 cp-20 cp-21 cp-22 cp-23 cp-24 cp-25 cp-26 cp-27 cp-28 cp-29 cp-30 cp-31 cp-32 cp-33 cp-34 cp-35 cp-36 cp-37 cp-38 cp-39 cp-40"
-		slaveNodes="cp-1 cp-2 cp-3 cp-4 cp-5 cp-6 cp-7 cp-8 cp-9 cp-10 cp-11 cp-12 cp-13 cp-14 cp-15 cp-16 cp-17 cp-18 cp-19 cp-20 cp-21 cp-22 cp-23 cp-24 cp-25 cp-26 cp-27 cp-28 cp-29 cp-30 cp-31 cp-33 cp-34 cp-35 cp-36 cp-37 cp-38 cp-39 cp-40"
+		slaveNodes="cp-1 cp-2 cp-3 cp-4 cp-5 cp-6 cp-7 cp-8 cp-9 cp-10 cp-11 cp-12 cp-13 cp-14 cp-15 cp-16 cp-17 cp-18 cp-19 cp-20 cp-21 cp-22 cp-23 cp-24 cp-25 cp-26 cp-27 cp-28 cp-29 cp-30 cp-31 cp-32 cp-33 cp-34 cp-35 cp-36 cp-37 cp-38 cp-39 cp-40"
+		# slaveNodes="cp-1 cp-2 cp-3 cp-4 cp-5 cp-6 cp-7 cp-8 cp-9 cp-10 cp-11 cp-12 cp-13 cp-14 cp-15 cp-16 cp-17 cp-18 cp-19 cp-20"
 		serverList="$masterNode $slaveNodes"				
 		numOfReplication=1
 	else
 		if $TEST
 		then
-			numOfworkers=1
-			serverList="$masterNode cp-1"
-			slaveNodes="cp-1"
+			numOfworkers=4
+			slaveNodes="cp-1 cp-2 cp-3 cp-4"
+			serverList="$masterNode $slaveNodes"			
 			numOfReplication=1
 
 		else
@@ -730,7 +733,9 @@ echo "#################################### install Hadoop Yarn #################
 			
 			echo Configure Hadoop at $1 step 2
 			# etc/hadoop/core-site.xml
-			$SSH_CMD $username@$1 "sudo rm -rf $hdfsDir; sudo mkdir $hdfsDir; sudo chmod 777 $hdfsDir"
+			if $isFormatHDFS; then
+				$SSH_CMD $username@$1 "sudo rm -rf $hdfsDir; sudo mkdir $hdfsDir; sudo chmod 777 $hdfsDir"
+			fi
 			echo Configure Hadoop at $1 step 3 core-site.xml
 			#sleep 2
 			$SSH_CMD $username@$1 "echo '<?xml version=\"1.0\" encoding=\"UTF-8\"?>
@@ -828,7 +833,7 @@ echo "#################################### install Hadoop Yarn #################
 
   <property>
 	<name>yarn.resourcemanager.webapp.address</name>
-    <value>$hostname:$yarnPort</value>
+    <value>$masterNode:$yarnPort</value>
   </property>
 
   <property>
@@ -952,7 +957,7 @@ echo "#################################### install Hadoop Yarn #################
 				$SSH_CMD $username@$1 "echo  '<?xml version=\"1.0\"?>
 <allocations>
 
-<defaultQueueSchedulingPolicy>drf</defaultQueueSchedulingPolicy>
+<defaultQueueSchedulingPolicy>$shedulingPolicy</defaultQueueSchedulingPolicy>
 <defaultMinSharePreemptionTimeout>1</defaultMinSharePreemptionTimeout>
 <defaultFairSharePreemptionTimeout>1</defaultFairSharePreemptionTimeout>
 <defaultFairSharePreemptionThreshold>1.0</defaultFairSharePreemptionThreshold>
@@ -993,7 +998,7 @@ echo "#################################### install Hadoop Yarn #################
 </queue>
 
 <queue name=\"bursty0\">	
-	<minReq>2621440 mb, 1280 vcores</minReq> 
+	<minReq>491520 mb, 160 vcores</minReq> 
 	<speedDuration>$STAGE01</speedDuration>
 	<period>600000</period>
 	<startTime>-1</startTime>
@@ -1359,10 +1364,10 @@ then
 
 	if $isFormatHDFS
 	then
-		$SSH_CMD $username@$masterNode "sudo rm -rf $hdfsDir; sudo mkdir $hdfsDir; sudo chmod 777 $hdfsDir"
+		# $SSH_CMD $username@$masterNode "sudo rm -rf $hdfsDir; sudo mkdir $hdfsDir; sudo chmod 777 $hdfsDir"
 		$SSH_CMD $username@$masterNode "yes Y | $hadoopFolder/bin/hdfs namenode -format HDFS4Flink"
 	fi
-  sleep 30
+    sleep 30
 	$SSH_CMD $username@$masterNode "$hadoopFolder/sbin/start-dfs.sh"
 	echo '============================ starting Yarn==================================='
 	# operating YARN
@@ -1371,11 +1376,11 @@ then
 	#$SSH_CMD $username@$masterNode '$HADOOP_PREFIX/sbin/mr-jobhistory-daemon.sh --config $HADOOP_CONF_DIR start historyserver'	
 fi
 
-if $isInstallSpark 
-then 
-	echo "#################################### start Spark #####################################"
-	$SSH_CMD $masterNode "~/spark/sbin/stop-all.sh; ~/spark/sbin/start-all.sh;"
-fi
+# if $isInstallSpark 
+# then 
+# 	echo "#################################### start Spark #####################################"
+# 	$SSH_CMD $masterNode "~/spark/sbin/stop-all.sh; ~/spark/sbin/start-all.sh;"
+# fi
 
 ########################################################## install TEZ##########################################
 
@@ -1510,8 +1515,6 @@ fi
 echo ""
 echo "[INFO] $hostname:$yarnPort "
 echo "[INFO] Finished at: $(date) "
-
-
 
 ## Dr.who attack
 # sudo iptables -A INPUT -p tcp --dport 8088 -m state --state NEW,ESTABLISHED -j DROP

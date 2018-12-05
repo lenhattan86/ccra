@@ -1,4 +1,4 @@
-defaulHostname="ctl.bpf.yarnrm-pg0.utah.cloudlab.us"
+defaulHostname="ctl.bpf2.yarnrm-pg0.utah.cloudlab.us"
 #defaulHostname="ctl.yarn-large.yarnrm-pg0.utah.cloudlab.us"
 
 #defaultDomain="yarnrm-pg0.utah.cloudlab.us"
@@ -13,7 +13,7 @@ fi
 
 if [ -z "$2" ]
 then
-	hostname="localhost"
+	hostname=$defaulHostname
 	workloadFile="/home/tanle/hadoop/conf/simple.txt"
 	workloadSrcFile="/home/tanle/projects/BPFSim/input_gen/jobs_input_1_1_40_BB_mov.txt"
 else
@@ -59,8 +59,8 @@ uploadTestCases () {
 #prompt
 
 ################# call back up just in case ###############
-echo "backup the previous setup on the cluster"
-./dowload_output.sh $1 backup
+# echo "backup the previous setup on the cluster"
+# ./dowload_output.sh $1 backup
 
 ################################
 echo "generate workload"

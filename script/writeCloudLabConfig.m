@@ -29,7 +29,7 @@ for i=1:dataSize(1)
     if length(data{i,1})<10
         ipadress = resolveip(hostname(17:length(hostname)));
         fprintf(fileID,fmt, data{i,1}, ipadress);
-    else        
+    else
         disp(data{i,1})
     end
 end

@@ -5,9 +5,9 @@ figIdx = 0;
 STEP_TIME = 1.0; 
 
 is_printed = false;
-numOfNodes = 1;
+numOfNodes = 20;
 MAX_CPU = numOfNodes*16;
-MAX_MEM = numOfNodes*16;
+MAX_MEM = numOfNodes*48;
 GB = 1024;
 extra='';
 
@@ -25,7 +25,7 @@ end
 
 %%
 if plots(1) 
-  START_TIME = 1; END_TIME = 200+START_TIME;    
+  START_TIME = 1; END_TIME = 3000+START_TIME;    
   
   queues = cell(1,num_queues);
   lengendQueuesStr = cell(1,num_queues);
@@ -41,7 +41,8 @@ if plots(1)
   
   memFactor = 1;  
 
-  result_folder=['/home/tanle/SWIM/scriptsTest/workGenLogs/'];  
+%   result_folder=['/home/tanle/projects/BPFImpl/results/debug/ctl.bpf.yarnrm-pg0.utah.cloudlab.us/bopf/users/tanle/SWIM/scriptsTest/workGenLogs/'];  
+  result_folder=['/home/tanle/projects/BPFImpl/results/debug/ctl.bpf2.yarnrm-pg0.utah.cloudlab.us/edf/users/tanle/SWIM/scriptsTest/workGenLogs/'];  
   % result_folder = '/home/tanle/projects/BPFImpl/debug/cpu16/bopf_npreempt/workGenLogs/';
 % result_folder = '/home/tanle/projects/BPFImpl/debug/cpu16/bopf/workGenLogs/';
 

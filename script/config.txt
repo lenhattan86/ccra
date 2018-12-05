@@ -1,207 +1,26 @@
 StrictHostKeyChecking no 
 
-host cp-33 
-  Hostname 128.110.153.206 
-  Port 22 
-  User tanle 
-   
-host cp-32 
-  Hostname 128.110.153.100 
-  Port 22 
-  User tanle 
-   
-host cp-38 
-  Hostname 128.110.153.204 
-  Port 22 
-  User tanle 
-   
-host cp-36 
-  Hostname 128.110.153.145 
-  Port 22 
-  User tanle 
-   
-host cp-37 
-  Hostname 128.110.153.210 
-  Port 22 
-  User tanle 
-   
-host cp-34 
-  Hostname 128.110.153.215 
-  Port 22 
-  User tanle 
-   
-host cp-35 
-  Hostname 128.110.153.98 
-  Port 22 
-  User tanle 
-   
-host cp-18 
-  Hostname 128.110.153.238 
-  Port 22 
-  User tanle 
-   
-host cp-19 
-  Hostname 128.110.153.234 
-  Port 22 
-  User tanle 
-   
-host cp-30 
-  Hostname 128.110.153.101 
-  Port 22 
-  User tanle 
-   
-host cp-31 
-  Hostname 128.110.153.218 
-  Port 22 
-  User tanle 
-   
-host cp-14 
-  Hostname 128.110.153.205 
-  Port 22 
-  User tanle 
-   
-host cp-15 
-  Hostname 128.110.153.235 
-  Port 22 
-  User tanle 
-   
-host cp-16 
-  Hostname 128.110.153.240 
-  Port 22 
-  User tanle 
-   
-host cp-17 
-  Hostname 128.110.153.229 
-  Port 22 
-  User tanle 
-   
-host cp-10 
-  Hostname 128.110.153.236 
-  Port 22 
-  User tanle 
-   
-host cp-11 
-  Hostname 128.110.153.150 
-  Port 22 
-  User tanle 
-   
-host cp-12 
-  Hostname 128.110.153.228 
-  Port 22 
-  User tanle 
-   
-host cp-13 
-  Hostname 128.110.153.83 
-  Port 22 
-  User tanle 
-   
-host cp-6 
-  Hostname 128.110.153.217 
-  Port 22 
-  User tanle 
-   
-host cp-7 
-  Hostname 128.110.153.201 
+host ctl 
+  Hostname 128.110.153.103 
   Port 22 
   User tanle 
    
 host cp-4 
-  Hostname 128.110.153.76 
-  Port 22 
-  User tanle 
-   
-host cp-5 
-  Hostname 128.110.153.216 
+  Hostname 128.110.153.66 
   Port 22 
   User tanle 
    
 host cp-2 
-  Hostname 128.110.153.99 
-  Port 22 
-  User tanle 
-   
-host cp-3 
-  Hostname 128.110.153.203 
-  Port 22 
-  User tanle 
-   
-host cp-1 
-  Hostname 128.110.153.209 
-  Port 22 
-  User tanle 
-   
-host cp-8 
-  Hostname 128.110.153.237 
-  Port 22 
-  User tanle 
-   
-host cp-9 
-  Hostname 128.110.153.138 
-  Port 22 
-  User tanle 
-   
-host cp-40 
-  Hostname 128.110.153.243 
-  Port 22 
-  User tanle 
-   
-host cp-25 
-  Hostname 128.110.153.212 
-  Port 22 
-  User tanle 
-   
-host cp-24 
-  Hostname 128.110.153.214 
-  Port 22 
-  User tanle 
-   
-host cp-27 
-  Hostname 128.110.153.232 
-  Port 22 
-  User tanle 
-   
-host cp-26 
-  Hostname 128.110.153.225 
-  Port 22 
-  User tanle 
-   
-host cp-21 
-  Hostname 128.110.153.227 
-  Port 22 
-  User tanle 
-   
-host cp-20 
-  Hostname 128.110.153.68 
-  Port 22 
-  User tanle 
-   
-host cp-23 
-  Hostname 128.110.153.224 
-  Port 22 
-  User tanle 
-   
-host cp-22 
-  Hostname 128.110.153.241 
-  Port 22 
-  User tanle 
-   
-host ctl 
-  Hostname 128.110.153.102 
-  Port 22 
-  User tanle 
-   
-host cp-39 
   Hostname 128.110.153.88 
   Port 22 
   User tanle 
    
-host cp-29 
-  Hostname 128.110.153.92 
+host cp-3 
+  Hostname 128.110.153.94 
   Port 22 
   User tanle 
    
-host cp-28 
-  Hostname 128.110.153.219 
+host cp-1 
+  Hostname 128.110.153.80 
   Port 22 
   User tanle 
-   

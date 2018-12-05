@@ -1,4 +1,7 @@
-defaulHostname="ctl.yarn-perf.yarnrm-pg0.wisc.cloudlab.us"
+defaulHostname="ctl.bpf2.yarnrm-pg0.utah.cloudlab.us"
+defaultFolder="edf"
+# defaulHostname="ctl.bpf.yarnrm-pg0.utah.cloudlab.us"
+# defaultFolder="bopf"
 #defaulHostname="ctl.yarn-large.yarnrm-pg0.utah.cloudlab.us"
 
 #defaultDomain="yarnrm-pg0.utah.cloudlab.us"
@@ -11,8 +14,8 @@ else
 	hostname="ctl.$1.$defaultDomain"
 fi
 
-resultPath="../results"
-defaultFolder="runb2i1"
+resultPath="../results/debug"
+
 method=""
 echo "[INFO] download the files from $hostname"
 
@@ -50,6 +53,7 @@ downloadOuput () {
 	rm -rf $resultPath/$3/$1.tar;
 	rm -rf $resultPath/$hostname/$3/$subfolder1/*.txt
 	rm -rf $resultPath/$hostname/$3/$subfolder2/*.sh
+	scp $hostname:/users/tanle/SWIM/workGenLogs/yarnUsedResources.csv $resultPath/$hostname/$3/$subfolder1/
 }
 
 #prompt

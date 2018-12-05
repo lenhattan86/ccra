@@ -41,6 +41,12 @@ public class JobInfo {
       BufferedReader br = new BufferedReader(new FileReader(file));
       String line = br.readLine(); // remove the first line.
       while((line=br.readLine())!=null){
+        line = line.trim();
+        if(line.isEmpty()){
+          System.out.println("[job info] File is ended with empty line.");
+          break;
+        }
+        
         String[] arr = line.split(",");
         String jobId = arr[0].trim();
         long totalDemand = Long.parseLong(arr[1].trim());
