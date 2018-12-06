@@ -4,3 +4,5 @@ echo ################################ install matplotlib #######################
 sudo python -m pip install -U matplotlib
 echo ################################ install pandas #####################################
 sudo python -m pip install -U pandas
+echo ################################ install seaborn #####################################
+sudo python -m pip install -U seaborn
