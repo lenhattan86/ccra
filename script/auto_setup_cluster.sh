@@ -25,7 +25,7 @@ fi
 
 if [ -z "$1" ]
 then
-	cluster="bpf"	
+	cluster="bpf2"	
 	cp ~/.ssh/config.$cluster ~/.ssh/config; 
 	hostname="ctl.$cluster.yarnrm-pg0.$cloudlabSite.cloudlab.us"
 else
@@ -67,7 +67,7 @@ isCloudLab=true
 isAmazonEC=false
 isLocalhost=false
 isTestNetwork=false
-isOfficial=false
+isOfficial=true
 TEST=true
 SSH_CMD="autossh"
 #SSH_CMD="ssh -v "
@@ -110,8 +110,8 @@ java_home="/usr/lib/jvm/java-$javaVer-oracle"
 #STAGE01=300000
 
 # motivation
-PERIOD=600000 
-STAGE01=300000
+PERIOD=200000 
+STAGE01=100000
 
 ######################### Hadoop  #####################
 hadoopFolder="hadoop"
@@ -123,14 +123,15 @@ then
 	workloadSrcFile="/home/tanle/projects/BPFSim/input/jobs_input_3_1_1_BB.txt"
 	workloadFile="/home/tanle/hadoop/conf/simple.txt"
 	profilePath="/home/tanle/hadoop/conf/"
-	simLogPath="/home/tanle/SWIM/scriptsTest/workGenLogs/"
+	simLogPath="/home/tanle/result/"
 	genJavaFileDst="/home/tanle/hadoop/conf/GenerateProfile.java"
 else
 	workloadFile="/users/tanle/hadoop/conf/simple.txt"
 	profilePath="/users/tanle/hadoop/conf/"
-	simLogPath="/users/tanle/SWIM/scriptsTest/workGenLogs/"
+	simLogPath="/users/tanle/result/"
 	genJavaFileDst="/users/tanle/hadoop/conf/GenerateProfile.java"
 fi
+
 
 yarnVcores=16
 
@@ -313,6 +314,7 @@ isInstallSpark=true
 isModifySpark=false
 startSparkYarn=false
 shudownSpark=false
+isDownloadSpark=true
 
 
 if $isInstallTez
@@ -391,22 +393,23 @@ then
 elif $isCloudLab
 then
 	echo "[INFO]  at CLOUDLAB "
-	masterNode="ctl"
+	# masterNode="ctl"
+	masterNode="ctl-0"
+	# hostname="$masterNode"
 	if $isOfficial
 	then
-		numOfworkers=40
-		slaveNodes="cp-1 cp-2 cp-3 cp-4 cp-5 cp-6 cp-7 cp-8 cp-9 cp-10 cp-11 cp-12 cp-13 cp-14 cp-15 cp-16 cp-17 cp-18 cp-19 cp-20 cp-21 cp-22 cp-23 cp-24 cp-25 cp-26 cp-27 cp-28 cp-29 cp-30 cp-31 cp-32 cp-33 cp-34 cp-35 cp-36 cp-37 cp-38 cp-39 cp-40"
-		# slaveNodes="cp-1 cp-2 cp-3 cp-4 cp-5 cp-6 cp-7 cp-8 cp-9 cp-10 cp-11 cp-12 cp-13 cp-14 cp-15 cp-16 cp-17 cp-18 cp-19 cp-20"
+		numOfworkers=20
+		# slaveNodes="cp-1 cp-2 cp-3 cp-4 cp-5 cp-6 cp-7 cp-8 cp-9 cp-10 cp-11 cp-12 cp-13 cp-14 cp-15 cp-16 cp-17 cp-18 cp-19 cp-20 cp-21 cp-22 cp-23 cp-24 cp-25 cp-26 cp-27 cp-28 cp-29 cp-30 cp-31 cp-32 cp-33 cp-34 cp-35 cp-36 cp-37 cp-38 cp-39 cp-40"
+		slaveNodes="cp-1-0 cp-2-0 cp-3-0 cp-4-0 cp-5-0 cp-6-0 cp-7-0 cp-8-0 cp-9-0 cp-10-0 cp-11-0 cp-12-0 cp-13-0 cp-14-0 cp-15-0 cp-16-0 cp-17-0 cp-18-0 cp-19-0 cp-20-0"		
 		serverList="$masterNode $slaveNodes"				
 		numOfReplication=1
 	else
 		if $TEST
 		then
 			numOfworkers=4
-			slaveNodes="cp-1 cp-2 cp-3 cp-4"
+			slaveNodes="cp-1-0 cp-2-0 cp-3-0 cp-4-0"
 			serverList="$masterNode $slaveNodes"			
 			numOfReplication=1
-
 		else
 			numOfworkers=8			
 			masterNode="ctl"; slaveNodes="cp-1 cp-2 cp-3 cp-4 cp-5 cp-6 cp-7 cp-8"
@@ -695,6 +698,9 @@ fi
 if $isInstallHadoop
 then
 echo "#################################### install Hadoop Yarn ####################################"
+	echo "create directory for $simLogPath"
+	$SSH_CMD $username@$hostname "mkdir $simLogPath"
+
 # http://hadoop.apache.org/docs/current/hadoop-project-dist/hadoop-common/ClusterSetup.html
 	if $isModifyHadoop 
 	then 
@@ -792,7 +798,29 @@ echo "#################################### install Hadoop Yarn #################
     <name>dfs.namenode.handler.count</name>
     <value>100</value>
   </property>
+  
+  <!-- control network issue 
+  <property>
+    <name>dfs.namenode.rpc-bind-host</name>
+    <value>$1</value>
+  </property>
 
+  <property>
+    <name>dfs.namenode.servicerpc-bind-host</name>
+    <value>$1</value>
+  </property>
+
+  <property>
+    <name>dfs.namenode.https-bind-host</name>
+    <value>$1</value>
+  </property>
+
+  <property>
+    <name>dfs.namenode.http-bind-host</name>
+    <value>$1</value>
+  </property>
+  -->
+ 
 </configuration>' > $hadoopFolder/$configFolder/hdfs-site.xml"
 
 			echo "[INFO] Configure Yarn at $1 step 0"
@@ -811,7 +839,7 @@ echo "#################################### install Hadoop Yarn #################
     <value>yarn</value>
   </property>
 
-  <property>
+  <property>	
     <name>yarn.acl.enable</name>
     <value>false</value>
   </property>
@@ -833,8 +861,8 @@ echo "#################################### install Hadoop Yarn #################
 
   <property>
 	<name>yarn.resourcemanager.webapp.address</name>
-    <value>$masterNode:$yarnPort</value>
-  </property>
+    <value>$hostname:$yarnPort</value>
+  </property>  
 
   <property>
     <name>yarn.resourcemanager.scheduler.class</name>
@@ -937,6 +965,25 @@ echo "#################################### install Hadoop Yarn #################
     <name>yarn.container.time.log.enable</name>
     <value>$enableContainerLog</value>
   </property>	
+  
+  <!--control network issue -->
+  <property>
+    <name>yarn.nodemanager.hostname</name>
+    <value>$1</value>
+  </property>
+
+  <property>
+    <name>yarn.nodemanager.bind-host</name>
+    <value>$1</value>
+  </property>
+
+<!-- 
+  <property> 
+	<name>yarn.resourcemanager.bind-host</name>
+    <value>$masterNode</value>
+  </property>
+-->  
+
 </configuration>' > $hadoopFolder/$configFolder/yarn-site.xml"
 
 
@@ -962,7 +1009,7 @@ echo "#################################### install Hadoop Yarn #################
 <defaultFairSharePreemptionTimeout>1</defaultFairSharePreemptionTimeout>
 <defaultFairSharePreemptionThreshold>1.0</defaultFairSharePreemptionThreshold>
 
-<queue name=\"bursty0\">	
+<queue name=\"SQ0\">	
 	<minReq>26624 mb, 13 vcores</minReq>
 	<speedDuration>$STAGE01</speedDuration>
 	<allowPreemptionFrom>$enablePreemption</allowPreemptionFrom>
@@ -971,7 +1018,18 @@ echo "#################################### install Hadoop Yarn #################
 	<weight>$weight</weight>
 	<schedulingPolicy>$shedulingPolicy</schedulingPolicy>
 </queue>
-<queue name=\"batch0\">
+
+<queue name=\"IQ0\">	
+	<minReq>26624 mb, 13 vcores</minReq>
+	<speedDuration>$STAGE01</speedDuration>
+	<allowPreemptionFrom>$enablePreemption</allowPreemptionFrom>
+	<period>600000</period>
+	<startTime>-1</startTime>
+	<weight>$weight</weight>
+	<schedulingPolicy>$shedulingPolicy</schedulingPolicy>
+</queue>
+
+<queue name=\"TQ0\">
 	<weight>1</weight>
 	<allowPreemptionFrom>$enablePreemption</allowPreemptionFrom>	
 	<schedulingPolicy>$shedulingPolicy</schedulingPolicy>
@@ -981,7 +1039,7 @@ echo "#################################### install Hadoop Yarn #################
 			else
 
 #strBQ=""
-#for bId in seq(1,$numBatchQ); do
+#for bId in seq(1,$numTQQ); do
 #	$SSH_CMD $username@$server " echo Hello $server " &
 #done
 			$SSH_CMD $username@$1 "echo  '<?xml version=\"1.0\"?>
@@ -997,7 +1055,7 @@ echo "#################################### install Hadoop Yarn #################
 	<weight>0</weight>
 </queue>
 
-<queue name=\"bursty0\">	
+<queue name=\"SQ0\">	
 	<minReq>491520 mb, 160 vcores</minReq> 
 	<speedDuration>$STAGE01</speedDuration>
 	<period>600000</period>
@@ -1008,7 +1066,7 @@ echo "#################################### install Hadoop Yarn #################
 </queue>
 
 <!--
-<queue name=\"bursty1\">	
+<queue name=\"SQ1\">	
 	<minReq>2621440 mb, 1280 vcores</minReq> 
 	<speedDuration>$STAGE01</speedDuration>
 	<period>110000</period>
@@ -1028,44 +1086,52 @@ echo "#################################### install Hadoop Yarn #################
 </queue> 
 -->
 
-<queue name=\"batch0\">
-	<weight>1</weight>	
+<queue name=\"IQ0\">	
+	<minReq>491520 mb, 160 vcores</minReq> 
+	<speedDuration>$STAGE01</speedDuration>
+	<weight>$weight</weight>
+	<allowPreemptionFrom>$enablePreemption</allowPreemptionFrom>
+	<schedulingPolicy>fifo</schedulingPolicy>
+</queue>
+
+<queue name=\"TQ0\">
+	<weight>1</weight>
 	<allowPreemptionFrom>$enablePreemption</allowPreemptionFrom>
 	<schedulingPolicy>$shedulingPolicy</schedulingPolicy>
 </queue>
 
 <!--
-<queue name=\"batch1\">
+<queue name=\"TQ1\">
 	<weight>1</weight>
 	<allowPreemptionFrom>$enablePreemption</allowPreemptionFrom>
 	<schedulingPolicy>fifo</schedulingPolicy>
 </queue>
-<queue name=\"batch2\">
+<queue name=\"TQ2\">
 	<weight>1</weight>
 	<allowPreemptionFrom>$enablePreemption</allowPreemptionFrom>	
 	<schedulingPolicy>fifo</schedulingPolicy>
 </queue>
-<queue name=\"batch3\">
+<queue name=\"TQ3\">
 	<weight>1</weight>
 	<allowPreemptionFrom>$enablePreemption</allowPreemptionFrom>	
 	<schedulingPolicy>fifo</schedulingPolicy>
 </queue>
-<queue name=\"batch4\">
+<queue name=\"TQ4\">
 	<weight>1</weight>
 	<allowPreemptionFrom>$enablePreemption</allowPreemptionFrom>	
 	<schedulingPolicy>fifo</schedulingPolicy>
 </queue>
-<queue name=\"batch5\">
+<queue name=\"TQ5\">
 	<weight>1</weight>
 	<allowPreemptionFrom>$enablePreemption</allowPreemptionFrom>	
 	<schedulingPolicy>fifo</schedulingPolicy>
 </queue>
-<queue name=\"batch6\">
+<queue name=\"TQ6\">
 	<weight>1</weight>
 	<allowPreemptionFrom>$enablePreemption</allowPreemptionFrom>	
 	<schedulingPolicy>fifo</schedulingPolicy>
 </queue>
-<queue name=\"batch7\">
+<queue name=\"TQ7\">
 	<weight>1</weight>
 	<allowPreemptionFrom>$enablePreemption</allowPreemptionFrom>	
 	<schedulingPolicy>fifo</schedulingPolicy>
@@ -1114,18 +1180,28 @@ echo "#################################### install Hadoop Yarn #################
   </property>
 
   <property>
+    <name>mapreduce.map.cpu.vcores</name>
+    <value>4</value>
+  </property>
+
+  <property>
+    <name>mapreduce.map.cpu.vcores</name>
+    <value>4</value>
+  </property>
+
+  <property>
     <name>mapreduce.map.memory.mb</name>
-    <value>1536</value>
+    <value>4096</value>
+  </property>
+
+  <property>
+    <name>mapreduce.reduce.memory.mb</name>
+    <value>4096</value>
   </property>
 
   <property>
     <name>mapreduce.map.java.opts</name>
     <value>-Xmx1024M</value>
-  </property>
-
-  <property>
-    <name>mapreduce.reduce.memory.mb</name>
-    <value>3072</value>
   </property>
 
   <property>
@@ -1281,11 +1357,13 @@ if $isInstallSpark
 then 	
 	echo "#################################### Setup Spark #####################################"	
 	installSparkFunc () {
-		echo "[INFO] install Spark at $1 - step 1"				
-		ssh $1 "sudo rm -rf $sparkTgz; wget $sparkDownloadLink >> log.txt"	
+		echo "[INFO] install Spark at $1 - step 1"	
 
-		echo "[INFO] install Spark at $1 - step 2"
-		ssh $1 "rm -rf $sparkFolder; tar -xvzf $sparkTgz >> log.txt; mv $sparkTgzFolder $sparkFolder"
+		if $isDownloadSpark; then			
+			ssh $1 "sudo rm -rf $sparkTgz; wget $sparkDownloadLink >> log.txt"	
+			echo "[INFO] install Spark at $1 - step 2"
+			ssh $1 "rm -rf $sparkFolder; tar -xvzf $sparkTgz >> log.txt; mv $sparkTgzFolder $sparkFolder"
+		fi
 
 		echo "[INFO] install Spark at $1 - step 3"		
 		$SSH_CMD $username@$1 "sudo rm -rf $spark_tmp; sudo mkdir $spark_tmp; sudo chmod 777 $spark_tmp"
@@ -1293,10 +1371,15 @@ then
 #export SPARK_JAVA_OPTS=-Dspark.driver.port=53411
 export HADOOP_CONF_DIR=~/$hadoopFolder/$configFolder
 export SPARK_MASTER_IP=$masterNode
+# control network issue
+export SPARK_LOCAL_IP=$1
 export SPARK_LOCAL_DIRS=$spark_tmp' > $sparkFolder/conf/spark-env.sh"
 		echo "install Spark at $1 - step 4"
 
 		ssh $1 "echo '
+# control network issue
+spark.driver.host          $1
+spark.driver.bindAddress   $1
 # spark.yarn.driver.memoryOverhead=512
 # spark.yarn.executor.memoryOverhead=1024
 # spark.network.timeout=800
@@ -1428,7 +1511,7 @@ then
 			</property>
 			<property>
 			     <name>tez.queue.name</name>
-			     <value>batch0</value>
+			     <value>TQ0</value>
 			</property>
 		  	<property>
 			     <name>tez.lib.uris</name>

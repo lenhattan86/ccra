@@ -12,7 +12,7 @@ fclose(fileID);
 fileID = fopen(fileToWrite,'a');
 
 
-fmt_01 = 'host %s \n';
+fmt_01 = 'host %s-0 \n';
 fmt_02 = '  Hostname %s \n';
 fmt_03 = '  Port 22 \n';
 fmt_04 = '  User tanle \n';

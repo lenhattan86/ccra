@@ -21,16 +21,14 @@ for i=1:num_queues
 end
 START_TIME = 1; END_TIME = 1500+START_TIME;   
 
-queues={'SQ0','IQ0','TQ0'};
-% queues={'IQ0','SQ0','TQ0'};
+queues={'IQ0','TQ0'};
 lengendQueuesStr=queues;
 %%
 if plots(1)  
   method = '';    
   memFactor = 1;
   
-%   result_folder=['/home/tanle/projects/BPFImpl/results/debug/motivation/drf/users/tanle/result/'];
-  result_folder=['/home/tanle/projects/BPFImpl/results/debug/motivation/bopf/users/tanle/result/'];  
+  result_folder=['/home/tanle/projects/BPFImpl/results/debug/motivation/edf/users/tanle/result/'];
   
   start_time_step = START_TIME/STEP_TIME;
   max_time_step = END_TIME/STEP_TIME;

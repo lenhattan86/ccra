@@ -12,10 +12,8 @@ avgJobLength = mean(largecc40.Durations);
 durations = round(largecc40.Durations);
 demands = round(largecc40.YARN_NUM_EXECUTORS.*largecc40.YARN_NUM_EXECUTORS);
 
-% inter_arrival =  poissrnd(50,1,numOfJobs);
-inter_arrival = [53    64    64    44    41    47    40    56    53    55    ...
-        32    54    63    44    54    54    54    50    54    59    53    55  57    42    50    51    71    49    55    54    56    51    55    45    47    46    50    57    51    58    58    44];
-inter_arrival = round(inter_arrival/3);
+inter_arrival =  poissrnd(50,1,numOfJobs);
+
 %% gen jobs
 % end_time = 30000;
 end_time = period*5;

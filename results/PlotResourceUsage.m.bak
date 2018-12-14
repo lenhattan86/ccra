@@ -2,16 +2,22 @@ addpath('func');
 common_settings;
 figIdx = 0;
 
-STEP_TIME = 1.0; 
+output_sufix = 'short/'; STEP_TIME = 1.0; 
+
+% fig_path = ['../../EuroSys17/fig/'];
 
 is_printed = true;
-numOfNodes = 20;
-MAX_CPU = numOfNodes*16;
-MAX_MEM = numOfNodes*48;
+numOfNodes = 40;
+MAX_CPU = numOfNodes*32;
+MAX_MEM = numOfNodes*64;
 GB = 1024;
 extra='';
 
-num_queues = 3;
+num_batch_queues = 8;
+num_interactive_queue = 1;
+num_queues = num_batch_queues + num_interactive_queue;
+
+workload='BB';
 
 plots = [true false]; %DRF, DRF-W, Strict, SpeedFair
 
@@ -19,20 +25,77 @@ colorBars = cell(num_queues,1);
 for i=1:num_queues
   colorBars{i} = colorb8i1{i};
 end
-START_TIME = 1; END_TIME = 1500+START_TIME;   
 
-queues={'SQ0','IQ0','TQ0'};
-% queues={'IQ0','SQ0','TQ0'};
-lengendQueuesStr=queues;
 %%
-if plots(1)  
-  method = '';    
-  memFactor = 1;
+if plots(1) 
+  START_TIME = 3500; END_TIME = 500+START_TIME;    
   
-%   result_folder=['/home/tanle/projects/BPFImpl/results/debug/motivation/drf/users/tanle/result/'];
-  result_folder=['/home/tanle/projects/BPFImpl/results/debug/motivation/bopf/users/tanle/result/'];  
+  queues = cell(1,num_queues);
+  lengendQueuesStr = cell(1,num_queues);
+  for i=1:num_interactive_queue
+      queues{i} = ['bursty' int2str(i-1)];
+      lengendQueuesStr{i} = [strLQ '-' int2str(i-1)];
+  end
+  for j=1:num_batch_queues
+      queues{num_interactive_queue+j} = ['batch' int2str(j-1)];
+      lengendQueuesStr{num_interactive_queue+j} = [strTQ '-' int2str(j-1)];
+  end
+  method = '';  
   
-  start_time_step = START_TIME/STEP_TIME;
+memFactor = 1;
+
+%% BB
+  server='ctl.yarn-large.yarnrm-pg0.utah.cloudlab.us'; subFolder = 'SpeedFair';method = 'SpeedFair'; memFactor = 2;
+%   server='ctl.yarn-large.yarnrm-pg0.utah.cloudlab.us'; subFolder = 'SpeedFair_8x_new'; method = 'SpeedFair';
+%   server='ctl.yarn-drf.yarnrm-pg0.utah.cloudlab.us'; subFolder = 'DRF';method = 'DRF'; memFactor = 2;
+  % server='ctl.yarn-drf.yarnrm-pg0.utah.cloudlab.us'; subFolder = 'DRF_2x';method = 'DRF';
+%   server='ctl.yarn-large.yarnrm-pg0.utah.cloudlab.us'; subFolder = 'Strict';method = 'Strict';
+%   server='ctl.yarn-large.yarnrm-pg0.utah.cloudlab.us'; subFolder = 'Strict_8x_new'; method = 'Strict';
+%% TPC-DS
+%   server = 'ctl.yarn-drf.yarnrm-pg0.utah.cloudlab.us'; subFolder = 'DRF_TPC_DS'; method = 'DRF';
+%   server = 'ctl.yarn-large.yarnrm-pg0.utah.cloudlab.us'; subFolder = 'Strict_TPC_DS'; method = 'Strict';
+%   server = 'ctl.yarn-large.yarnrm-pg0.utah.cloudlab.us'; subFolder = 'SpeedFair_TPC_DS'; method = 'SpeedFair';
+%% TPC-H
+%   server = 'ctl.yarn-drf.yarnrm-pg0.utah.cloudlab.us'; subFolder = 'DRF_TPC_H'; method = 'DRF';
+%   server = 'ctl.yarn-large.yarnrm-pg0.utah.cloudlab.us'; subFolder = 'Strict_TPC_H'; method = 'Strict';
+%   server = 'ctl.yarn-large.yarnrm-pg0.utah.cloudlab.us'; subFolder = 'SpeedFair_TPC_H'; method = 'SpeedFair';
+
+  
+  subfolder = ['b' int2str(num_batch_queues) 'i1_' subFolder]; extra='';
+  
+  if num_batch_queues==0
+      subFolder='';
+      subfolder = ['b' int2str(num_batch_queues) 'i1'];
+  end
+  % subfolder = 'runb2i1'; extra='';
+  % method = 'SpeedFair'; subfolder = 'runb3i1_1201_bursty'; extra='';
+  % method = 'SpeedFair'; subfolder = 'runb3i1_1203_preemption_speedfair_200'; extra='_preemption';
+  % method = 'SpeedFair'; subfolder = 'runb3i1_1204_nonpreemption_speedfair_200'; extra='';
+  % method = 'SpeedFair'; subfolder = 'runb3i1_1203_preemption_speedfair'; extra='_preemption';
+  % method = 'SpeedFair'; subfolder = 'runb3i1_1203_preemption_speedfair_5x'; extra='_5x';
+
+  % method = '??'; subfolder = 'runb3i1'; extra='';
+  % method = 'Strict'; subfolder = 'runb3i1_1201_strict'; extra=''
+  % method = 'SpeedFair'; subfolder = 'runb3i1_1201_speedfair'; extra='';
+  %method = 'drf'; subfolder = 'runb3i1_1201_drf'; extra='';
+
+  % method = 'SpeedFair'; subfolder = 'runb3i1_1203_preemption'; extra='_preemption';
+
+  result_folder=['/home/tanle/projects/BPFImpl/results/' server '/' subfolder '/users/tanle/SWIM/scriptsTest/workGenLogs/'];
+
+  % result_folder=['/home/tanle//projects/ccra/SWIM/scriptsTest/workGenLogs/']; method=''; MAX_CPU = 16; MAX_MEM = 16; END_TIME=500;
+  
+
+  % result_folder = '../0_run_simple/'; workload='simple';
+  %result_folder = '../0_run_BB/'; workload='BB';
+  % result_folder = '../0_run_BB2/'; workload='BB2';
+  % result_folder = '../0_run_TPC-H/'; workload='TPC-H'; % weird
+  % result_folder = '../0_run_TPC-DS/'; workload='TPC-DS'; % okay 
+  % STEP_TIME = 1.0; output_sufix = '';
+  % fig_path = ['figs/' output_sufix]; 
+  % is_printed = true;
+
+   start_time_step = START_TIME/STEP_TIME;
   max_time_step = END_TIME/STEP_TIME;
   startIdx = start_time_step*num_queues+1;
   endIdx = max_time_step*num_queues;
@@ -40,6 +103,11 @@ if plots(1)
   linewidth= 2;
   barwidth = 1.0;
   timeInSeconds = (START_TIME:STEP_TIME:END_TIME) - START_TIME;
+
+
+  % extraStr = '';
+  extraStr = ['_' int2str(num_interactive_queue) '_' int2str(num_batch_queues)];
+
   
    %logFile = [ logfolder 'SpeedFair-output' extraStr '.csv'];
    logFile = [ result_folder 'yarnUsedResources.csv'];
@@ -57,9 +125,7 @@ if plots(1)
         usedMEM(i,1:endIdx) = res2(temp(start_time_step:len))*memFactor;
       end
       
-      figIdx=figIdx +1;
-      figs(figIdx) = figure;
-      
+      figure;
       subplot(2,1,1); 
       hBar = bar(timeInSeconds,usedCPUs',barwidth,'stacked','EdgeColor','none');
 %       set(hBar, {'FaceColor'}, colorBars); 
@@ -78,9 +144,13 @@ if plots(1)
       legend(lengendQueuesStr,'Location','northoutside','FontSize',fontLegend,'Orientation','horizontal');
       title([method '- Memory'],'fontsize',fontLegend);
       localFigSize = [0.0 0 10.0 7.0];
-      set (gcf, 'Units', 'Inches', 'Position', localFigSize, 'PaperUnits', 'inches', 'PaperPosition', localFigSize); 
-        
-      fileNames{figIdx} = ['res_usage'];        
+      set (gcf, 'Units', 'Inches', 'Position', localFigSize, 'PaperUnits', 'inches', 'PaperPosition', localFigSize);     
+      if is_printed   
+          figIdx=figIdx +1;
+        fileNames{figIdx} = ['b' int2str(num_batch_queues) '_res_usage_' subFolder '_' workload extra];        
+        epsFile = [ LOCAL_FIG fileNames{figIdx} '.eps'];
+        print ('-depsc', epsFile);
+      end
    end
 end
 %% total resource usage
@@ -194,8 +264,6 @@ return;
 for i=1:length(fileNames)
     fileName = fileNames{i};
     epsFile = [ LOCAL_FIG fileName '.eps'];
-    print (figs(i),'-depsc', epsFile);
-    
     pdfFile = [ fig_path fileName  '.pdf'];    
     cmd = sprintf(PS_CMD_FORMAT, epsFile, pdfFile);
     status = system(cmd);

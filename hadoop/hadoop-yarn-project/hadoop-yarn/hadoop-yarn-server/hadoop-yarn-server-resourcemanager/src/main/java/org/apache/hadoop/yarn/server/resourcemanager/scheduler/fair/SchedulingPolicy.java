@@ -49,8 +49,8 @@ public abstract class SchedulingPolicy {
   public static final byte DEPTH_ANY = (byte) 7;
   public static boolean IS_NBPF = false;
   
-  public static final String STR_TQ = "batch";
-  public static final String STR_SQ = "bursty";
+  public static final String STR_TQ = "TQ";
+  public static final String STR_SQ = "SQ";
   public static final String STR_IQ = "IQ";
   
  

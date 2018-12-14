@@ -108,11 +108,10 @@ public class BoPFSchedulerPolicy extends SchedulingPolicy {
             long deadline1 = s1.getStartTime()/1000 + job1.deadline;
             long deadline2 = s2.getStartTime()/1000 + job2.deadline;
             return (int) (deadline1 - deadline2);
-
           } else {
             long totalDemand1 = job1.totalDemand;
             long totalDemand2 = job2.totalDemand;
-
+            
             long receivedRes1 = getAggregateResouce(s1.getAppMetrics(),
                 ResourceType.CPU);
             long receivedRes2 = getAggregateResouce(s2.getAppMetrics(),

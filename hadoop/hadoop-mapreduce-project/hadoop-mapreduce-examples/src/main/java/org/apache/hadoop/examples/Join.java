@@ -90,7 +90,7 @@ public class Join extends Configured implements Tool {
                        Integer.parseInt(join_reduces);
     }
     Job job = Job.getInstance(conf);
-    job.setJobName("join");
+    // job.setJobName("join");
     job.setJarByClass(Sort.class);
 
     job.setMapperClass(Mapper.class);        

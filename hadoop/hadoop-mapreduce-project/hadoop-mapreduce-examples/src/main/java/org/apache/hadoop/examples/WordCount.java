@@ -72,7 +72,8 @@ public class WordCount {
       System.err.println("Usage: wordcount <in> [<in>...] <out>");
       System.exit(2);
     }
-    Job job = Job.getInstance(conf, "word count");
+    // Job job = Job.getInstance(conf, "word count");
+    Job job = Job.getInstance(conf);
     job.setJarByClass(WordCount.class);
     job.setMapperClass(TokenizerMapper.class);
     job.setCombinerClass(IntSumReducer.class);

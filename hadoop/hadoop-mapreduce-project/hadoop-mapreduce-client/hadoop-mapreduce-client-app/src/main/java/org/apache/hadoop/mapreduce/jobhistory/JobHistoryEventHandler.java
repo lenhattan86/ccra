@@ -100,7 +100,7 @@ public class JobHistoryEventHandler extends AbstractService
   private int maxUnflushedCompletionEvents;
   private int postJobCompletionMultiplier;
   private long flushTimeout;
-  private int minQueueSizeForBatchingFlushes; // TODO: Rename
+  private int minQueueSizeForBatchingFlushes; 
 
   private int numUnflushedCompletionEvents = 0;
   private boolean isTimerActive;

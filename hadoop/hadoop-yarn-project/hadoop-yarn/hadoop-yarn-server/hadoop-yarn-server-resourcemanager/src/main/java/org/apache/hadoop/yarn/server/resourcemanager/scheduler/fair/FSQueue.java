@@ -385,7 +385,8 @@ public abstract class FSQueue implements Queue, Schedulable {
 
   @Override
   public boolean isBursty() {
-    if (this.getQueueName().startsWith(SchedulingPolicy.STR_SQ))
+    if (this.getQueueName().startsWith(SchedulingPolicy.STR_SQ) 
+        || this.getQueueName().startsWith(SchedulingPolicy.STR_IQ))
       return true;
     return false;
   }

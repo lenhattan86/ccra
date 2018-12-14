@@ -285,7 +285,7 @@ public class TeraSort extends Configured implements Tool {
     boolean useSimplePartitioner = getUseSimplePartitioner(job);
     TeraInputFormat.setInputPaths(job, inputDir);
     FileOutputFormat.setOutputPath(job, outputDir);
-    job.setJobName("TeraSort");
+    // job.setJobName("TeraSort");
     job.setJarByClass(TeraSort.class);
     job.setOutputKeyClass(Text.class);
     job.setOutputValueClass(Text.class);

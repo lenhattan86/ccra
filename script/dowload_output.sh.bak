@@ -1,6 +1,5 @@
 defaulHostname="ctl.bpf2.yarnrm-pg0.utah.cloudlab.us"
-# defaultFolder="drf"
-defaultFolder="bopf2"
+defaultFolder="edf"
 # defaulHostname="ctl.bpf.yarnrm-pg0.utah.cloudlab.us"
 # defaultFolder="bopf"
 #defaulHostname="ctl.yarn-large.yarnrm-pg0.utah.cloudlab.us"
@@ -16,7 +15,7 @@ else
 fi
 
 resultPath="../results/debug/motivation"
-# resultPath="$resultPath/$hostname"
+
 method=""
 echo "[INFO] download the files from $hostname"
 
@@ -46,24 +45,30 @@ prompt () {
 
 downloadOuput () {
 	echo "[INFO] download $2 ................"
-	rm -rf $resultPath/$3;
-	mkdir $resultPath/
+	rm -rf $resultPath/$hostname/$3;
+	mkdir $resultPath/$hostname/
 	ssh tanle@$hostname "tar zcvf $1.tar $2"
-	mkdir $resultPath/$3	
-	scp $hostname:~/$1.tar $resultPath/$3 
-	tar -xvzf $resultPath/$3/$1.tar -C $resultPath/$3
+	mkdir $resultPath/$hostname/$3	
+	scp $hostname:~/$1.tar $resultPath/$hostname/$3 
+	tar -xvzf $resultPath/$hostname/$3/$1.tar -C $resultPath/$hostname/$3
 	ssh tanle@$hostname "rm -rf $1.tar"
 	rm -rf $resultPath/$3/$1.tar;
-	rm -rf $resultPath/$3/$subfolder1/*.txt
-	rm -rf $resultPath/$3/$subfolder2/*.sh
-	# scp $hostname:$subfolder2/yarnUsedResources.csv $resultPath/$3/$subfolder1/
+	rm -rf $resultPath/$hostname/$3/$subfolder1/*.txt
+	rm -rf $resultPath/$hostname/$3/$subfolder2/*.sh
+	scp $hostname:$subfolder2/yarnUsedResources.csv $resultPath/$hostname/$3/$subfolder1/
 }
 
 #prompt
 
 
-tarFile="result"; folder="~/result"; 
+tarFile="scriptTest"; folder="~/SWIM/scriptsTest"; 
+ssh tanle@$hostname "rm -rf ~/SWIM/scriptsTest/workGenLogs/completion_time.csv; hadoop/bin/hadoop fs -copyToLocal /user/tanle/completion_time.csv ~/SWIM/scriptsTest/workGenLogs/completion_time.csv;"
+ssh tanle@$hostname "rm -rf ~/SWIM/scriptsTest/workGenLogs/tez_container_time.csv; hadoop/bin/hadoop fs -copyToLocal /user/tanle/tez_container_time.csv ~/SWIM/scriptsTest/workGenLogs/tez_container_time.csv;"
 downloadOuput $tarFile $folder $newFolder
+#ssh tanle@$hostname "hadoop/bin/hadoop fs -rm -skipTrash /user/tanle/completion_time.csv;"
+
+#tarFile="logs"; folder="~/hadoop/logs"; logFolder="logs"; downloadOuput $tarFile $folder $logFolder
+#tarFile="SWIM"; srcFolder="~/SWIM"; destFolder="SWIM"; downloadOuput $tarFile $srcFolder $destFolder
 
 echo "[INFO] $hostname "
 echo "[INFO] Finished at: $(date) "
